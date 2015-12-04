@@ -1,0 +1,357 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>parent</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="no_define"
+HREF="ref.no-define.html"><LINK
+REL="NEXT"
+TITLE="requires"
+HREF="ref.requires.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.no-define.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.requires.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.PARENT"><SPAN
+CLASS="PROPERTY"
+>parent</SPAN
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4877"
+></A
+><H2
+>Name</H2
+>Property <SPAN
+CLASS="PROPERTY"
+>parent</SPAN
+>&nbsp;--&nbsp;Control the location of an option in the configuration hierarchy.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4881"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_option &lt;name&gt; {
+    parent &lt;component or package&gt;
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4883"
+></A
+><H2
+>Description</H2
+><P
+>Configuration options live in a hierarchy of packages and components.
+By default a given option's position in the hierarchy is a simple
+consequence of its position within the CDL scripts. Packages are
+generally placed at the top-level of the configuration. Any components
+or options that are defined at the same level as the <TT
+CLASS="LITERAL"
+>cdl_package</TT
+>
+command in a package's top-level CDL script are placed immediately
+below that package in the hierarchy. Any options or components that
+are defined in the body of a <TT
+CLASS="LITERAL"
+>cdl_package</TT
+> or <TT
+CLASS="LITERAL"
+>cdl_component</TT
+> command,
+or that are read in as a result of processing a component's <SPAN
+CLASS="PROPERTY"
+>script</SPAN
+>
+property, will be placed immediately below that package or component
+in the hierarchy.</P
+><P
+>In some circumstances it is useful to specify an alternative position
+in the hierarchy for a given option. For example it is often
+convenient to re-parent device driver packages below
+<TT
+CLASS="VARNAME"
+>CYGPKG_IO</TT
+> in the configuration hierarchy, thus
+reducing the number of packages at the top level of the hierarchy and
+making navigation easier. The <SPAN
+CLASS="PROPERTY"
+>parent</SPAN
+> property can be used to achieve
+this. </P
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>parent</SPAN
+> property takes a single argument, which should be the
+name of a package or component. The body of a <TT
+CLASS="LITERAL"
+>cdl_option</TT
+> or other
+CDL entity can contain at most one <SPAN
+CLASS="PROPERTY"
+>parent</SPAN
+> property.</P
+><P
+>Although the <SPAN
+CLASS="PROPERTY"
+>parent</SPAN
+> property affects an option's position in the
+overall hierarchy and hence whether or not that option is active, a
+re-parented option still belongs to the package that defines it. By
+default any <TT
+CLASS="LITERAL"
+>#define's</TT
+> will be exported to that
+package's configuration header file. Any <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> properties can only
+reference source files present in that package, and it is not directly
+possible to cause some file in another package to be built by
+re-parenting. </P
+><P
+>As a special case, if an empty string is specified for the parent then
+the option is placed at the top of the hierarchy, ahead of any
+packages which are not explicitly re-parented in this way. This
+facility is useful for configuration options such as global
+preferences and default compiler flags.</P
+><DIV
+CLASS="TIP"
+><BLOCKQUOTE
+CLASS="TIP"
+><P
+><B
+>Tip: </B
+>If an option is re-parented somewhere below another package and that
+other package is not actually loaded, the option is an orphan and its
+active/inactive state is undefined. In such cases it is a good idea
+for the owning package to require the presence of the other one.
+Unfortunately this technique does not work if a package as a whole is
+reparented below another one that has not been loaded: the package is
+orphaned so it may be automatically inactive, and hence any <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+>
+properties would have no effect.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4905"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_HAL_I386 {
+    display       "i386 architecture"
+    parent        CYGPKG_HAL
+    hardware
+    include_dir   cyg/hal
+    define_header hal_i386.h
+    &#8230;
+}
+
+cdl_component CYGBLD_GLOBAL_OPTIONS {
+    display       "Global build options"
+    parent        ""
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4908"
+></A
+><H2
+>See Also</H2
+><P
+>Property <A
+HREF="ref.script.html"
+><SPAN
+CLASS="PROPERTY"
+>script</SPAN
+></A
+>,
+commands <A
+HREF="ref.cdl-component.html"
+><TT
+CLASS="LITERAL"
+>cdl_component</TT
+></A
+> and
+<A
+HREF="ref.cdl-package.html"
+><TT
+CLASS="LITERAL"
+>cdl_package</TT
+></A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.no-define.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.requires.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

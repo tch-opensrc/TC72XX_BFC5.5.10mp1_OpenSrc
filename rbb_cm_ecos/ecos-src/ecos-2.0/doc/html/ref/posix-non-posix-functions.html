@@ -1,0 +1,230 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Non-POSIX Functions</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="POSIX Standard Support"
+HREF="posix-standard-support.html"><LINK
+REL="PREVIOUS"
+TITLE="Thread Cancellation [POSIX Section 18]"
+HREF="posix-thread-cancellation.html"><LINK
+REL="NEXT"
+TITLE="µITRON"
+HREF="compat-uitron.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="posix-thread-cancellation.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 31. POSIX Standard Support</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="compat-uitron.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="POSIX-NON-POSIX-FUNCTIONS">Non-POSIX Functions</H1
+><P
+>In addition to the standard POSIX functions defined above, the
+following non-POSIX functions are defined in the FILEIO package.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13314">General I&#0047;O Functions</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>int ioctl( int fd, CYG&#0095;ADDRWORD com, CYG&#0095;ADDRWORD data ); 
+int select( int nfd, fd&#0095;set &#0042;in, fd&#0095;set &#0042;out, fd&#0095;set &#0042;ex, struct timeval &#0042;tv);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13317">Socket Functions</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>int socket( int domain, int type, int protocol); 
+int bind( int s, const struct sockaddr &#0042;sa, unsigned int len); 
+int listen( int s, int len); 
+int accept( int s, struct sockaddr &#0042;sa, socklen&#0095;t &#0042;addrlen); 
+int connect( int s, const struct sockaddr &#0042;sa, socklen&#0095;t len); 
+int getpeername( int s, struct sockaddr &#0042;sa, socklen&#0095;t &#0042;len); 
+int getsockname( int s, struct sockaddr &#0042;sa, socklen&#0095;t &#0042;len); 
+int setsockopt( int s, int level, int optname, const void &#0042;optval,
+	        socklen&#0095;t optlen); 
+int getsockopt( int s, int level, int optname, void &#0042;optval,
+	        socklen&#0095;t &#0042;optlen); 
+ssize&#0095;t recvmsg( int s, struct msghdr &#0042;msg, int flags); 
+ssize&#0095;t recvfrom( int s, void &#0042;buf, size&#0095;t len, int flags, 
+	          struct sockaddr &#0042;from, socklen&#0095;t &#0042;fromlen); 
+ssize&#0095;t recv( int s, void &#0042;buf, size&#0095;t len, int flags); 
+ssize&#0095;t sendmsg( int s, const struct msghdr &#0042;msg, int flags); 
+ssize&#0095;t sendto( int s, const void &#0042;buf, size&#0095;t len, int flags, 
+	        const struct sockaddr &#0042;to, socklen&#0095;t tolen); 
+ssize&#0095;t send( int s, const void &#0042;buf, size&#0095;t len, int flags); 
+int shutdown( int s, int how);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13320">Notes</H2
+><P
+></P
+><UL
+><LI
+><P
+>   The precise behaviour of these functions depends mainly on the
+   functionality of the underlying filesystem or network stack to
+   which they are applied.
+   </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="posix-thread-cancellation.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="compat-uitron.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Thread Cancellation &#0091;POSIX Section 18&#0093;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="posix-standard-support.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&micro;ITRON</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

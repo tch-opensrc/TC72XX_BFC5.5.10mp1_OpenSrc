@@ -1,0 +1,265 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Synchronization</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="File System Support Infrastructure"
+HREF="fileio.html"><LINK
+REL="PREVIOUS"
+TITLE="Directories"
+HREF="fileio-directories.html"><LINK
+REL="NEXT"
+TITLE="Initialization and Mounting"
+HREF="fileio-mounting.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="fileio-directories.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="fileio-mounting.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="FILEIO-SYNCHRONIZATION">Chapter 24. Synchronization</H1
+><P
+>The FILEIO infrastructure provides a synchronization mechanism for
+controlling concurrent access to filesystems. This allows existing
+filesystems to be ported to eCos, even if they do not have their own
+synchronization mechanisms. It also allows new filesystems to be
+implemented easily without having to consider the synchronization
+issues.</P
+><P
+>The infrastructure maintains a mutex for each entry in each of
+the main tables: filesystem table, mount table and file table. For
+each class of operation each of these mutexes may be locked before the
+corresponding filesystem operation is invoked.</P
+><P
+>The synchronization protocol required by a filesystem is described
+by the <TT
+CLASS="STRUCTFIELD"
+><I
+>syncmode</I
+></TT
+> field of the filesystem
+table entry. This is a combination of the following flags:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_SYNCMODE_FILE_FILESYSTEM</TT
+></DT
+><DD
+><P
+>Lock the filesystem table entry mutex
+during all filesystem level operations.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_SYNCMODE_FILE_MOUNTPOINT</TT
+></DT
+><DD
+><P
+>Lock the mount table entry mutex
+during all filesystem level operations.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_SYNCMODE_IO_FILE</TT
+></DT
+><DD
+><P
+>Lock the file table entry mutex during all
+I/O operations.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_SYNCMODE_IO_FILESYSTEM</TT
+></DT
+><DD
+><P
+>Lock the filesystem table entry mutex during all I/O operations.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_SYNCMODE_IO_MOUNTPOINT</TT
+></DT
+><DD
+><P
+>Lock the mount table entry mutex during all I/O operations.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_SYNCMODE_SOCK_FILE</TT
+></DT
+><DD
+><P
+>Lock the file table entry mutex during all socket operations.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_SYNCMODE_SOCK_NETSTACK</TT
+></DT
+><DD
+><P
+>Lock the network stack table entry mutex during all socket operations.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_SYNCMODE_NONE</TT
+></DT
+><DD
+><P
+>Perform no locking at all during any operations.</P
+></DD
+></DL
+></DIV
+><P
+>The value of the <TT
+CLASS="STRUCTFIELD"
+><I
+>syncmode</I
+></TT
+> field in the
+filesystem table entry will be copied by the infrastructure to the
+open file object after a successful <TT
+CLASS="FUNCTION"
+>open()</TT
+> operation.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="fileio-directories.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="fileio-mounting.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Directories</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="fileio.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Initialization and Mounting</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

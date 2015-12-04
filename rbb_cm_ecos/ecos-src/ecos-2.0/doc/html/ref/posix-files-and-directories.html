@@ -1,0 +1,271 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Files and Directories [POSIX Section 5]</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="POSIX Standard Support"
+HREF="posix-standard-support.html"><LINK
+REL="PREVIOUS"
+TITLE="Process Environment [POSIX Section 4]"
+HREF="posix-process-environment.html"><LINK
+REL="NEXT"
+TITLE="Input and Output [POSIX Section 6]"
+HREF="posix-input-and-output.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="posix-process-environment.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 31. POSIX Standard Support</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="posix-input-and-output.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="POSIX-FILES-AND-DIRECTORIES">Files and Directories &#0091;POSIX Section 5&#0093;</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13039">Functions Implemented</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>DIR &#0042;opendir( const char &#0042;dirname ); 
+struct dirent &#0042;readdir( DIR &#0042;dirp ); 
+int readdir&#0095;r( DIR &#0042;dirp, struct dirent &#0042;entry,
+               struct dirent &#0042;&#0042;result ); 
+void rewinddir( DIR &#0042;dirp ); 
+int closedir( DIR &#0042;dirp ); 
+int chdir( const char &#0042;path ); 
+char &#0042;getcwd( char &#0042;buf, size&#0095;t size );
+int open( const char &#0042; path , int oflag , ... ); 
+int creat( const char &#0042; path, mode&#0095;t mode ); 
+int link( const char &#0042;existing, const char &#0042;new ); 
+int mkdir( const char &#0042;path, mode&#0095;t mode ); 
+int unlink( const char &#0042;path ); 
+int rmdir( const char &#0042;path ); 
+int rename( const char &#0042;old, const char &#0042;new ); 
+int stat( const char &#0042;path, struct stat &#0042;buf ); 
+int fstat( int fd, struct stat &#0042;buf ); 
+int access( const char &#0042;path, int amode ); 
+long pathconf(const char &#0042;path, int name); 
+long fpathconf(int fd, int name);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13042">Functions Omitted</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>mode&#0095;t umask( mode&#0095;t cmask ); 
+int mkfifo( const char &#0042;path, mode&#0095;t mode ); 
+int chmod( const char &#0042;path, mode&#0095;t mode );			&#0047;&#0047; TBA 
+int fchmod( int fd, mode&#0095;t mode );				&#0047;&#0047; TBA 
+int chown( const char &#0042;path, uid&#0095;t owner, gid&#0095;t group ); 
+int utime( const char &#0042;path, const struct utimbuf &#0042;times );	&#0047;&#0047; TBA 
+int ftruncate( int fd, off&#0095;t length );                          &#0047;&#0047; TBA</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13045">Notes</H2
+><P
+></P
+><UL
+><LI
+><P
+>	    If a call to <TT
+CLASS="FUNCTION"
+>open()</TT
+> or <TT
+CLASS="FUNCTION"
+>creat()</TT
+> supplies
+	    the third &#0095;mode&#0095; parameter, it will
+	    currently be ignored.
+	    </P
+></LI
+><LI
+><P
+>	    Most of the functionality of these functions depends on
+	    the underlying filesystem.
+	    </P
+></LI
+><LI
+><P
+>	    Currently<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+> access()</I
+></SPAN
+> only checks the 
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>F&#0095;OK</I
+></SPAN
+> mode explicitly, the others are
+	    all assumed to be true by default.
+	    </P
+></LI
+><LI
+><P
+>	    The maximum number of open files allowed is supplied by
+	    the CYGNUM&#0095;FILEIO&#0095;NFILE option. The maximum number
+	    of file descriptors is supplied by the CYGNUM&#0095;FILEIO&#0095;NFD
+	    option.  
+	    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="posix-process-environment.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="posix-input-and-output.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Process Environment &#0091;POSIX Section 4&#0093;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="posix-standard-support.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Input and Output &#0091;POSIX Section 6&#0093;</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

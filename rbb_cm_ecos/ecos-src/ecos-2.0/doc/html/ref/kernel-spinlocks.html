@@ -1,0 +1,405 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Spinlocks</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Kernel"
+HREF="kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="Event Flags"
+HREF="kernel-flags.html"><LINK
+REL="NEXT"
+TITLE="Scheduler Control"
+HREF="kernel-schedcontrol.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="kernel-flags.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="kernel-schedcontrol.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="KERNEL-SPINLOCKS">Spinlocks</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN1693"
+></A
+><H2
+>Name</H2
+>cyg_spinlock_create, cyg_spinlock_destroy, cyg_spinlock_spin, cyg_spinlock_clear, cyg_spinlock_test, cyg_spinlock_spin_intsave, cyg_spinlock_clear_intsave&nbsp;--&nbsp;Low-level Synchronization Primitive</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN1702"><H2
+>Synopsis</H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><A
+NAME="AEN1703"><P
+></P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &lt;cyg/kernel/kapi.h&gt;
+        </PRE
+></TD
+></TR
+></TABLE
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_spinlock_init</CODE
+>(cyg_spinlock_t* lock, cyg_bool_t locked);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_spinlock_destroy</CODE
+>(cyg_spinlock_t* lock);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_spinlock_spin</CODE
+>(cyg_spinlock_t* lock);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_spinlock_clear</CODE
+>(cyg_spinlock_t* lock);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_bool_t cyg_spinlock_try</CODE
+>(cyg_spinlock_t* lock);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_bool_t cyg_spinlock_test</CODE
+>(cyg_spinlock_t* lock);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_spinlock_spin_intsave</CODE
+>(cyg_spinlock_t* lock, cyg_addrword_t* istate);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_spinlock_clear_intsave</CODE
+>(cyg_spinlock_t* lock, cyg_addrword_t istate);</CODE
+></P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-SPINLOCKS-DESCRIPTION"
+></A
+><H2
+>Description</H2
+><P
+>Spinlocks provide an additional synchronization primitive for
+applications running on SMP systems. They operate at a lower level
+than the other primitives such as mutexes, and for most purposes the
+higher-level primitives should be preferred. However there are some
+circumstances where a spinlock is appropriate, especially when
+interrupt handlers and threads need to share access to hardware, and
+on SMP systems the kernel implementation itself depends on spinlocks.
+      </P
+><P
+>Essentially a spinlock is just a simple flag. When code tries to claim
+a spinlock it checks whether or not the flag is already set. If not
+then the flag is set and the operation succeeds immediately. The exact
+implementation of this is hardware-specific, for example it may use a
+test-and-set instruction to guarantee the desired behaviour even if
+several processors try to access the spinlock at the exact same time.
+If it is not possible to claim a spinlock then the current thead spins
+in a tight loop, repeatedly checking the flag until it is clear. This
+behaviour is very different from other synchronization primitives such
+as mutexes, where contention would cause a thread to be suspended. The
+assumption is that a spinlock will only be held for a very short time.
+If claiming a spinlock could cause the current thread to be suspended
+then spinlocks could not be used inside interrupt handlers, which is
+not acceptable.
+      </P
+><P
+>This does impose a constraint on any code which uses spinlocks.
+Specifically it is important that spinlocks are held only for a short
+period of time, typically just some dozens of instructions. Otherwise
+another processor could be blocked on the spinlock for a long time,
+unable to do any useful work. It is also important that a thread which
+owns a spinlock does not get preempted because that might cause
+another processor to spin for a whole timeslice period, or longer. One
+way of achieving this is to disable interrupts on the current
+processor, and the function
+<TT
+CLASS="FUNCTION"
+>cyg_spinlock_spin_intsave</TT
+> is provided to
+facilitate this.
+      </P
+><P
+>Spinlocks should not be used on single-processor systems. Consider a
+high priority thread which attempts to claim a spinlock already held
+by a lower priority thread: it will just loop forever and the lower
+priority thread will never get another chance to run and release the
+spinlock. Even if the two threads were running at the same priority,
+the one attempting to claim the spinlock would spin until it was
+timesliced and a lot of cpu time would be wasted. If an interrupt
+handler tried to claim a spinlock owned by a thread, the interrupt
+handler would loop forever. Therefore spinlocks are only appropriate
+for SMP systems where the current owner of a spinlock can continue
+running on a different processor.
+      </P
+><P
+>Before a spinlock can be used it must be initialized by a call to
+<TT
+CLASS="FUNCTION"
+>cyg_spinlock_init</TT
+>. This takes two arguments, a
+pointer to a <TT
+CLASS="FUNCTION"
+>cyg_spinlock_t</TT
+> data structure, and
+a flag to specify whether the spinlock starts off locked or unlocked.
+If a spinlock is no longer required then it can be destroyed by a call
+to <TT
+CLASS="FUNCTION"
+>cyg_spinlock_destroy</TT
+>.
+      </P
+><P
+>There are two routines for claiming a spinlock:
+<TT
+CLASS="FUNCTION"
+>cyg_spinlock_spin</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_spinlock_spin_intsave</TT
+>. The former can be used
+when it is known the current code will not be preempted, for example
+because it is running in an interrupt handler or because interrupts
+are disabled. The latter will disable interrupts in addition to
+claiming the spinlock, so is safe to use in all circumstances. The
+previous interrupt state is returned via the second argument, and
+should be used in a subsequent call to
+<TT
+CLASS="FUNCTION"
+>cyg_spinlock_clear_intsave</TT
+>. 
+      </P
+><P
+>Similarly there are two routines for releasing a spinlock:
+<TT
+CLASS="FUNCTION"
+>cyg_spinlock_clear</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_spinlock_clear_intsave</TT
+>. Typically
+the former will be used if the spinlock was claimed by a call to
+<TT
+CLASS="FUNCTION"
+>cyg_spinlock_spin</TT
+>, and the latter when
+<TT
+CLASS="FUNCTION"
+>cyg_spinlock_intsave</TT
+> was used.
+      </P
+><P
+>There are two additional routines.
+<TT
+CLASS="FUNCTION"
+>cyg_spinlock_try</TT
+> is a non-blocking version of
+<TT
+CLASS="FUNCTION"
+>cyg_spinlock_spin</TT
+>: if possible the lock will be
+claimed and the function will return <TT
+CLASS="LITERAL"
+>true</TT
+>; otherwise the function
+will return immediately with failure.
+<TT
+CLASS="FUNCTION"
+>cyg_spinlock_test</TT
+> can be used to find out whether
+or not the spinlock is currently locked. This function must be used
+with care because, especially on a multiprocessor system, the state of
+the spinlock can change at any time.
+      </P
+><P
+>Spinlocks should only be held for a short period of time, and
+attempting to claim a spinlock will never cause a thread to be
+suspended. This means that there is no need to worry about priority
+inversion problems, and concepts such as priority ceilings and
+inheritance do not apply.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-SPINLOCKS-CONTEXT"
+></A
+><H2
+>Valid contexts</H2
+><P
+>All of the spinlock functions can be called from any context,
+including ISR and DSR context. Typically
+<TT
+CLASS="FUNCTION"
+>cyg_spinlock_init</TT
+> is only called during system
+initialization. 
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="kernel-flags.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="kernel-schedcontrol.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Event Flags</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Scheduler Control</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

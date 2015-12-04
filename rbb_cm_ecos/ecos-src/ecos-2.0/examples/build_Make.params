@@ -1,0 +1,36 @@
+#! /bin/sh
+
+# This script will set up a Makefile fragment with 
+# platform specifics.  This fragement can be used by
+# the automatically generated Makefile (via the script
+# 'build_Makefile')
+
+# Copied from 'makefile' the "install" tree
+
+HOME=${1-`pwd`}
+if [ ! -d ${HOME}/install ]; then
+  echo "Not an eCos install tree"
+  echo "usage: <eCos_repository>/build_Make.params [<eCos_install_dir>]"
+  exit
+fi
+
+cat <<EOF >Make.params
+
+# Copied from 'makefile' in the "install" tree
+
+EOF
+
+grep export ${HOME}/makefile >>Make.params
+
+cat <<EOF >>Make.params
+
+#
+# Target specific flags, etc.
+#
+
+EOF
+
+cat ${HOME}/install/include/pkgconf/ecos.mak >>Make.params
+
+
+

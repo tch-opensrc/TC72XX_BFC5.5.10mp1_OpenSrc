@@ -1,0 +1,220 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Cirrus Logic ARM CL-PS7111 Evaluation Board Hardware Setup</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Target Setup"
+HREF="appendix-target-setup.html"><LINK
+REL="PREVIOUS"
+TITLE="Cirrus Logic ARM EP7209 Development Board Hardware Setup"
+HREF="setup-arm-ep7209.html"><LINK
+REL="NEXT"
+TITLE="StrongARM EBSA-285 Hardware Setup"
+HREF="setup-arm-ebsa285.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="setup-arm-ep7209.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Target Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="setup-arm-ebsa285.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SETUP-ARM-CLPS7111">Cirrus Logic ARM CL-PS7111 Evaluation Board Hardware Setup</H1
+><P
+>The implementation of the port of eCos to the Cirrus Logic
+ARM CL-PS7111 Evaluation Board (also known as EB7111) is based on
+the EP7211 Development Board port.</P
+><P
+>For that reason, the setup required is identical to the  EP7211
+Development Board as described above, with the following exceptions:</P
+><P
+></P
+><UL
+><LI
+><P
+>The Cygmon ROM monitor is not supported</P
+></LI
+><LI
+><P
+>The ARM Multi-ICE is not supported</P
+></LI
+><LI
+><P
+>Pre-built GDB stubs are provided in the
+directory loaders/arm-eb7111 relative to the root of your
+eCos installation</P
+></LI
+><LI
+><P
+>If rebuilding the GDB stub ROM image, change the "Cirrus
+Logic processor variant" option (CYGHWR_HAL_ARM_EDB7XXX_VARIANT)
+from the EP7211 to the CL_PS7111. This can be selected
+in the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos Configuration Tool</I
+></SPAN
+>
+, or if using ecosconfig, can be set by uncommenting the user_value
+property of this option in ecos.ecc and setting it to "CL_PS7111"</P
+></LI
+></UL
+><P
+>All remote serial communication is done with the serial I/O
+connector</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>/misc   
+% slow_cat.tcl &lt; [path]/gdb_module.srec &#62; /dev/ttyS0</PRE
+></TD
+></TR
+></TABLE
+><P
+>Power off the board, and change it to boot the GDB stubs in
+big-endian mode by setting the switches like this:</P
+><P
+>SW1: 00000000 (all levers down)   
+SW2: 10001010</P
+><P
+>The GDB stubs allow communication with GDB using the serial
+port at connector PJ7A (lower connector). The communication parameters
+are  fixed at 38400 baud, 8 data bits, no parity bit and 1 stop
+bit  (8-N-1). No flow control is employed. Connection to the host
+computer should be made using a straight through serial cable.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="setup-arm-ep7209.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="setup-arm-ebsa285.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Cirrus Logic ARM EP7209 Development Board Hardware Setup</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="appendix-target-setup.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>StrongARM EBSA-285 Hardware Setup</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

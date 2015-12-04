@@ -1,0 +1,1675 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Platform HAL Porting</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="	Porting Guide"
+HREF="hal-porting-guide.html"><LINK
+REL="PREVIOUS"
+TITLE="HAL Coding Conventions"
+HREF="hal-porting-coding-conventions.html"><LINK
+REL="NEXT"
+TITLE="Variant HAL Porting"
+HREF="hal-porting-variant.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="hal-porting-coding-conventions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 11. Porting Guide</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="hal-porting-variant.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="HAL-PORTING-PLATFORM">Platform HAL Porting</H1
+><P
+>This is the type of port that takes the least effort. It basically
+consists of describing the platform (board) for the HAL: memory
+layout, early platform initialization, interrupt controllers, and a
+simple serial device driver.</P
+><P
+>Doing a platform port requires a preexisting architecture and
+possibly a variant HAL port.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN9415">HAL Platform Porting Process</H2
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9417">Brief overview</H3
+><P
+>The easiest way to make a new platform HAL is simply to copy an
+existing platform HAL of the same architecture/variant and change all
+the files to match the new one. In case this is the first platform for
+the architecture/variant, a platform HAL from another architecture
+should be used as a template.</P
+><P
+>The best way to start a platform port is to concentrate on getting
+RedBoot to run. RedBoot is a simpler environment than full eCos, it
+does not use interrupts or threads, but covers most of the
+basic startup requirements.</P
+><P
+>RedBoot normally runs out of FLASH or ROM and provides program loading
+and debugging facilities.  This allows further HAL development to
+happen using RAM startup configurations, which is desirable for the
+simple reason that downloading an image which you need to test is
+often many times faster than either updating a flash part, or indeed,
+erasing and reprogramming an EPROM.</P
+><P
+>There are two approaches to getting to this first goal:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>The board is equipped with a ROM monitor which allows "load and go" of
+ELF, binary, S-record or some other image type which can be created
+using <SPAN
+CLASS="APPLICATION"
+>objcopy</SPAN
+>. This allows you to develop
+RedBoot by downloading and running the code (saving time).</P
+><P
+>When the stub is running it is a good idea to examine the various
+hardware registers to help you write the platform initialization code.</P
+><P
+>Then you may have to fiddle a bit going through step two (getting it
+to run from ROM startup). If at all possible, preserve the original
+ROM monitor so you can revert to it if necessary.</P
+></LI
+><LI
+><P
+>The board has no ROM monitor. You need to get the platform
+initialization and stub working by repeatedly making changes, updating
+flash or EPROM and testing the changes. If you are lucky, you have a
+JTAG or similar CPU debugger to help you. If not, you will probably
+learn to appreciate LEDs. This approach may also be needed during the
+initial phase of moving RedBoot from RAM startup to ROM, since it is
+very unlikely to work first time.</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9431">Step-by-step</H3
+><P
+>Given that no two platforms are exactly the same, you may have to
+deviate from the below. Also, you should expect a fair amount of
+fiddling - things almost never go right the first time. See the hints
+section below for some suggestions that might help debugging.</P
+><P
+>The description below is based on the HAL layout used in the MIPS,
+PC and MN10300 HALs. Eventually all HALs should be converted to look like
+these - but in a transition period there will be other HALs which look
+substantially different. Please try to adhere to the following as much is
+possible without causing yourself too much grief integrating with a
+HAL which does not follow this layout.</P
+><DIV
+CLASS="SECTION"
+><H4
+CLASS="SECTION"
+><A
+NAME="AEN9435">Minimal requirements</H4
+><P
+>These are the changes you must make before you attempt to build
+RedBoot. You are advised to read all the sources though.</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Copy an existing platform HAL from the same or another
+    architecture. Rename the files as necessary to follow the
+    standard: CDL and MLT related files should contain the
+    &lt;arch&gt;_&lt;variant&gt;_&lt;platform&gt; triplet.</P
+></LI
+><LI
+><P
+>Adjust CDL options. Primarily option naming, real-time
+    clock/counter, and CYGHWR_MEMORY_LAYOUT variables, but also other
+    options may need editing. Look through the architecture/variant
+    CDL files to see if there are any requirements/features which
+    where not used on the platform you copied. If so, add appropriate
+    ones. See <A
+HREF="hal-porting-platform.html#HAL-PORTING-CDL-REQUIREMENTS"
+>the Section called <I
+>HAL Platform CDL</I
+></A
+> for more
+    details.</P
+></LI
+><LI
+><P
+>Add the necessary packages and target descriptions to the
+    top-level <TT
+CLASS="FILENAME"
+>ecos.db</TT
+> file. See <A
+HREF="hal-porting-platform.html#HAL-PORTING-ECOS-DATABASE"
+>the Section called <I
+>eCos Database</I
+></A
+>. Initially, the target entry
+    should only contain the HAL packages. Other hardware support
+    packages will be added later.</P
+></LI
+><LI
+><P
+>Adjust the MLT files in
+    <TT
+CLASS="FILENAME"
+>include/pkgconf</TT
+> to match the memory layout on
+    the platform. For initial testing it should be enough to just hand
+    edit .h and .ldi files, but eventually you should generate all
+    files using the memory layout editor in the configuration
+    tool. See <A
+HREF="hal-porting-platform.html#HAL-PORTING-PLATFORM-MEMORY-LAYOUT"
+>the Section called <I
+>Platform Memory Layout</I
+></A
+> for
+    more details.</P
+></LI
+><LI
+><P
+>    Edit the <TT
+CLASS="FILENAME"
+>misc/redboot_&lt;STARTUP&gt;.ecm</TT
+> for
+    the startup type you have chosen to begin with. Rename any
+    platform specific options and remove any that do not apply. In the
+    <TT
+CLASS="LITERAL"
+>cdl_configuration</TT
+> section, comment out any
+    extra packages that are added, particularly packages such as
+    <TT
+CLASS="LITERAL"
+>CYGPKG_IO_FLASH</TT
+> and
+    <TT
+CLASS="LITERAL"
+>CYGPKG_IO_ETH_DRIVERS</TT
+>. These are not needed for
+    initial porting and will be added back later.
+    </P
+></LI
+><LI
+><P
+>If the default IO macros are not correct, override them in
+    plf_io.h. This may be necessary if the platform uses a different
+    endianness from the default for the CPU.</P
+></LI
+><LI
+><P
+>Leave out/comment out code that enables caches and/or MMU if
+    possible. Execution speed will not be a concern until the port is
+    feature complete.</P
+></LI
+><LI
+><P
+>Implement a simple serial driver (polled mode only). Make sure the
+    initialization function properly hooks the procedures up in the
+    virtual vector IO channel tables. RedBoot will call the serial
+    driver via these tables.</P
+><P
+>    By copying an existing platform HAL most of this code will be
+    already done, and will only need the platform specific hardware
+    access code to be written.
+    </P
+></LI
+><LI
+><P
+>Adjust/implement necessary platform
+    initialization. This can be found in
+    <TT
+CLASS="FILENAME"
+>platform.inc</TT
+> and
+    <TT
+CLASS="FILENAME"
+>platform.S</TT
+> files (ARM:
+    <TT
+CLASS="FILENAME"
+>hal_platform_setup.h</TT
+> and
+    <TT
+CLASS="FILENAME"
+>&lt;platform&gt;_misc.c</TT
+>, PowerPC:
+    <TT
+CLASS="FILENAME"
+>&lt;platform&gt;.S</TT
+>). This step can be
+    postponed if you are doing a RAM startup RedBoot first and the
+    existing ROM monitor handles board initialization.</P
+></LI
+><LI
+><P
+>Define <TT
+CLASS="LITERAL"
+>HAL_STUB_PLATFORM_RESET</TT
+>
+    (optionally empty) and
+    <TT
+CLASS="LITERAL"
+>HAL_STUB_PLATFORM_RESET_ENTRY</TT
+> so that RedBoot
+    can reset-on-detach - this is very handy, often removing the need
+    for physically resetting the board between downloads.</P
+></LI
+></OL
+><P
+>You should now be able to build RedBoot. For ROM startup:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>% ecosconfig new &lt;target_name&gt; redboot
+% ecosconfig import $(ECOS_REPOSITORY)/hal/&lt;architecture&gt;/&lt;platform&gt;/&lt;version&gt;/misc/redboot_ROM.ecm
+% ecosconfig tree
+% make</PRE
+></TD
+></TR
+></TABLE
+><P
+>You may have to make further changes than suggested above to get
+the make command to succeed. But when it does, you should find a
+RedBoot image in install/bin. To program this image into flash or
+EPROM, you may need to convert to some other file type, and possibly
+adjust the start address. When you have the correct
+<SPAN
+CLASS="APPLICATION"
+>objcopy</SPAN
+> command to do this, add it to the
+<TT
+CLASS="LITERAL"
+>CYGBLD_BUILD_GDB_STUBS</TT
+> custom build rule in the
+platform CDL file.</P
+><P
+>Having updated the flash/EPROM on the board, you should see output
+on the serial port looking like this when powering on the board:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>RedBoot(tm) bootstrap and debug environment [ROMRAM]
+Non-certified release, version UNKNOWN - built 15:42:24, Mar 14 2002
+
+Platform: &lt;PLATFORM&gt; (&lt;ARCHITECTURE&gt; &lt;VARIANT&gt;)
+Copyright (C) 2000, 2001, 2002, Red Hat, Inc.
+
+RAM: 0x00000000-0x01000000, 0x000293e8-0x00ed1000 available
+FLASH: 0x24000000 - 0x26000000, 256 blocks of 0x00020000 bytes each.
+RedBoot&#62; </PRE
+></TD
+></TR
+></TABLE
+><P
+>If you do not see this output, you need to go through all your
+changes and figure out what's wrong. If there's a user programmable
+LED or LCD on the board it may help you figure out how far RedBoot
+gets before it hangs. Unfortunately there's no good way to describe
+what to do in this situation - other than that you have to play with
+the code and the board.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H4
+CLASS="SECTION"
+><A
+NAME="AEN9484">Adding features</H4
+><P
+>Now you should have a basic RedBoot running on the board. This
+means you have a the correct board initialization and a working serial
+driver. It's time to flesh out the remaining HAL features.</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Reset. As mentioned above it is desirable to get the board to
+reset when GDB disconnects. When GDB disconnects it sends RedBoot
+a kill-packet, and RedBoot first calls <TT
+CLASS="LITERAL"
+>HAL_STUB_PLATFORM_RESET()</TT
+>,
+attempting to perform a software-invoked reset. Most embedded
+CPUs/boards have a watchdog which is capable of triggering a reset.
+If your target does not have a watchdog, leave
+<TT
+CLASS="LITERAL"
+>HAL_STUB_PLATFORM_RESET()</TT
+> empty and rely on the fallback approach.</P
+><P
+>If <TT
+CLASS="LITERAL"
+>HAL_STUB_PLATFORM_RESET()</TT
+> did not cause a reset, RedBoot will
+jump to <TT
+CLASS="LITERAL"
+>HAL_STUB_PLATFORM_RESET_ENTRY</TT
+> - this should be the address
+where the CPU will start execution after a reset. Re-initializing the
+board and drivers will <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>usually</I
+></SPAN
+> be good enough to make a
+hardware reset unnecessary.</P
+><P
+>After the reset caused by the kill-packet, the target will be ready
+for GDB to connect again. During a days work, this will save you from
+pressing the reset button many times.</P
+><P
+>Note that it is possible to disconnect from the board without
+causing it to reset by using the GDB command &quot;detach&quot;.</P
+></LI
+><LI
+><P
+>Single-stepping is necessary for both instruction-level debugging
+and for breakpoint support. Single-stepping support should already be
+in place as part of the architecture/variant HAL, but you want to give
+it a quick test since you will come to rely on it.</P
+></LI
+><LI
+><P
+>Real-time clock interrupts drive the eCos scheduler clock. Many
+embedded CPUs have an on-core timer (e.g. SH) or decrementer
+(e.g. MIPS, PPC) that can be used, and in this case it will already be
+supported by the architecture/variant HAL. You only have to calculate
+and enter the proper <TT
+CLASS="LITERAL"
+>CYGNUM_HAL_RTC_CONSTANTS</TT
+>
+definitions in the platform CDL file.</P
+><P
+>On some targets it may be necessary to use a platform-specific
+timer source for driving the real-time clock. In this case you also
+have to enter the proper CDL definitions, but must also define
+suitable versions of the <TT
+CLASS="LITERAL"
+>HAL_CLOCK_XXXX</TT
+> macros.</P
+></LI
+><LI
+><P
+>Interrupt decoding usually differs between platforms because the
+number and type of devices on the board differ. In
+<TT
+CLASS="FILENAME"
+>plf_intr.h</TT
+> (ARM:
+<TT
+CLASS="FILENAME"
+>hal_platform_ints.h</TT
+>) you must either extend or
+replace the default vector definitions provided by the architecture
+or variant interrupt headers. You may also have to define
+<TT
+CLASS="LITERAL"
+>HAL_INTERRUPT_XXXX</TT
+> control macros.</P
+></LI
+><LI
+><P
+>Caching may also differ from architecture/variant definitions.
+This maybe just the cache sizes, but there can also be bigger
+differences for example if the platform supports 2nd level caches.</P
+><P
+>When cache definitions are in place, enable the caches on
+startup. First verify that the system is stable for RAM startups, then
+build a new RedBoot and install it. This will test if caching, and in
+particular the cache sync/flush operations, also work for ROM startup.</P
+></LI
+><LI
+><P
+>Asynchronous breakpoints allow you to stop application execution
+and enter the debugger. Asynchronous breakpoint details are described
+in .</P
+></LI
+></OL
+><P
+>You should now have a completed platform HAL port. Verify its
+stability and completeness by running all the eCos tests and fix any
+problems that show up (you have a working RedBoot now, remember! That
+means you can debug the code to see why it fails).</P
+><P
+>Given the many configuration options in eCos, there may be hidden
+bugs or missing features that do not show up even if you run all the
+tests successfully with a default configuration. A comprehensive test
+of the entire system will take many configuration permutations and
+many many thousands of tests executed.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9517">Hints</H3
+><P
+></P
+><UL
+><LI
+><P
+>JTAG or similar CPU debugging hardware can greatly reduce the time
+    it takes to write a HAL port since you always have full visibility
+    of what the CPU is doing.
+    </P
+></LI
+><LI
+><P
+>LEDs can be your friends if you don't have a JTAG
+    device. Especially in the start of the porting effort if you don't
+    already have a working ROM monitor on the target. Then you have to
+    get a basic RedBoot working while basically being blindfolded. The
+    LED can make it little easier, as you'll be able to do limited
+    tracking of program flow and behavior by switching the LED on and
+    off. If the board has multiple LEDs you can show a number (using
+    binary notation with the LEDs) and sprinkle code which sets
+    different numbers throughout the code.</P
+></LI
+><LI
+><P
+>Debugging the interrupt processing is possible if you are
+    careful with the way you program the very early interrupt entry
+    handling. Write it so that as soon as possible in the interrupt
+    path, taking a trap (exception) does not harm execution. See the
+    SH vectors.S code for an example. Look for
+    <TT
+CLASS="LITERAL"
+>cyg_hal_default_interrupt_vsr</TT
+> and the label
+    <TT
+CLASS="LITERAL"
+>cyg_hal_default_interrupt_vsr_bp_safe</TT
+>, which
+    marks the point after which traps/single-stepping is safe.
+    </P
+><P
+>Being able to display memory content, CPU registers,
+    interrupt controller details at the time of an interrupt can save
+    a lot of time.</P
+></LI
+><LI
+><P
+>Using assertions is a good idea. They can sometimes reveal subtle
+    bugs or missing features long before you would otherwise have
+    found them, let alone notice them.
+    </P
+><P
+>The default eCos configuration does not use assertions, so you
+    have to enable them by switching on the option <TT
+CLASS="LITERAL"
+>CYGPKG_INFRA_DEBUG</TT
+>
+    in the infra package.</P
+></LI
+><LI
+><P
+>The idle loop can be used to help debug the system.
+    </P
+><P
+>Triggering clock from the idle loop is a neat trick for
+    examining system behavior either before interrupts are fully
+    working, or to speed up &quot;the clock&quot;.
+    </P
+><P
+>Use the idle loop to monitor and/or print out variables or
+    hardware registers.</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="APPLICATION"
+>hal_mk_defs</SPAN
+> is used in some of the
+HALs (ARM, SH) as a way to generate assembler symbol definitions from
+C header files without imposing an assembler/C syntax separation in
+the C header files.</P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="HAL-PORTING-CDL-REQUIREMENTS">HAL Platform CDL</H2
+><P
+>The platform CDL both contains details necessary for the building
+of eCos, and platform-specific configuration options. For this reason
+the options differ between platforms, and the below is just a brief
+description of the most common options.</P
+><P
+> See  Components Writers Guide
+for more details on CDL. Also have a quick look around in
+existing platform CDL files to get an idea of what is possible and how
+various configuration issues can be represented with CDL.</P
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="HAL-PORTING-ECOS-DATABASE">eCos Database</H3
+><P
+>The eCos configuration system is made aware of a package by
+adding a package description in <TT
+CLASS="FILENAME"
+>ecos.db</TT
+>. As an
+example we use the <TT
+CLASS="LITERAL"
+>TX39/JMR3904</TT
+> platform:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>package CYGPKG_HAL_MIPS_TX39_JMR3904 {
+	alias		{ "Toshiba JMR-TX3904 board" hal_tx39_jmr3904 tx39_jmr3904_hal }
+	directory	hal/mips/jmr3904
+	script		hal_mips_tx39_jmr3904.cdl
+	hardware
+	description "
+           The JMR3904 HAL package should be used when targeting the
+           actual hardware. The same package can also be used when
+           running on the full simulator, since this provides an
+           accurate simulation of the hardware including I/O devices.
+           To use the simulator in this mode the command
+           `target sim --board=jmr3904' should be used from inside gdb."
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>This contains the title and description presented in the
+Configuration Tool when the package is selected. It also specifies
+where in the tree the package files can be found (<TT
+CLASS="LITERAL"
+>directory</TT
+>)
+and the name of the CDL file which contains the package details
+(<TT
+CLASS="LITERAL"
+>script</TT
+>).</P
+><P
+>To be able to build and test a configuration for the new target, there
+also needs to be a <TT
+CLASS="LITERAL"
+>target</TT
+> entry in the
+<TT
+CLASS="FILENAME"
+>ecos.db</TT
+> file. </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>target jmr3904 {
+        alias		{ "Toshiba JMR-TX3904 board" jmr tx39 }
+	packages        { CYGPKG_HAL_MIPS
+                          CYGPKG_HAL_MIPS_TX39
+                          CYGPKG_HAL_MIPS_TX39_JMR3904
+        }
+        description "
+           The jmr3904 target provides the packages needed to run
+           eCos on a Toshiba JMR-TX3904 board. This target can also
+           be used when running in the full simulator, since the simulator provides an
+           accurate simulation of the hardware including I/O devices.
+           To use the simulator in this mode the command
+           `target sim --board=jmr3904' should be used from inside gdb."
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The important part here is the <TT
+CLASS="LITERAL"
+>packages</TT
+> section
+which defines the various hardware specific packages that contribute
+to support for this target. In this case the MIPS architecture
+package, the TX39 variant package, and the JMR-TX3904 platform
+packages are selected. Other packages, for serial drivers, ethernet
+drivers and FLASH memory drivers may also appear here.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9559">CDL File Layout</H3
+><P
+>All the platform options are contained in a CDL package named
+<TT
+CLASS="LITERAL"
+>CYGPKG_HAL_&lt;architecture&gt;_&lt;variant&gt;_&lt;platform&gt;</TT
+>.
+They all share more or less the same <TT
+CLASS="LITERAL"
+>cdl_package</TT
+>
+details:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_HAL_MIPS_TX39_JMR3904 {
+    display       "JMR3904 evaluation board"
+    parent        CYGPKG_HAL_MIPS
+    requires      CYGPKG_HAL_MIPS_TX39
+    define_header hal_mips_tx39_jmr3904.h
+    include_dir   cyg/hal
+    description   "
+           The JMR3904 HAL package should be used when targeting the
+           actual hardware. The same package can also be used when
+           running on the full simulator, since this provides an
+           accurate simulation of the hardware including I/O devices.
+           To use the simulator in this mode the command
+           `target sim --board=jmr3904' should be used from inside gdb."
+
+    compile       platform.S plf_misc.c plf_stub.c
+
+    define_proc {
+        puts $::cdl_system_header "#define CYGBLD_HAL_TARGET_H   &lt;pkgconf/hal_mips_tx39.h&gt;"
+        puts $::cdl_system_header "#define CYGBLD_HAL_PLATFORM_H &lt;pkgconf/hal_mips_tx39_jmr3904.h&gt;"
+    }
+
+    ...
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>This specifies that the platform package should be parented under
+the MIPS packages, requires the TX39 variant HAL and all configuration
+settings should be saved in
+<TT
+CLASS="FILENAME"
+>cyg/hal/hal_mips_tx39_jmt3904.h</TT
+>.</P
+><P
+>The <TT
+CLASS="LITERAL"
+>compile</TT
+> line specifies which files should be built
+when this package is enabled, and the <TT
+CLASS="LITERAL"
+>define_proc</TT
+> defines
+some macros that are used to access the variant or architecture (the
+<TT
+CLASS="LITERAL"
+>_TARGET_</TT
+> name is a bit of a misnomer) and platform
+configuration options. </P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9571">Startup Type</H3
+><P
+>eCos uses an option to select between a set of valid startup
+configurations. These are normally RAM, ROM and possibly ROMRAM. This
+setting is used to select which linker map to use (i.e., where to link
+eCos and the application in the memory space), and how the startup
+code should behave.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_component CYG_HAL_STARTUP {
+    display       "Startup type"
+    flavor        data
+    legal_values  {"RAM" "ROM"}
+    default_value {"RAM"}
+	no_define
+	define -file system.h CYG_HAL_STARTUP
+    description   "
+       When targeting the JMR3904 board it is possible to build
+       the system for either RAM bootstrap, ROM bootstrap, or STUB
+       bootstrap. RAM bootstrap generally requires that the board
+       is equipped with ROMs containing a suitable ROM monitor or
+       equivalent software that allows GDB to download the eCos
+       application on to the board. The ROM bootstrap typically
+       requires that the eCos application be blown into EPROMs or
+       equivalent technology."
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <TT
+CLASS="LITERAL"
+>no_define</TT
+> and <TT
+CLASS="LITERAL"
+>define</TT
+>
+pair is used to make the setting of this option appear in the file
+<TT
+CLASS="FILENAME"
+>system.h</TT
+> instead of the default specified in the
+header.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9579">Build options</H3
+><P
+>A set of options under the components
+<TT
+CLASS="LITERAL"
+>CYGBLD_GLOBAL_OPTIONS</TT
+> and
+<TT
+CLASS="LITERAL"
+>CYGHWR_MEMORY_LAYOUT</TT
+> specify how eCos should be
+built: what tools and compiler options should be used, and which
+linker fragments should be used.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&#13;cdl_component CYGBLD_GLOBAL_OPTIONS {
+    display "Global build options"
+    flavor  none
+    parent  CYGPKG_NONE
+    description   "
+	    Global build options including control over
+	    compiler flags, linker flags and choice of toolchain."
+
+
+    cdl_option CYGBLD_GLOBAL_COMMAND_PREFIX {
+        display "Global command prefix"
+        flavor  data
+        no_define
+        default_value { "mips-tx39-elf" }
+        description "
+            This option specifies the command prefix used when
+            invoking the build tools."
+    }
+
+    cdl_option CYGBLD_GLOBAL_CFLAGS {
+        display "Global compiler flags"
+        flavor  data
+        no_define
+        default_value { "-Wall -Wpointer-arith -Wstrict-prototypes -Winline -Wundef -Woverloaded-virtual -g -O2 -ffunction-sections -fdata-sections -fno-rtti -fno-exceptions -fvtable-gc -finit-priority" }
+        description   "
+            This option controls the global compiler flags which
+            are used to compile all packages by
+            default. Individual packages may define
+            options which override these global flags."
+    }
+
+    cdl_option CYGBLD_GLOBAL_LDFLAGS {
+        display "Global linker flags"
+        flavor  data
+        no_define
+        default_value { "-g -nostdlib -Wl,--gc-sections -Wl,-static" }
+        description   "
+            This option controls the global linker flags. Individual
+            packages may define options which override these global flags."
+    }
+}
+
+cdl_component CYGHWR_MEMORY_LAYOUT {
+    display "Memory layout"
+    flavor data
+    no_define
+    calculated { CYG_HAL_STARTUP == "RAM" ? "mips_tx39_jmr3904_ram" : \
+                                            "mips_tx39_jmr3904_rom" }
+
+    cdl_option CYGHWR_MEMORY_LAYOUT_LDI {
+        display "Memory layout linker script fragment"
+        flavor data
+        no_define
+        define -file system.h CYGHWR_MEMORY_LAYOUT_LDI
+        calculated { CYG_HAL_STARTUP == "RAM" ? "&lt;pkgconf/mlt_mips_tx39_jmr3904_ram.ldi&gt;" : \
+                                                "&lt;pkgconf/mlt_mips_tx39_jmr3904_rom.ldi&gt;" }
+    }
+
+    cdl_option CYGHWR_MEMORY_LAYOUT_H {
+        display "Memory layout header file"
+        flavor data
+        no_define
+        define -file system.h CYGHWR_MEMORY_LAYOUT_H
+        calculated { CYG_HAL_STARTUP == "RAM" ? "&lt;pkgconf/mlt_mips_tx39_jmr3904_ram.h&gt;" : \
+                                                "&lt;pkgconf/mlt_mips_tx39_jmr3904_rom.h&gt;" }
+    }
+}&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9585">Common Target Options</H3
+><P
+>All platforms also specify real-time clock details:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+># Real-time clock/counter specifics
+cdl_component CYGNUM_HAL_RTC_CONSTANTS {
+    display       "Real-time clock constants."
+    flavor        none
+
+    cdl_option CYGNUM_HAL_RTC_NUMERATOR {
+        display       "Real-time clock numerator"
+        flavor        data
+        calculated    1000000000
+    }
+    cdl_option CYGNUM_HAL_RTC_DENOMINATOR {
+        display       "Real-time clock denominator"
+        flavor        data
+        calculated    100
+    }
+    # Isn't a nice way to handle freq requirement!
+    cdl_option CYGNUM_HAL_RTC_PERIOD {
+        display       "Real-time clock period"
+        flavor        data
+        legal_values  { 15360 20736 }
+        calculated     { CYGHWR_HAL_MIPS_CPU_FREQ == 50 ? 15360 : \
+                         CYGHWR_HAL_MIPS_CPU_FREQ == 66 ? 20736 : 0 }
+    }
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+> The <TT
+CLASS="LITERAL"
+>NUMERATOR</TT
+> divided by the
+<TT
+CLASS="LITERAL"
+>DENOMINATOR</TT
+> gives the number of nanoseconds per
+tick. The <TT
+CLASS="LITERAL"
+>PERIOD</TT
+> is the divider to be programmed
+into a hardware timer that is driven from an appropriate hardware
+clock, such that the timer overflows once per tick (normally
+generating a CPU interrupt to mark the end of a tick). The tick
+default rate is typically 100Hz.</P
+><P
+>Platforms that make use of the virtual vector
+ROM calling interface (see <A
+HREF="hal-calling-if.html"
+>the Section called <I
+>Virtual Vectors (eCos/ROM Monitor Calling Interface)</I
+></A
+>) will also
+specify details necessary to define configuration channels (these
+options are from the SH/EDK7707 HAL) :</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS {
+    display      "Number of communication channels on the board"
+    flavor       data
+    calculated   1
+}
+
+cdl_option CYGNUM_HAL_VIRTUAL_VECTOR_DEBUG_CHANNEL {
+    display          "Debug serial port"
+    flavor data
+    legal_values     0 to CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS-1
+    default_value    0
+    description      "
+       The EDK/7708 board has only one serial port. This option
+       chooses which port will be used to connect to a host
+       running GDB."
+}
+
+cdl_option CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL {
+    display          "Diagnostic serial port"
+    flavor data
+    legal_values     0 to CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS-1
+    default_value    0
+    description      "
+       The EDK/7708 board has only one serial port.  This option
+       chooses which port will be used for diagnostic output."
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The platform usually also specify an option controlling the ability
+ to co-exist with a ROM monitor:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYGSEM_HAL_USE_ROM_MONITOR {
+    display       "Work with a ROM monitor"
+    flavor        booldata
+    legal_values  { "Generic" "CygMon" "GDB_stubs" }
+    default_value { CYG_HAL_STARTUP == "RAM" ? "CygMon" : 0 }
+    parent        CYGPKG_HAL_ROM_MONITOR
+    requires      { CYG_HAL_STARTUP == "RAM" }
+    description   "
+        Support can be enabled for three different varieties of ROM monitor.
+        This support changes various eCos semantics such as the encoding
+        of diagnostic output, or the overriding of hardware interrupt
+        vectors.
+        Firstly there is \"Generic\" support which prevents the HAL
+        from overriding the hardware vectors that it does not use, to
+        instead allow an installed ROM monitor to handle them. This is
+        the most basic support which is likely to be common to most
+        implementations of ROM monitor.
+        \"CygMon\" provides support for the Cygnus ROM Monitor.
+        And finally, \"GDB_stubs\" provides support when GDB stubs are
+        included in the ROM monitor or boot ROM."
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>Or the ability to be configured as a ROM monitor:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYGSEM_HAL_ROM_MONITOR {
+    display       "Behave as a ROM monitor"
+    flavor        bool
+    default_value 0
+    parent        CYGPKG_HAL_ROM_MONITOR
+    requires      { CYG_HAL_STARTUP == "ROM" }
+    description   "
+        Enable this option if this program is to be used as a ROM monitor,
+        i.e. applications will be loaded into RAM on the board, and this
+        ROM monitor may process exceptions or interrupts generated from the
+        application. This enables features such as utilizing a separate
+        interrupt stack when exceptions are generated."
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The latter option is accompanied by a special build rule that
+extends the generic ROM monitor build rule in the common HAL:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYGBLD_BUILD_GDB_STUBS {
+    display "Build GDB stub ROM image"
+    default_value 0
+    requires { CYG_HAL_STARTUP == "ROM" }
+    requires CYGSEM_HAL_ROM_MONITOR
+    requires CYGBLD_BUILD_COMMON_GDB_STUBS
+    requires CYGDBG_HAL_DEBUG_GDB_INCLUDE_STUBS
+    requires ! CYGDBG_HAL_DEBUG_GDB_BREAK_SUPPORT
+    requires ! CYGDBG_HAL_DEBUG_GDB_THREAD_SUPPORT
+    requires ! CYGDBG_HAL_COMMON_INTERRUPTS_SAVE_MINIMUM_CONTEXT
+    requires ! CYGDBG_HAL_COMMON_CONTEXT_SAVE_MINIMUM
+    no_define
+    description "
+        This option enables the building of the GDB stubs for the
+        board. The common HAL controls takes care of most of the
+        build process, but the final conversion from ELF image to
+        binary data is handled by the platform CDL, allowing
+        relocation of the data if necessary."
+
+    make -priority 320 {
+        &lt;PREFIX&gt;/bin/gdb_module.bin : &lt;PREFIX&gt;/bin/gdb_module.img
+        $(OBJCOPY) -O binary $&#60; $@
+    }
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>Most platforms support RedBoot, and some options are needed to
+configure for RedBoot.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    cdl_component CYGPKG_REDBOOT_HAL_OPTIONS {
+        display       "Redboot HAL options"
+        flavor        none
+        no_define
+        parent        CYGPKG_REDBOOT
+        active_if     CYGPKG_REDBOOT
+        description   "
+            This option lists the target's requirements for a valid Redboot
+            configuration."
+    
+        cdl_option CYGBLD_BUILD_REDBOOT_BIN {
+            display       "Build Redboot ROM binary image"
+            active_if     CYGBLD_BUILD_REDBOOT
+            default_value 1
+            no_define
+            description "This option enables the conversion of the Redboot ELF
+                         image to a binary image suitable for ROM programming."
+    
+            make -priority 325 {
+                &lt;PREFIX&gt;/bin/redboot.bin : &lt;PREFIX&gt;/bin/redboot.elf
+                $(OBJCOPY) --strip-debug $&#60; $(@:.bin=.img) 
+                $(OBJCOPY) -O srec $&#60; $(@:.bin=.srec)
+                $(OBJCOPY) -O binary $&#60; $@
+            }
+        }
+    }</PRE
+></TD
+></TR
+></TABLE
+><P
+>The important part here is the <TT
+CLASS="LITERAL"
+>make</TT
+> command in the
+<TT
+CLASS="LITERAL"
+>CYGBLD_BUILD_REDBOOT_BIN</TT
+> option which emits
+makefile commands to translate the <TT
+CLASS="FILENAME"
+>.elf</TT
+> file
+generated by the link phase into both a binary file and an S-Record
+file. If a different format is required by a PROM programmer or ROM
+monitor, then different output formats would need to be generated here.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="HAL-PORTING-PLATFORM-MEMORY-LAYOUT">Platform Memory Layout</H2
+><P
+>The platform memory layout is defined using the Memory
+Configuration Window  in the Configuration Tool.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>If you do not have access to a Windows machine, you can
+hand edit the <TT
+CLASS="FILENAME"
+>.h</TT
+> and <TT
+CLASS="FILENAME"
+>.ldi</TT
+> files to match the
+properties of your platform. If you want to contribute your port back
+to the eCos community, ask someone on the list to make proper memory
+map files for you.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9615">Layout Files</H3
+><P
+>The memory configuration details are saved in three files:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="FILENAME"
+>.mlt</TT
+></DT
+><DD
+><P
+>This is the Configuration Tool save-file. It is only used
+	by the Configuration Tool.</P
+></DD
+><DT
+><TT
+CLASS="FILENAME"
+>.ldi</TT
+></DT
+><DD
+><P
+>This is the linker script fragment. It defines the memory
+	and location of sections by way of macros defined in the
+	architecture or variant linker script.</P
+></DD
+><DT
+><TT
+CLASS="FILENAME"
+>.h</TT
+></DT
+><DD
+><P
+>This file describes some of the memory region details as C
+	macros, allowing eCos or the application adapt the memory
+	layout of a specific configuration.</P
+></DD
+></DL
+></DIV
+><P
+>These three files are generated for each startup-type, since the
+memory details usually differ.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9635">Reserved Regions</H3
+><P
+>Some areas of the memory space are reserved for specific
+purposes, making room for exception vectors and various tables. RAM
+startup configurations also need to reserve some space at the bottom
+of the memory map for the ROM monitor.</P
+><P
+>These reserved areas are named with the prefix "reserved_" which is
+handled specially by the Configuration Tool: instead of referring to a
+linker macro, the start of the area is labeled and a gap left in the
+memory map.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN9639">Platform Serial Device Support</H2
+><P
+>The first step is to set up the CDL definitions. The configuration
+options that need to be set are the following:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS</TT
+></DT
+><DD
+><P
+>The number of channels, usually 0, 1 or 2.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYGNUM_HAL_VIRTUAL_VECTOR_DEBUG_CHANNEL</TT
+></DT
+><DD
+><P
+>The channel to use for GDB.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYGNUM_HAL_VIRTUAL_VECTOR_DEBUG_CHANNEL_BAUD</TT
+></DT
+><DD
+><P
+>Initial baud rate for debug channel.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL</TT
+></DT
+><DD
+><P
+>The channel to use for the
+    console.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_BAUD</TT
+></DT
+><DD
+><P
+>The initial baud rate for the console
+    channel.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_DEFAULT</TT
+></DT
+><DD
+><P
+>The default console channel.</P
+></DD
+></DL
+></DIV
+><P
+>The code in <TT
+CLASS="FILENAME"
+>hal_diag.c</TT
+> need to be converted to
+support the new serial device.
+If this the same as a device already supported, copy that.</P
+><P
+>The following functions and types need to be rewritten to support a new serial
+device.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>struct channel_data_t;</TT
+></DT
+><DD
+><P
+>      Structure containing base address, timeout and ISR vector number
+      for each serial device supported. Extra fields my be added if
+      necessary for the device. For example some devices have
+      write-only control registers, so keeping a shadow of the last
+      value written here can be useful.
+      </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>xxxx_ser_channels[];</TT
+></DT
+><DD
+><P
+>	Array of <TT
+CLASS="LITERAL"
+>channel_data_t</TT
+>, initialized with parameters of each
+	channel. The index into this array is the channel number used
+	in the CDL options above and is used by the virtual vector
+	mechanism to refer to each channel.
+        </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>void cyg_hal_plf_serial_init_channel(void
+           *__ch_data)</TT
+></DT
+><DD
+><P
+>	Initialize the serial device. The parameter is actually a pointer to a
+	<TT
+CLASS="LITERAL"
+>channel_data_t</TT
+> and should be cast back to
+	this type before use. This function should use the CDL
+	definition for the baud rate for the channel it is initializing.
+        </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>void cyg_hal_plf_serial_putc(void * __ch_data,
+                    char *c)</TT
+></DT
+><DD
+><P
+>        Send a character to the serial device. This function should
+	poll for the device being ready to send and then write the character.
+        Since this is intended to be a diagnostic/debug channel, it is
+	often also a good idea to poll for end of transmission
+	too. This ensures that as much data gets out of the system as
+	possible.
+        </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>bool cyg_hal_plf_serial_getc_nonblock(void*
+                    __ch_data, cyg_uint8* ch)</TT
+></DT
+><DD
+><P
+>        This function tests the device and if a character is
+	available, places it in <TT
+CLASS="PARAMETER"
+><I
+>*ch</I
+></TT
+> and returns
+	<TT
+CLASS="LITERAL"
+>TRUE</TT
+>. If no character is available, then
+	the function returns <TT
+CLASS="LITERAL"
+>FALSE</TT
+> immediately.
+        </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>int cyg_hal_plf_serial_control(void *__ch_data,
+                    __comm_control_cmd_t __func,
+                    ...)</TT
+></DT
+><DD
+><P
+>        This is an IOCTL-like function for controlling various aspects
+	of the serial device. The only part in which you may need to
+	do some work initially is in the
+	<TT
+CLASS="LITERAL"
+>__COMMCTL_IRQ_ENABLE</TT
+> and
+	<TT
+CLASS="LITERAL"
+>__COMMCTL_IRQ_DISABLE</TT
+> cases to
+	enable/disable interrupts.
+        </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>int cyg_hal_plf_serial_isr(void *__ch_data, int* __ctrlc, 
+                       CYG_ADDRWORD __vector, CYG_ADDRWORD
+                       __data)</TT
+></DT
+><DD
+><P
+>        This interrupt handler, called from the spurious interrupt
+        vector, is specifically for dealing with
+        <TT
+CLASS="LITERAL"
+>Ctrl-C</TT
+> interrupts from GDB. When called
+        this function should do the following:
+        <P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Check for an incoming character. The code here is very
+          similar to that in
+          <TT
+CLASS="FUNCTION"
+>cyg_hal_plf_serial_getc_nonblock()</TT
+>.
+          </P
+></LI
+><LI
+><P
+>	  Read the character and call
+	  <TT
+CLASS="FUNCTION"
+>cyg_hal_is_break()</TT
+>.
+          </P
+></LI
+><LI
+><P
+>	  If result is true, set <TT
+CLASS="PARAMETER"
+><I
+>*__ctrlc</I
+></TT
+> to
+	  <TT
+CLASS="LITERAL"
+>1</TT
+>.
+          </P
+></LI
+><LI
+><P
+>	  Return <TT
+CLASS="LITERAL"
+>CYG_ISR_HANDLED</TT
+>.
+          </P
+></LI
+></OL
+>
+      </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>void cyg_hal_plf_serial_init()</TT
+></DT
+><DD
+><P
+>        Initialize each of the serial channels.
+	First call <TT
+CLASS="FUNCTION"
+>cyg_hal_plf_serial_init_channel()</TT
+> for each channel.
+	Then call the <TT
+CLASS="LITERAL"
+>CYGACC_COMM_IF_*</TT
+> macros for
+	each channel. This latter set of calls are identical for all
+	channels, so the best way to do this is to copy and edit an
+	existing example.
+        </P
+></DD
+></DL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="hal-porting-coding-conventions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="hal-porting-variant.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>HAL Coding Conventions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="hal-porting-guide.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Variant HAL Porting</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,574 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>StrongARM EBSA-285 Hardware Setup</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Target Setup"
+HREF="appendix-target-setup.html"><LINK
+REL="PREVIOUS"
+TITLE="Cirrus Logic ARM CL-PS7111 Evaluation Board Hardware Setup"
+HREF="setup-arm-clps7111.html"><LINK
+REL="NEXT"
+TITLE=" Compaq iPAQ PocketPC Hardware Setup"
+HREF="setup-arm-ipaq.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="setup-arm-clps7111.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Target Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="setup-arm-ipaq.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SETUP-ARM-EBSA285">StrongARM EBSA-285 Hardware Setup</H1
+><P
+>The eCos Developer&#8217;s Kit package comes with a ROM
+image which provides GDB support for
+the Intel&reg; StrongARM&reg; Evaluation Board EBSA-285.
+ Both eCos and the Stub ROM image assume the clocks are: 3.6864
+MHz PLL input for generating the core clock, and 50MHz osc input
+for external clocks. An image of this ROM is also provided at <TT
+CLASS="FILENAME"
+>loaders/arm-ebsa285/gdbload.bin</TT
+> under
+the root of your eCos installation.</P
+><P
+>The ROM monitor image (an eCos GDB
+stub) provided for the EBSA-285 board must be programmed into the
+flash, replacing the Angel monitor on the board. Please refer to
+the section titled "Loading the ROM Image into On-Board flash" on how
+to program the ROM onto the board.</P
+><P
+>The Stub ROM allows communication with GDB via the serial
+connector on the bulkhead mounting bracket COM0.  The communication
+parameters are fixed at 38400 baud, 8 data bits, no parity bit and
+1 stop bit (8-N-1).  No flow control is employed.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3981">Building the GDB Stub FLASH ROM images</H2
+><P
+>Pre-built GDB stubs images are provided in the directory loaders/arm-ebsa285 relative
+to the root of your eCos installation, but here are instructions
+on how to rebuild them if you should ever need to.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3984">Building the GDB Stubs with the eCos Configuration Tool</H2
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Start with a new document - selecting the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>File</I
+></SPAN
+>
+-&#62;
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>New</I
+></SPAN
+>
+ menu item if necessary to do this.</P
+></LI
+><LI
+><P
+>Choose the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build</I
+></SPAN
+>
+-&#62;
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Templates</I
+></SPAN
+>
+ menu item, and then select the StrongARM EBSA285 hardware.</P
+></LI
+><LI
+><P
+>While still displaying the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build</I
+></SPAN
+>
+-&#62;
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Templates</I
+></SPAN
+>
+ dialog box, select the "stubs" package template to build a GDB
+stub image. Click 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>OK</I
+></SPAN
+>.</P
+></LI
+><LI
+><P
+>Build eCos using 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build</I
+></SPAN
+>
+-&#62;
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Library</I
+></SPAN
+></P
+></LI
+><LI
+><P
+>When the build completes, the image files can be found
+in the bin/ subdirectory of the install tree. The GDB stub
+ROM images have the prefix "gdb_module".</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4006">Building the GDB Stub ROMs with ecosconfig</H2
+><P
+>(See &#8220;Using ecosconfig on UNIX&#8221; on&nbsp;page&nbsp;72)</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Make an empty directory to contain the build tree,
+and cd into it.</P
+></LI
+><LI
+><P
+>To build a GDB stub ROM image, enter the command:
+
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig new ebsa285 stubs</PRE
+></TD
+></TR
+></TABLE
+></P
+></LI
+><LI
+><P
+>Enter the commands:
+ 
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig tree
+$ make</PRE
+></TD
+></TR
+></TABLE
+></P
+></LI
+><LI
+><P
+>When the build completes, the image files can be found
+in the bin/ subdirectory of the install tree. The GDB stub
+ROM images have the prefix "gdb_module".</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4020">Loading the ROM Image into On-board Flash</H2
+><P
+>There are several ways to install the eCos gdb stub ROM image
+in the EBSA board&#8217;s flash memory. Once installed, the gdb
+stub ROM provides standard eCos download and debug via the EBSA
+board&quot;s serial port. The options available include the
+Linux based EBSA flash upgrade utility provided by Red Hat, direct writing
+of the flash via MultiICE (JTAG) hardware debugger, and other flash management
+utilities from Intel (these only support DOS, and proprietary ARM tools
+and image formats). Only the Red Hat flash upgrade tool is supported
+and tested in this release.</P
+><P
+>The flash upgrade tool requires the EBSA board to be configured
+as a PCI slave (rather than a master, its normal operating mode)
+and plugged into a Linux host computer&quot;s PCI bus.</P
+><P
+>Configuring the board for flash loading: Follow the instructions
+in the EBSA-285 Reference Manual, pages A-2 and A-3 to configure
+the board as an add-in card, and enable flash blank programming.
+ Briefly: assuming the board was in the default setting to execute
+as a bus master ("Host Bridge") make jumper 9 (J9), move jumper
+10 (J10) to external reset (PCI_RST), and move jumper 15
+(J15) link 4-6-5 to connect 5-6 instead of 4-6.</P
+><P
+>Configuring the board for execution of eCos programs: Follow
+the instructions in the EBSA-285 Reference Manual, pages A-2 and
+A-3 to configure the board as a "Host Bridge" with "Central Function".
+ Briefly: unset J9, move J10 to on-board reset (BRD_RST),
+and set J15 to make 4-6 instead of 5-6 (see page A-8 also).  Plug
+the card into its own PCI bus, not the Linux PC used for the flash-programming
+process.</P
+><P
+>Building the Linux software: the Linux software sources are
+in directory</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>      &lt;BASE_DIR&#62;/packages/hal/arm/ebsa285/v1_3/support/linux/safl_util</PRE
+></TD
+></TR
+></TABLE
+><P
+>in the eCos source repository.  There are two parts to the
+system: a loadable kernel module and the flash utility.  The loadable
+kernel module is safl.o and the utility is sa_flash.  To
+build:</P
+><P
+>  cd to this directory, or a copy of it.</P
+><P
+>  make</P
+><P
+>This builds safl.o and sa_flash. The kernel module
+must be installed, and a device file created for it. Both of these
+operations require root permissions.  Create the device file by: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>      % mknod /dev/safl c 10 178</PRE
+></TD
+></TR
+></TABLE
+><P
+>Programming the flash: switch off the EBSA-285, and remove
+the EBSA-285 board from its PCI bus.  Take appropriate anti-static
+precautions. Configure it for flash loading as above, halt your
+Linux system and turn it off.  Install the EBSA-285 board in the
+PCI bus of the Linux system and boot it up. (Single user is good enough,
+assuming your image and safl_util build dir are on a local
+disc partition.)  Change directory to the safl_util directory,
+then, to load the kernel module and flash an image onto the eval
+board (as root): </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>       % insmod safl.o
+       % sa_flash &lt;image_file&#62;</PRE
+></TD
+></TR
+></TABLE
+><P
+>Halt and turn off the Linux machine and remove the EBSA-285
+card.  Take appropriate anti-static precautions.  Configure it for
+execution of eCos programs as above, and plug it into its own PCI
+bus.  Restart the Linux machine however you wish.</P
+><P
+>This information is replicated in the README file within the
+safl_util directory and its parents, and in the EBSA-285
+Reference Manual from Intel, appendix A "Configuration Guide". 
+If in doubt, please refer to those documents also.</P
+><P
+>This procedure also applies for loading ROM-startup eCos programs
+into the on-board flash memory, given a binary format image of the
+program from arm-elf-objcopy.  Loading a ROM-startup eCos program
+into flash will overwrite the StubROM in flash, so you would have
+to reload the StubROM to return to normal RAM-startup program development.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4038">Running your eCos Program Using GDB and the StubROM</H2
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>You must first load the StubROM image into the flash memory
+on the EBSA-285 board before doing this.  See &#8220;Loading
+the ROM Image into On-board Flash&#8221;, page 93 for details.</P
+></BLOCKQUOTE
+></DIV
+><P
+>Connect to the StubROM in the board and run your eCos program &lt;PROGRAM&#62; as</P
+><P
+>follows:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>      $ arm-elf-gdb -nw &lt;PROGRAM&#62;
+      (gdb) set remotebaud 38400
+      (gdb) target remote &lt;DEVICE&#62;</PRE
+></TD
+></TR
+></TABLE
+><P
+>Where &lt;DEVICE&#62; is /dev/ttyS0
+or COM1: or similar, depending on your environment and how you connected
+your serial line to the host computer. Expect some output here,
+for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>      Remote debugging using /dev/ttyS0
+      0x410026a4 in ?? ()</PRE
+></TD
+></TR
+></TABLE
+><P
+>then, to load the program</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>        (gdb) load
+    </PRE
+></TD
+></TR
+></TABLE
+><P
+>which will report locations and sizes of sections as they
+load, then begin execution using</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>      (gdb) continue</PRE
+></TD
+></TR
+></TABLE
+><P
+>If you have no eCos program yet, but you want to connect to
+the board just to verify serial communications, tell gdb "set endian
+little" before anything else, so that it understands the board (GDB
+normally infers this from information within the eCos program).</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>When an eCos program is run on the EBSA-285 board, the GDB
+stub in ROM loses control. This means that if you require the ability
+to stop execution on the target remotely, or want thread debugging
+capabilities, you must include GDB stub support when configuring
+<SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="setup-arm-clps7111.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="setup-arm-ipaq.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Cirrus Logic ARM CL-PS7111 Evaluation Board Hardware Setup</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="appendix-target-setup.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Compaq iPAQ PocketPC Hardware Setup</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

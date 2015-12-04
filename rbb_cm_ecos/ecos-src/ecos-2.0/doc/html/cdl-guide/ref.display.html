@@ -1,0 +1,285 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>display</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="description"
+HREF="ref.description.html"><LINK
+REL="NEXT"
+TITLE="doc"
+HREF="ref.doc.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.description.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.doc.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.DISPLAY"><SPAN
+CLASS="PROPERTY"
+>display</SPAN
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4249"
+></A
+><H2
+>Name</H2
+>Property <SPAN
+CLASS="PROPERTY"
+>display</SPAN
+>&nbsp;--&nbsp;Provide a short string describing this option.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4253"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_option &lt;name&gt; {
+    display &lt;string&gt;
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4255"
+></A
+><H2
+>Description</H2
+><P
+>Users can only be expected to manipulate configuration options
+sensibly if they are given sufficient information about these options.
+There are three properties which serve to explain an option in plain
+text: the <SPAN
+CLASS="PROPERTY"
+>display</SPAN
+> property gives a textual alias for an option,
+which is usually more comprehensible than something like
+<TT
+CLASS="LITERAL"
+>CYGPKG_LIBC_TIME_ZONES</TT
+>; the <SPAN
+CLASS="PROPERTY"
+>description</SPAN
+> property
+gives a longer description, typically a paragraph or so; the <SPAN
+CLASS="PROPERTY"
+>doc</SPAN
+>
+property specifies the location of additional on-line documentation
+related to a configuration option. In the context of a graphical tool
+the <SPAN
+CLASS="PROPERTY"
+>display</SPAN
+> string will be the primary way for users to identify
+configuration options; the <SPAN
+CLASS="PROPERTY"
+>description</SPAN
+> paragraph will be visible
+whenever the option is selected; the on-line documentation will only
+be accessed when the user explicitly requests it.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4264"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYGNUM_KERNEL_SYNCH_MBOX_QUEUE_SIZE {
+    display       "Message box queue size"
+    flavor        data
+    legal_values  1 to 65535
+    default_value 10
+    description   "
+        This configuration option controls the number of messages
+        that can be queued in a message box before a non-blocking
+        put() operation will fail or a blocking put() operation will
+        block. The cost in memory is one pointer per message box for
+        each possible message."
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4267"
+></A
+><H2
+>See Also</H2
+><P
+>Properties <A
+HREF="ref.description.html"
+><SPAN
+CLASS="PROPERTY"
+>description</SPAN
+></A
+> and
+<A
+HREF="ref.doc.html"
+><SPAN
+CLASS="PROPERTY"
+>doc</SPAN
+></A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.description.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.doc.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>description</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>doc</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

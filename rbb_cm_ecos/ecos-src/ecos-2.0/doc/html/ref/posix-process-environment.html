@@ -1,0 +1,313 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Process Environment [POSIX Section 4]</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="POSIX Standard Support"
+HREF="posix-standard-support.html"><LINK
+REL="PREVIOUS"
+TITLE="POSIX Standard Support"
+HREF="posix-standard-support.html"><LINK
+REL="NEXT"
+TITLE="Files and Directories [POSIX Section 5]"
+HREF="posix-files-and-directories.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="posix-standard-support.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 31. POSIX Standard Support</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="posix-files-and-directories.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="POSIX-PROCESS-ENVIRONMENT">Process Environment &#0091;POSIX Section 4&#0093;</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13011">Functions Implemented</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>int uname( struct utsname &#0042;name ); 
+time&#0095;t time( time&#0095;t &#0042;tloc ); 
+char &#0042;getenv( const char &#0042;name ); 
+int isatty( int fd );
+long sysconf( int name );</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13014">Functions Omitted</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>pid&#0095;t getpid( void ); 
+pid&#0095;t getppid( void ); 
+uid&#0095;t getuid( void ); 
+uid&#0095;t geteuid( void ); 
+gid&#0095;t getgid( void ); 
+gid&#0095;t getegid( void ); 
+int setuid( uid&#0095;t uid ); 
+int setgid( gid&#0095;t gid ); 
+int getgroups( int gidsetsize, gid&#0095;t grouplist&#0091;&#0093; ); 
+char &#0042;getlogin( void ); 
+int getlogin&#0095;r( char &#0042;name, size&#0095;t namesize ); 
+pid&#0095;t getpgrp( void ); 
+pid&#0095;t setsid( void );
+int setpgid( pid&#0095;t pid, pid&#0095;t pgid ); 
+char &#0042;ctermid( char &#0042;s); 
+char &#0042;ttyname( int fd );                             &#0047;&#0047; TBA 
+int ttyname&#0095;r( int fd, char &#0042;name, size&#0095;t namesize); &#0047;&#0047; TBA 
+clock&#0095;t times( struct tms &#0042;buffer );                 &#0047;&#0047; TBA</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13017">Notes</H2
+><P
+></P
+><UL
+><LI
+><P
+>The fields of the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>utsname</I
+></SPAN
+>
+	    structure are initialized as follows:
+            <TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>	    sysname	&#8220;eCos&#8221; 
+	    nodename	&#8220;&#8221;	(gethostname() is currently not available)
+	    
+	    release		Major version number of the kernel 
+	    version   		Minor version number of the kernel 
+	    machine	&#8220;&#8221; 	(Requires some config tool changes)
+            </PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+><P
+>	    The sizes of these strings are defined by
+	    CYG&#0095;POSIX&#0095;UTSNAME&#0095;LENGTH and
+	    CYG&#0095;POSIX&#0095;UTSNAME&#0095;NODENAME&#0095;LENGTH. The
+	    latter defaults to the value of the former, but may also
+	    be set independently to accommodate a longer node name.
+	    </P
+></LI
+><LI
+><P
+>	    The <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>time()</I
+></SPAN
+> function is currently
+	    implemented in the C library.
+	    </P
+></LI
+><LI
+><P
+>A set of environment strings may be defined at configuration
+	    time with the CYGDAT&#0095;LIBC&#0095;DEFAULT&#0095;ENVIRONMENT
+	    option. The application may also define an environment by direct
+	    assignment to the <SPAN
+CLASS="strong"
+><B
+CLASS="EMPHASIS"
+>environ</B
+></SPAN
+>
+	    variable.
+	    </P
+></LI
+><LI
+><P
+>	    At present <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>isatty()</I
+></SPAN
+> assumes that
+	    any character device is a tty and that all other devices are not
+	    ttys. Since the only kind of device that eCos currently supports
+	    is serial character devices, this is an adequate
+	    distinction.
+	    </P
+></LI
+><LI
+><P
+>	    All system variables supported by sysconf will yield a
+	    value. However, those that are irrelevant to eCos will
+	    either return the default minimum defined in
+	    <TT
+CLASS="FILENAME"
+>&lt;limits.h&gt;</TT
+>,
+	    or zero.
+	    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="posix-standard-support.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="posix-files-and-directories.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>POSIX Standard Support</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="posix-standard-support.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Files and Directories &#0091;POSIX Section 5&#0093;</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

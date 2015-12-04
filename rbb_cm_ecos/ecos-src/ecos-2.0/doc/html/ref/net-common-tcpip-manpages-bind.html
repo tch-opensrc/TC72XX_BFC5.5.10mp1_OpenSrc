@@ -1,0 +1,242 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>bind</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="accept"
+HREF="net-common-tcpip-manpages-accept.html"><LINK
+REL="NEXT"
+TITLE="connect"
+HREF="net-common-tcpip-manpages-connect.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-accept.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-connect.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-BIND">bind</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>BIND(2)                       System Calls Manual                      BIND(2)
+
+NAME
+     bind - bind a name to a socket
+
+SYNOPSIS
+     #include &lt;sys/types.h&#62;
+     #include &lt;sys/socket.h&#62;
+
+     int
+     bind(int s, const struct sockaddr *name, socklen_t namelen);
+
+DESCRIPTION
+     bind() assigns a name to an unnamed socket.  When a socket is created
+     with socket(2) it exists in a name space (address family) but has no name
+     assigned.  bind() requests that name be assigned to the socket.
+
+NOTES
+     Binding a name in the UNIX domain creates a socket in the file system
+     that must be deleted by the caller when it is no longer needed (using
+     unlink(2)).
+
+     The rules used in name binding vary between communication domains.  Con-
+     sult the manual entries in section 4 for detailed information.
+
+RETURN VALUES
+     If the bind is successful, a 0 value is returned.  A return value of -1
+     indicates an error, which is further specified in the global errno.
+
+ERRORS
+     The bind() call will fail if:
+
+     [EBADF]            S is not a valid descriptor.
+
+     [ENOTSOCK]         S is not a socket.
+
+     [EADDRNOTAVAIL]    The specified address is not available from the local
+                        machine.
+
+     [EADDRINUSE]       The specified address is already in use.
+
+     [EINVAL]           The socket is already bound to an address.
+
+     [EINVAL]           The family of the socket and that requested in
+                        name-&#62;sa_family are not equivalent.
+
+     [EACCES]           The requested address is protected, and the current
+                        user has inadequate permission to access it.
+
+     [EFAULT]           The name parameter is not in a valid part of the user
+                        address space.
+
+     The following errors are specific to binding names in the UNIX domain.
+
+     [ENOTDIR]          A component of the path prefix is not a directory.
+
+     [ENAMETOOLONG]     A component of a pathname exceeded {NAME_MAX} charac-
+                        ters, or an entire path name exceeded {PATH_MAX} char-
+                        acters.
+
+     [ENOENT]           A prefix component of the path name does not exist.
+
+     [ELOOP]            Too many symbolic links were encountered in translat-
+                        ing the pathname.
+
+     [EIO]              An I/O error occurred while making the directory entry
+                        or allocating the inode.
+
+     [EROFS]            The name would reside on a read-only file system.
+
+     [EISDIR]           An empty pathname was specified.
+
+SEE ALSO
+     connect(2), getsockname(2), listen(2), socket(2)
+
+HISTORY
+     The bind() function call appeared in 4.2BSD.
+
+BSD                            February 15, 1999                           BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-accept.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-connect.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>accept</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>connect</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

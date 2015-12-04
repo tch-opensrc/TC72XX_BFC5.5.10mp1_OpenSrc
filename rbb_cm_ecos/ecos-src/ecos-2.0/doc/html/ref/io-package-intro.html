@@ -1,0 +1,216 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Introduction</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="I/O Package (Device Drivers)"
+HREF="io.html"><LINK
+REL="PREVIOUS"
+TITLE="I/O Package (Device Drivers)"
+HREF="io.html"><LINK
+REL="NEXT"
+TITLE="User API"
+HREF="io-user-api.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="io.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="io-user-api.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="IO-PACKAGE-INTRO">Chapter 14. Introduction</H1
+><P
+>The I/O package is designed as a general purpose framework for
+supporting device drivers. This includes all classes of
+drivers from simple serial to networking stacks and beyond.</P
+><P
+>Components of the I/O package, such as device drivers, are
+configured into the system just like all other components.
+Additionally, end users may add their own drivers to this set.</P
+><P
+>While the set of drivers (and the devices they represent) may be
+considered static, they must be accessed via an opaque
+&#8220;handle&#8221;. Each device in the system has a unique name and
+the <TT
+CLASS="FUNCTION"
+>cyg_io_lookup()</TT
+> function is used to map that
+name onto the handle for the device. This &#8220;hiding&#8221; of the
+device implementation allows for generic, named devices, as well as
+more flexibility. Also, the <TT
+CLASS="FUNCTION"
+>cyg_io_lookup()</TT
+>
+function provides drivers the opportunity to initialize the device
+when usage actually starts.</P
+><P
+>All devices have a name. The standard provided devices use names such
+as <TT
+CLASS="FILENAME"
+>&#8220;/dev/console&#8221;</TT
+> and
+<TT
+CLASS="FILENAME"
+>&#8220;/dev/serial0&#8221;</TT
+>, where the
+<TT
+CLASS="FILENAME"
+>&#8220;/dev/&#8221;</TT
+> prefix indicates that this is
+the name of a device.</P
+><P
+>The entire I/O package API, as well as the standard
+set of provided drivers, is written in C. </P
+><P
+>Basic functions are provided to send data to and receive data
+from a device. The details of how this is done is left to the device [class] itself.
+For example, writing data to a block device like a disk drive may
+have different semantics than writing to a serial port. </P
+><P
+>Additional functions are provided to manipulate the state
+of the driver and/or the actual device. These functions
+are, by design, quite specific to the actual driver. </P
+><P
+>This driver model supports layering; in other words, a device
+may actually be created &#8220;on top of&#8221; another device.
+For example, the &#8220;tty&#8221; (terminal-like) devices are
+built on top of simple serial devices. The upper layer then has
+the flexibility to add features and functions not found at the lower
+layers. In this case the &#8220;tty&#8221; device provides
+for line buffering and editing not available from the simple serial
+drivers.</P
+><P
+>Some drivers will support visibility of the layers they depend
+upon. The &#8220;tty&#8221; driver allows information about
+the actual serial device to be manipulated by passing get/set
+config calls that use a serial driver &#8220;key&#8221; down
+to the serial driver itself. </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="io.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="io-user-api.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>I/O Package (Device Drivers)</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="io.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>User API</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,435 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Building and Running Sample Applications</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Programming With eCos"
+HREF="user-guide-programming.html"><LINK
+REL="PREVIOUS"
+TITLE="Testing Filters"
+HREF="testing-filters.html"><LINK
+REL="NEXT"
+TITLE="A Sample Program with Two Threads"
+HREF="sample-twothreads.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="testing-filters.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="sample-twothreads.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="BUILDING-AND-RUNNING-SAMPLE-APPLIATIONS">Chapter 13. Building and Running Sample Applications</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="building-and-running-sample-appliations.html#ECOS-HELLO-WORLD"
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Hello World</A
+></DT
+><DT
+><A
+HREF="sample-twothreads.html"
+>A Sample Program with Two Threads</A
+></DT
+></DL
+></DIV
+><P
+>The example programs in this tutorial are included, along
+with a <TT
+CLASS="FILENAME"
+>Makefile</TT
+>, in the <TT
+CLASS="FILENAME"
+>examples</TT
+> directory
+of the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> distribution. The first program you will run is a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>hello
+world</I
+></SPAN
+>-style application, then you will run a more complex
+application that demonstrates the creation of threads and the use
+of cyg_thread_delay(), and finally you will run
+one that uses clocks and alarm handlers.</P
+><P
+>The <TT
+CLASS="FILENAME"
+>Makefile</TT
+> depends on an externally
+defined variable to find the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> library and header files. This
+variable is <TT
+CLASS="LITERAL"
+>INSTALL_DIR</TT
+> and must be set to the
+pathname of the install directory created in <A
+HREF="using-configtool-windows-linux.html"
+>the Section called <I
+>Configuration Tool on Windows and Linux Quick Start</I
+> in Chapter 11</A
+>.</P
+><P
+><TT
+CLASS="LITERAL"
+>INSTALL_DIR</TT
+> may be either be set in the shell
+environment or may be supplied on the command line. To set it in the
+shell do the following in a <B
+CLASS="COMMAND"
+>bash</B
+> shell:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ export INSTALL_DIR=BASE_DIR/ecos-work/arm_install</PRE
+></TD
+></TR
+></TABLE
+><P
+>You can then run <B
+CLASS="COMMAND"
+>make</B
+> without any extra parameters
+to build the examples.</P
+><P
+>Alternatively, if you can do the following:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ make INSTALL_DIR=BASE_DIR/ecos-work/arm_install</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="ECOS-HELLO-WORLD"><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Hello World</H1
+><P
+>The following code is found in the file <TT
+CLASS="FILENAME"
+>hello.c</TT
+>
+in the <TT
+CLASS="FILENAME"
+>examples</TT
+> directory: </P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN835"><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> hello world program listing</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>/* this is a simple hello world program */
+#include &lt;stdio.h&#62;
+int main(void)
+{
+ printf("Hello, eCos world!\n");
+ return 0;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>To compile this or any other program that is not part of the
+<SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> distribution, you can follow the procedures described below. Type
+this explicit compilation command (assuming your current working
+directory is also where you built the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> kernel):</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ <TT
+CLASS="REPLACEABLE"
+><I
+>TARGET-</I
+></TT
+>gcc -g -I<TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/ecos-work/install/include hello.c -L<TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/ecos-work/install/lib -Ttarget.ld -nostdlib</PRE
+></TD
+></TR
+></TABLE
+><P
+>The compilation command above contains some standard GCC
+options (for example, <TT
+CLASS="OPTION"
+>-g</TT
+> enables debugging), as well
+as some mention of paths
+(<TT
+CLASS="OPTION"
+>-I<TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/ecos-work/install/include</TT
+> allows files
+like <TT
+CLASS="FILENAME"
+>cyg/kernel/kapi.h</TT
+> to be found, and
+<TT
+CLASS="OPTION"
+>-L<TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/ecos-work/install/lib</TT
+> allows the linker to
+find <TT
+CLASS="OPTION"
+>-Ttarget.ld</TT
+>). </P
+><P
+>The executable program will be called <TT
+CLASS="FILENAME"
+>a.out</TT
+>. </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Some target systems require special options to be passed to
+gcc to compile correctly for that system. Please examine the Makefile
+in the examples directory to see if this applies to your target.</P
+></BLOCKQUOTE
+></DIV
+><P
+>You can now run the resulting program using GDB in exactly the
+same the way you ran the test case before. The procedure will be the
+same, but this time run
+<B
+CLASS="COMMAND"
+><TT
+CLASS="REPLACEABLE"
+><I
+>TARGET-</I
+></TT
+>gdb</B
+> specifying
+<TT
+CLASS="OPTION"
+>-nw a.out</TT
+> on the command line:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ <TT
+CLASS="REPLACEABLE"
+><I
+>TARGET-</I
+></TT
+>gdb -nw a.out</PRE
+></TD
+></TR
+></TABLE
+><P
+>For targets other than the synthetic linux target, you should
+now run the usual GDB commands described earlier. Once this is done,
+typing the command "continue" at the (gdb) prompt ("run" for
+simulators) will allow the program to execute and print the string
+"Hello, eCos world!" on your screen.</P
+><P
+>On the synthetic linux target, you may use the "run" command
+immediately - you do not need to connect to the target, nor use the
+"load" command.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="testing-filters.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="sample-twothreads.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Testing Filters</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="user-guide-programming.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>A Sample Program with Two Threads</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

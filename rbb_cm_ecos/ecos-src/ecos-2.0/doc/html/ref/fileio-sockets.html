@@ -1,0 +1,341 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Sockets</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="File System Support Infrastructure"
+HREF="fileio.html"><LINK
+REL="PREVIOUS"
+TITLE="Initialization and Mounting"
+HREF="fileio-mounting.html"><LINK
+REL="NEXT"
+TITLE="Select"
+HREF="fileio-select.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="fileio-mounting.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="fileio-select.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="FILEIO-SOCKETS">Chapter 26. Sockets</H1
+><P
+>If a network stack is present, then the FILEIO infrastructure also
+provides access to the standard BSD socket calls.</P
+><P
+>The netstack table contains entries which describe the network
+protocol stacks that are in the system image. Each resident stack
+should export an entry to this table using the
+<TT
+CLASS="LITERAL"
+>NSTAB_ENTRY()</TT
+> macro.</P
+><P
+>Each table entry has the following structure:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct cyg_nstab_entry
+{
+    cyg_bool            valid;          // true if stack initialized
+    cyg_uint32          syncmode;       // synchronization protocol
+    char                *name;          // stack name
+    char                *devname;       // hardware device name
+    CYG_ADDRWORD        data;           // private data value
+
+    int     (*init)( cyg_nstab_entry *nste );
+    int     (*socket)( cyg_nstab_entry *nste, int domain, int type,
+		       int protocol, cyg_file *file );
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+>This table is analogous to a combination of the filesystem and mount
+tables.</P
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>valid</I
+></TT
+> field is set
+<TT
+CLASS="LITERAL"
+>true</TT
+> if the stack's <TT
+CLASS="FUNCTION"
+>init()</TT
+>
+function returned successfully and the
+<TT
+CLASS="STRUCTFIELD"
+><I
+>syncmode</I
+></TT
+> field contains the
+<TT
+CLASS="LITERAL"
+>CYG_SYNCMODE_SOCK_*</TT
+> bits described above.</P
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>name</I
+></TT
+> field contains the name of the
+protocol stack.</P
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>devname</I
+></TT
+> field names the device that the stack is using. This may
+reference a device under &quot;/dev&quot;, or may be a name that is only
+meaningful to the stack itself.</P
+><P
+>The <TT
+CLASS="FUNCTION"
+>init()</TT
+> function pointer is called during
+system initialization to start the protocol stack running. If it
+returns non-zero the <TT
+CLASS="STRUCTFIELD"
+><I
+>valid</I
+></TT
+> field is set
+false and the stack will be ignored subsequently.</P
+><P
+>The <TT
+CLASS="FUNCTION"
+>socket()</TT
+> function is called to attempt to create a socket in the
+stack. When the <TT
+CLASS="FUNCTION"
+>socket()</TT
+> API function is called the netstack table is
+scanned and for each valid entry the <TT
+CLASS="FUNCTION"
+>socket()</TT
+>
+function pointer is called. If
+this returns non-zero then the scan continues to the next valid stack,
+or terminates with an error if the end of the table is reached.</P
+><P
+>The result of a successful socket call is an initialized file object
+with the <TT
+CLASS="STRUCTFIELD"
+><I
+>f_xops</I
+></TT
+> field pointing to the
+following structure:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct cyg_sock_ops
+{
+    int (*bind)      ( cyg_file *fp, const sockaddr *sa, socklen_t len );
+    int (*connect)   ( cyg_file *fp, const sockaddr *sa, socklen_t len );
+    int (*accept)    ( cyg_file *fp, cyg_file *new_fp,
+                       struct sockaddr *name, socklen_t *anamelen );
+    int (*listen)    ( cyg_file *fp, int len );
+    int (*getname)   ( cyg_file *fp, sockaddr *sa, socklen_t *len, int peer );
+    int (*shutdown)  ( cyg_file *fp, int flags );
+    int (*getsockopt)( cyg_file *fp, int level, int optname,
+                       void *optval, socklen_t *optlen);
+    int (*setsockopt)( cyg_file *fp, int level, int optname,
+                       const void *optval, socklen_t optlen);
+    int (*sendmsg)   ( cyg_file *fp, const struct msghdr *m,
+                       int flags, ssize_t *retsize );
+    int (*recvmsg)   ( cyg_file *fp, struct msghdr *m,
+                       socklen_t *namelen, ssize_t *retsize );
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+>It should be obvious from the names of these functions which API calls
+they provide support for. The <TT
+CLASS="FUNCTION"
+>getname()</TT
+> function
+pointer provides support for both <TT
+CLASS="FUNCTION"
+>getsockname()</TT
+>
+and <TT
+CLASS="FUNCTION"
+>getpeername()</TT
+> while the
+<TT
+CLASS="FUNCTION"
+>sendmsg()</TT
+> and <TT
+CLASS="FUNCTION"
+>recvmsg()</TT
+>
+function pointers provide support for <TT
+CLASS="FUNCTION"
+>send()</TT
+>,
+<TT
+CLASS="FUNCTION"
+>sendto()</TT
+>, <TT
+CLASS="FUNCTION"
+>sendmsg()</TT
+>,
+<TT
+CLASS="FUNCTION"
+>recv()</TT
+>, <TT
+CLASS="FUNCTION"
+>recvfrom()</TT
+> and
+<TT
+CLASS="FUNCTION"
+>recvmsg()</TT
+> as appropriate.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="fileio-mounting.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="fileio-select.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Initialization and Mounting</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="fileio.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Select</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

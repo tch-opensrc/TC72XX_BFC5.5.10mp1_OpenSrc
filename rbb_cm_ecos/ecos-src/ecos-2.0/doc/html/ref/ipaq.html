@@ -1,0 +1,795 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>ARM/StrongARM(SA11X0) Compaq iPAQ PocketPC</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Installation and Testing"
+HREF="installation-and-testing.html"><LINK
+REL="PREVIOUS"
+TITLE="ARM/StrongARM(SA11X0) Bright Star Engineering commEngine and nanoEngine"
+HREF="nano.html"><LINK
+REL="NEXT"
+TITLE="ARM/StrongARM(SA11X0) Intrinsyc CerfCube"
+HREF="cerfcube.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="nano.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Installation and Testing</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="cerfcube.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="IPAQ">ARM/StrongARM(SA11X0) Compaq iPAQ PocketPC</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5927">Overview</H2
+><P
+>RedBoot supports the serial port via cradle or cable, and Compact Flash
+ethernet cards if fitted for communication and downloads. The LCD touchscreen
+may also be used for the console, although by default RedBoot will switch
+exclusively to one channel once input arrives. </P
+><P
+>The default serial port settings are 38400,8,N,1. RedBoot runs from
+and supports flash management for the system flash region. </P
+><P
+>The following RedBoot configurations are supported:
+
+      <DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5932"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Configuration</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Mode</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>ROM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from the board's flash boot
+	      sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_ROM.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RAM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[RAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM with RedBoot in the
+	      flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_RAM.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>WinCE</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[RAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM, started from
+	      <SPAN
+CLASS="APPLICATION"
+>OSloader</SPAN
+>.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_WinCE.ecm</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5957">Initial Installation</H2
+><P
+>RedBoot ROM and WinCE mode images are needed by the installation process.</P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN5960">Installing RedBoot on the iPAQ using Windows/CE</H3
+><P
+>The Windows/CE environment originally shipped with the iPAQ contains a hidden
+mini-loader, sometimes referred to as the "Parrot" loader.  This loader can
+be started by holding down the action button (the joypad) while resetting
+the unit or when powering on.  At this point, a blue bird will appear on
+the LCD screen.  Also at this point, a simple loader can be accessed over the
+serial port at 115200/8N1.  Using this loader, the contents of the iPAQ flash
+memory can be saved to a Compact Flash memory card.
+<DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>NOTE: </B
+>We have only tested this operation with a 32Mbyte CF memory card.
+Given that the backup will take 16MBytes + 1KByte, something more than a 16MByte
+card will be required.</P
+></BLOCKQUOTE
+></DIV
+></P
+><P
+>Use the "r2c" command to dump Flash contents to the CF memory card.  Once this
+completes, RedBoot can be installed with no fear since the Parrot loader can
+be used to restore the Flash contents at a later time.</P
+><P
+>If you expect to completely recover the state of the iPAQ Win/CE environment, then
+HotSync should be run to backup all "RAM" files as well before installing RedBoot.</P
+><P
+>The next step in installing RedBoot on the iPAQ actually involves Windows/CE,
+which is the native environment on the unit.  Using WinCE, you need to
+install an application which will run a RAM based version of RedBoot. Once
+this is installed and running, RedBoot can be used to update the flash with
+a native/ROM version of RedBoot.       <P
+></P
+><UL
+><LI
+><P
+>Using ActiveSync, copy the file OSloader to your iPAQ. </P
+></LI
+><LI
+><P
+>Using ActiveSync, copy the file redboot_WinCE.bin to the iPAQ
+as bootldr in its root directory.  Note: this is not the top level folder
+displayed by Windows (Mobile Device), but rather the 'My Pocket PC' folder
+within it.</P
+></LI
+><LI
+><P
+>Execute OSloader.  If you didn't create a shortcut, then you
+will have to poke around for it using the WinCE file explorer.</P
+></LI
+><LI
+><P
+>Choose the <SPAN
+CLASS="GUIMENUITEM"
+>Tools-&#62;BootLdr-&#62;Run after loading
+from file</SPAN
+> menu item.   </P
+></LI
+></UL
+>At this point, the RAM based version of RedBoot should be running.
+ You should be able to return to this point by just executing the last two
+steps of the previous process if necessary.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN5979">Installing RedBoot on the iPAQ - using the Compaq boot loader</H3
+><P
+>This method of installation is no longer supported.
+If you have previously installed either the Compaq boot loader or older
+versions of RedBoot, restore the Win/CE environment and proceed as outlined
+above.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="SETTING-UP-AND-TESTING-REDBOOT">Setting up and testing RedBoot</H3
+><P
+>When RedBoot first comes up, it will want to initialize its LCD touch
+screen parameters. It does this by displaying a keyboard graphic and asks
+you to press certain keys.  Using the stylus, press and hold until the prompt
+is withdrawn. When you lift the stylus, RedBoot will continue with the next
+calibration.    </P
+><P
+>Once the LCD touchscreen has been calibrated, RedBoot will start. The
+calibration step can be skipped by pressing the <SPAN
+CLASS="GUIBUTTON"
+>return/abort</SPAN
+>
+button on the unit (right most button with a curved arrow icon). Additionally,
+the unit will assume default values if the screen is not touched within about
+15 seconds.   </P
+><P
+>Once RedBoot has started, you should get information similar to this
+on the LCD screen.  It will also appear on the serial port at 38400,8,N,1.
+
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot(tm) bootstrap and debug environment [ROM]
+Non-certified release, version UNKNOWN - built 06:17:41, Mar 19 2001
+Platform: Compaq iPAQ Pocket PC (StrongARM 1110)
+
+Copyright (C) 2000, 2001, Red Hat, Inc.
+
+RAM: 0x00000000-0x01fc0000, 0x0001f200-0x01f70000 available
+FLASH: 0x50000000 - 0x51000000, 64 blocks of 0x00040000 bytes
+each.</PRE
+></TD
+></TR
+></TABLE
+>
+
+Since the LCD touchscreen is only 30 characters wide, some of this
+data will be off the right hand side of the display. The joypad may be
+used to pan left and right in order to see the full lines.  </P
+><P
+>If you have a Compact Flash ethernet card, RedBoot should find
+it.  You'll need to have BOOTP enabled for this unit (see your
+sysadmin for details).  If it does, it will print a message like:
+
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>... Waiting for network card: .Ready!
+Socket Communications Inc: CF+ LPE Revision E 08/04/99
+IP: 192.168.1.34, Default server: 192.168.1.101</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="IPAQ-INSTALL-RB-PERMANENTLY">Installing RedBoot permanently</H3
+><P
+>Once you are satisfied with the setup and that RedBoot is operating
+properly in your environment, you can set up your iPAQ unit to have RedBoot
+be the bootstrap application. 
+
+<DIV
+CLASS="CAUTION"
+><P
+></P
+><TABLE
+CLASS="CAUTION"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>CAUTION</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>This step will destroy your Windows/CE environment.</P
+><P
+>Before you take this step, it is strongly recommended you save your WinCE FLASH contents
+as outlined above using the "parrot" loader, or
+by using the Compaq OSloader:<P
+></P
+><UL
+><LI
+><P
+>Using OSloader on the iPAQ, select the <SPAN
+CLASS="GUIMENUITEM"
+>Tools-&#62;Flash-&#62;Save
+to files...</SPAN
+>.  menu item.</P
+></LI
+><LI
+><P
+>Four (4) files, 4MB each in size will be created.</P
+></LI
+><LI
+><P
+>After each file is created, copy the file to your computer,
+then delete the file from the iPAQ to make room in the WinCE ramdisk for the
+next file.</P
+></LI
+></UL
+></P
+></TD
+></TR
+></TABLE
+></DIV
+>You will need to download the version of RedBoot designed as the
+ROM bootstrap. Then install it permanently  using these commands:
+ <TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>lo -r -b 0x100000 redboot_ROM.bin</B
+></TT
+>
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fi loc -f 0x50000000 -l 0x40000</B
+></TT
+>
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fis init</B
+></TT
+>
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fi unl -f 0x50040000 -l 0x40000</B
+></TT
+>
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fi cr RedBoot -b 0x100000</B
+></TT
+>
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fi loc -f 0x50040000 -l 0x40000</B
+></TT
+>
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>reset</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+>
+
+<DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>WARNING</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>You must type these commands exactly! Failure to do so may render your
+iPAQ totally useless. Once you've done this, RedBoot should come up every
+time you reset.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN6017">Restoring Windows/CE</H3
+><P
+>To restore Windows/CE from the backup taken in <A
+HREF="ipaq.html#IPAQ-INSTALL-RB-PERMANENTLY"
+>the Section called <I
+>Installing RedBoot permanently</I
+></A
+>,
+visit <A
+HREF="http://www.handhelds.org/projects/wincerestoration.html"
+TARGET="_top"
+>http://www.handhelds.org/projects/wincerestoration.html</A
+>
+for directions.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6022">Additional commands</H2
+><P
+>The <B
+CLASS="COMMAND"
+>exec</B
+> command which allows the loading
+and execution of Linux kernels,
+is supported for this board (see <A
+HREF="executing-programs.html"
+>the Section called <I
+>Executing Programs from RedBoot</I
+> in Chapter 2</A
+>). The <B
+CLASS="COMMAND"
+>exec</B
+> parameters used for the iPAQ are:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>-b <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;addr&#62;</I
+></TT
+></DT
+><DD
+><P
+>Location Linux kernel was loaded to</P
+></DD
+><DT
+>-l <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;len&#62;</I
+></TT
+></DT
+><DD
+><P
+>Length of kernel</P
+></DD
+><DT
+>-c <TT
+CLASS="REPLACEABLE"
+><I
+>"params"</I
+></TT
+></DT
+><DD
+><P
+>Parameters passed to kernel</P
+></DD
+><DT
+>-r <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;addr&#62;</I
+></TT
+></DT
+><DD
+><P
+>'initrd' ramdisk location</P
+></DD
+><DT
+>-s <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;len&#62;</I
+></TT
+></DT
+><DD
+><P
+>Length of initrd ramdisk</P
+></DD
+></DL
+></DIV
+><P
+>Linux kernels may be run on the iPAQ using the sources from the anonymous
+CVS repository at the Handhelds project (<A
+HREF="http://www.handhelds.org/"
+TARGET="_top"
+>http://www.handhelds.org/</A
+>) with
+the <TT
+CLASS="FILENAME"
+>elinux.patch</TT
+> patch file applied. This file can be
+found in the
+<TT
+CLASS="FILENAME"
+>misc/</TT
+> subdirectory of the iPAQ platform HAL in the
+RedBoot sources, normally
+<TT
+CLASS="FILENAME"
+>hal/arm/sa11x0/ipaq/<TT
+CLASS="REPLACEABLE"
+><I
+>VERSION</I
+></TT
+>/misc/</TT
+>
+  </P
+><P
+>On the iPAQ (and indeed all SA11x0 platforms), Linux expects to be loaded
+at address 0xC0008000 and the entry point is also at 0xC0008000.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6061">Memory Maps</H2
+><P
+>RedBoot sets up the following memory map on the iPAQ:   The first level
+page table is located at physical address 0xC0004000.  No second level tables
+are used.   <DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>NOTE: </B
+>The virtual memory maps in this section use a C and B column to indicate
+whether or not the region is cached (C) or buffered (B).</P
+></BLOCKQUOTE
+></DIV
+> <TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Physical Address Range     Description
+-----------------------    ----------------------------------
+0x00000000 - 0x01ffffff    16Mb to 32Mb FLASH (nCS0) [organized as below]
+  0x000000 - 0x0003ffff      Parrot Loader
+  0x040000 - 0x0007ffff      RedBoot
+  0xf80000 - 0x00fbffff      Fconfig data
+  0xfc0000 - 0x00ffffff      FIS directory
+0x30000000 - 0x3fffffff    Compact Flash
+0x48000000 - 0x4bffffff    iPAQ internal registers
+0x80000000 - 0xbfffffff    SA-1110 Internal Registers
+0xc0000000 - 0xc1ffffff    DRAM Bank 0 - 32Mb SDRAM
+0xe0000000 - 0xe7ffffff    Cache Clean
+
+
+Virtual Address Range    C B  Description
+-----------------------  - -  ----------------------------------
+0x00000000 - 0x01ffffff  Y Y  DRAM - 32Mb
+0x30000000 - 0x3fffffff  N N  Compact Flash
+0x48000000 - 0x4bffffff  N N  iPAQ internal registers
+0x50000000 - 0x51ffffff  Y Y  Up to 32Mb FLASH (nCS0)
+0x80000000 - 0xbfffffff  N N  SA-1110 Internal Registers
+0xc0000000 - 0xc1ffffff  N Y  DRAM Bank 0: 32Mb
+0xe0000000 - 0xe7ffffff  Y Y  Cache Clean   </PRE
+></TD
+></TR
+></TABLE
+> </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6068">Rebuilding RedBoot</H2
+><P
+>These shell variables provide the platform-specific information
+needed for building RedBoot according to the procedure described in
+<A
+HREF="rebuilding-redboot.html"
+>Chapter 3</A
+>:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>export TARGET=ipaq
+export ARCH_DIR=arm
+export PLATFORM_DIR=sa11x0/ipaq</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The names of configuration files are listed above with the
+description of the associated modes.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="nano.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="cerfcube.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>ARM/StrongARM(SA11X0) Bright Star Engineering commEngine and nanoEngine</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="installation-and-testing.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>ARM/StrongARM(SA11X0) Intrinsyc CerfCube</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

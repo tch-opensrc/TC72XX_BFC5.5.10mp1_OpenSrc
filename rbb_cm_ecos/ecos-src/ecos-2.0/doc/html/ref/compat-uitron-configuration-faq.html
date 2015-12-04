@@ -1,0 +1,684 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>µITRON Configuration FAQ</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="µITRON API"
+HREF="compat-uitron-microitron-api.html"><LINK
+REL="PREVIOUS"
+TITLE="	  Network Support Functions"
+HREF="compat-uitron-network-support-functions.html"><LINK
+REL="NEXT"
+TITLE="TCP/IP Stack Support for eCos"
+HREF="net-common-tcpip.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="compat-uitron-network-support-functions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 32. &micro;ITRON API</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="COMPAT-UITRON-CONFIGURATION-FAQ">&micro;ITRON Configuration FAQ</H1
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Q: How are &micro;ITRON objects created?</I
+></SPAN
+></P
+><P
+>For each type of uITRON object (tasks, semaphores, flags, mboxes, mpf, mpl)
+these two quantities are controlled by configuration:</P
+><P
+></P
+><UL
+><LI
+><P
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>maximum</I
+></SPAN
+> number of this type of object.</P
+></LI
+><LI
+><P
+>The number of these objects which exist <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>initially</I
+></SPAN
+>.</P
+></LI
+></UL
+><P
+>This is assuming that for the relevant object type,
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>create</I
+></SPAN
+> and <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>delete</I
+></SPAN
+>
+operations are enabled; enabled is the default.  For example, the option
+<TT
+CLASS="LITERAL"
+>CYGPKG_UITRON_MBOXES_CREATE_DELETE</TT
+>
+controls whether the functions
+<TT
+CLASS="FUNCTION"
+>cre_mbx()</TT
+>
+and
+<TT
+CLASS="FUNCTION"
+>del_mbx()</TT
+>
+exist in the API.  If not, then the maximum number of
+mboxes is the same as the initial number of mboxes, and so on for all
+&micro;ITRON object types.</P
+><P
+>Mboxes have no initialization, so there are only a few, simple
+configuration options:</P
+><P
+></P
+><UL
+><LI
+><P
+><TT
+CLASS="LITERAL"
+>CYGNUM_UITRON_MBOXES</TT
+>
+is the total number of mboxes that you can have in the
+system.  By default this is 4, so you can use mboxes 1,2,3 and 4.  You
+cannot create mboxes outside this range; trying to
+<TT
+CLASS="FUNCTION"
+>cre_mbx(5,...)</TT
+>
+will return an error.</P
+></LI
+><LI
+><P
+><TT
+CLASS="LITERAL"
+>CYGNUM_UITRON_MBOXES_INITIALLY</TT
+>
+is the number of mboxes created
+automatically for you, during startup.  By default this is 4, so all 4
+mboxes exist already, and an attempt to create one of these
+eg. <TT
+CLASS="FUNCTION"
+>cre_mbx(3,...)</TT
+>
+will return an error because the mbox in quesion already
+exists.  You can delete a pre-existing mbox, and then re-create it.</P
+></LI
+></UL
+><P
+>If you change 
+<TT
+CLASS="LITERAL"
+>CYGNUM_UITRON_MBOXES_INITIALLY</TT
+>,
+for example to 0, no mboxes
+are created automatically for you during startup.  Any attempt to use an
+mbox without creating it will return E_NOEXS because the mbox does not
+exist.  You can create an mbox, say <TT
+CLASS="FUNCTION"
+>cre_mbx(3,...)</TT
+>
+and then use it, say
+<TT
+CLASS="FUNCTION"
+>snd_msg(3,&amp;foo)</TT
+>, and all will be well.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Q: How are &micro;ITRON objects initialized?</I
+></SPAN
+></P
+><P
+>Some object types have optional initialization.  Semaphores are an
+example.  You could have 
+<TT
+CLASS="LITERAL"
+>CYGNUM_UITRON_SEMAS</TT
+>=10 and
+<TT
+CLASS="LITERAL"
+>CYGNUM_UITRON_SEMAS_INITIALLY</TT
+>=5
+which means you can use semaphores 1-5
+straight off, but you must create semaphores 6-10 before you can use them.
+If you decide not to initialize semaphores, semaphores 1-5 will have an
+initial count of zero.  If you decide to initialize them, you must supply
+a dummy initializer for semaphores 6-10 also.  For example,
+in terms of the configuration output in
+<TT
+CLASS="FILENAME"
+>pkgconf/uitron.h</TT
+>:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   #define CYGDAT_UITRON_SEMA_INITIALIZERS \
+        CYG_UIT_SEMA(  1 ),     \
+        CYG_UIT_SEMA(  0 ),     \
+        CYG_UIT_SEMA(  0 ),     \
+        CYG_UIT_SEMA( 99 ),     \
+        CYG_UIT_SEMA(  1 ),     \
+        CYG_UIT_SEMA_NOEXS,     \
+        CYG_UIT_SEMA_NOEXS,     \
+        CYG_UIT_SEMA_NOEXS,     \
+        CYG_UIT_SEMA_NOEXS,     \
+        CYG_UIT_SEMA_NOEXS</PRE
+></TD
+></TR
+></TABLE
+><P
+>Semaphore 1 will have initial count 1, semaphores 2 and 3 will be zero,
+number 4 will be 99 initially, 5 will be one and numbers 6 though 10 do not
+exist initially.</P
+><P
+>Aside: this is how the definition of the symbol would appear in the
+configuration header file <TT
+CLASS="FILENAME"
+>pkgconf/uitron.h</TT
+> &#8212;
+unfortunately editing such a long, multi-line definition is somewhat
+cumbersome in the GUI config tool in current releases.  The macros
+<TT
+CLASS="LITERAL"
+>CYG_UIT_SEMA()</TT
+>
+&#8212; to create a semaphore initializer &#8212; and
+<TT
+CLASS="LITERAL"
+>CYG_UIT_SEMA_NOEXS</TT
+>
+&#8212; to invoke a dummy initializer &#8212;
+are provided in in the environment to help with this.  Similar macros are
+provided for other object types.  The resulting #define symbol is used in
+the context of a C++ array initializer, such as:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Cyg_Counting_Semaphore2 cyg_uitron_SEMAS[ CYGNUM_UITRON_SEMAS ] = {
+	CYGDAT_UITRON_SEMA_INITIALIZERS
+};</PRE
+></TD
+></TR
+></TABLE
+>
+which is eventually macro-processed to give
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Cyg_Counting_Semaphore2 cyg_uitron_SEMAS[ 10 ] = {
+	Cyg_Counting_Semaphore2( ( 1 ) ), 
+	Cyg_Counting_Semaphore2( ( 0 ) ), 
+	Cyg_Counting_Semaphore2( ( 0 ) ), 
+	Cyg_Counting_Semaphore2( ( 99 ) ), 
+	Cyg_Counting_Semaphore2( ( 1 ) ), 
+	Cyg_Counting_Semaphore2(0), 
+	Cyg_Counting_Semaphore2(0), 
+	Cyg_Counting_Semaphore2(0), 
+	Cyg_Counting_Semaphore2(0), 
+	Cyg_Counting_Semaphore2(0), 
+};</PRE
+></TD
+></TR
+></TABLE
+>
+so you can see how it is necessary to include the dummy entries in that
+definition, otherwise the resulting code will not compile correctly.</P
+><P
+>If you choose 
+<TT
+CLASS="LITERAL"
+>CYGNUM_UITRON_SEMAS_INITIALLY</TT
+>=0
+it is meaningless to initialize them, for they must be created and so
+initialized then, before use.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Q: What about &micro;ITRON tasks?</I
+></SPAN
+></P
+><P
+>Some object types require initialization.  Tasks are an example of this.
+You must provide a task with a priority, a function to enter when the task
+starts, a name (for debugging purposes), and some memory to use for the stack.
+For example (again in terms of the resulting
+definitions in <TT
+CLASS="FILENAME"
+>pkgconf/uitron.h</TT
+>):</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYGNUM_UITRON_TASKS 4           // valid task ids are 1,2,3,4
+#define CYGNUM_UITRON_TASKS_INITIALLY 4 // they all exist at start
+
+#define CYGDAT_UITRON_TASK_EXTERNS          	\
+extern "C" void startup( unsigned int );    	\
+extern "C" void worktask( unsigned int );   	\
+extern "C" void lowtask( unsigned int );        \
+static char stack1[ CYGNUM_UITRON_STACK_SIZE ], \
+            stack2[ CYGNUM_UITRON_STACK_SIZE ], \
+            stack3[ CYGNUM_UITRON_STACK_SIZE ], \
+            stack4[ CYGNUM_UITRON_STACK_SIZE ];
+
+#define CYGDAT_UITRON_TASK_INITIALIZERS \
+ CYG_UIT_TASK("main task", 8, startup,  &amp;stack1, sizeof( stack1 )), \
+ CYG_UIT_TASK("worker 2" , 9, worktask, &amp;stack2, sizeof( stack2 )), \
+ CYG_UIT_TASK("worker 3" , 9, worktask, &amp;stack3, sizeof( stack3 )), \
+ CYG_UIT_TASK("low task" ,20, lowtask,  &amp;stack4, sizeof( stack4 )), \&#13;</PRE
+></TD
+></TR
+></TABLE
+><P
+>So this example has all four tasks statically configured to exist, ready to
+run, from the start of time.  The &#8220;main task&#8221; runs a routine
+called <TT
+CLASS="FUNCTION"
+>startup()</TT
+> at priority 8.  Two
+&#8220;worker&#8221; tasks run both a priority 9, and a &#8220;low
+priority&#8221; task runs at priority 20 to do useful non-urgent background
+work.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Task ID | Exists at | Function | Priority | Stack   | Stack
+ number |  startup  |  entry   |          | address | size
+--------+-----------+----------+----------+---------+----------
+   1    |    Yes    |  startup |    8     | &amp;stack1 | CYGNUM...
+   2    |    Yes    | worktask |    9 	  | &amp;stack2 | CYGNUM...
+   3    |    Yes    | worktask |    9 	  | &amp;stack3 | CYGNUM...
+   4    |    Yes    |  lowtask |   20 	  | &amp;stack4 | CYGNUM...
+--------+-----------+----------+----------+---------+----------</PRE
+></TD
+></TR
+></TABLE
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Q: How can I create &micro;ITRON tasks in the program?</I
+></SPAN
+></P
+><P
+>You must provide free slots in the task table in which to create new tasks,
+by configuring the number of tasks existing initially to be smaller than
+the total.
+For a task ID which does not initially exist, it will be told what routine
+to call, and what priority it is, when the task is created.  But you must
+still set aside memory for the task to use for its stack, and give it a
+name during initialization.  For example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYGNUM_UITRON_TASKS 4           // valid task ids are 1-4
+#define CYGNUM_UITRON_TASKS_INITIALLY 1 // only task #1 exists
+
+#define CYGDAT_UITRON_TASK_EXTERNS \
+extern "C" void startup( unsigned int ); \
+static char stack1[ CYGNUM_UITRON_STACK_SIZE ], \
+            stack2[ CYGNUM_UITRON_STACK_SIZE ], \
+            stack3[ CYGNUM_UITRON_STACK_SIZE ], \
+            stack4[ CYGNUM_UITRON_STACK_SIZE ];
+
+#define CYGDAT_UITRON_TASK_INITIALIZERS \
+   CYG_UIT_TASK( "main", 8, startup, &amp;stack1, sizeof( stack1 ) ), \
+   CYG_UIT_TASK_NOEXS( "slave",      &amp;stack2, sizeof( stack2 ) ), \
+   CYG_UIT_TASK_NOEXS( "slave2",     &amp;stack3, sizeof( stack3 ) ), \
+   CYG_UIT_TASK_NOEXS( "slave3",     &amp;stack4, sizeof( stack4 ) ), \&#13;</PRE
+></TD
+></TR
+></TABLE
+><P
+>So tasks numbered 2,3 and 4 have been given their stacks during startup,
+though they do not yet exist in terms of <TT
+CLASS="FUNCTION"
+>cre_tsk()</TT
+> and
+<TT
+CLASS="FUNCTION"
+>del_tsk()</TT
+> so you can create tasks 2&#8211;4 at
+runtime.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Task ID | Exists at | Function | Priority | Stack   | Stack
+ number |  startup  |  entry   |          | address | size
+--------+-----------+----------+----------+---------+----------
+   1    |    Yes    |  startup |    8     | &amp;stack1 | CYGNUM...
+   2    |    No     |   N/A    |   N/A    | &amp;stack2 | CYGNUM...
+   3    |    No     |   N/A    |   N/A    | &amp;stack3 | CYGNUM...
+   4    |    No     |   N/A    |   N/A    | &amp;stack4 | CYGNUM...
+--------+-----------+----------+----------+---------+----------</PRE
+></TD
+></TR
+></TABLE
+><P
+>(you must have at least one task at startup in order that the system can
+ actually run; this is not so for other uITRON object types)</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Q: Can I have different stack sizes for &micro;ITRON tasks?</I
+></SPAN
+></P
+><P
+>Simply set aside different amounts of memory for each task to use for its
+stack.  Going back to a typical default setting for the &micro;ITRON tasks,
+the definitions in <TT
+CLASS="FILENAME"
+>pkgconf/uitron.h</TT
+> might look like this:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYGDAT_UITRON_TASK_EXTERNS \
+extern "C" void task1( unsigned int ); \
+extern "C" void task2( unsigned int ); \
+extern "C" void task3( unsigned int ); \
+extern "C" void task4( unsigned int ); \
+static char stack1[ CYGNUM_UITRON_STACK_SIZE ], \
+            stack2[ CYGNUM_UITRON_STACK_SIZE ], \
+            stack3[ CYGNUM_UITRON_STACK_SIZE ], \
+            stack4[ CYGNUM_UITRON_STACK_SIZE ];
+  
+#define CYGDAT_UITRON_TASK_INITIALIZERS \
+  CYG_UIT_TASK( "t1", 1, task1, &amp;stack1, CYGNUM_UITRON_STACK_SIZE ), \
+  CYG_UIT_TASK( "t2", 2, task2, &amp;stack2, CYGNUM_UITRON_STACK_SIZE ), \
+  CYG_UIT_TASK( "t3", 3, task3, &amp;stack3, CYGNUM_UITRON_STACK_SIZE ), \
+  CYG_UIT_TASK( "t4", 4, task4, &amp;stack4, CYGNUM_UITRON_STACK_SIZE )&#13;</PRE
+></TD
+></TR
+></TABLE
+><P
+>Note that 
+<TT
+CLASS="LITERAL"
+>CYGNUM_UITRON_STACK_SIZE</TT
+>
+is used to control the size of the stack
+objects themselves, and to tell the system what size stack is being provided.</P
+><P
+>Suppose instead stack sizes of 2000, 1000, 800 and 800 were required:
+this could be achieved by using the GUI config tool to edit these
+options, or editting the <TT
+CLASS="FILENAME"
+>.ecc</TT
+> file to get these
+results in <TT
+CLASS="FILENAME"
+>pkgconf/uitron.h</TT
+>:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYGDAT_UITRON_TASK_EXTERNS \
+extern "C" void task1( unsigned int ); \
+extern "C" void task2( unsigned int ); \
+extern "C" void task3( unsigned int ); \
+extern "C" void task4( unsigned int ); \
+static char stack1[ 2000 ], \
+            stack2[ 1000 ], \
+            stack3[  800 ], \
+            stack4[  800 ];
+ 
+#define CYGDAT_UITRON_TASK_INITIALIZERS \
+      CYG_UIT_TASK( "t1", 1, task1, &amp;stack1, sizeof( stack1 ) ), \
+      CYG_UIT_TASK( "t2", 2, task2, &amp;stack2, sizeof( stack2 ) ), \
+      CYG_UIT_TASK( "t3", 3, task3, &amp;stack3, sizeof( stack3 ) ), \
+      CYG_UIT_TASK( "t4", 4, task4, &amp;stack4, sizeof( stack4 ) )</PRE
+></TD
+></TR
+></TABLE
+><P
+>Note that the sizeof() operator has been used to tell the system what size
+stacks are provided, rather than quoting a number (which is difficult for
+maintenance) or the symbol 
+<TT
+CLASS="LITERAL"
+>CYGNUM_UITRON_STACK_SIZE</TT
+>
+(which is wrong).</P
+><P
+>We recommend using (if available in your release) the stacksize symbols
+provided in the architectural HAL for your target, called
+<TT
+CLASS="LITERAL"
+>CYGNUM_HAL_STACK_SIZE_TYPICAL</TT
+>
+and 
+<TT
+CLASS="LITERAL"
+>CYGNUM_HAL_STACK_SIZE_MINIMUM</TT
+>.
+So a better (more portable) version of the above might be:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYGDAT_UITRON_TASK_EXTERNS \
+extern "C" void task1( unsigned int ); \
+extern "C" void task2( unsigned int ); \
+extern "C" void task3( unsigned int ); \
+extern "C" void task4( unsigned int ); \
+static char stack1[ CYGNUM_HAL_STACK_SIZE_TYPICAL + 1200 ], \
+            stack2[ CYGNUM_HAL_STACK_SIZE_TYPICAL +  200 ], \
+            stack3[ CYGNUM_HAL_STACK_SIZE_TYPICAL        ], \
+            stack4[ CYGNUM_HAL_STACK_SIZE_TYPICAL        ];
+
+#define CYGDAT_UITRON_TASK_INITIALIZERS \
+      CYG_UIT_TASK( "t1", 1, task1, &amp;stack1, sizeof( stack1 ) ), \
+      CYG_UIT_TASK( "t2", 2, task2, &amp;stack2, sizeof( stack2 ) ), \
+      CYG_UIT_TASK( "t3", 3, task3, &amp;stack3, sizeof( stack3 ) ), \
+      CYG_UIT_TASK( "t4", 4, task4, &amp;stack4, sizeof( stack4 ) )</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="compat-uitron-network-support-functions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Network Support Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="compat-uitron-microitron-api.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>TCP/IP Stack Support for eCos</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

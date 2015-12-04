@@ -1,0 +1,275 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Board: Toshiba JMR3904 Evaluation Board</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Real-time characterization"
+HREF="real-time-characterization.html"><LINK
+REL="PREVIOUS"
+TITLE="Board: Intel IQ80310 XScale Development Kit"
+HREF="rt-arm-iq80310.html"><LINK
+REL="NEXT"
+TITLE="Board: Toshiba REF 4955"
+HREF="rt-tx49-ref4955.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="rt-arm-iq80310.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix B. Real-time characterization</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="rt-tx49-ref4955.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RT-TX39-JMR3904">Board: Toshiba JMR3904 Evaluation Board</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="LITERALLAYOUT"
+>&#13;Board: Toshiba JMR3904 Evaluation Board
+
+CPU  : TMPR3904F 50MHz
+
+
+eCOS Kernel Timings
+Note: all times are in microseconds (.000001) unless otherwise stated
+
+Reading the hardware clock takes 0 'ticks' overhead
+... this value will be factored out of all other measurements
+Clock interrupt took   29.68 microseconds (45 raw clock ticks)
+
+Testing parameters:
+   Clock samples:          32
+   Threads:                24
+   Thread switches:       128
+   Mutexes:                32
+   Mailboxes:              32
+   Semaphores:             32
+   Scheduler operations:  128
+   Counters:               32
+   Alarms:                 32
+
+
+                                 Confidence
+     Ave     Min     Max     Var  Ave  Min  Function
+  ======  ======  ======  ====== ========== ========
+   13.62   11.72   27.99    1.51   79%  54% Create thread
+    2.77    2.60    3.91    0.26   79%  79% Yield thread [all suspended]
+    3.31    2.60    6.51    0.27   83%  12% Suspend [suspended] thread
+    2.58    1.95    7.81    0.47   58%  37% Resume thread
+    4.94    4.56   11.07    0.60   95%  79% Set priority
+    0.71    0.65    1.95    0.10   95%  95% Get priority
+   14.97   14.32   25.39    0.87   95%  95% Kill [suspended] thread
+    2.25    1.95    9.11    0.57   95%  95% Yield [no other] thread
+    7.27    6.51   12.37    0.42   79%  16% Resume [suspended low prio] thread
+    2.28    1.95    7.16    0.51   95%  79% Resume [runnable low prio] thread
+    4.31    3.26   12.37    0.75   87%  79% Suspend [runnable] thread
+    2.17    1.95    7.16    0.42   95%  95% Yield [only low prio] thread
+    2.39    1.95    6.51    0.51   95%  58% Suspend [runnable-&#62;not runnable]
+   13.43   12.37   22.79    0.80   91%  91% Kill [runnable] thread
+   22.30   20.83   37.76    1.76   91%  91% Resume [high priority] thread
+    4.62    4.56   11.07    0.13   98%  98% Thread switch
+
+    1.51    1.30    2.60    0.29   68%  68% Scheduler lock
+    2.36    1.95    3.26    0.31   61%  37% Scheduler unlock [0 threads]
+    2.39    1.95    5.21    0.32   62%  36% Scheduler unlock [1 suspended]
+    2.38    1.95    4.56    0.32   61%  37% Scheduler unlock [many suspended]
+    2.38    1.95    5.21    0.32   61%  37% Scheduler unlock [many low prio]
+
+    0.90    0.65    3.26    0.35   71%  71% Init mutex
+    2.48    1.95    8.46    0.50   50%  46% Lock [unlocked] mutex
+    2.83    2.60    9.11    0.42   93%  93% Unlock [locked] mutex
+    2.30    1.95    6.51    0.45   96%  65% Trylock [unlocked] mutex
+    1.99    1.30    5.86    0.24   84%  12% Trylock [locked] mutex
+    0.04    0.00    1.30    0.08   96%  96% Destroy mutex
+   42.40   42.32   44.92    0.16   96%  96% Unlock/Lock mutex
+
+    1.44    1.30    5.86    0.28   96%  96% Create mbox
+    0.51    0.00    1.30    0.25   71%  25% Peek [empty] mbox
+    2.93    2.60    9.11    0.51   96%  78% Put [first] mbox
+    0.51    0.00    1.30    0.25   71%  25% Peek [1 msg] mbox
+    4.19    3.91    5.21    0.34   59%  59% Put [second] mbox
+    0.45    0.00    0.65    0.28   68%  31% Peek [2 msgs] mbox
+    3.28    2.60   10.42    0.45   65%  31% Get [first] mbox
+    3.34    2.60    9.77    0.40   78%  18% Get [second] mbox
+    2.69    1.95    9.11    0.40   78%  18% Tryput [first] mbox
+    2.75    1.95    7.81    0.32   93%   3% Peek item [non-empty] mbox
+    3.15    2.60    9.11    0.48   53%  43% Tryget [non-empty] mbox
+    2.22    1.95    6.51    0.41   96%  78% Peek item [empty] mbox
+    2.40    1.95    5.86    0.42   50%  46% Tryget [empty] mbox
+    0.47    0.00    0.65    0.26   71%  28% Waiting to get mbox
+    0.59    0.00    1.30    0.15   84%  12% Waiting to put mbox
+    4.01    3.26   10.42    0.40   81%  15% Delete mbox
+   26.18   26.04   30.60    0.28   96%  96% Put/Get mbox
+
+    0.92    0.65    3.91    0.38   71%  71% Init semaphore
+    2.24    1.95    6.51    0.43   96%  75% Post [0] semaphore
+    2.32    1.95    7.16    0.48   96%  65% Wait [1] semaphore
+    2.03    1.30    5.86    0.24   90%   6% Trywait [0] semaphore
+    1.91    1.30    4.56    0.23   78%  18% Trywait [1] semaphore
+    0.77    0.00    1.95    0.30   65%   9% Peek semaphore
+    0.61    0.00    1.95    0.15   84%  12% Destroy semaphore
+   22.62   22.14   30.60    0.61   96%  62% Post/Wait semaphore
+
+    0.92    0.65    3.91    0.38   71%  71% Create counter
+    0.69    0.65    1.95    0.08   96%  96% Get counter value
+    0.41    0.00    1.30    0.33   56%  40% Set counter value
+    3.21    2.60    5.86    0.27   71%  21% Tick counter
+    0.65    0.00    3.26    0.16   84%  12% Delete counter
+
+    1.57    1.30    4.56    0.38   71%  71% Create alarm
+    4.52    3.91   13.02    0.57   50%  46% Initialize alarm
+    0.61    0.00    1.95    0.15   84%  12% Disable alarm
+    4.43    3.91    9.11    0.43   56%  40% Enable alarm
+    0.87    0.65    2.60    0.32   71%  71% Delete alarm
+    2.93    2.60    6.51    0.43   96%  65% Tick counter [1 alarm]
+   14.83   14.32   22.79    0.60   96%  59% Tick counter [many alarms]
+    4.88    4.56   11.07    0.51   96%  78% Tick &#38; fire counter [1 alarm]
+   83.25   82.03  102.86    1.23   96%  93% Tick &#38; fire counters [&#62;1 together]
+   17.58   16.93   27.34    0.61   50%  46% Tick &#38; fire counters [&#62;1 separately]
+   26.18   24.74   40.36    0.30   97%   0% Alarm latency [0 threads]
+   33.88   29.30   56.64    1.70   85%   6% Alarm latency [2 threads]
+   36.37   29.30   61.20    3.25   53%  24% Alarm latency [many threads]
+
+    7.85    6.51   14.97    0.00            Clock/interrupt latency
+
+Timing complete - 23540 ms total
+
+PASS:&lt;Basic timing OK&#62;
+EXIT:&lt;done&#62;
+
+	</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="rt-arm-iq80310.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="rt-tx49-ref4955.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Board: Intel IQ80310 XScale Development Kit</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="real-time-characterization.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Board: Toshiba REF 4955</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

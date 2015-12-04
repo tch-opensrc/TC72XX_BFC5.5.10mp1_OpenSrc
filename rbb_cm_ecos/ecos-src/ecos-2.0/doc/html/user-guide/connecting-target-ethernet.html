@@ -1,0 +1,209 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Connecting Via Ethernet</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Target Setup"
+HREF="user-guide-installation-target.html"><LINK
+REL="PREVIOUS"
+TITLE="Target Setup"
+HREF="user-guide-installation-target.html"><LINK
+REL="NEXT"
+TITLE="Using A Simulator Target"
+HREF="connecting-target-sim.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="user-guide-installation-target.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Target Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="connecting-target-sim.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CONNECTING-TARGET-ETHERNET">Connecting Via Ethernet</H1
+><P
+>Some targets allow GDB to connect via Ethernet - if so, it will
+be mentioned in the document describing the target. Substitute the
+target's assigned IP address or hostname for &lt;hostname&#62; in the
+following. Depending on how RedBoot has been configured, it will
+either have this address allocated statically, or will acquire it via
+BOOTP. In both cases RedBoot will report the IP address it is
+listening on in its startup message printed on the serial port. The
+&lt;port&#62; is the TCP port which RedBoot is listening on, usually
+9000. It is also listed in the target document.</P
+><P
+>Connect to the target by issuing the following command in
+GDB console mode:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>(gdb) target remote &lt;hostname&#62;:&lt;port&#62;</PRE
+></TD
+></TR
+></TABLE
+><P
+>In Insight, connect by opening the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>File-&#62;Target
+Settings</I
+></SPAN
+> window and enter:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Target: Remote/TCP     
+Hostname: &lt;hostname&#62;     
+Port: &lt;port&#62;</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set other options according to
+preference, close the window and select <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Run-&#62;Connect to
+target</I
+></SPAN
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="user-guide-installation-target.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="connecting-target-sim.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Target Setup</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="user-guide-installation-target.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Using A Simulator Target</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

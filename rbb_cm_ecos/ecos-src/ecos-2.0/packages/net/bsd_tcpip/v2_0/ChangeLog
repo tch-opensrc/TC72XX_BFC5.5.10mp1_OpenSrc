@@ -1,0 +1,215 @@
+2003-04-29  Andrew Lunn  <andrew.lunn@ascom.ch>
+
+	* src/ecos/support.c (cyg_net_malloc): Honour the M_ZERO
+	flag. Otherwise we get random junk in places we don't want it.
+
+2003-03-14  Andrew Lunn  <andrew.lunn@ascom.ch>
+
+	* src/sys/net/if.c (if_attach): Removed printf which causes the
+	ethernet device to become corrupt. At this point the app driver
+	has started but not completed taking over from the redboot
+	driver. It is unsafe for redboot to use the ethernet device.
+
+2003-02-24  Jonathan Larmour  <jifl@eCosCentric.com>
+
+	* cdl/freebsd_net.cdl: Fix doc link.
+
+2003-02-18  Jonathan Larmour  <jifl@eCosCentric.com>
+
+	* cdl/freebsd_net.cdl: Remove unused NBPFILTER and BRIDGE CDL options.
+
+2003-02-14  Jonathan Larmour  <jifl@eCosCentric.com>
+
+	* doc/freebsd.sgml: new_net template is now just "net".
+
+2003-02-12  Jani Monoses  <jani@iv.ro>
+
+	* src/sys/kern/sockio.c: bsd_getinfo/bsd_setinfo should have
+	void * args. Silences warnings.
+	* src/sys/kern/uipc_socket.c (sopoll): Use __FUNCTION__ correctly
+	for GCC 3.x.
+	* src/sys/net/if_ethersubr.c: Put comments for stuff after endifs
+	to silence warnings.
+	* src/sys/net/if_loop.c: Ditto.
+
+2003-02-04  Gary Thomas  <gary@mlbassoc.com>
+
+	* include/sys/bsdtypes.h: Workaround when building with new
+	Linux compatability package (which over-defines some symols
+	defined in this module).
+
+2002-12-03  Gary Thomas  <gthomas@ecoscentric.com>
+
+	* src/ecos/support.c (show_network_tables): New function to
+	print information about network tables (interfaces, routing).
+
+2002-11-12  Gary Thomas  <gary@mlbassoc.com>
+
+	* src/ecos/timeout.c (callout_reset): Check for finding the
+	correct "delta" was wrong - only used with asserts enabled.
+
+	* include/sys/uio.h: Compatability wrapper to expose 'iovec'
+	functions - used by many network programs.
+
+2002-11-04  Gary Thomas  <gthomas@ecoscentric.com>
+
+	* src/sys/net/if.c (if_attach): Moved check for ifq_maxlen to
+	this function since it can't be checked until the device comes
+	online, which may not be a sysinit time for PCMCIA devices.
+
+2002-11-03  Gary Thomas  <gthomas@ecoscentric.com>
+
+	* src/sys/kern/sockio.c (bsd_getname): Fix error where getsockname()
+	was actually performing getpeername().
+
+	* include/sys/uio.h: New file - compatability wrapper.
+
+2002-07-31  Gary Thomas  <gary@chez-thomas.org>
+
+	* src/sys/netinet/in_cksum.c: Fix problem on big endian machines.
+
+2002-07-26  Gary Thomas  <gary@chez-thomas.org>
+2002-07-26  Ken Cox <jkc@redhat.com>
+
+	* src/ecos/support.c (ovbcopy): ovbcopy() must handle the case 
+	where the src and dst regions are overlayed.  memcpy() does not 
+	handle this case, but memmove() does.
+
+2002-07-10  Gary Thomas  <gary@chez-thomas.org>
+
+	* src/sys/netinet/udp_usrreq.c: 
+	* src/sys/netinet/tcp_subr.c: 
+	* src/sys/netinet/in_pcb.c: Rename 'errno' function parameter
+	since some compilers have problems with this.
+
+2002-07-08  Gary Thomas  <gary@chez-thomas.org>
+
+	* include/sys/param.h: Need <errno.h> which may or may not be
+	already present, depending on configuration.
+
+2002-06-20  Gary Thomas  <gary@chez-thomas.org>
+
+	* include/sys/param.h (sprintf): Map to diag_sprintf().
+
+2002-06-14  Gary Thomas  <gary@chez-thomas.org>
+
+	* src/ecos/support.c: 
+	Fix compile errors when CYGDBG_NET_TIMING_STATS enabled.
+
+2002-06-05  Gary Thomas  <gary@chez-thomas.org>
+
+	* include/netinet/in.h: Rename 'ip_opts' field (using the same
+	name as the structure is illegal in C++).
+
+2002-05-14  Jesper Skov  <jskov@redhat.com>
+
+	* include/netinet6/in6.h: Fixed warnings.
+
+2002-04-22  Gary Thomas  <gthomas@redhat.com>
+
+	* src/sys/netinet6/nd6.c: Make debug (on) default.
+
+	* include/netinet/tcp_debug.h: Fully conditionalize debug facility.
+
+2002-04-17  Gary Thomas  <gthomas@redhat.com>
+
+	* include/sys/socket.h: Remove definitions only used by sysctl
+	since their presence could be misleading.
+
+	* src/ecos/support.c (STACK_SIZE): Remove [debug/testing] bloat.
+
+2002-03-30  Gary Thomas  <gthomas@redhat.com>
+
+	* include/machine/types.h: [Placeholder] needed for some compilers.
+
+2002-03-28  Gary Thomas  <gthomas@redhat.com>
+
+	* src/sys/netinet/ip_icmp.c: 
+	* include/sys/param.h: 
+	* include/netinet/icmp_var.h: Export status structure for SNMP.
+
+	* cdl/freebsd_net.cdl: Augment log facilities to what SNMP uses.
+
+2002-03-27  Gary Thomas  <gthomas@redhat.com>
+
+	* include/sys/param.h (log): Remove warning.
+
+2002-03-25  Gary Thomas  <gthomas@redhat.com>
+
+	* src/ecos/support.c (zinit): Add more record keeping (and debug
+	prints) for zones.
+
+	* src/ecos/timeout.c (do_timeout): Don't reset ACTIVE when running
+	a timeout (since it confuses the TCP timer code).
+
+2002-03-23  Gary Thomas  <gthomas@redhat.com>
+
+	* src/sys/netinet/in_cksum.c (in_addword): Changed to use uint32 since
+	uint64 was wasteful (and failed on some architectures!)
+
+2002-03-20  Gary Thomas  <gthomas@redhat.com>
+
+	* include/sys/socket.h: Force struct sockaddr to be at least as
+	big as IPv4 or IPv6 sockets.  Possibly this could be a little
+	cleaner, but at least now it's safe for programs to use sockaddr
+	variables in either environment.
+
+2002-03-11  Hugo Tyson  <hmt@redhat.com> 
+
+	[Case 107110]
+
+	* src/sys/netinet/in.c (in_control): SIOCSIFADDR switch entry
+	moved to before the scan for this same address being in the list
+	already, along with Add and Delete (SIOCAIFADDR,SIOCDIFADDR) arms.
+	It falls through into the same alloc-if-needed code anyway.
+	Thus repeatedly setting the same address does not leak store.
+
+	* src/sys/net/route.c (route_reinit): Rewrite to delete all routes
+	individually rather than en-masse (leaking store).
+	(rt_reinit_rtdelete): New function; callback for individual
+	deletion.
+	(rtioctl): Do not pass in a "route **" to return a pointer to the
+	route removed or added; this results in an extra reference, by the
+	returned pointer, and so a storeleak.
+	(rtrequest): RTM_DELETE arm: do not free a gateway route if the
+	gateway pointer is the same as the route itself - it gets freed
+	*again* at the end of the routine if you do.  Just dec the refcnt.
+
+2002-03-08  Gary Thomas  <gthomas@redhat.com>
+
+	* src/sys/net/if_loop.c (loioctl): Force IFF_LOOPBACK setting.
+
+	* src/sys/kern/uipc_mbuf.c: Remove some warnings [from munging].
+
+	* src/ecos/support.c (cyg_net_init): Identify init messages.
+
+	* include/sys/param.h (nstab,nstab_end): These are not defined
+	within the network package and thus should not be munged.
+
+	* include/net/if.h: Add "IFF_LOOPBACK" to set of flags which
+	cannot be changed outside the kernel.  Note: this is a change
+	from the "normal" BSD code.  It was done to keep old code
+	working, but it may break some new code.
+
+2002-03-07  Gary Thomas  <gthomas@redhat.com>
+
+	* src/sys/kern/uipc_mbuf.c: Work over for the namespace changes.
+
+	* include/sys/param.h: Complete namespace munging; privatize
+	all kernel symbols via "cyg_" prefix.
+
+2002-02-05  Hugo Tyson  <hmt@redhat.com>
+
+	* cdl/freebsd_net.cdl: Position this package below CYGPKG_NET
+	ie. the common networking package.  Only affects the view in the
+	GUI CT, no big deal.
+
+#####ECOSPDCOPYRIGHTBEGIN####
+#
+# Copyright (C) 2000, 2001, 2002 Red Hat, Inc.
+# All Rights Reserved.
+#
+# Permission is granted to use, copy, modify and redistribute this
+# file.
+#
+#####ECOSPDCOPYRIGHTEND####

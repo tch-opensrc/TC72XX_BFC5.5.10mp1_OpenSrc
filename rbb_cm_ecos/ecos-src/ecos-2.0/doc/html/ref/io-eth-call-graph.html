@@ -1,0 +1,404 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Calling graph for Transmission and Reception</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Generic Ethernet Device Driver"
+HREF="io-eth-drv-generic1.html"><LINK
+REL="PREVIOUS"
+TITLE="Upper Layer Functions"
+HREF="io-eth-drv-upper-api.html"><LINK
+REL="NEXT"
+TITLE="SNMP"
+HREF="net-snmp.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="io-eth-drv-upper-api.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 46. Generic Ethernet Device Driver</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-snmp.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="IO-ETH-CALL-GRAPH">Calling graph for Transmission and Reception</H1
+><P
+>It may be worth clarifying further the flow of control in the transmit and
+receive cases, where the hardware driver does use interrupts and so DSRs to
+tell the &#8220;foreground&#8221; when something asynchronous has occurred.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="IO-ETH-CALL-GRAPH-TX">Transmission</H2
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Some foreground task such as the application, SNMP &#8220;daemon&#8221;,
+DHCP management thread or whatever, calls into network stack to send a
+packet, or the stack decides to send a packet in response to incoming
+traffic such as a &#8220;ping&#8221; or <SPAN
+CLASS="ACRONYM"
+>ARP</SPAN
+> request.</P
+></LI
+><LI
+><P
+>The driver calls the
+<TT
+CLASS="FUNCTION"
+><TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_can_send()</TT
+>
+function in the hardware driver.</P
+></LI
+><LI
+><P
+><TT
+CLASS="FUNCTION"
+><TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_can_send()</TT
+>
+returns the number of available "slots" in which it
+can store a pending transmit packet.
+If it cannot send at this time, the packet is queued outside the
+hardware driver for later; in this case, the hardware is already busy
+transmitting, so expect an interrupt as described below for completion
+of the packet currently outgoing.</P
+></LI
+><LI
+><P
+>If it can send right now, <TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_send() is called.
+<TT
+CLASS="FUNCTION"
+><TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_send()</TT
+> copies the
+data into special hardware buffers, or instructs the hardware to
+&#8220;send that.&#8221; It also remembers the key that is associated with
+this tx request.</P
+></LI
+><LI
+><P
+>These calls return &#8230; time passes &#8230;</P
+></LI
+><LI
+><P
+>Asynchronously, the hardware makes an interrupt to say
+&#8220;transmit is done.&#8221;
+The ISR quietens the interrupt source in the hardware and
+requests that the associated DSR be run.</P
+></LI
+><LI
+><P
+>The DSR calls (or <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>is</I
+></SPAN
+>) the
+<TT
+CLASS="FUNCTION"
+>eth_drv_dsr()</TT
+> function in the generic driver.</P
+></LI
+><LI
+><P
+><TT
+CLASS="FUNCTION"
+>eth_drv_dsr()</TT
+> in the generic driver awakens the
+&#8220;Network Delivery Thread&#8221; which calls the deliver function
+<TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_deliver() in the driver.</P
+></LI
+><LI
+><P
+>The deliver function realizes that a transmit request has completed,
+and calls the callback tx-done function
+<TT
+CLASS="FUNCTION"
+>(sc-&#62;funs-&#62;eth_drv-&#62;tx_done)()</TT
+>
+with the same key that it remembered for this tx.</P
+></LI
+><LI
+><P
+>The callback tx-done function
+uses the key to find the resources associated with
+this transmit request; thus the stack knows that the transmit has
+completed and its resources can be freed.</P
+></LI
+><LI
+><P
+>The callback tx-done function
+also enquires whether <TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_can_send() now says
+&#8220;yes, we can send&#8221;
+and if so, dequeues a further transmit request
+which may have been queued as described above.  If so, then
+<TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_send() copies the data into the hardware buffers, or
+instructs the hardware to "send that" and remembers the new key, as above.
+These calls then all return to the &#8220;Network Delivery Thread&#8221;
+which then sleeps, awaiting the next asynchronous event.</P
+></LI
+><LI
+><P
+>All done &#8230;</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="IO-ETH-CALL-GRAPH-RX">Receive</H2
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Asynchronously, the hardware makes an interrupt to say
+&#8220;there is ready data in a receive buffer.&#8221;
+The ISR quietens the interrupt source in the hardware and
+requests that the associated DSR be run.</P
+></LI
+><LI
+><P
+>The DSR calls (or <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>is</I
+></SPAN
+>) the
+<TT
+CLASS="FUNCTION"
+>eth_drv_dsr()</TT
+> function in the generic driver.</P
+></LI
+><LI
+><P
+><TT
+CLASS="FUNCTION"
+>eth_drv_dsr()</TT
+> in the generic driver awakens the
+&#8220;Network Delivery Thread&#8221; which calls the deliver function
+<TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_deliver() in the driver.</P
+></LI
+><LI
+><P
+>The deliver function realizes that there is data ready and calls
+the callback receive function
+<TT
+CLASS="FUNCTION"
+>(sc-&#62;funs-&#62;eth_drv-&#62;recv)()</TT
+>
+to tell it how many bytes to prepare for.</P
+></LI
+><LI
+><P
+>The callback receive function allocates memory within the stack
+(eg. <SPAN
+CLASS="TYPE"
+>MBUFs</SPAN
+> in BSD/Unix style stacks) and prepares
+a set of scatter-gather buffers that can
+accommodate the packet.</P
+></LI
+><LI
+><P
+>It then calls back into the hardware driver routine
+<TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_recv().
+<TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_recv() must copy the data from the
+hardware's buffers into the scatter-gather buffers provided, and return.</P
+></LI
+><LI
+><P
+>The network stack now has the data in-hand, and does with it what it will.
+This might include recursive calls to transmit a response packet.
+When this all is done, these calls return, and the
+&#8220;Network Delivery Thread&#8221;
+sleeps once more, awaiting the next asynchronous event.</P
+></LI
+></OL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="io-eth-drv-upper-api.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-snmp.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Upper Layer Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="io-eth-drv-generic1.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SNMP</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

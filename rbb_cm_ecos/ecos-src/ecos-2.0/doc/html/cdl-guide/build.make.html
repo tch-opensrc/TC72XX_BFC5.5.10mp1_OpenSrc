@@ -1,0 +1,2283 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Building eCos</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="The Build Process"
+HREF="build.html"><LINK
+REL="PREVIOUS"
+TITLE="Configuration Header File Generation"
+HREF="build.headers.html"><LINK
+REL="NEXT"
+TITLE="Building Test Cases"
+HREF="build.tests.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="build.headers.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. The Build Process</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="build.tests.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="BUILD.MAKE">Building eCos</H1
+><P
+>The primary goal of an eCos build is to produce the library
+<TT
+CLASS="FILENAME"
+>libtarget.a</TT
+>. A typical <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> build will also
+generate a number of other targets: <TT
+CLASS="FILENAME"
+>extras.o</TT
+>,
+startup code <TT
+CLASS="FILENAME"
+>vectors.o</TT
+>, and a linker script. Some
+packages may cause additional libraries or targets to be generated.
+The basic build process involves a number of different phases with
+corresponding priorities. There are a number of predefined priorities:</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2457"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+WIDTH="50%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+>Priority</TH
+><TH
+WIDTH="50%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Action</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+WIDTH="50%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+>0</TD
+><TD
+WIDTH="50%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Export header files</TD
+></TR
+><TR
+><TD
+WIDTH="50%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+>100</TD
+><TD
+WIDTH="50%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Process <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> properties</TD
+></TR
+><TR
+><TD
+WIDTH="50%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+WIDTH="50%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>and most <SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+> custom build steps</TD
+></TR
+><TR
+><TD
+WIDTH="50%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+>200</TD
+><TD
+WIDTH="50%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Generate libraries</TD
+></TR
+><TR
+><TD
+WIDTH="50%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+>300</TD
+><TD
+WIDTH="50%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Process <SPAN
+CLASS="PROPERTY"
+>make</SPAN
+> custom build steps</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+><P
+>Generation of the <TT
+CLASS="FILENAME"
+>extras.o</TT
+> file, the startup code
+and the linker script actually happens via <SPAN
+CLASS="PROPERTY"
+>make</SPAN
+> custom build steps,
+typically defined in appropriate HAL packages. The component framework
+has no special knowledge of these targets.</P
+><P
+>By default custom build steps for a <SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+> property happen
+during the same phase as most compilations, but this can be changed
+using a <TT
+CLASS="LITERAL"
+>-priority</TT
+> option. Similarly custom build
+steps for a <SPAN
+CLASS="PROPERTY"
+>make</SPAN
+> property happen at the end of a build, but this can
+also be changed with a <TT
+CLASS="LITERAL"
+>-priority</TT
+> option. For
+example a priority of 50 can be used to run a custom build step
+between the header file export phase and the main compilation phase.
+Custom build steps are discussed in more detail below.</P
+><P
+>Some build systems may run several commands of the same priority in
+parallel. For example files listed in <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> properties may get
+compiled in parallel, concurrently with <SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+> custom build
+steps with default priorities. Since most of the time for an <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+>
+build involves processing <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> properties, this allows builds to
+be speeded up on suitable host hardware. All build steps for a given
+phase will complete before the next phase is started.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="BUILD.MAKE.UPDATE">Updating the Build Tree</H2
+><P
+>Some build systems may involve a phase before the header files get
+exported, to update the build and install trees automatically when
+there has been a change to the configuration savefile
+<TT
+CLASS="FILENAME"
+>ecos.ecc</TT
+>. This is useful mainly for application
+developers using the command line tools: it would allow users to
+create the build tree only once, and after any subsequent
+configuration changes the tree would be updated automatically by the
+build system. The facility would be analogous to the
+<TT
+CLASS="LITERAL"
+>--enable-maintainer-mode</TT
+> option provide by the
+<SPAN
+CLASS="APPLICATION"
+>autoconf</SPAN
+> and <SPAN
+CLASS="APPLICATION"
+>automake</SPAN
+> programs. At present no <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+>
+build system implements this functionality, but it is likely to be
+added in a future release.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="BUILD.MAKE.EXPORT">Exporting Public Header Files</H2
+><P
+>The first compulsory phase involves making sure that there is an up to
+date set of header files in the install tree. Each package can contain
+some number of header files defining the exported interface.
+Applications should only use exported functionality. A package can
+also contain some number of private header files which are only of
+interest to the implementation, and which should not be visible to
+application code. The various packages that go into a particular
+configuration can be spread all over the component repository. In
+theory it might be possible to make all the exported header files
+accessible by having a lengthy <TT
+CLASS="LITERAL"
+>-I</TT
+> header file
+search path, but this would be inconvenient both for building eCos and
+for building applications. Instead all the relevant header files are
+copied to a single location, the <TT
+CLASS="FILENAME"
+>include</TT
+> subdirectory of the install tree.
+The process involves the following:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>The install tree, for example <TT
+CLASS="FILENAME"
+>/usr/local/ecos/install</TT
+>, and its <TT
+CLASS="FILENAME"
+>include</TT
+> subdirectory <TT
+CLASS="FILENAME"
+>/usr/local/ecos/install/include</TT
+> will typically be
+created when the build tree is generated or updated. At the same time
+configuration header files will be written to the <TT
+CLASS="FILENAME"
+>pkgconf</TT
+> subdirectory, for example
+<TT
+CLASS="FILENAME"
+>/usr/local/ecos/include/pkgconf</TT
+>, so that
+the configuration data is visible to all the packages and to
+application code that may wish to examine some of the configuration
+options.</P
+></LI
+><LI
+><P
+>Each package in the configuration is examined for exported header
+files. The exact order in which the packages are processed is not
+defined, but should not matter.</P
+><P
+></P
+><OL
+TYPE="a"
+><LI
+><P
+>If the package has an <A
+HREF="ref.include-files.html"
+><SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+></A
+> property then this
+lists all the exported header files:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package &lt;some_package&gt; {
+    &#8230;
+    include_files header1.h header2.h
+}    </PRE
+></TD
+></TR
+></TABLE
+><P
+>If no arguments are given then the package does not export any header
+files.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package &lt;some_package&gt; {
+    &#8230;
+    include_files
+}    </PRE
+></TD
+></TR
+></TABLE
+><P
+>The listed files may be in an <TT
+CLASS="FILENAME"
+>include</TT
+> subdirectory within the package's
+hierarchy, or they may be relative to the package's toplevel
+directory. The <SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+> property is intended mainly for very
+simple packages. It can also be useful when converting existing code
+to an <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> package, to avoid rearranging the sources.</P
+></LI
+><LI
+><P
+>If there is no <SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+> property then the component framework
+will look for an <TT
+CLASS="FILENAME"
+>include</TT
+>
+subdirectory in the package, as per the layout conventions. All files,
+including those in subdirectories, will be treated as exported header
+files. For example, the math library package contains files <TT
+CLASS="FILENAME"
+>include/math.h</TT
+> and <TT
+CLASS="FILENAME"
+>include/sys/ieeefp.h</TT
+>, both of which will
+be exported to the install tree.</P
+></LI
+><LI
+><P
+>As a last resort, if there is neither an <SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+> property nor
+an <TT
+CLASS="FILENAME"
+>include</TT
+> subdirectory, the
+component framework will search the package's toplevel directory and
+all of its subdirectories for files with one of the following
+suffixes: <TT
+CLASS="LITERAL"
+>.h</TT
+>, <TT
+CLASS="LITERAL"
+>.hxx</TT
+>,
+<TT
+CLASS="LITERAL"
+>.inl</TT
+> or <TT
+CLASS="LITERAL"
+>.inc</TT
+>. All such files
+will be interpreted as exported header files.</P
+><P
+>This last resort rule could cause confusion for packages which have no
+exported header files but which do contain one or more private header
+files. For example a typical device driver simply implements an
+existing interface rather than define a new one, so it does not need
+to export a header file. However it may still have one or more private
+header files. Such packages should use an <SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+> property
+with no arguments.</P
+></LI
+></OL
+></LI
+><LI
+><P
+>If the package has one or more exported header files, the next step is
+to determine where the files should end up. By default all exported
+header files will just end up relative to the install tree's <TT
+CLASS="FILENAME"
+>include</TT
+> subdirectory. For example the
+math library's <TT
+CLASS="FILENAME"
+>math.h</TT
+> header
+would end up as <TT
+CLASS="FILENAME"
+>/usr/local/ecos/include/math.h</TT
+>,
+and the <TT
+CLASS="FILENAME"
+>sys/ieeefp.h</TT
+> header
+would end up as
+<TT
+CLASS="FILENAME"
+>/usr/local/ecos/include/sys/ieeefp.h</TT
+>. This
+behaviour is correct for packages like the C library where the
+interface is defined by appropriate standards. For other packages this
+behaviour can lead to file name clashes, and the <A
+HREF="ref.include-dir.html"
+><SPAN
+CLASS="PROPERTY"
+>include_dir</SPAN
+></A
+> property should be used
+to avoid this:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_KERNEL {
+    include_dir cyg/kernel
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>This means that the kernel's exported header file
+<TT
+CLASS="FILENAME"
+>include/kapi.h</TT
+> should be copied to
+<TT
+CLASS="FILENAME"
+>/usr/local/ecos/include/cyg/kernel/kapi.h</TT
+>, where
+it is very unlikely to clash with a header file from some other
+package.</P
+></LI
+><LI
+><P
+>For typical application developers there will be little or no need for
+the installed header files to change after the first build. Changes
+will be necessary only if packages are added to or removed from the
+configuration. For component writers, the build system should detect
+changes to the master copy of the header file source code and update
+the installed copies automatically during the next build. The build
+system is expected to perform a header file dependency analysis, so
+any source files affected should get rebuilt as well.</P
+></LI
+><LI
+><P
+>Some build systems may provide additional support for application
+developers who want to make minor changes to a package, especially for
+debugging purposes. A header file could be copied from the
+component repository (which for application developers is assumed to
+be a read-only resource) into the build tree and edited there. The
+build system would detect a more recent version of such a header file
+in the build tree and install it. Care would have to be taken to
+recover properly if the modified copy in the build tree is
+subsequently removed, in order to revert to the original behaviour.</P
+></LI
+><LI
+><P
+>When updating the install tree's <TT
+CLASS="FILENAME"
+>include</TT
+> subdirectory, the build tree may
+also perform a clean-up operation. Specifically, it may check for any
+files which do not correspond to known exported header files and
+delete them.</P
+></LI
+></OL
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>At present there is no defined support in the build system for
+defining custom build steps that generate exported header files. Any
+attempt to use the existing custom build step support may fall foul of
+unexpected header files being deleted automatically by the build
+system. This limitation will be addressed in a future release of the
+component framework, and may require changing the priority for
+exporting header files so that a custom build step can happen first.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="BUILD.MAKE.COMPILES">Compiling</H2
+><P
+>Once there are up to date copies of all the exported header files in
+the build tree, the main build can proceed. Most of this involves
+compiling source files listed in <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> properties in the <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+>
+scripts for the various packages, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_ERROR {
+    display       "Common error code support"
+    compile       strerror.cxx
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+><SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> properties may appear in the body of a <TT
+CLASS="LITERAL"
+>cdl_package</TT
+>,
+<TT
+CLASS="LITERAL"
+>cdl_component</TT
+>, <TT
+CLASS="LITERAL"
+>cdl_option</TT
+> or <TT
+CLASS="LITERAL"
+>cdl_interface</TT
+>. If the option or
+other <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> entity is active and enabled, the property takes effect.
+If the option is inactive or disabled the property is ignored. It is
+possible for a <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> property to list multiple source files, and
+it is also possible for a given <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> entity to contain multiple
+<SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> properties. The following three examples are equivalent:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option &lt;some_option&gt; {
+    &#8230;
+    compile file1.c file2.c file3.c
+}
+
+cdl_option &lt;some_option&gt; {
+    &#8230;
+    compile file1.c
+    compile file2.c
+    compile file3.c
+}
+
+cdl_option &lt;some_option&gt; {
+    &#8230;
+    compile file1.c file2.c
+    compile file3.c
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>Packages that follow the directory layout conventions should have a
+subdirectory <TT
+CLASS="FILENAME"
+>src</TT
+>, and the
+component framework will first look for the specified files there.
+Failing that it will look for the specified files relative to the
+package's root directory. For example if a package contains a source
+file <TT
+CLASS="FILENAME"
+>strerror.cxx</TT
+> then the following two lines
+are equivalent:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    compile strerror.cxx
+    compile src/strerror.cxx</PRE
+></TD
+></TR
+></TABLE
+><P
+>In the first case the component framework will find the file
+immediately in the packages <TT
+CLASS="FILENAME"
+>src</TT
+>
+subdirectory. In the second case the framework will first look for a
+file <TT
+CLASS="FILENAME"
+>src/src/strerror.cxx</TT
+>, and then for
+<TT
+CLASS="FILENAME"
+>str/strerror.cxx</TT
+> relative to the package's root
+directory. The result is the same.</P
+><P
+>The file names may be relative paths, allowing the source code to be
+split over multiple directories. For example if a package contains a
+file <TT
+CLASS="FILENAME"
+>src/sync/mutex.cxx</TT
+> then the corresponding
+<SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> entry would be:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    compile sync/mutex.cxx</PRE
+></TD
+></TR
+></TABLE
+><P
+>All the source files relevant to the current configuration will be
+identified when the build tree is generated or updated, and added to
+the appropriate makefile (or its equivalent for other build systems).
+The actual build will involve a rule of the form:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&lt;object file&gt; : &lt;source file&gt;
+        $(CC) -c $(INCLUDE_PATH) $(CFLAGS) -o $@ $&#60;</PRE
+></TD
+></TR
+></TABLE
+><P
+>The component framework has built-in knowledge for processing source
+files written in C, C++ or assembler. These should have a
+<TT
+CLASS="LITERAL"
+>.c</TT
+>, <TT
+CLASS="LITERAL"
+>.cxx</TT
+> and
+<TT
+CLASS="LITERAL"
+>.S</TT
+> suffix respectively. The current implementation
+has no simple mechanism for extending this with support for other
+languages or for alternative suffixes, but this should be addressed in
+a future release.</P
+><P
+>The compiler command that will be used is something like
+<TT
+CLASS="LITERAL"
+>arm-elf-gcc</TT
+>. This consists of a command prefix, in
+this case <TT
+CLASS="LITERAL"
+>arm-elf</TT
+>, and a specific command such as
+<TT
+CLASS="LITERAL"
+>gcc</TT
+>. The command prefix will depend on the target
+architecture and is controlled by a configuration option in the
+appropriate HAL package. It will have a sensible default value for the
+current architecture, but users can modify this option when necessary.
+The command prefix cannot be changed on a per-package basis, since
+it is usually essential that all packages are built with a consistent
+set of tools.</P
+><P
+>The <TT
+CLASS="LITERAL"
+>$(INCLUDE_PATH)</TT
+> header file search path
+consists of at least the following:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>The <TT
+CLASS="FILENAME"
+>include</TT
+> directory in the
+install tree. This allows source files to access the various header
+files exported by all the packages in the configuration, and also the
+configuration header files.</P
+></LI
+><LI
+><P
+>The current package's root directory. This ensures that all files in
+the package are accessible at build time.</P
+></LI
+><LI
+><P
+>The current package's <TT
+CLASS="FILENAME"
+>src</TT
+>
+subdirectory, if it is present. Generally all files to be compiled are
+located in or below this directory. Typically this is used to access
+private header files containing implementation details only.</P
+></LI
+></OL
+><P
+>The compiler flags <TT
+CLASS="LITERAL"
+>$(CFLAGS)</TT
+> are determined in two
+steps. First the appropriate HAL package will provide a configuration
+option defining the global flags. Typically this includes flags that
+are needed for the target processor, for example
+<TT
+CLASS="LITERAL"
+>-mcpu=arm9</TT
+>, various flags related to warnings,
+debugging and optimization, and flags such as
+<TT
+CLASS="LITERAL"
+>-finit-priority</TT
+> which are needed by <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> itself.
+Users can modify the global flags option as required. In addition it
+is possible for existing flags to be removed from and new flags to be
+added to the current set on a per-package basis, again by means of
+user-modifiable configuration options. More details are given below.</P
+><P
+>Component writers can assume that the build system will perform full
+header file dependency analysis, including dependencies on
+configuration headers, but the exact means by which this happens is
+implementation-defined. Typical application developers are unlikely to
+modify exported or private header files, but configuration headers are
+likely to change as the configuration is changed to better meet the
+needs of the application. Full header file dependency analysis also
+makes things easier for the component writers themselves.</P
+><P
+>The current directory used during a compilation is an implementation
+detail of the build system. However it can be assumed that each
+package will have its own directory somewhere in the build tree, to
+prevent file name clashes, that this will be the current directory,
+and that intermediate object files will end up here.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="BUILD.MAKE.LIBRARIES">Generating the Libraries</H2
+><P
+>Once all the <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> and <SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+> properties have been
+processed and the required object files have been built or rebuilt,
+these can be collected together in one or more libraries. The archiver
+will be the <SPAN
+CLASS="APPLICATION"
+>ar</SPAN
+> command
+corresponding to the current architecture, for example <SPAN
+CLASS="APPLICATION"
+>powerpc-eabi-ar</SPAN
+>. By default al of the
+object files will end up in a single library
+<TT
+CLASS="FILENAME"
+>libtarget.a</TT
+>. This can be changed on a per-package
+basis using the <A
+HREF="ref.library.html"
+><SPAN
+CLASS="PROPERTY"
+>library</SPAN
+></A
+> property
+in the body of the corresponding <TT
+CLASS="LITERAL"
+>cdl_package</TT
+> command, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package &lt;SOME_PACKAGE&gt; {
+    &#8230;
+    library  libSomePackage.a
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>However using different libraries for each package should be avoided.
+It makes things more difficult for application developers since they
+now have to link the application code with more libraries, and
+possibly even change this set of libraries when packages are added to
+or removed from the configuration. The use of a single library
+<TT
+CLASS="FILENAME"
+>libtarget.a</TT
+> avoids any complications.</P
+><P
+>It is also possible to change the target library for individual files,
+using a <TT
+CLASS="LITERAL"
+>-library</TT
+> option with the corresponding
+<SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> or <SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+> property. For example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    compile -library=libSomePackage.a hello.c
+    make_object -library=libSomePackage.a {
+        &#8230;
+    }</PRE
+></TD
+></TR
+></TABLE
+><P
+>Again this should be avoided because it makes application development
+more difficult. There is one special library which can be used freely,
+<TT
+CLASS="FILENAME"
+>libextras.a</TT
+>, which is used to generate the
+<TT
+CLASS="FILENAME"
+>extras.o</TT
+> file as described below.</P
+><P
+>The order in which object files end up in a library is not defined.
+Typically each library will be created directly in the install tree,
+since there is little point in generating a file in the build tree and
+then immediately copying it to the install tree.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="BUILD.EXTRAS">The <TT
+CLASS="FILENAME"
+>extras.o</TT
+> file</H2
+><P
+>Package sources files normally get compiled and then added to a
+library, by default <TT
+CLASS="FILENAME"
+>libtarget.a</TT
+>, which is then
+linked with the application code. Because of the usual rules for
+linking with libraries, augmented by the use of link-time garbage
+collection, this means that code will only end up in the final
+executable if there is a direct or indirect reference to it in the
+application. Usually this is the desired behaviour: if the application
+does not make any use of say kernel message boxes, directly or
+indirectly, then that code should not end up in the final executable
+taking up valuable memory space.</P
+><P
+>In a few cases it is desirable for package code to end up in the final
+executable even if there are no direct or indirect references. For
+example, device driver functions are often not called directly.
+Instead the application will access the device via the string
+<TT
+CLASS="LITERAL"
+>"/dev/xyzzy"</TT
+> and call the device functions
+indirectly. This will be impossible if the functions have been
+removed at link-time.</P
+><P
+>Another example involves static C++ objects. It is possible to have a
+static C++ object, preferably with a suitable constructor priority,
+where all of the interesting work happens as a side effect of running
+the constructor. For example a package might include a monitoring
+thread or a garbage collection thread created from inside such a
+constructor. Without a reference by the application to the static
+object the latter will never get linked in, and the package will not
+function as expected.</P
+><P
+>A third example would be copyright messages. A package vendor may want
+to insist that all products shipped using that package include a
+particular message in memory, even though many users of that package
+will object to such a restriction.</P
+><P
+>To meet requirements such as these the build system provides support
+for a file <TT
+CLASS="FILENAME"
+>extras.o</TT
+>, which always gets linked
+with the application code via the linker script. Because it is an
+object file rather than a library everything in the file will be
+linked in. The <TT
+CLASS="FILENAME"
+>extras.o</TT
+> file is generated at the
+end of a build from a library <TT
+CLASS="FILENAME"
+>libextras.a</TT
+>, so
+packages can put functions and variables in suitable source files and
+add them to that library explicitly:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    compile -library=libextras.a xyzzy.c
+    compile xyzzy_support.c</PRE
+></TD
+></TR
+></TABLE
+><P
+>In this example <TT
+CLASS="FILENAME"
+>xyzzy.o</TT
+> will end up in
+<TT
+CLASS="FILENAME"
+>libextras.a</TT
+>, and hence in
+<TT
+CLASS="FILENAME"
+>extras.o</TT
+> and in the final executable.
+<TT
+CLASS="FILENAME"
+>xyzzy_support.o</TT
+> will end up in
+<TT
+CLASS="FILENAME"
+>libtarget.a</TT
+> as usual, and is subject to linker
+garbage collection.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="BUILD.FLAGS">Compilers and Flags</H2
+><DIV
+CLASS="CAUTION"
+><P
+></P
+><TABLE
+CLASS="CAUTION"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Caution</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>Some of the details of compiler selection and compiler flags described
+below are subject to change in future revisions of the component
+framework, although every reasonable attempt will be made to avoid
+breaking backwards compatibility.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>The build system needs to know what compiler to use, what compiler
+flags should be used for different stages of the build and so on. Much
+of this information will vary from target to target, although users
+should be able to override this when appropriate. There may also be a
+need for some packages to modify the compiler flags. All platform HAL
+packages should define a number of options with well-known names,
+along the following lines (any existing platform HAL package can be
+consulted for a complete example):</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_component CYGBLD_GLOBAL_OPTIONS {
+    flavor  none
+    parent  CYGPKG_NONE
+    &#8230;
+
+    cdl_option CYGBLD_GLOBAL_COMMAND_PREFIX {
+        flavor  data
+        default_value { "arm-elf" }
+        &#8230;
+    }
+    cdl_option CYGBLD_GLOBAL_CFLAGS {
+        flavor  data
+        default_value "-Wall -g -O2 &#8230;"
+        &#8230;
+    }
+
+    cdl_option CYGBLD_GLOBAL_LDFLAGS {
+        flavor  data
+        default_value "-g -nostdlib -Wl,--gc-sections &#8230;"
+        &#8230;
+    }
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <TT
+CLASS="VARNAME"
+>CYGBLD_GLOBAL_OPTIONS</TT
+> component serves to
+collect together all global build-related options. It has the flavor
+<TT
+CLASS="LITERAL"
+>none</TT
+> since disabling all of these options would
+make it impossible to build anything and hence is not useful. It is
+parented immediately below the root of the configuration hierarchy,
+thus making sure that it is readily accessible in the graphical
+configuration tool and, for command line users, in the
+<TT
+CLASS="FILENAME"
+>ecos.ecc</TT
+> save file.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Currently the <SPAN
+CLASS="PROPERTY"
+>parent</SPAN
+> property lists a parent of
+<TT
+CLASS="VARNAME"
+>CYGPKG_NONE</TT
+>, rather than an empty string. This
+could be unfortunate if there was ever a package with that name. The
+issue will be addressed in a future release of the component
+framework.</P
+></BLOCKQUOTE
+></DIV
+><P
+>The option <TT
+CLASS="VARNAME"
+>CYGBLD_GLOBAL_COMMAND_PREFIX</TT
+> defines
+which tools should be used for the current target. Typically this is
+determined by the processor on the target hardware. In some cases a
+given target board may be able to support several different
+processors, in which case the <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+> expression could select
+a different toolchain depending on some other option that is used to
+control which particular processor.
+<TT
+CLASS="VARNAME"
+>CYGBLD_GLOBAL_COMMAND_PREFIX</TT
+> is modifiable rather
+than calculated, so users can override this when necessary.</P
+><P
+>Given a command prefix such as <TT
+CLASS="LITERAL"
+>arm-elf</TT
+>, all C
+source files will be compiled with <TT
+CLASS="LITERAL"
+>arm-elf-gcc</TT
+>, all
+C++ sources will be built using <TT
+CLASS="LITERAL"
+>arm-elf-g++</TT
+>,
+and <TT
+CLASS="LITERAL"
+>arm-elf-ar</TT
+> will be used to generate the
+library. This is in accordance with the usual naming conventions for
+GNU cross-compilers and similar tools. For the purposes of custom
+build steps, tokens such as <TT
+CLASS="LITERAL"
+>$(CC)</TT
+> will be set to
+<TT
+CLASS="LITERAL"
+>arm-elf-gcc</TT
+>.</P
+><P
+>The next option, <TT
+CLASS="VARNAME"
+>CYGBLD_GLOBAL_CFLAGS</TT
+>, is used to
+provide the initial value of <TT
+CLASS="LITERAL"
+>$(CFLAGS)</TT
+>. Some
+compiler flags such as <TT
+CLASS="LITERAL"
+>-Wall</TT
+> and
+<TT
+CLASS="LITERAL"
+>-g</TT
+> are likely to be used on all targets. Other
+flags such as <TT
+CLASS="LITERAL"
+>-mcpu=arm7tdmi</TT
+> will be
+target-specific. Again this is a modifiable option, so the user can
+switch from say <TT
+CLASS="LITERAL"
+>-O2</TT
+> to <TT
+CLASS="LITERAL"
+>-Os</TT
+> if
+desired. The option <TT
+CLASS="VARNAME"
+>CYGBLD_GLOBAL_LDFLAGS</TT
+> serves
+the same purpose for <TT
+CLASS="LITERAL"
+>$(LDFLAGS)</TT
+> and linking. It is
+used primarily when building test cases or possibly for some custom
+build steps, since building eCos itself generally involves building
+one or more libraries rather than executables.</P
+><P
+>Some packages may wish to add certain flags to the global set, or
+possibly remove some flags. This can be achieved by having
+appropriately named options in the package, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_component CYGPKG_KERNEL_OPTIONS {
+    display "Kernel build options"
+    flavor  none
+    &#8230;
+
+    cdl_option CYGPKG_KERNEL_CFLAGS_ADD {
+        display "Additional compiler flags"
+        flavor  data
+        default_value { "" }
+        &#8230;
+    }
+
+    cdl_option CYGPKG_KERNEL_CFLAGS_REMOVE {
+        display "Suppressed compiler flags"
+        flavor  data
+        default_value { "" }
+        &#8230;
+    }
+
+    cdl_option CYGPKG_KERNEL_LDFLAGS_ADD {
+        display "Additional linker flags"
+        flavor  data
+        default_value { "" }
+        &#8230;
+    }
+
+    cdl_option CYGPKG_KERNEL_LDFLAGS_REMOVE {
+        display "Suppressed linker flags"
+        flavor  data
+        default_value { "" }
+        &#8230;
+    }
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>In this example the kernel does not modify the global compiler flags
+by default, but it is possible for the users to modify the options if
+desired. The value of <TT
+CLASS="LITERAL"
+>$(CFLAGS)</TT
+> that is used for
+the compilations and custom build steps in a given package is
+determined as follows:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Start with the global settings from
+<TT
+CLASS="VARNAME"
+>CYGBLD_GLOBAL_CFLAGS</TT
+>, for example
+<TT
+CLASS="LITERAL"
+>-g&nbsp;-O2</TT
+>.</P
+></LI
+><LI
+><P
+>Remove any flags specified in the per-package
+<TT
+CLASS="LITERAL"
+>CFLAGS_REMOVE</TT
+> option, if any. For example
+if <TT
+CLASS="LITERAL"
+>-O2</TT
+> should be removed for this package then
+<TT
+CLASS="LITERAL"
+>$(CFLAGS)</TT
+> would now have a value of just
+<TT
+CLASS="LITERAL"
+>-g</TT
+>.</P
+></LI
+><LI
+><P
+>Then concatenate the flags specified by the per-package
+<TT
+CLASS="LITERAL"
+>CFLAGS_ADD</TT
+> option, if any. For example if
+<TT
+CLASS="LITERAL"
+>-Os</TT
+> should be added for the current package then
+the final value of <TT
+CLASS="LITERAL"
+>$(CFLAGS)</TT
+> will be
+<TT
+CLASS="LITERAL"
+>-g&nbsp;-Os</TT
+>.</P
+></LI
+></OL
+><P
+><TT
+CLASS="LITERAL"
+>$(LDFLAGS)</TT
+> is determined in much the same way.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>The way compiler flags are handled at present has numerous limitations
+that need to be addressed in a future release, although it should
+suffice for nearly all cases. For the time being custom build steps
+and in particular the <SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+> property can be used to work
+around the limitations.</P
+><P
+>Amongst the issues, there is a specific problem with package
+encapsulation. For example the math library imposes some stringent
+requirements on the compiler in order to guarantee exact IEEE
+behavior, and may need special flags on a per-architecture basis. One
+way of handling this is to have
+<TT
+CLASS="VARNAME"
+>CYGPKG_LIBM_CFLAGS_ADD</TT
+> and
+<TT
+CLASS="VARNAME"
+>CYGPKG_LIBM_CFLAGS_REMOVE</TT
+> <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+>
+expressions which depend on the target architecture, but such
+expressions may have to updated for each new architecture. An
+alternative approach would allow the architectural HAL package to
+modify the <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+> expressions for the math library, but this
+breaks encapsulation. A third approach would allow some architectural
+HAL packages to define one or more special options with well-known
+names, and the math library could check if these options were defined
+and adjust the default values appropriately. Other packages with
+floating point requirements could do the same. This approach also has
+scalability issues, in particular how many such categories of options
+would be needed? It is not yet clear how best to resolve such issues.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>When generating a build tree it would be desirable for the component
+framework to output details of the tools and compiler flags in a
+format that can be re-used for application builds, for example a
+makefile fragment. This would make it easier for application
+developers to use the same set of flags as were used for building eCos
+itself, thus avoiding some potential problems with incompatible
+compiler flags.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="BUILD.CUSTOM">Custom Build Steps</H2
+><DIV
+CLASS="CAUTION"
+><P
+></P
+><TABLE
+CLASS="CAUTION"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Caution</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>Some of the details of custom build steps as described below are
+subject to change in future revisions of the component framework,
+although every reasonable attempt will be made to avoid breaking
+backwards compatibility.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>For most packages simply listing one or more source files in a
+<SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> property is sufficient. These files will get built using the
+appropriate compiler and compiler flags and added to a library, which
+then gets linked with application code. A package that can be built in
+this way is likely to be more portable to different targets and build
+environments, since it avoids build-time dependencies. However some
+packages have special needs, and the component framework supports
+custom build steps to allow for these needs. There are two properties
+related to this, <SPAN
+CLASS="PROPERTY"
+>make</SPAN
+> and <SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+>, and both take the following
+form:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    make {
+        &lt;target_filepath&gt; : &lt;dependency_filepath&gt; &#8230;
+            &lt;command&gt;
+            ...
+    }</PRE
+></TD
+></TR
+></TABLE
+><P
+>Although this may look like makefile syntax, and although some build
+environments will indeed involve generating makefiles and running
+<SPAN
+CLASS="APPLICATION"
+>make</SPAN
+>, this is not
+guaranteed. It is possible for the component framework to be
+integrated with some other build system, and custom build steps should
+be written with that possibility in mind. Each custom build step
+involves a target, some number of dependency files, and some number of
+commands. If the target is not up to date with respect to one or more
+of the dependencies then the commands need to be executed.</P
+><P
+></P
+><OL
+TYPE="a"
+><LI
+><P
+>Only one target can be specified. For a <SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+> property this
+target must be an object file. For a <SPAN
+CLASS="PROPERTY"
+>make</SPAN
+> property it can be any
+file. In both cases it must refer to a physical file, the use of
+phony targets is not supported. The target should not be an absolute
+path name. If the generated file needs to end up in the install tree
+then this can be achieved using a <TT
+CLASS="LITERAL"
+>&lt;PREFIX&gt;</TT
+>
+token, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    make {
+        &lt;PREFIX&gt;/lib/mytarget : &#8230;
+            ...
+    }</PRE
+></TD
+></TR
+></TABLE
+><P
+>When the build tree is generated and the custom build step is added to
+the makefile (or whatever build system is used)
+<TT
+CLASS="LITERAL"
+>&lt;PREFIX&gt;</TT
+> will be replaced with the absolute
+path to the install tree. </P
+></LI
+><LI
+><P
+>All the dependencies must also refer to physical files, not to phony
+targets. These files may be in the source tree. The
+<TT
+CLASS="LITERAL"
+>&lt;PACKAGE&gt;</TT
+> token can be used to indicate this:
+when the build tree is generated this token will be replaced with the
+absolute path to the package's root directory in the component
+repository, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    make_object {
+        xyzzy.o : &lt;PACKAGE&gt;/src/xyzzy.c
+            &#8230;</PRE
+></TD
+></TR
+></TABLE
+><P
+>If the component repository was installed in <TT
+CLASS="FILENAME"
+>/usr/local/ecos</TT
+> and this custom build
+step existed in version 1_5 of the kernel,
+<TT
+CLASS="LITERAL"
+>&lt;PACKAGE&gt;</TT
+> would be replaced with
+<TT
+CLASS="FILENAME"
+>/usr/local/ecos/packages/kernel/v1_5</TT
+>.</P
+><P
+>Alternatively the dependencies may refer to files that are generated
+during the build. These may be object files resulting from <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+>
+properties or other <SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+> properties, or they may be other
+files resulting from a <SPAN
+CLASS="PROPERTY"
+>make</SPAN
+> property, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    compile plugh.c
+    make_object {
+        xyzzy.o : plugh.o
+            &#8230;
+    }</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>No other token or makefile variables may be used in the target or
+dependency file names. Also conditionals such as
+<TT
+CLASS="LITERAL"
+>ifneq</TT
+> and similar makefile functionality must not
+be used.</P
+></LI
+><LI
+><P
+> 
+Similarly the list of commands must not use any makefile conditionals
+or similar functionality. A number of tokens can be used to provide
+access to target-specific or environmental data. Note that these
+tokens look like makefile variables, unlike the 
+<TT
+CLASS="LITERAL"
+>&lt;PREFIX&gt;</TT
+> and
+<TT
+CLASS="LITERAL"
+>&lt;PACKAGE&gt;</TT
+> tokens mentioned earlier:</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2778"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Token</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Purpose</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Example value</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>$(AR)</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>the GNU archiver</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>mips-tx39-elf-ar</TT
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>$(CC)</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>the GNU compiler</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>sh-elf-gcc</TT
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>$(CFLAGS)</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>compiler flags</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>-O2 -Wall</TT
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>$(COMMAND_PREFIX)</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>the triplet prefix</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>mn10300-elf-</TT
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>$(INCLUDE_PATH&#62;</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>header file search path</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>-I. -Isrc/misc</TT
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>$(LDFLAGS)</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>linker flags</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>-nostdlib -Wl,-static</TT
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>$(OBJCOPY)</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>the objcopy utility</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>arm-elf-objcopy</TT
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>$(PREFIX)</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>location of the install tree</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>/home/fred/ecos-install</TT
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>$(REPOSITORY)</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>location of the component repository</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>/home/fred/ecos/packages</TT
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+><P
+>In addition commands in a custom build step may refer to the target
+and the dependencies using <TT
+CLASS="LITERAL"
+>$@</TT
+>,
+<TT
+CLASS="LITERAL"
+>$&#60;</TT
+>, <TT
+CLASS="LITERAL"
+>$^</TT
+> and
+<TT
+CLASS="LITERAL"
+>$*</TT
+>, all of which behave as per GNU make syntax. The
+commands will execute in a suitable directory in the build tree.</P
+></LI
+><LI
+><P
+>The current directory used during a custom build step is an
+implementation detail of the build system. However it can be assumed
+that each package will have its own directory somewhere in the build
+tree, to prevent file name clashes, and that this will be the current
+directory. In addition any object files generated as a result of
+<SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> properties will be located here as well, which is useful for
+custom build steps that depend on a <TT
+CLASS="LITERAL"
+>.o</TT
+> file
+previously generated.</P
+><P
+>Any temporary files created by a custom build step should be generated
+in the build tree (in or under the current directory). Such files
+should be given a <TT
+CLASS="FILENAME"
+>.tmp</TT
+> file extension to ensure
+that they are deleted during a <TT
+CLASS="LITERAL"
+>make&nbsp;clean</TT
+> or
+equivalent operation.</P
+><P
+>If a package contains multiple custom build steps with the same
+priority, it is possible that these build steps will be run
+concurrently. Therefore these custom build steps must not accidentally
+use the same file names for intermediate files.</P
+></LI
+><LI
+><P
+>Care has to be taken to make sure that the commands in a custom build
+step will run on all host platforms, including Windows NT as well as
+Linux and other Unix systems. For example, all file paths should use
+forward slashes as the directory separator. It can be assumed that
+Windows users will have a full set of CygWin tools installed and
+available on the path. The <A
+HREF="http://www.gnu.org/prep/standards.html"
+TARGET="_top"
+>GNU coding
+standards</A
+> provide some useful guidelines for writing portable
+build rules.</P
+></LI
+><LI
+><P
+>A custom build step must not make any assumptions concerning the
+version of another package. This enforces package encapsulation,
+preventing one package from accessing the internals of another.</P
+></LI
+><LI
+><P
+>No assumptions should be made about the target platform, unless the
+package is inherently specific to that platform. Even then it is
+better to use the various tokens whenever possible, rather than
+hard-coding in details such as the compiler. For example, given a
+custom build step such as:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    arm-elf-gcc -c -mcpu=arm7di -o $@ $&lt;</PRE
+></TD
+></TR
+></TABLE
+><P
+>Even if this build step will only be invoked on ARM targets, it could
+cause problems. For example the toolchain may have been installed
+using a prefix other than <TT
+CLASS="LITERAL"
+>arm-elf</TT
+>. Also, if the
+user changes the compiler flags then this would not be reflected in
+the build step. The correct way to write this rule would be:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    $(CC) -c $(CFLAGS) -o $@ $&lt;</PRE
+></TD
+></TR
+></TABLE
+><P
+>Some commands such as the compiler, the archiver, and objcopy are
+required sufficiently often to warrant their own tokens, for example
+<TT
+CLASS="LITERAL"
+>$(CC)</TT
+> and <TT
+CLASS="LITERAL"
+>$(OBJCOPY)</TT
+>. Other
+target-specific commands are needed only rarely and the
+<TT
+CLASS="LITERAL"
+>$(COMMAND_PREFIX)</TT
+> token can be used to construct
+the appropriate command name, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&#13;    $(COMMAND_PREFIX)size $&lt; &gt; $@</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>Custom build steps should not be used to build host-side executables,
+even if those executables are needed to build parts of the target side
+code. Support for building host-side executables will be added in a
+future version of the component framework, although it will not
+necessarily involve these custom build steps.</P
+></LI
+></OL
+><P
+>By default custom build steps defined in a <SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+> property
+have a priority of 100, which means that they will be executed 
+in the same phase as compilations resulting from a <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> property.
+It is possible to change the priority using a property option, for
+example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    make_object -priority 50 {
+        &#8230;
+    }</PRE
+></TD
+></TR
+></TABLE
+><P
+>Specifying a priority smaller than a 100 means that the custom build
+step happens before the normal compilations. Priorities between 100
+and 200 happen after normal compilations but before the libraries are
+archived together. <SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+> properties should not specify a
+priority of 200 or later. </P
+><P
+>Custom build steps defined in a <SPAN
+CLASS="PROPERTY"
+>make</SPAN
+> property have a default
+priority of 300, and so they will happen after the libraries have been
+built. Again this can be changed using a <TT
+CLASS="LITERAL"
+>-priority</TT
+>
+property option.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="BUILD.STARTUP">Startup Code</H2
+><P
+>Linking an application requires the application code, a linker script,
+the eCos library or libraries, the <TT
+CLASS="LITERAL"
+>extras.o</TT
+> file,
+and some startup code. Depending on the target hardware and how the
+application gets booted, this startup code may do little more than
+branching to <TT
+CLASS="LITERAL"
+>main()</TT
+>, or it may have to perform a
+considerable amount of hardware initialization. The startup code
+generally lives in a file <TT
+CLASS="LITERAL"
+>vectors.o</TT
+> which is
+created by a custom build step in a HAL package. As far as application
+developers are concered the existence of this file is largely
+transparent, since the linker script ensures that the file is part of
+the final executable.</P
+><P
+>This startup code is not generally of interest to component writers,
+only to HAL developers who are referred to one of the existing HAL
+packages for specific details. Other packages are not expected to
+modify the startup in any way. If a package needs some work performed
+early on during system initialization, before the application's main
+entry point gets invoked, this can be achieved using a static object
+with a suitable constructor priority.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>It is possible that the <TT
+CLASS="LITERAL"
+>extras.o</TT
+> support, in
+conjunction with appropriate linker script directives, could be used
+to eliminate the need for a special startup file. The details are not
+yet clear.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="BUILD.LINKERSCRIPT">The Linker Script</H2
+><DIV
+CLASS="CAUTION"
+><P
+></P
+><TABLE
+CLASS="CAUTION"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Caution</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>This section is not finished, and the details are subject to change in
+a future release. Arguably linker script issues should be documented
+in the HAL documentation rather than in this guide.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>Generating the linker script is the responsibility of the various HAL
+packages that are applicable to a given target. Developers of
+components other than HAL packages need not be concerned about what is
+involved. Developers of new HAL packages should use an existing HAL as
+a template.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>It may be desirable for some packages to have some control over the
+linker script, for example to add extra alignment details for a
+particular section. This can be risky because it can result in subtle
+portability problems, and the current component framework has no
+support for any such operations. The issue may be addressed in a
+future release.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="build.headers.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="build.tests.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Configuration Header File Generation</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="build.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Building Test Cases</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

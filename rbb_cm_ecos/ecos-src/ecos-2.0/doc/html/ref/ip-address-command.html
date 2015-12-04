@@ -1,0 +1,448 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>ip_address</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Common Commands"
+HREF="common-commands.html"><LINK
+REL="PREVIOUS"
+TITLE="help"
+HREF="help-command.html"><LINK
+REL="NEXT"
+TITLE="load"
+HREF="download-command.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="help-command.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="download-command.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="IP-ADDRESS-COMMAND">ip_address</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN3361"
+></A
+><H2
+>Name</H2
+>ip_address&nbsp;--&nbsp;Set IP addresses</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN3364"><H2
+>Synopsis</H2
+><P
+><B
+CLASS="COMMAND"
+>ip_address</B
+>  [-l <TT
+CLASS="REPLACEABLE"
+><I
+> local_IP_address</I
+></TT
+>] [-h <TT
+CLASS="REPLACEABLE"
+><I
+> server_IP_address</I
+></TT
+>] [-d <TT
+CLASS="REPLACEABLE"
+><I
+>DNS_server_IP_address</I
+></TT
+>]</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3373"
+></A
+><H2
+>Arguments</H2
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3375"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Name</TH
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Type</TH
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Default</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-l <TT
+CLASS="REPLACEABLE"
+><I
+>local_IP_address</I
+></TT
+></TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Numeric IP or DNS name</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>The IP address RedBoot should use.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>none</I
+></SPAN
+></TD
+></TR
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-h <TT
+CLASS="REPLACEABLE"
+><I
+>server_IP_address</I
+></TT
+></TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Numeric IP or DNS name</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>The IP address of the default server. Use of this
+address is implied by other commands, such as
+<B
+CLASS="COMMAND"
+>load</B
+>.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>none</I
+></SPAN
+></TD
+></TR
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-d <TT
+CLASS="REPLACEABLE"
+><I
+>DNS_server_IP_address</I
+></TT
+></TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Numeric IP or DNS name</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>The IP address of the DNS server.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>none</I
+></SPAN
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3410"
+></A
+><H2
+>Description</H2
+><P
+>The <B
+CLASS="COMMAND"
+>ip_address</B
+> command is used to show and/or change the basic IP
+addresses used by RedBoot. IP addresses may be given as numeric
+values, e.g. 192.168.1.67, or as symbolic names such as www.redhat.com
+if DNS support is enabled.
+      </P
+><P
+>The <TT
+CLASS="OPTION"
+>-l</TT
+> option is used to set the IP address used by
+the target device.
+      </P
+><P
+>The <TT
+CLASS="OPTION"
+>-h</TT
+> option is used to set the default server
+address, such as is used by the <B
+CLASS="COMMAND"
+>load</B
+> command.
+      </P
+><P
+>The <TT
+CLASS="OPTION"
+>-d</TT
+> option is used to set the default DNS server
+address which is used for resolving symbolic network addresses. Note
+that an address of 0.0.0.0 will disable DNS lookups.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3421"
+></A
+><H2
+>Examples</H2
+><P
+>Display the current network settings. 
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> 
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>ip_address</B
+></TT
+> 
+IP: 192.168.1.31, Default server: 192.168.1.101, DNS server IP: 0.0.0.0 </PRE
+></TD
+></TR
+></TABLE
+> </P
+><P
+>Change the DNS server address. 
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> 
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>ip_address -d 192.168.1.101</B
+></TT
+> 
+IP: 192.168.1.31, Default server: 192.168.1.101, DNS server IP: 192.168.1.101 </PRE
+></TD
+></TR
+></TABLE
+> </P
+><P
+>Change the default server address. 
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> 
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>ip_address -h 192.168.1.104</B
+></TT
+> 
+IP: 192.168.1.31, Default server: 192.168.1.104, DNS server IP: 192.168.1.101</PRE
+></TD
+></TR
+></TABLE
+>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="help-command.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="download-command.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>help</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="common-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>load</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

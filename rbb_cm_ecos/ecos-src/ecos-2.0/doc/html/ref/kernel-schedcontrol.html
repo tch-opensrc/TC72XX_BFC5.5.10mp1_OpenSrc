@@ -1,0 +1,339 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Scheduler Control</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Kernel"
+HREF="kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="Spinlocks"
+HREF="kernel-spinlocks.html"><LINK
+REL="NEXT"
+TITLE="Interrupt Handling"
+HREF="kernel-interrupts.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="kernel-spinlocks.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="kernel-interrupts.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="KERNEL-SCHEDCONTROL">Scheduler Control</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN1784"
+></A
+><H2
+>Name</H2
+>cyg_scheduler_start, cyg_scheduler_lock, cyg_scheduler_unlock, cyg_scheduler_safe_lock, cyg_scheduler_read_lock&nbsp;--&nbsp;Control the state of the scheduler</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN1791"><H2
+>Synopsis</H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><A
+NAME="AEN1792"><P
+></P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &lt;cyg/kernel/kapi.h&gt;
+        </PRE
+></TD
+></TR
+></TABLE
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_scheduler_start</CODE
+>(void);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_scheduler_lock</CODE
+>(void);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_scheduler_unlock</CODE
+>(void);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_ucount32 cyg_scheduler_read_lock</CODE
+>(void);</CODE
+></P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-SCHEDCONTROL-DESCRIPTION"
+></A
+><H2
+>Description</H2
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_scheduler_start</TT
+> should only be called once,
+to mark the end of system initialization. In typical configurations it
+is called automatically by the system startup, but some applications
+may bypass the standard startup in which case
+<TT
+CLASS="FUNCTION"
+>cyg_scheduler_start</TT
+> will have to be called
+explicitly. The call will enable system interrupts, allowing I/O
+operations to commence. Then the scheduler will be invoked and control
+will be transferred to the highest priority runnable thread. The call
+will never return.
+      </P
+><P
+>The various data structures inside the eCos kernel must be protected
+against concurrent updates. Consider a call to
+<TT
+CLASS="FUNCTION"
+>cyg_semaphore_post</TT
+> which causes a thread to be
+woken up: the semaphore data structure must be updated to remove the
+thread from its queue; the scheduler data structure must also be
+updated to mark the thread as runnable; it is possible that the newly
+runnable thread has a higher priority than the current one, in which
+case preemption is required. If in the middle of the semaphore post
+call an interrupt occurred and the interrupt handler tried to
+manipulate the same data structures, for example by making another
+thread runnable, then it is likely that the structures will be left in
+an inconsistent state and the system will fail.
+      </P
+><P
+>To prevent such problems the kernel contains a special lock known as
+the scheduler lock. A typical kernel function such as
+<TT
+CLASS="FUNCTION"
+>cyg_semaphore_post</TT
+> will claim the scheduler lock,
+do all its manipulation of kernel data structures, and then release
+the scheduler lock. The current thread cannot be preempted while it
+holds the scheduler lock. If an interrupt occurs and a DSR is supposed
+to run to signal that some event has occurred, that DSR is postponed
+until the scheduler unlock operation. This prevents concurrent updates
+of kernel data structures.
+      </P
+><P
+>The kernel exports three routines for manipulating the scheduler lock.
+<TT
+CLASS="FUNCTION"
+>cyg_scheduler_lock</TT
+> can be called to claim the
+lock. On return it is guaranteed that the current thread will not be
+preempted, and that no other code is manipulating any kernel data
+structures. <TT
+CLASS="FUNCTION"
+>cyg_scheduler_unlock</TT
+> can be used to
+release the lock, which may cause the current thread to be preempted.
+<TT
+CLASS="FUNCTION"
+>cyg_scheduler_read_lock</TT
+> can be used to query the
+current state of the scheduler lock. This function should never be
+needed because well-written code should always know whether or not the
+scheduler is currently locked, but may prove useful during debugging.
+      </P
+><P
+>The implementation of the scheduler lock involves a simple counter.
+Code can call <TT
+CLASS="FUNCTION"
+>cyg_scheduler_lock</TT
+> multiple times,
+causing the counter to be incremented each time, as long as
+<TT
+CLASS="FUNCTION"
+>cyg_scheduler_unlock</TT
+> is called the same number of
+times. This behaviour is different from mutexes where an attempt by a
+thread to lock a mutex multiple times will result in deadlock or an
+assertion failure.
+      </P
+><P
+>Typical application code should not use the scheduler lock. Instead
+other synchronization primitives such as mutexes and semaphores should
+be used. While the scheduler is locked the current thread cannot be
+preempted, so any higher priority threads will not be able to run.
+Also no DSRs can run, so device drivers may not be able to service
+I/O requests. However there is one situation where locking the
+scheduler is appropriate: if some data structure needs to be shared
+between an application thread and a DSR associated with some interrupt
+source, the thread can use the scheduler lock to prevent concurrent
+invocations of the DSR and then safely manipulate the structure. It is
+desirable that the scheduler lock is held for only a short period of
+time, typically some tens of instructions. In exceptional cases there
+may also be some performance-critical code where it is more
+appropriate to use the scheduler lock rather than a mutex, because the
+former is more efficient.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-SCHEDCONTROL-CONTEXT"
+></A
+><H2
+>Valid contexts</H2
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_scheduler_start</TT
+> can only be called during
+system initialization, since it marks the end of that phase. The
+remaining functions may be called from thread or DSR context. Locking
+the scheduler from inside the DSR has no practical effect because the
+lock is claimed automatically by the interrupt subsystem before
+running DSRs, but allows functions to be shared between normal thread
+code and DSRs.
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="kernel-spinlocks.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="kernel-interrupts.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Spinlocks</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Interrupt Handling</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

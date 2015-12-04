@@ -1,0 +1,397 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>MIPS/VR4375 NEC DDB-VRC4375</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Installation and Testing"
+HREF="installation-and-testing.html"><LINK
+REL="PREVIOUS"
+TITLE="MIPS/RM7000 PMC-Sierra Ocelot"
+HREF="ocelot.html"><LINK
+REL="NEXT"
+TITLE="PowerPC/MPC860T Analogue & Micro PowerPC 860T"
+HREF="viper.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ocelot.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Installation and Testing</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="viper.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="VRC4375">MIPS/VR4375 NEC DDB-VRC4375</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7021">Overview</H2
+><P
+>RedBoot supports only serial port 1, which is connected to the upper
+of the stacked serial connectors on the board. The default serial
+port settings are 38400,8,N,1. FLASH management is also supported.</P
+><P
+>The following RedBoot configurations are supported:
+
+      <DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7031"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Configuration</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Mode</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>ROMRAM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROMRAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM, but contained in the
+	      board's flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_ROMRAM.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RAM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[RAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM with RedBoot in the
+	      flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_RAM.ecm</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7050">Initial Installation Method</H2
+><P
+>A device programmer should be used to program a socketed FLASH part
+(AMD 29F040). The board as delivered is configured for a 512K
+EPROM. To install a FLASH ROM, Jumpers J30, J31 and J36 need to be
+changed as described in the board's User Manual.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7053">Special RedBoot Commands</H2
+><P
+>None.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7056">Memory Maps</H2
+><P
+>RedBoot sets up the memory map primarily as described in the board's
+User Manual. There are some minor differences, noted in the following
+table:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Physical                Virtual                 Resource
+Addresses               Addresses
+00000000-01FFFFFF       80000000-81FFFFFF       Base SDRAM (cached)
+00000000-01FFFFFF       A0000000-A1FFFFFF       Base SDRAM (uncached)
+0C000000-0C0BFFFF       AC000000-AC0B0000       PCI IO space
+0F000000-0F0001FF       AF000000-AF0001FF       VRC4375 Registers
+1C000000-1C0FFFFF       BC000000-BC0FFFFF       VRC4372 Registers
+1C100000-1DFFFFFF       BC100000-BDFFFFFF       PCI Memory space
+1FC00000-1FC7FFFF       BFC00000-BFC7FFFF       FLASH ROM
+80000000-8000000D       C0000000-C000000D       RTC
+8000000E-80007FFF       C000000E-C0007FFF       NVRAM
+81000000-81FFFFFF       C1000000-C1FFFFFF       Z85C30 DUART
+82000000-82FFFFFF       C2000000-C2FFFFFF       Z8536 Timer
+83000000-83FFFFFF       C3000000-C3FFFFFF       8255 Parallel port
+87000000-87FFFFFF       C7000000-C7FFFFFF       Seven segment display</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>NOTE: </B
+>By default the VRC4375 SIMM control registers are not programmed
+since the values used must depend on the SIMMs installed. If SIMMs
+are to be used, correct values must be placed in these registers
+before accessing the SIMM address range.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>NOTE: </B
+>The allocation of address ranges to devices in the PCI IO and
+memory spaces is handled by the eCos PCI support library. They do
+not correspond to those described in the board User Manual.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>NOTE: </B
+>The MMU has been set up to relocate the VRC4372 supported devices
+mapped at physical addresses 0x8xxxxxxx to virtual addresses
+0xCxxxxxxx.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7069">Ethernet Driver</H2
+><P
+>The ethernet driver is in two parts:</P
+><P
+>A generic ether driver for the Intel i21143 device is located in
+<TT
+CLASS="FILENAME"
+>devs/eth/intel/i21143</TT
+>. Its package name is <TT
+CLASS="COMPUTEROUTPUT"
+>CYGPKG_DEVS_ETH_INTEL_I21143</TT
+>.</P
+><P
+>The platform-specific ether driver is <TT
+CLASS="FILENAME"
+>devs/eth/mips/vrc4375</TT
+>. Its package is
+<TT
+CLASS="COMPUTEROUTPUT"
+>CYGPKG_DEVS_ETH_MIPS_VRC4375</TT
+>. This
+tells the generic driver the address in IO memory of the chip, for
+example, and other configuration details.  The ESA (MAC address) is by
+default collected from on-board serial EEPROM, unless configured
+statically within this package.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7078">Rebuilding RedBoot</H2
+><P
+>These shell variables provide the platform-specific information
+needed for building RedBoot according to the procedure described in
+<A
+HREF="rebuilding-redboot.html"
+>Chapter 3</A
+>:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>export TARGET=vrc4373
+export ARCH_DIR=mips
+export PLATFORM_DIR=vrc4373</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The names of configuration files are listed above with the
+description of the associated modes.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ocelot.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="viper.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>MIPS/RM7000 PMC-Sierra Ocelot</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="installation-and-testing.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>PowerPC/MPC860T Analogue &#38; Micro PowerPC 860T</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

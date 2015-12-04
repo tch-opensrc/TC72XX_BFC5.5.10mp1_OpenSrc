@@ -1,0 +1,493 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>ARM/ARM7+ARM9 ARM Integrator</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Installation and Testing"
+HREF="installation-and-testing.html"><LINK
+REL="PREVIOUS"
+TITLE="ARM/ARM7 ARM Evaluator7T"
+HREF="e7t.html"><LINK
+REL="NEXT"
+TITLE="ARM/ARM7+ARM9 ARM PID Board and EPI Dev7+Dev9"
+HREF="pid.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="e7t.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Installation and Testing</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="pid.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="INTEGRATOR">ARM/ARM7+ARM9 ARM Integrator</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5130">Overview</H2
+><P
+>RedBoot supports
+both serial ports for communication and downloads. The default serial port
+settings are 38400,8,N,1.</P
+><P
+>The following RedBoot configurations are supported:
+
+      <DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5140"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Configuration</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Mode</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>ROM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from the board's flash boot
+	      sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_ROM.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RAM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[RAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM with RedBoot in the
+	      flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_RAM.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>ROMRAM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROMRAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM, but contained in the
+	      board's flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_ROMRAM.ecm</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5164">Initial Installation</H2
+><P
+>RedBoot is installed using the on-board bootPROM environment. See the user
+manual for full details.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5167">Quick download instructions</H2
+><P
+>Here are quick start instructions for downloading the prebuilt Redboot
+image:</P
+><P
+></P
+><UL
+><LI
+><P
+>Set DIP switch S1[1] to the ON position and reset or
+power the board up. You will see the bootPROM startup message on
+serial port A (J14):</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Initialising...
+
+
+ARM bootPROM [Version 1.3] Rebuilt on Jun 26 2001 at 22:04:10
+Running on a Integrator Evaluation Board
+Board Revision V1.0, ARM966E-S Processor
+Memory Size is 16MBytes, Flash Size is 32MBytes
+Copyright (c) ARM Limited 1999 - 2001. All rights reserved.
+Board designed by ARM Limited
+Hardware support provided at http://www.arm.com/
+For help on the available commands type ? or h
+boot Monitor &#62;</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>Issue the FLASH ROM load command:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>boot Monitor &#62; <TT
+CLASS="USERINPUT"
+><B
+>L</B
+></TT
+>
+Load Motorola S-Records into flash
+
+Deleting Image 0
+
+The S-Record loader only accepts input on the serial port.
+Type Ctrl/C to exit loader.</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>Either use the ASCII transmit option in the terminal emulator,
+or on Linux, simply cat the file to the serial port:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ <TT
+CLASS="USERINPUT"
+><B
+>cat redboot.srec &#62; /dev/ttyS0</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+><P
+>When complete, type Ctrl-C and you should see something similar to:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>................................
+................................
+....................
+Downloaded 5,394 records in 81 seconds.
+
+Overwritten block/s
+    0
+
+boot Monitor &#62;</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>Set DIP switch S1[1] to the OFF position and reboot
+the board and you should see the RedBoot banner.</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5186">Special RedBoot Commands</H2
+><P
+>None.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5189">Memory Maps</H2
+><P
+>RedBoot sets up the following memory map on the Integrator board. <DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>NOTE: </B
+>The virtual memory maps in this section use a C and B column to indicate
+whether or not the region is cached (C) or buffered (B).</P
+></BLOCKQUOTE
+></DIV
+>
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&#13;ARM7TDMI
+--------
+
+Physical Address Range  C B  Description
+----------------------- - -  -----------
+0x00000000 - 0x0007ffff N N  SSRAM
+0x00080000 - 0x0fffffff N N  SDRAM (depends on part fitted)
+0x10000000 - 0x1fffffff N N  System control and peripheral registers
+0x20000000 - 0x23ffffff N N  Boot ROM (contains boot Monitor)
+0x24000000 - 0x27ffffff N N  FLASH ROM (contains RedBoot)
+0x28000000 - 0x2bffffff N N  SSRAM echo area
+0x40000000 - 0x5fffffff N N  PCI Memory access windows
+0x60000000 - 0x60ffffff N N  PCI IO access window
+0x61000000 - 0x61ffffff N N  PCI config space window
+0x62000000 - 0x6200ffff N N  PCI bridge register window
+0x80000000 - 0x8fffffff N N  SDRAM echo area (used for PCI accesses)
+
+
+ARM966E
+-------
+
+Physical Address Range  C B  Description
+----------------------- - -  -----------
+0x00000000 - 0x000fffff N N  SSRAM
+0x00100000 - 0x0fffffff N N  SDRAM (depends on part fitted)
+0x10000000 - 0x1fffffff N N  System control and peripheral registers
+0x20000000 - 0x23ffffff N N  Boot ROM (contains boot Monitor)
+0x24000000 - 0x27ffffff N N  FLASH ROM (contains RedBoot)
+0x28000000 - 0x2bffffff N N  SSRAM echo area
+0x40000000 - 0x5fffffff N N  PCI Memory access windows
+0x60000000 - 0x60ffffff N N  PCI IO access window
+0x61000000 - 0x61ffffff N N  PCI config space window
+0x62000000 - 0x6200ffff N N  PCI bridge register window
+0x80000000 - 0x8fffffff N N  SDRAM echo area (used for PCI accesses)&#13;</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5196">Rebuilding RedBoot</H2
+><P
+>These shell variables provide the platform-specific information
+needed for building RedBoot according to the procedure described in
+<A
+HREF="rebuilding-redboot.html"
+>Chapter 3</A
+>:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>export TARGET=integrator
+export ARCH_DIR=arm
+export PLATFORM_DIR=integrator</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The names of configuration files are listed above with the
+description of the associated modes.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="e7t.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="pid.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>ARM/ARM7 ARM Evaluator7T</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="installation-and-testing.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>ARM/ARM7+ARM9 ARM PID Board and EPI Dev7+Dev9</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

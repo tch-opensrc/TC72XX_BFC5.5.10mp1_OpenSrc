@@ -1,0 +1,201 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>SMP Support</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Device Driver Interface to the Kernel"
+HREF="devapi-device-driver-interface-to-the-kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="Synchronization"
+HREF="devapi-synchronization.html"><LINK
+REL="NEXT"
+TITLE="Device Driver Models"
+HREF="devapi-device-driver-models.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="devapi-synchronization.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 18. Device Driver Interface to the Kernel</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="devapi-device-driver-models.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="DEVAPI-SMP-SUPPORT">SMP Support</H1
+><P
+>Some eCos targets contain support for Symmetric Multi-Processing (SMP)
+configurations, where more than one CPU may be present. This option
+has a number of ramifications for the way in which device drivers must
+be written if they are to be SMP-compatible. </P
+><P
+>Since it is possible for the ISR, DSR and thread components of a
+device driver to execute on different CPUs, it is important that
+SMP-compatible device drivers use the driver API routines correctly.</P
+><P
+>Synchronization between threads and DSRs continues to require that the
+thread-side code use <TT
+CLASS="FUNCTION"
+>cyg_drv_dsr_lock()</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_drv_dsr_unlock()</TT
+> to protect access to shared
+data. While it is not strictly necessary for DSR code to claim the DSR
+lock, since DSRs are run with it claimed already, it is good practice
+to do so.</P
+><P
+>Synchronization between ISRs and DSRs or threads requires that access
+to sensitive data be protected, in all places, by calls to
+<TT
+CLASS="FUNCTION"
+>cyg_drv_isr_lock()</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_drv_isr_unlock()</TT
+>. Disabling or masking
+interrupts is not adequate, since the thread or DSR may be running on
+a different CPU and interrupt enable/disable only work on the current
+CPU.</P
+><P
+>The ISR lock, for SMP systems, not only disables local interrupts, but
+also acquires a spinlock to protect against concurrent access from
+other CPUs. This is necessary because ISRs are not run with the
+scheduler lock claimed. Hence they can run in parallel with the other
+components of the device driver.</P
+><P
+>The ISR lock provided by the driver API is just a shared spinlock that
+is available for use by all drivers. If a driver needs to implement a
+finer grain of locking, it can use private spinlocks, accessed via the
+<TT
+CLASS="FUNCTION"
+>cyg_drv_spinlock_*()</TT
+> functions.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="devapi-synchronization.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="devapi-device-driver-models.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Synchronization</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="devapi-device-driver-interface-to-the-kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Device Driver Models</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

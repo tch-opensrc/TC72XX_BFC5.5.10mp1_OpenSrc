@@ -1,0 +1,284 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Board: Hitachi HS7729PCI HS7729 SH3</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Real-time characterization"
+HREF="real-time-characterization.html"><LINK
+REL="PREVIOUS"
+TITLE="Board: CQ CqREEK SH3 Evaluation Board (cq7708)"
+HREF="rt-sh-cq7708.html"><LINK
+REL="NEXT"
+TITLE="Board: Hitachi Solution Engine 7751 SH4 (se7751)"
+HREF="rt-sh-se7751.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="rt-sh-cq7708.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix B. Real-time characterization</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="rt-sh-se7751.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RT-SH-HS7729PCI">Board: Hitachi HS7729PCI HS7729 SH3</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="LITERALLAYOUT"
+>&#13;Board: Hitachi HS7729PCI HS7729 SH3
+
+CPU: Hitachi SH3/7729 132MHz
+
+
+Startup, main stack             : stack used   464 size  4112
+Startup              :  Interrupt stack used    92 size  4096
+Startup              : Idlethread stack used    94 size  2048
+
+eCos Kernel Timings
+Notes: all times are in microseconds (.000001) unless otherwise stated
+
+Reading the hardware clock takes 3 'ticks' overhead
+... this value will be factored out of all other measurements
+Clock interrupt took   18.10 microseconds (149 raw clock ticks)
+
+Testing parameters:
+   Clock samples:            32
+   Threads:                  64
+   Thread switches:         128
+   Mutexes:                  32
+   Mailboxes:                32
+   Semaphores:               32
+   Scheduler operations:    128
+   Counters:                 32
+   Alarms:                   32
+
+
+                                 Confidence
+     Ave     Min     Max     Var  Ave  Min  Function
+  ======  ======  ======  ====== ========== ========
+   18.33   15.52   28.24    1.47   53%  28% Create thread
+    3.08    2.91    6.79    0.13   78%  89% Yield thread [all suspended]
+    3.23    3.03    6.18    0.16   59%  70% Suspend [suspended] thread
+    2.70    2.55    6.18    0.15   54%  82% Resume thread
+    4.12    4.00    7.52    0.16   96%  81% Set priority
+    0.61    0.48    1.33    0.07   57%  28% Get priority
+    9.14    8.61   18.91    0.42   85%  57% Kill [suspended] thread
+    3.04    2.91    4.48    0.07   68%  20% Yield [no other] thread
+    5.12    4.73    7.88    0.29   60%  53% Resume [suspended low prio] thread
+    2.54    2.42    3.03    0.09   39%  40% Resume [runnable low prio] thread
+    5.00    4.36    9.45    0.21   75%   1% Suspend [runnable] thread
+    3.04    2.91    4.61    0.07   65%  21% Yield [only low prio] thread
+    2.91    2.79    3.27    0.08   43%  31% Suspend [runnable-&#62;not runnable]
+    8.82    8.12   15.39    0.36   68%  29% Kill [runnable] thread
+    5.07    4.48   12.73    0.37   76%  50% Destroy [dead] thread
+   11.17   10.55   22.91    0.52   78%  67% Destroy [runnable] thread
+   22.43   21.45   32.73    0.61   81%  50% Resume [high priority] thread
+    7.99    7.88   13.58    0.14   98%  86% Thread switch
+
+    0.37    0.36    1.33    0.02   97%  97% Scheduler lock
+    1.74    1.70    2.06    0.06   70%  70% Scheduler unlock [0 threads]
+   1.75    1.70    2.06    0.07   92%  64% Scheduler unlock [1 suspended]
+    1.71    1.70    2.42    0.03   89%  89% Scheduler unlock [many suspended]
+    1.76    1.70    3.64    0.08   96%  64% Scheduler unlock [many low prio]
+
+    4.23    3.88   10.67    0.41   96%  93% Unlock [locked] mutex
+    3.12    2.91    6.91    0.29   96%  87% Trylock [unlocked] mutex
+    2.54    2.42    2.91    0.11   18%  46% Trylock [locked] mutex
+    0.88    0.73    3.15    0.14   65%  96% Destroy mutex
+   22.33   22.06   25.94    0.23   81%  62% Unlock/Lock mutex
+
+    1.92    1.82    4.73    0.19   96%  93% Create mbox
+    0.61    0.48    1.70    0.15   84%  75% Peek [empty] mbox
+    4.00    3.64    9.45    0.36   96%  87% Put [first] mbox
+    0.30    0.24    0.73    0.09   84%  75% Peek [1 msg] mbox
+    3.82    3.64    6.67    0.22   90%  84% Put [second] mbox
+    0.32    0.24    1.33    0.12   81%  81% Peek [2 msgs] mbox
+    4.19    3.76    9.21    0.34   84%  50% Get [first] mbox
+    3.91    3.76    5.21    0.16   84%  75% Get [second] mbox
+    3.51    3.27    8.12    0.34   93%  87% Tryput [first] mbox
+    3.25    2.91    7.15    0.30   62%  56% Peek item [non-empty] mbox
+    3.86    3.52    8.73    0.37   93%  84% Tryget [non-empty] mbox
+    2.87    2.79    3.76    0.12   84%  71% Peek item [empty] mbox
+    3.15    3.03    4.24    0.10   46%  40% Tryget [empty] mbox
+    0.34    0.24    1.33    0.10   43%  46% Waiting to get mbox
+    0.36    0.24    1.45    0.09   53%  37% Waiting to put mbox
+    4.49    4.24   10.91    0.41   96%  96% Delete mbox
+   12.67   12.36   19.52    0.43   96%  96% Put/Get mbox
+
+    0.87    0.85    1.45    0.05   93%  93% Init semaphore
+    2.74    2.55    4.48    0.18   50%  50% Post [0] semaphore
+    3.39    3.15    4.24    0.14   78%  50% Wait [1] semaphore
+    2.62    2.42    5.33    0.21   96%  65% Trywait [0] semaphore
+    2.76    2.67    3.27    0.08   46%  43% Trywait [1] semaphore
+    1.09    0.85    2.91    0.19   68%  56% Peek semaphore
+    0.97    0.73    3.39    0.17   90%  65% Destroy semaphore
+   13.09   12.85   16.12    0.19   84%  65% Post/Wait semaphore
+
+    1.57    1.45    3.88    0.15   96%  93% Create counter
+    0.91    0.73    2.18    0.16   46%  68% Get counter value
+    0.55    0.48    0.97    0.09   90%  62% Set counter value
+    4.19    4.00    5.82    0.13   84%  75% Tick counter
+    0.87    0.73    3.15    0.16   93%  93% Delete counter
+
+    2.50    2.30    5.21    0.18   81%  90% Create alarm
+    6.16    5.70   12.97    0.47   96%  71% Initialize alarm
+    0.50    0.36    1.70    0.11   62%  34% Disable alarm
+    5.16    4.85    8.73    0.29   78%  78% Enable alarm
+    1.18    1.09    2.30    0.12   84%  65% Delete alarm
+    5.22    5.09    7.39    0.14   96%  93% Tick counter [1 alarm]
+   52.37   52.12   52.73    0.20   37%  56% Tick counter [many alarms]
+    6.73    6.55    8.24    0.13   78%  68% Tick &#38; fire counter [1 alarm]
+  108.65  108.61  109.21    0.07   87%  87% Tick &#38; fire counters [&#62;1 together]
+   54.25   54.06   54.79    0.11   65%  18% Tick &#38; fire counters [&#62;1 separately]
+   17.36   17.09   29.82    0.23   82%  57% Alarm latency [0 threads]
+   19.75   17.09   28.00    1.65   46%  40% Alarm latency [2 threads]
+   39.02   34.06   50.67    2.00   53%  15% Alarm latency [many threads]
+   29.31   28.36  105.09    1.27   98%  97% Alarm -&#62; thread resume latency
+
+    5.08    3.88   11.15    0.00            Clock/interrupt latency
+
+    7.32    5.09   16.73    0.00            Clock DSR latency
+
+    6       0     380  (main stack:   820)  Thread stack used (992 total)
+All done, main stack            : stack used   820 size  4112
+All done             :  Interrupt stack used   196 size  4096
+All done             : Idlethread stack used   360 size  2048
+
+Timing complete - 29960 ms total
+PASS:&lt;Basic timing OK&#62;
+EXIT:&lt;done&#62; </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="rt-sh-cq7708.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="rt-sh-se7751.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Board: CQ CqREEK SH3 Evaluation Board (cq7708)</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="real-time-characterization.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Board: Hitachi Solution Engine 7751 SH4 (se7751)</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

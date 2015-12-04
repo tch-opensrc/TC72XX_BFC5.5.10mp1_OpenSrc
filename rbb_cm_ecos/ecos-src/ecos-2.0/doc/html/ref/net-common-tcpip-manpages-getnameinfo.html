@@ -1,0 +1,330 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>getnameinfo</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="getifaddrs"
+HREF="net-common-tcpip-manpages-getifaddrs.html"><LINK
+REL="NEXT"
+TITLE="getnetent"
+HREF="net-common-tcpip-manpages-getnetent.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-getifaddrs.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-getnetent.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-GETNAMEINFO">getnameinfo</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>GETNAMEINFO(3)          System Library Functions Manual         GETNAMEINFO(3)
+
+NAME
+     getnameinfo - address-to-nodename translation in protocol-independent
+     manner
+
+SYNOPSIS
+     #include &lt;sys/types.h&#62;
+     #include &lt;sys/socket.h&#62;
+     #include &lt;netdb.h&#62;
+
+     int
+     getnameinfo(const struct sockaddr *sa, socklen_t salen, char *host,
+             size_t hostlen, char *serv, size_t servlen, int flags);
+
+DESCRIPTION
+     The getnameinfo() function is defined for protocol-independent address-
+     to-nodename translation.  Its functionality is a reverse conversion of
+     getaddrinfo(3), and implements similar functionality with
+     gethostbyaddr(3) and getservbyport(3) in more sophisticated manner.
+
+     This function looks up an IP address and port number provided by the
+     caller in the DNS and system-specific database, and returns text strings
+     for both in buffers provided by the caller.  The function indicates suc-
+     cessful completion by a zero return value; a non-zero return value indi-
+     cates failure.
+
+     The first argument, sa, points to either a sockaddr_in structure (for
+     IPv4) or a sockaddr_in6 structure (for IPv6) that holds the IP address
+     and port number.  The salen argument gives the length of the sockaddr_in
+     or sockaddr_in6 structure.
+
+     The function returns the nodename associated with the IP address in the
+     buffer pointed to by the host argument.  The caller provides the size of
+     this buffer via the hostlen argument.  The service name associated with
+     the port number is returned in the buffer pointed to by serv, and the
+     servlen argument gives the length of this buffer.  The caller specifies
+     not to return either string by providing a zero value for the hostlen or
+     servlen arguments.  Otherwise, the caller must provide buffers large
+     enough to hold the nodename and the service name, including the terminat-
+     ing null characters.
+
+     Unfortunately most systems do not provide constants that specify the max-
+     imum size of either a fully-qualified domain name or a service name.
+     Therefore to aid the application in allocating buffers for these two
+     returned strings the following constants are defined in &lt;netdb.h&#62;:
+
+     #define NI_MAXHOST    MAXHOSTNAMELEN
+     #define NI_MAXSERV    32
+
+     The first value is actually defined as the constant MAXDNAME in recent
+     versions of BIND's &lt;arpa/nameser.h&#62; header (older versions of BIND define
+     this constant to be 256) and the second is a guess based on the services
+     listed in the current Assigned Numbers RFC.
+
+     The final argument is a flag that changes the default actions of this
+     function.  By default the fully-qualified domain name (FQDN) for the host
+     is looked up in the DNS and returned.  If the flag bit NI_NOFQDN is set,
+     only the nodename portion of the FQDN is returned for local hosts.
+
+     If the flag bit NI_NUMERICHOST is set, or if the host's name cannot be
+     located in the DNS, the numeric form of the host's address is returned
+     instead of its name (e.g., by calling inet_ntop() instead of
+     gethostbyaddr()).  If the flag bit NI_NAMEREQD is set, an error is
+     returned if the host's name cannot be located in the DNS.
+
+     If the flag bit NI_NUMERICSERV is set, the numeric form of the service
+     address is returned (e.g., its port number) instead of its name.  The two
+     NI_NUMERICxxx flags are required to support the -n flag that many com-
+     mands provide.
+
+     A fifth flag bit, NI_DGRAM, specifies that the service is a datagram ser-
+     vice, and causes getservbyport() to be called with a second argument of
+     "udp" instead of its default of "tcp".  This is required for the few
+     ports (512-514) that have different services for UDP and TCP.
+
+     These NI_xxx flags are defined in &lt;netdb.h&#62;.
+
+   Extension for scoped IPv6 address
+     The implementation allows experimental numeric IPv6 address notation with
+     scope identifier.  IPv6 link-local address will appear as string like
+     ``fe80::1%ne0'', if NI_WITHSCOPEID bit is enabled in flags argument.
+     Refer to getaddrinfo(3) for the notation.
+
+EXAMPLES
+     The following code tries to get numeric hostname, and service name, for
+     given socket address.  Observe that there is no hardcoded reference to
+     particular address family.
+
+           struct sockaddr *sa;    /* input */
+           char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
+
+           if (getnameinfo(sa, sa-&#62;sa_len, hbuf, sizeof(hbuf), sbuf,
+               sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV)) {
+                   errx(1, "could not get numeric hostname");
+                   /*NOTREACHED*/
+           }
+           printf("host=%s, serv=%s\n", hbuf, sbuf);
+
+     The following version checks if the socket address has reverse address
+     mapping.
+
+           struct sockaddr *sa;    /* input */
+           char hbuf[NI_MAXHOST];
+
+           if (getnameinfo(sa, sa-&#62;sa_len, hbuf, sizeof(hbuf), NULL, 0,
+               NI_NAMEREQD)) {
+                   errx(1, "could not resolve hostname");
+                   /*NOTREACHED*/
+           }
+           printf("host=%s\n", hbuf);
+
+DIAGNOSTICS
+     The function indicates successful completion by a zero return value; a
+     non-zero return value indicates failure.  Error codes are as below:
+
+     EAI_AGAIN          The name could not be resolved at this time.  Future
+                        attempts may succeed.
+
+     EAI_BADFLAGS       The flags had an invalid value.
+
+     EAI_FAIL           A non-recoverable error occurred.
+
+     EAI_FAMILY         The address family was not recognized or the address
+                        length was invalid for the specified family.
+
+     EAI_MEMORY         There was a memory allocation failure.
+
+     EAI_NONAME         The name does not resolve for the supplied parameters.
+                        NI_NAMEREQD is set and the host's name cannot be
+                        located, or both nodename and servname were null.
+
+     EAI_SYSTEM         A system error occurred.  The error code can be found
+                        in errno.
+
+SEE ALSO
+     getaddrinfo(3), gethostbyaddr(3), getservbyport(3), hosts(5),
+     resolv.conf(5), services(5), hostname(7), named(8)
+
+     R. Gilligan, S. Thomson, J. Bound, and W. Stevens, Basic Socket Interface
+     Extensions for IPv6, RFC2553, March 1999.
+
+     Tatsuya Jinmei and Atsushi Onoe, An Extension of Format for IPv6 Scoped
+     Addresses, internet draft, draft-ietf-ipngwg-scopedaddr-format-02.txt,
+     work in progress material.
+
+     Craig Metz, "Protocol Independence Using the Sockets API", Proceedings of
+     the freenix track: 2000 USENIX annual technical conference, June 2000.
+
+HISTORY
+     The implementation first appeared in WIDE Hydrangea IPv6 protocol stack
+     kit.
+
+STANDARDS
+     The getaddrinfo() function is defined IEEE POSIX 1003.1g draft specifica-
+     tion, and documented in ``Basic Socket Interface Extensions for IPv6''
+     (RFC2553).
+
+BUGS
+     The current implementation is not thread-safe.
+
+     The text was shamelessly copied from RFC2553.
+
+     OpenBSD intentionally uses different NI_MAXHOST value from what RFC2553
+     suggests, to avoid buffer length handling mistakes.
+
+BSD                              May 25, 1995                              BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-getifaddrs.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-getnetent.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>getifaddrs</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>getnetent</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

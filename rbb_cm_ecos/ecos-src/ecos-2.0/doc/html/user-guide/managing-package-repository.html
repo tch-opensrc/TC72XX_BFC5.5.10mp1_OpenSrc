@@ -1,0 +1,483 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Managing the Package Repository</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Configuration and the Package Repository"
+HREF="configuration-and-the-package-repository.html"><LINK
+REL="PREVIOUS"
+TITLE="Modifying the Memory Layout"
+HREF="modifying-the-memory-layout.html"><LINK
+REL="NEXT"
+TITLE="Package Structure"
+HREF="package-structure.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="modifying-the-memory-layout.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="package-structure.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="MANAGING-PACKAGE-REPOSITORY">Chapter 29. Managing the Package Repository</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="managing-package-repository.html#PACKAGE-INSTALLATION"
+>Package Installation</A
+></DT
+><DT
+><A
+HREF="package-structure.html"
+>Package Structure</A
+></DT
+></DL
+></DIV
+><P
+>A source distribution of <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> consists of a number of
+	packages, such as the kernel, the C library, and the
+	&micro;ITRON subsystems. These are
+	individually versioned in the tree structure of the source
+	code, to support distribution on a per-package basis and to
+	support third party packages whose versioning systems might be
+	different. The <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Package
+	  Administration Tool</SPAN
+> is used to manage the
+	installation and removal of packages from a variety of sources
+	with potentially multiple versions.</P
+><P
+>The presence of the version information in the source tree
+	structure might be a hindrance to the use of a separate source
+	control system such as <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>CVS</I
+></SPAN
+> or
+	<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>SourceSafe</I
+></SPAN
+>. To work
+	in this way, you can rename all the version components to some
+	common name (such as &#8220;current&#8221;) thus unifying the
+	structure of source trees from distinct <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> releases.</P
+><P
+>The <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> build system will treat any such name as just another
+version of the package(s), and support building in exactly the same
+way. However, performing this rename invalidates any existing build
+trees that referred to the versioned source tree, so do the rename
+first, before any other work, and do a complete rebuild afterwards.</P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="PACKAGE-INSTALLATION">Package Installation</H1
+><P
+>Package installation and removal is performed using the
+	  <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Package Administration Tool</SPAN
+>. This
+	  tool is a Tcl script named
+	<B
+CLASS="COMMAND"
+>ecosadmin.tcl</B
+> which allows
+	  the user to add new <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> packages and new versions of
+	  existing packages to an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> repository. Such packages must
+	  be distributed as a single file in the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> package
+	  distribution format. Unwanted packages may also be removed
+	  from the repository using this tool. A graphical version of
+	  the tool is provided as part of the
+	  <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+>.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3071">Using the Administration Tool</H2
+><P
+>The graphical
+version of the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Package
+Administration Tool</SPAN
+>, provided as part of the
+<SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Configuration
+Tool</SPAN
+>, provides functions equivalent to the command-line
+version for those who prefer a Windows-based interface.</P
+><P
+>It may be invoked in one of two ways:</P
+><P
+></P
+><UL
+><LI
+><P
+>from the <SPAN
+CLASS="GUIMENU"
+>start menu</SPAN
+> (by default
+		<SPAN
+CLASS="GUIMENUITEM"
+>Start-&gt;Programs-&gt;
+		  eCos-&gt;Package Administration
+		  Tool</SPAN
+>)</P
+></LI
+><LI
+><P
+>from the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Configuration
+		  Tool</SPAN
+> via the
+		<SPAN
+CLASS="GUIMENUITEM"
+>Tools-&gt;Administration</SPAN
+>
+		menu item</P
+></LI
+></UL
+><P
+><P
+><IMG
+SRC="pix/admin.png"></P
+></P
+><P
+>The main window of the tool displays the packages which are
+currently installed in the form of a tree. The installed versions
+of each package may be examined by expanding the tree.</P
+><P
+>Packages may be added to the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> repository by clicking on
+the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Add</I
+></SPAN
+> button. The <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> package distribution
+file to be added is then selected via a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>File Open</I
+></SPAN
+> dialog
+box.</P
+><P
+>Packages may be removed by selecting a package in the tree
+and then clicking on the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Remove</I
+></SPAN
+> button. If
+a package node is selected, all versions of the selected package
+will be removed. If a package version node is selected, only the
+selected version of the package will be removed.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3099">Using the command line</H2
+><P
+>The <B
+CLASS="COMMAND"
+>ecosadmin.tcl</B
+>
+	    script is located in the base of the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> repository. Use
+	    a command of the following form under versions of
+	    UNIX:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ tclsh ecosadmin.tcl &lt;command&gt;</PRE
+></TD
+></TR
+></TABLE
+><P
+>Under Windows, a command of the following form may be used
+at the Cygwin command line prompt:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ cygtclsh80 ecosadmin.tcl &lt;command&gt;</PRE
+></TD
+></TR
+></TABLE
+><P
+>The following commands are available:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><B
+CLASS="COMMAND"
+>add &lt;file&gt;</B
+></DT
+><DD
+><P
+>Adds the packages contained with the specified package distribution
+file to the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> repository and updates the package database accordingly.
+By convention, <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> package distribution files are given the <TT
+CLASS="FILENAME"
+>.epk</TT
+> suffix.</P
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>remove &lt;package&gt; [ --version=&lt;version&gt; ]</B
+></DT
+><DD
+><P
+>Removes the specified package from the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>
+		  repository and updates the package database
+		  accordingly. Where the optional version qualifier is
+		  used, only the specified version of the package is
+		  removed.</P
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>list</B
+></DT
+><DD
+><P
+>Produces a list of the packages which
+		  are currently installed and their versions. The
+		  available templates and hardware targets are also
+		  listed.</P
+></DD
+></DL
+></DIV
+><P
+>Note that is is possible to remove critical packages
+	    such as the common HAL package using this tool. Users
+	    should take care to avoid such errors since core <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>
+	    packages may only be re-installed in the context of a
+	    complete re-installation of <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="modifying-the-memory-layout.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="package-structure.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Modifying the Memory Layout</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="configuration-and-the-package-repository.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Package Structure</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

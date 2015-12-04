@@ -1,0 +1,310 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>FTP Client Features</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="FTP Client for eCos TCP/IP Stack"
+HREF="net-ftpclient.html"><LINK
+REL="PREVIOUS"
+TITLE="FTP Client for eCos TCP/IP Stack"
+HREF="net-ftpclient.html"><LINK
+REL="NEXT"
+TITLE="CRC Algorithms"
+HREF="services-crc.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-ftpclient.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="services-crc.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="NET-FTPCLIENT-FEATURES">Chapter 49. FTP Client Features</H1
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-FTPCLIENT-FEATURES-API">FTP Client API</H1
+><P
+>This package implements an FTP client.  The API is in include file
+<TT
+CLASS="FILENAME"
+>install/include/ftpclient.h</TT
+> and it can be used thus:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#include &lt;network.h&gt;
+#include &lt;ftpclient.h&gt;</PRE
+></TD
+></TR
+></TABLE
+>
+It looks like this:</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="NET-FTPCLIENT-FEATURES-API-GET">ftp_get</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int ftp_get(char &#0042; hostname, 
+            char &#0042; username, 
+            char &#0042; passwd, 
+            char &#0042; filename, 
+            char &#0042; buf, 
+            unsigned buf_size,
+            ftp_printf_t ftp_printf);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Use the FTP protocol to retrieve a file from a server. Only binary
+mode is supported. The filename can include a directory name. Only
+use unix style &#8216;/&#8217; file separators,
+not &#8216;\&#8217;.
+The file is placed into <TT
+CLASS="PARAMETER"
+><I
+>buf</I
+></TT
+>.
+<TT
+CLASS="PARAMETER"
+><I
+>buf</I
+></TT
+> has maximum size <TT
+CLASS="PARAMETER"
+><I
+>buf_size</I
+></TT
+>.
+If the file is bigger than this, the
+transfer fails and <SPAN
+CLASS="ERRORCODE"
+>FTP_TOOBIG</SPAN
+> is returned.
+Other error codes listed in the header can also be returned.
+If the transfer is successful the number of bytes received is returned.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="NET-FTPCLIENT-FEATURES-API-PUT">ftp_put</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int ftp_put(char &#0042; hostname, 
+            char &#0042; username, 
+            char &#0042; passwd, 
+            char &#0042; filename, 
+            char &#0042; buf, 
+            unsigned buf_size,
+            ftp_printf_t ftp_printf);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Use the FTP protocol to send a file to a server.
+Only binary
+mode is supported. The filename can include a directory name. Only
+use unix style &#8216;/&#8217; file separators,
+not &#8216;\&#8217;.
+The contents of <TT
+CLASS="PARAMETER"
+><I
+>buf</I
+></TT
+> are placed into the file on the
+server. If an error occurs one of the codes listed will be returned. If the
+transfer is successful zero is returned.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="NET-FTPCLIENT-FEATURES-API-PRINTF">ftpclient_printf</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void ftpclient_printf(unsigned error, const char *fmt, ...);</PRE
+></TD
+></TR
+></TABLE
+><P
+><TT
+CLASS="FUNCTION"
+>ftp_get()</TT
+> and <TT
+CLASS="FUNCTION"
+>ftp_put</TT
+>
+take a pointer to a function to use for printing
+out diagnostic and error messages. This is a sample implementation
+which can be used if you don't want to implement the function
+yourself.
+<TT
+CLASS="PARAMETER"
+><I
+>error</I
+></TT
+> will be true when the message to print is an
+error message. Otherwise the message is diagnostic, eg. the commands sent
+and received from the server.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-ftpclient.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="services-crc.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>FTP Client for eCos TCP/IP Stack</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-ftpclient.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>CRC Algorithms</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

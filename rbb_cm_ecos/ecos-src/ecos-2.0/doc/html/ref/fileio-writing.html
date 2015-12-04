@@ -1,0 +1,421 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Writing a New Filesystem</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="File System Support Infrastructure"
+HREF="fileio.html"><LINK
+REL="PREVIOUS"
+TITLE="Devices"
+HREF="fileio-devices.html"><LINK
+REL="NEXT"
+TITLE="PCI Library"
+HREF="io-pci.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="fileio-devices.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="io-pci.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="FILEIO-WRITING">Chapter 29. Writing a New Filesystem</H1
+><P
+>To create a new filesystem it is necessary to define the fstab entry
+and the file IO operations. The easiest way to do this is to copy an
+existing filesystem: either the test filesystem in the FILEIO package,
+or the RAM or ROM filesystem packages.</P
+><P
+>To make this clearer, the following is a brief tour of the FILEIO
+relevant parts of the RAM filesystem.</P
+><P
+>First, it is necessary to provide forward definitions of the functions
+that constitute the filesystem interface:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>//==========================================================================
+// Forward definitions
+
+// Filesystem operations
+static int ramfs_mount    ( cyg_fstab_entry *fste, cyg_mtab_entry *mte );
+static int ramfs_umount   ( cyg_mtab_entry *mte );
+static int ramfs_open     ( cyg_mtab_entry *mte, cyg_dir dir, const char *name,
+                             int mode,  cyg_file *fte );
+static int ramfs_unlink   ( cyg_mtab_entry *mte, cyg_dir dir, const char *name );
+static int ramfs_mkdir    ( cyg_mtab_entry *mte, cyg_dir dir, const char *name );
+static int ramfs_rmdir    ( cyg_mtab_entry *mte, cyg_dir dir, const char *name );
+static int ramfs_rename   ( cyg_mtab_entry *mte, cyg_dir dir1, const char *name1,
+                             cyg_dir dir2, const char *name2 );
+static int ramfs_link     ( cyg_mtab_entry *mte, cyg_dir dir1, const char *name1,
+                             cyg_dir dir2, const char *name2, int type );
+static int ramfs_opendir  ( cyg_mtab_entry *mte, cyg_dir dir, const char *name,
+                             cyg_file *fte );
+static int ramfs_chdir    ( cyg_mtab_entry *mte, cyg_dir dir, const char *name,
+                             cyg_dir *dir_out );
+static int ramfs_stat     ( cyg_mtab_entry *mte, cyg_dir dir, const char *name,
+                             struct stat *buf);
+static int ramfs_getinfo  ( cyg_mtab_entry *mte, cyg_dir dir, const char *name,
+                             int key, void *buf, int len );
+static int ramfs_setinfo  ( cyg_mtab_entry *mte, cyg_dir dir, const char *name,
+                             int key, void *buf, int len );
+
+// File operations
+static int ramfs_fo_read      (struct CYG_FILE_TAG *fp, struct CYG_UIO_TAG *uio);
+static int ramfs_fo_write     (struct CYG_FILE_TAG *fp, struct CYG_UIO_TAG *uio);
+static int ramfs_fo_lseek     (struct CYG_FILE_TAG *fp, off_t *pos, int whence );
+static int ramfs_fo_ioctl     (struct CYG_FILE_TAG *fp, CYG_ADDRWORD com,
+                                CYG_ADDRWORD data);
+static int ramfs_fo_fsync     (struct CYG_FILE_TAG *fp, int mode );        
+static int ramfs_fo_close     (struct CYG_FILE_TAG *fp);
+static int ramfs_fo_fstat     (struct CYG_FILE_TAG *fp, struct stat *buf );
+static int ramfs_fo_getinfo   (struct CYG_FILE_TAG *fp, int key, void *buf, int len );
+static int ramfs_fo_setinfo   (struct CYG_FILE_TAG *fp, int key, void *buf, int len );
+
+// Directory operations
+static int ramfs_fo_dirread      (struct CYG_FILE_TAG *fp, struct CYG_UIO_TAG *uio);
+static int ramfs_fo_dirlseek     (struct CYG_FILE_TAG *fp, off_t *pos, int whence );</PRE
+></TD
+></TR
+></TABLE
+><P
+>We define all of the fstab entries and all of the file IO
+operations. We also define alternatives for the
+<TT
+CLASS="STRUCTFIELD"
+><I
+>fo_read</I
+></TT
+> and
+<TT
+CLASS="STRUCTFIELD"
+><I
+>fo_lseek</I
+></TT
+> file IO operations.</P
+><P
+>We can now define the filesystem table entry. There is a macro,
+<TT
+CLASS="LITERAL"
+>FSTAB_ENTRY</TT
+> to do this:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>//==========================================================================
+// Filesystem table entries
+
+// -------------------------------------------------------------------------
+// Fstab entry.
+// This defines the entry in the filesystem table.
+// For simplicity we use _FILESYSTEM synchronization for all accesses since
+// we should never block in any filesystem operations.
+
+FSTAB_ENTRY( ramfs_fste, "ramfs", 0,
+             CYG_SYNCMODE_FILE_FILESYSTEM|CYG_SYNCMODE_IO_FILESYSTEM,
+             ramfs_mount,
+             ramfs_umount,
+             ramfs_open,
+             ramfs_unlink,
+             ramfs_mkdir,
+             ramfs_rmdir,
+             ramfs_rename,
+             ramfs_link,
+             ramfs_opendir,
+             ramfs_chdir,
+             ramfs_stat,
+             ramfs_getinfo,
+             ramfs_setinfo);</PRE
+></TD
+></TR
+></TABLE
+><P
+>The first argument to this macro gives the fstab entry a name, the
+remainder are initializers for the field of the structure.</P
+><P
+>We must also define the file operations table that is installed in all
+open file table entries:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>// -------------------------------------------------------------------------
+// File operations.
+// This set of file operations are used for normal open files.
+
+static cyg_fileops ramfs_fileops =
+{
+    ramfs_fo_read,
+    ramfs_fo_write,
+    ramfs_fo_lseek,
+    ramfs_fo_ioctl,
+    cyg_fileio_seltrue,
+    ramfs_fo_fsync,
+    ramfs_fo_close,
+    ramfs_fo_fstat,
+    ramfs_fo_getinfo,
+    ramfs_fo_setinfo
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+>These all point to functions supplied by the filesystem except the
+<TT
+CLASS="STRUCTFIELD"
+><I
+>fo_select</I
+></TT
+> field which is filled with a
+pointer to <TT
+CLASS="FUNCTION"
+>cyg_fileio_seltrue()</TT
+>. This is provided
+by the FILEIO package and is a select function that always returns
+true to all operations.</P
+><P
+>Finally, we need to define a set of file operations for use when
+reading directories. This table only defines the
+<TT
+CLASS="STRUCTFIELD"
+><I
+>fo_read</I
+></TT
+> and
+<TT
+CLASS="STRUCTFIELD"
+><I
+>fo_lseek</I
+></TT
+> operations. The rest are filled
+with stub functions supplied by the FILEIO package that just return an
+error code.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>// -------------------------------------------------------------------------
+// Directory file operations.
+// This set of operations are used for open directories. Most entries
+// point to error-returning stub functions. Only the read, lseek and
+// close entries are functional.
+
+static cyg_fileops ramfs_dirops =
+{
+    ramfs_fo_dirread,
+    (cyg_fileop_write *)cyg_fileio_enosys,
+    ramfs_fo_dirlseek,
+    (cyg_fileop_ioctl *)cyg_fileio_enosys,
+    cyg_fileio_seltrue,
+    (cyg_fileop_fsync *)cyg_fileio_enosys,
+    ramfs_fo_close,
+    (cyg_fileop_fstat *)cyg_fileio_enosys,
+    (cyg_fileop_getinfo *)cyg_fileio_enosys,
+    (cyg_fileop_setinfo *)cyg_fileio_enosys
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+>If the filesystem wants to have an instance automatically mounted on
+system startup, it must also define a mount table entry. This is done
+with the <TT
+CLASS="LITERAL"
+>MTAB_ENTRY</TT
+> macro. This is an example from
+the test filesystem of how this is used:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>MTAB_ENTRY( testfs_mte1,
+                   "/",
+                   "testfs",
+                   "",
+                   0);</PRE
+></TD
+></TR
+></TABLE
+><P
+>The first argument provides a name for the table entry. The following
+arguments provide initialization for the
+<TT
+CLASS="STRUCTFIELD"
+><I
+>name</I
+></TT
+>, <TT
+CLASS="STRUCTFIELD"
+><I
+>fsname</I
+></TT
+>,
+<TT
+CLASS="STRUCTFIELD"
+><I
+>devname</I
+></TT
+> and <TT
+CLASS="STRUCTFIELD"
+><I
+>data</I
+></TT
+>
+fields respectively.</P
+><P
+>These definitions are adequate to let the new filesystem interact
+with the FILEIO package. The new filesystem now needs to be fleshed
+out with implementations of the functions defined above. Obviously,
+the exact form this takes will depend on what the filesystem is
+intended to do. Take a look at the RAM and ROM filesystems for
+examples of how this has been done.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="fileio-devices.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="io-pci.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Devices</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="fileio.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>PCI Library</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

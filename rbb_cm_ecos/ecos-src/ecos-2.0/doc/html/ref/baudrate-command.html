@@ -1,0 +1,354 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>baudrate</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Common Commands"
+HREF="common-commands.html"><LINK
+REL="PREVIOUS"
+TITLE="alias"
+HREF="alias-command.html"><LINK
+REL="NEXT"
+TITLE="cache"
+HREF="cache-command.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="alias-command.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="cache-command.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="BAUDRATE-COMMAND">baudrate</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN2995"
+></A
+><H2
+>Name</H2
+>baudrate&nbsp;--&nbsp;Set the baud rate for the system serial console</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN2998"><H2
+>Synopsis</H2
+><P
+><B
+CLASS="COMMAND"
+>baudrate</B
+>  [-b<TT
+CLASS="REPLACEABLE"
+><I
+> rate</I
+></TT
+>]</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3003"
+></A
+><H2
+>Arguments</H2
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3005"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Name</TH
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Type</TH
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Default</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-b <TT
+CLASS="REPLACEABLE"
+><I
+>rate</I
+></TT
+></TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Number</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>The baud rate to use for the serial console.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>none</I
+></SPAN
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3025"
+></A
+><H2
+>Description</H2
+><P
+>The <B
+CLASS="COMMAND"
+>baudrate</B
+> command sets the baud rate for the system serial console.
+      </P
+><P
+>If no value is provided, then the current value of the console baud rate is displayed.
+      </P
+><P
+>If the system supports non-volatile configuration data via the 
+<B
+CLASS="COMMAND"
+>fconfig</B
+> command (see <A
+HREF="persistent-state-flash.html"
+>the Section called <I
+>Persistent State Flash-based Configuration and Control</I
+> in Chapter 2</A
+>),
+then the value will be saved and used when the system is reset.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3033"
+></A
+><H2
+>Examples</H2
+><P
+>Show the current baud rate.
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> 
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>baudrate</B
+></TT
+>
+Baud rate = 38400</PRE
+></TD
+></TR
+></TABLE
+> </P
+><P
+>Change the console baud rate.  In order to make this operation safer,
+there will be a slight pause after the
+first message to give you time to change to the new baud rate.
+If it doesn't work, or a less than affirmative answer is given to the 
+"continue" prompt, then the baud rate will revert to the current value.
+Only after the baud rate has been firmly established will <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>RedBoot</I
+></SPAN
+>
+give you an opportunity to save the value in persistent storage.
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> 
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>baudrate -b 57600</B
+></TT
+>
+Baud rate will be changed to 57600 - update your settings
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Device baud rate changed at this point</I
+></SPAN
+>
+Baud rate changed to 57600 - continue (y/n)? y
+Update RedBoot non-volatile configuration - continue (y/n)? n</PRE
+></TD
+></TR
+></TABLE
+> 
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="alias-command.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="cache-command.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>alias</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="common-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>cache</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

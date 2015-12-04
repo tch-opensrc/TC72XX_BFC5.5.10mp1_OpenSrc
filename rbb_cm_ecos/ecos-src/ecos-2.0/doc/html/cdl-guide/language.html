@@ -1,0 +1,436 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>The CDL Language</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="PREVIOUS"
+TITLE="Making a Package Distribution"
+HREF="package.distrib.html"><LINK
+REL="NEXT"
+TITLE="CDL Commands"
+HREF="language.commands.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="package.distrib.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.commands.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="LANGUAGE">Chapter 3. The CDL Language</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="language.html#LANGUAGE.OVERVIEW"
+>Language Overview</A
+></DT
+><DT
+><A
+HREF="language.commands.html"
+>CDL Commands</A
+></DT
+><DT
+><A
+HREF="language.properties.html"
+>CDL Properties</A
+></DT
+><DT
+><A
+HREF="language.naming.html"
+>Option Naming Convention</A
+></DT
+><DT
+><A
+HREF="language.tcl.html"
+>An Introduction to Tcl</A
+></DT
+><DT
+><A
+HREF="language.values.html"
+>Values and Expressions</A
+></DT
+><DT
+><A
+HREF="language.interface.html"
+>Interfaces</A
+></DT
+><DT
+><A
+HREF="language.database.html"
+>Updating the <SPAN
+CLASS="DATABASE"
+>ecos.db</SPAN
+> database</A
+></DT
+></DL
+></DIV
+><P
+>The <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> language is a key part of the <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> component framework.
+All packages must come with at least one <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> script, to describe
+that package to the framework. The information in that script includes
+details of all the configuration options and how to build the package.
+Implementing a new component or turning some existing code into an
+<SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> component always involves writing corresponding <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+>. This
+chapter provides a description of the <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> language. Detailed
+information on specific parts of the language can be found in <A
+HREF="reference.html"
+>Chapter 5</A
+>.</P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="LANGUAGE.OVERVIEW">Language Overview</H1
+><P
+>A very simple <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> script would look like this:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_ERROR {
+    display       "Common error code support"
+    compile       strerror.cxx
+    include_dir   cyg/error
+    description   "
+        This package contains the common list of error and
+        status codes. It is held centrally to allow
+        packages to interchange error codes and status
+        codes in a common way, rather than each package
+        having its own conventions for error/status
+        reporting. The error codes are modelled on the
+        POSIX style naming e.g. EINVAL etc. This package
+        also provides the standard strerror() function to
+        convert error codes to textual representation."
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>This describes a single package, the error code package, which does
+not have any sub-components or configuration options. The package has
+an internal name, <TT
+CLASS="VARNAME"
+>CYGPKG_ERROR</TT
+>, which can be
+referenced in other <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> scripts using e.g.
+<TT
+CLASS="LITERAL"
+>requires&nbsp;CYGPKG_ERROR</TT
+>. There will also be a
+<TT
+CLASS="LITERAL"
+>#define</TT
+> for this symbol in a configuration header
+file. In addition to the package name, this script provides a number
+of properties for the package as a whole. The <SPAN
+CLASS="PROPERTY"
+>display</SPAN
+> property
+provides a short description. The <SPAN
+CLASS="PROPERTY"
+>description</SPAN
+> property involves a
+rather longer one, for when users need a bit more information. The
+<SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> and <SPAN
+CLASS="PROPERTY"
+>include_dir</SPAN
+> properties list the consequences of this
+package at build-time. The package appears to lack any on-line
+documentation. </P
+><P
+>Packages could be even simpler than this. If the package only provides
+an interface and there are no files to be compiled then there is no
+need for a <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> property. Alternatively if there are no exported
+header files, or if the exported header files should go to the
+top-level of the <TT
+CLASS="FILENAME"
+>install/include</TT
+> directory, then there is
+no need for an <SPAN
+CLASS="PROPERTY"
+>include_dir</SPAN
+> property. Strictly speaking the
+<SPAN
+CLASS="PROPERTY"
+>description</SPAN
+> and <SPAN
+CLASS="PROPERTY"
+>display</SPAN
+> properties are optional as well, although
+application developers would not appreciate the resulting lack of
+information about what the package is supposed to do.</P
+><P
+>However many packages tend to be a bit more complicated than the error
+package, containing various sub-components and configuration options.
+These are also defined in the <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> scripts and in much the same way
+as the package. For example, the following excerpt comes from the
+infrastructure package:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_component CYGDBG_INFRA_DEBUG_TRACE_ASSERT_BUFFER {
+    display       "Buffered tracing"
+    default_value 1
+    active_if     CYGDBG_USE_TRACING
+    description   "
+        An output module which buffers output from tracing and
+        assertion events. The stored messages are output when an
+        assert fires, or CYG_TRACE_PRINT() (defined in
+        &lt;cyg/infra/cyg_trac.h&gt;) is called. Of course, there will
+        only be stored messages if tracing per se (CYGDBG_USE_TRACING)
+        is enabled above."
+
+    cdl_option CYGDBG_INFRA_DEBUG_TRACE_BUFFER_SIZE {
+        display       "Trace buffer size"
+        flavor        data
+        default_value 32
+        legal_values  5 to 65535
+        description   "
+            The size of the trace buffer. This counts the number of
+            trace records stored. When the buffer fills it either
+            wraps, stops recording, or generates output."
+    }
+
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>Like a <TT
+CLASS="LITERAL"
+>cdl_package</TT
+>, a <TT
+CLASS="LITERAL"
+>cdl_component</TT
+> has a name and a body. The
+body contains various properties for that component, and may also
+contain sub-components or options. Similarly a <TT
+CLASS="LITERAL"
+>cdl_option</TT
+> has a
+name and a body of properties. This example lists a number of
+new properties: <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+>, <SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+>, <SPAN
+CLASS="PROPERTY"
+>flavor</SPAN
+> and
+<SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+>. The meaning of most of these should be fairly obvious.
+The next sections describe the various <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> commands and properties. </P
+><P
+>There is one additional and very important point: <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> is not a
+completely new language; instead it is implemented as an extension of
+the existing <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> scripting language. The syntax of a <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> script is
+<SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> syntax, which is described below. In addition some of the more
+advanced facilities of <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> involve embedded fragments of <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> code,
+for example there is a <SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+> property which specifies some
+code that needs to be executed when the component framework generates
+the configuration header files.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="package.distrib.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.commands.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Making a Package Distribution</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>CDL Commands</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

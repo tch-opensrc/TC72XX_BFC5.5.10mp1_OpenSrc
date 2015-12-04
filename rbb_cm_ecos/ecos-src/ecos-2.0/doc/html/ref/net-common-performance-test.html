@@ -1,0 +1,351 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Performance Test</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Tests and Demonstrations"
+HREF="net-common-tests-and-demonstrations.html"><LINK
+REL="PREVIOUS"
+TITLE="Standalone Tests"
+HREF="net-common-standalone-tests.html"><LINK
+REL="NEXT"
+TITLE="Interactive Tests"
+HREF="net-common-interactive-tests.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-standalone-tests.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 36. Tests and Demonstrations</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-interactive-tests.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-PERFORMANCE-TEST">Performance Test</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tcp_echo</I
+></SPAN
+>      - data forwarding program for performance test</PRE
+></TD
+></TR
+></TABLE
+><P
+><B
+CLASS="COMMAND"
+>tcp_echo</B
+> is one
+part of the standard performance test we use.  The other parts are
+host programs <TT
+CLASS="LITERAL"
+>tcp_source</TT
+> and <TT
+CLASS="LITERAL"
+>tcp_sink</TT
+>.
+ To make these (under LINUX) cd to the tests source directory in
+the eCos repository and type &#8220;<TT
+CLASS="LITERAL"
+>make -f make.linux</TT
+>&#8221; -
+this should build <TT
+CLASS="LITERAL"
+>tcp_source</TT
+> and <TT
+CLASS="LITERAL"
+>tcp_sink</TT
+>.</P
+><P
+>The LINUX program &#8220;<TT
+CLASS="LITERAL"
+>tcp_source</TT
+>&#8221; sends
+data to the target.  On the target, &#8220;<TT
+CLASS="LITERAL"
+>tcp_echo</TT
+>&#8221; sends
+it onwards to &#8220;<TT
+CLASS="LITERAL"
+>tcp_sink</TT
+>&#8221; running
+on LINUX.  So the target must receive and send on all the data that <TT
+CLASS="LITERAL"
+>tcp_source</TT
+> sends
+it; the time taken for this is measured and the data rate is calculated.</P
+><P
+>To invoke the test, first start <TT
+CLASS="LITERAL"
+>tcp_echo</TT
+> on
+the target board and wait for it to become quiescent - it will report
+work to calibrate a CPU load which can be used to simulate real
+operating conditions for the stack.</P
+><P
+>Then on your LINUX machine, in one terminal window, invoke <TT
+CLASS="LITERAL"
+>tcp_sink</TT
+> giving
+it the IP address (or hostname) of one interface of the target board.
+ For example &#8220;<TT
+CLASS="LITERAL"
+>tcp_sink 10.130.39.66</TT
+>&#8221;.
+ <TT
+CLASS="LITERAL"
+>tcp_echo</TT
+> on the target
+will print something like &#8220;<TT
+CLASS="LITERAL"
+>SINK connection
+from 10.130.39.13:1143</TT
+>&#8221; when <TT
+CLASS="LITERAL"
+>tcp_sink</TT
+> is
+correctly invoked.</P
+><P
+>Next, in another LINUX terminal window, invoke <TT
+CLASS="LITERAL"
+>tcp_source</TT
+>,
+giving it the IP address (or hostname) of an interface of the target
+board, and optionally a background load to apply to the target while
+the test runs.  For example, &#8220;<TT
+CLASS="LITERAL"
+>tcp_source
+194.130.39.66</TT
+>&#8221; to run the test with no
+additional target CPU load, or &#8220;<TT
+CLASS="LITERAL"
+>tcp_source
+194.130.39.66 85</TT
+>&#8221; to load it up to 85% used.
+ The target load must be a multiple of 5.  <TT
+CLASS="LITERAL"
+>tcp_echo</TT
+> on
+the target will print something like &#8220;<TT
+CLASS="LITERAL"
+>SOURCE
+connection from 194.130.39.13:1144</TT
+>&#8221; when
+tcp_source is correctly invoked.</P
+><P
+>You can connect tcp_sink to one target interface
+and tcp_source to another, or both to the same interface.
+ Similarly, you can run <TT
+CLASS="LITERAL"
+>tcp_sink</TT
+> and <TT
+CLASS="LITERAL"
+>tcp_source</TT
+> on
+the same LINUX machine or different ones.  TCP/IP and ARP
+look after them finding one another, as intended.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>nc_test_master</I
+></SPAN
+> - network characterization master
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>nc_test_slave</I
+></SPAN
+> - network characterization slave</PRE
+></TD
+></TR
+></TABLE
+><P
+>These tests talk to each other to measure network performance.
+They can each run on either a test target or a LINUX host computer
+given some customization to your local environment. As provided, <TT
+CLASS="LITERAL"
+>nc_test_slave</TT
+> must
+run on the test target, and <TT
+CLASS="LITERAL"
+>nc_test_master</TT
+> must
+be run on a LINUX host, and be given the test target's
+IP address or hostname.</P
+><P
+>The tests print network performance for various packet sizes
+over UDP and TCP, versus various additional CPU loads on the target.</P
+><P
+>The programs <TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>nc6_test_slave</I
+></SPAN
+>
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>nc6_test_master</I
+></SPAN
+></PRE
+></TD
+></TR
+></TABLE
+>
+are additional forms which support both IPv4 and IPv6 addressing.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-standalone-tests.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-interactive-tests.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Standalone Tests</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-common-tests-and-demonstrations.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Interactive Tests</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

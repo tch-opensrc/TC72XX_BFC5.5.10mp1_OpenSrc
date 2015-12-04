@@ -1,0 +1,641 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Thread creation</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Kernel"
+HREF="kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="SMP Support"
+HREF="kernel-smp.html"><LINK
+REL="NEXT"
+TITLE="Thread information"
+HREF="kernel-thread-info.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="kernel-smp.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="kernel-thread-info.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="KERNEL-THREAD-CREATE">Thread creation</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN256"
+></A
+><H2
+>Name</H2
+>cyg_thread_create&nbsp;--&nbsp;Create a new thread</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN259"><H2
+>Synopsis</H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><A
+NAME="AEN260"><P
+></P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &lt;cyg/kernel/kapi.h&gt;    
+	</PRE
+></TD
+></TR
+></TABLE
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_thread_create</CODE
+>(cyg_addrword_t sched_info, cyg_thread_entry_t* entry, cyg_addrword_t entry_data, char* name, void* stack_base, cyg_ucount32 stack_size, cyg_handle_t* handle, cyg_thread* thread);</CODE
+></P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-THREAD-CREATE-DESCRIPTION"
+></A
+><H2
+>Description</H2
+><P
+>The <TT
+CLASS="FUNCTION"
+>cyg_thread_create</TT
+> function allows application
+code and eCos packages to create new threads. In many applications
+this only happens during system initialization and all required data
+is allocated statically.  However additional threads can be created at
+any time, if necessary. A newly created thread is always in suspended
+state and will not start running until it has been resumed via a call
+to <TT
+CLASS="FUNCTION"
+>cyg_thread_resume</TT
+>. Also, if threads are
+created during system initialization then they will not start running
+until the eCos scheduler has been started.
+      </P
+><P
+>The <TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+> argument is used
+primarily for debugging purposes, making it easier to keep track of
+which <SPAN
+CLASS="STRUCTNAME"
+>cyg_thread</SPAN
+> structure is associated with
+which application-level thread. The kernel configuration option
+<TT
+CLASS="VARNAME"
+>CYGVAR_KERNEL_THREADS_NAME</TT
+> controls whether or not
+this name is actually used.
+      </P
+><P
+>On creation each thread is assigned a unique handle, and this will be
+stored in the location pointed at by the <TT
+CLASS="PARAMETER"
+><I
+>handle</I
+></TT
+> argument. Subsequent operations on
+this thread including the required
+<TT
+CLASS="FUNCTION"
+>cyg_thread_resume</TT
+> should use this handle to
+identify the thread.
+      </P
+><P
+>The kernel requires a small amount of space for each thread, in the
+form of a <SPAN
+CLASS="STRUCTNAME"
+>cyg_thread</SPAN
+> data structure, to hold
+information such as the current state of that thread. To avoid any
+need for dynamic memory allocation within the kernel this space has to
+be provided by higher-level code, typically in the form of a static
+variable. The <TT
+CLASS="PARAMETER"
+><I
+>thread</I
+></TT
+> argument
+provides this space.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-THREAD-CREATE-ENTRY"
+></A
+><H2
+>Thread Entry Point</H2
+><P
+>The entry point for a thread takes the form:
+      </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void
+thread_entry_function(cyg_addrword_t data)
+{
+    &#8230;
+}
+      </PRE
+></TD
+></TR
+></TABLE
+><P
+>The second argument to <TT
+CLASS="FUNCTION"
+>cyg_thread_create</TT
+> is a
+pointer to such a function. The third argument <TT
+CLASS="PARAMETER"
+><I
+>entry_data</I
+></TT
+> is used to pass additional
+data to the function. Typically this takes the form of a pointer to
+some static data, or a small integer, or <TT
+CLASS="LITERAL"
+>0</TT
+> if the
+thread does not require any additional data.
+      </P
+><P
+>If the thread entry function ever returns then this is equivalent to
+the thread calling <TT
+CLASS="FUNCTION"
+>cyg_thread_exit</TT
+>. Even though
+the thread will no longer run again, it remains registered with the
+scheduler. If the application needs to re-use the
+<SPAN
+CLASS="STRUCTNAME"
+>cyg_thread</SPAN
+> data structure then a call to
+<TT
+CLASS="FUNCTION"
+>cyg_thread_delete</TT
+> is required first.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-THREAD-CREATE-PRIORITIES"
+></A
+><H2
+>Thread Priorities</H2
+><P
+>The <TT
+CLASS="PARAMETER"
+><I
+>sched_info</I
+></TT
+> argument
+provides additional information to the scheduler. The exact details
+depend on the scheduler being used. For the bitmap and mlqueue
+schedulers it is a small integer, typically in the range 0 to 31, with
+0 being the highest priority. The lowest priority is normally used
+only by the system's idle thread. The exact number of priorities is
+controlled by the kernel configuration option
+<TT
+CLASS="VARNAME"
+>CYGNUM_KERNEL_SCHED_PRIORITIES</TT
+>. 
+      </P
+><P
+>It is the responsibility of the application developer to be aware of
+the various threads in the system, including those created by eCos
+packages, and to ensure that all threads run at suitable priorities.
+For threads created by other packages the documentation provided by
+those packages should indicate any requirements.
+      </P
+><P
+>The functions <TT
+CLASS="FUNCTION"
+>cyg_thread_set_priority</TT
+>,
+<TT
+CLASS="FUNCTION"
+>cyg_thread_get_priority</TT
+>, and
+<TT
+CLASS="FUNCTION"
+>cyg_thread_get_current_priority</TT
+> can be used to
+manipulate a thread's priority.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-THREAD-CREATE-STACK"
+></A
+><H2
+>Stacks and Stack Sizes</H2
+><P
+>Each thread needs its own stack for local variables and to keep track
+of function calls and returns. Again it is expected that this stack is
+provided by the calling code, usually in the form of static data, so
+that the kernel does not need any dynamic memory allocation
+facilities. <TT
+CLASS="FUNCTION"
+>cyg_thread_create</TT
+> takes two arguments
+related to the stack, a pointer to the base of the stack and the total
+size of this stack. On many processors stacks actually descend from the
+top down, so the kernel will add the stack size to the base address to
+determine the starting location.
+      </P
+><P
+>The exact stack size requirements for any given thread depend on a
+number of factors. The most important is of course the code that will
+be executed in the context of this code: if this involves significant
+nesting of function calls, recursion, or large local arrays, then the
+stack size needs to be set to a suitably high value. There are some
+architectural issues, for example the number of cpu registers and the
+calling conventions will have some effect on stack usage. Also,
+depending on the configuration, it is possible that some other code
+such as interrupt handlers will occasionally run on the current
+thread's stack. This depends in part on configuration options such as
+<TT
+CLASS="VARNAME"
+>CYGIMP_HAL_COMMON_INTERRUPTS_USE_INTERRUPT_STACK</TT
+>
+and <TT
+CLASS="VARNAME"
+>CYGSEM_HAL_COMMON_INTERRUPTS_ALLOW_NESTING</TT
+>.
+      </P
+><P
+>Determining an application's actual stack size requirements is the
+responsibility of the application developer, since the kernel cannot
+know in advance what code a given thread will run. However, the system
+does provide some hints about reasonable stack sizes in the form of
+two constants: <TT
+CLASS="VARNAME"
+>CYGNUM_HAL_STACK_SIZE_MINIMUM</TT
+> and
+<TT
+CLASS="VARNAME"
+>CYGNUM_HAL_STACK_SIZE_TYPICAL</TT
+>. These are defined by
+the appropriate HAL package. The <TT
+CLASS="VARNAME"
+>MINIMUM</TT
+> value is
+appropriate for a thread that just runs a single function and makes
+very simple system calls. Trying to create a thread with a smaller
+stack than this is illegal. The <TT
+CLASS="VARNAME"
+>TYPICAL</TT
+> value is
+appropriate for applications where application calls are nested no
+more than half a dozen or so levels, and there are no large arrays on
+the stack.
+      </P
+><P
+>If the stack sizes are not estimated correctly and a stack overflow
+occurs, the probably result is some form of memory corruption. This
+can be very hard to track down. The kernel does contain some code to
+help detect stack overflows, controlled by the configuration option
+<TT
+CLASS="VARNAME"
+>CYGFUN_KERNEL_THREADS_STACK_CHECKING</TT
+>: a small
+amount of space is reserved at the stack limit and filled with a
+special signature: every time a thread context switch occurs this
+signature is checked, and if invalid that is a good indication (but
+not absolute proof) that a stack overflow has occurred. This form of
+stack checking is enabled by default when the system is built with
+debugging enabled. A related configuration option is
+<TT
+CLASS="VARNAME"
+>CYGFUN_KERNEL_THREADS_STACK_MEASUREMENT</TT
+>: enabling
+this option means that a thread can call the function
+<TT
+CLASS="FUNCTION"
+>cyg_thread_measure_stack_usage</TT
+> to find out the
+maximum stack usage to date. Note that this is not necessarily the
+true maximum because, for example, it is possible that in the current
+run no interrupt occurred at the worst possible moment.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-THREAD-CREATE-CONTEXT"
+></A
+><H2
+>Valid contexts</H2
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_thread_create</TT
+> may be called during
+initialization and from within thread context. It may not be called
+from inside a DSR.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-THREAD-CREATE-EXAMPLE"
+></A
+><H2
+>Example</H2
+><P
+>A simple example of thread creation is shown below. This involves
+creating five threads, one producer and four consumers or workers. The
+threads are created in the system's
+<TT
+CLASS="FUNCTION"
+>cyg_user_start</TT
+>: depending on the configuration it
+might be more appropriate to do this elsewhere, for example inside
+<TT
+CLASS="FUNCTION"
+>main</TT
+>.
+      </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#include &lt;cyg/hal/hal_arch.h&gt;
+#include &lt;cyg/kernel/kapi.h&gt;
+
+// These numbers depend entirely on your application
+#define NUMBER_OF_WORKERS    4
+#define PRODUCER_PRIORITY   10
+#define WORKER_PRIORITY     11
+#define PRODUCER_STACKSIZE  CYGNUM_HAL_STACK_SIZE_TYPICAL
+#define WORKER_STACKSIZE    (CYGNUM_HAL_STACK_SIZE_MINIMUM + 1024)
+
+static unsigned char producer_stack[PRODUCER_STACKSIZE];
+static unsigned char worker_stacks[NUMBER_OF_WORKERS][WORKER_STACKSIZE];
+static cyg_handle_t producer_handle, worker_handles[NUMBER_OF_WORKERS];
+static cyg_thread_t producer_thread, worker_threads[NUMBER_OF_WORKERS];
+
+static void
+producer(cyg_addrword_t data)
+{
+    &#8230;
+}
+
+static void
+worker(cyg_addrword_t data)
+{
+    &#8230;
+}
+
+void
+cyg_user_start(void)
+{
+    int i;
+
+    cyg_thread_create(PRODUCER_PRIORITY, &amp;producer, 0, "producer",
+                      producer_stack, PRODUCER_STACKSIZE,
+                      &amp;producer_handle, &amp;producer_thread);
+    cyg_thread_resume(producer_handle);
+    for (i = 0; i &#60; NUMBER_OF_WORKERS; i++) {
+        cyg_thread_create(WORKER_PRIORITY, &amp;worker, i, "worker",
+                          worker_stacks[i], WORKER_STACKSIZE,
+                          &amp;(worker_handles[i]), &amp;(worker_threads[i]));
+        cyg_thread_resume(worker_handles[i]);
+    }
+}
+      </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-THREAD-CREATE-CXX"
+></A
+><H2
+>Thread Entry Points and C++</H2
+><P
+>For code written in C++ the thread entry function must be either a
+static member function of a class or an ordinary function outside any
+class. It cannot be a normal member function of a class because such
+member functions take an implicit additional argument
+<TT
+CLASS="VARNAME"
+>this</TT
+>, and the kernel has no way of knowing what
+value to use for this argument. One way around this problem is to make
+use of a special static member function, for example:
+      </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>class fred {
+  public:
+    void thread_function();
+    static void static_thread_aux(cyg_addrword_t);
+};
+
+void
+fred::static_thread_aux(cyg_addrword_t objptr)
+{
+    fred* object = static_cast&lt;fred*&gt;(objptr);
+    object-&gt;thread_function();
+}
+
+static fred instance;
+
+extern "C" void
+cyg_start( void )
+{
+    &#8230;
+    cyg_thread_create( &#8230;,
+                      &amp;fred::static_thread_aux,
+                      static_cast&lt;cyg_addrword_t&gt;(&amp;instance),
+                      &#8230;);
+    &#8230;
+}
+      </PRE
+></TD
+></TR
+></TABLE
+><P
+>Effectively this uses the <TT
+CLASS="PARAMETER"
+><I
+>entry_data</I
+></TT
+> argument to
+<TT
+CLASS="FUNCTION"
+>cyg_thread_create</TT
+> to hold the
+<TT
+CLASS="VARNAME"
+>this</TT
+> pointer. Unfortunately this approach does
+require the use of some C++ casts, so some of the type safety that can
+be achieved when programming in C++ is lost.
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="kernel-smp.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="kernel-thread-info.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SMP Support</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Thread information</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

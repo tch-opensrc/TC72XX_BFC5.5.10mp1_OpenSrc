@@ -1,0 +1,331 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Starting the SNMP Agent</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="SNMP for eCos"
+HREF="net-snmp-ecos-port.html"><LINK
+REL="PREVIOUS"
+TITLE="Changes to eCos sources"
+HREF="net-snmp-ecos-changes.html"><LINK
+REL="NEXT"
+TITLE="Configuring eCos"
+HREF="net-snmp-configuring-ecos.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-snmp-ecos-changes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 47. SNMP for <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-snmp-configuring-ecos.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-SNMP-STARTING-THE-SNMP-AGENT">Starting the SNMP Agent</H1
+><P
+>A routine to instantiate and start the SNMP agent thread in the default
+configuration is provided in
+<TT
+CLASS="FILENAME"
+>PACKAGES/net/snmp/agent/VERSION/src/snmptask.c</TT
+></P
+><P
+>It starts the snmpd thread at priority
+<TT
+CLASS="LITERAL"
+>CYGPKG_NET_THREAD_PRIORITY+1</TT
+>
+by default, ie. one step less important than the TCP/IP stack service
+thread.
+It also statically creates and uses a very large stack of around 100
+KiloBytes.
+To use that convenience function, this code fragment may be copied (in
+plain C).</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#ifdef CYGPKG_SNMPAGENT
+{
+                extern void cyg_net_snmp_init(void);
+                cyg_net_snmp_init();
+            
+}
+#endif</PRE
+></TD
+></TR
+></TABLE
+><P
+>In case you need to perform initialization, for example setting up SNMPv3
+security features, when the snmp agent starts and every time it restarts,
+you can register a callback function by simply writing the global variable:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>externC void (*<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>snmpd_reinit_function</I
+></SPAN
+>)( void );</PRE
+></TD
+></TR
+></TABLE
+>
+with a suitable function pointer.</P
+><P
+>The entry point to the SNMP agent is
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>externC void <TT
+CLASS="FUNCTION"
+>snmpd</TT
+>( void (*<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>initfunc</I
+></SPAN
+>)( void ) );</PRE
+></TD
+></TR
+></TABLE
+>
+so you can of course easily start it in a thread of your choice at another
+priority instead if required, after performing whatever other
+initialization your SNMP MIBs need.  A larger than default stacksize is
+required.  The <TT
+CLASS="LITERAL"
+>initfunc</TT
+> parameter is the callback
+function mentioned above &#8212; a NULL parameter there is safe and
+obviously means no callback is registered.</P
+><P
+>Note that if you call <TT
+CLASS="LITERAL"
+>snmpd();</TT
+> yourself and do
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> call <TT
+CLASS="LITERAL"
+>cyg_net_snmp_init();</TT
+> then
+that routine, global variable, and the default large stack will not be
+used.  This is the recommended way control such features from your
+application; create and start the thread yourself at the appropriate
+moment.</P
+><P
+>Other APIs from the <TT
+CLASS="LITERAL"
+>snmpd</TT
+> module are available,
+specifically:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void <TT
+CLASS="FUNCTION"
+>SnmpdShutDown</TT
+>(int <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>a</I
+></SPAN
+>);</PRE
+></TD
+></TR
+></TABLE
+>
+which causes the <TT
+CLASS="LITERAL"
+>snmpd</TT
+> to restart itself &#8212;
+including the callback to your init function &#8212; as soon as possible.</P
+><P
+>The parameter <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>a</I
+></SPAN
+> is ignored.  It is there because in
+<TT
+CLASS="LITERAL"
+>snmpd</TT
+>'s &#8220;natural environment&#8221; this routine
+is a <TT
+CLASS="LITERAL"
+>UNIX</TT
+> signal handler.</P
+><P
+>The helper functions in the network stack for managing
+<TT
+CLASS="LITERAL"
+>DHCP</TT
+>
+leases will call <TT
+CLASS="FUNCTION"
+>SnmpdShutDown()</TT
+>
+when necessary, for example if network interfaces go down and/or come up
+again.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-snmp-ecos-changes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-snmp-configuring-ecos.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Changes to eCos sources</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-snmp-ecos-port.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Configuring eCos</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

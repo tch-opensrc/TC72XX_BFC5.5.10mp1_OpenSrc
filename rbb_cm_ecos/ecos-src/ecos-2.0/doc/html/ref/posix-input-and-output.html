@@ -1,0 +1,243 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Input and Output [POSIX Section 6]</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="POSIX Standard Support"
+HREF="posix-standard-support.html"><LINK
+REL="PREVIOUS"
+TITLE="Files and Directories [POSIX Section 5]"
+HREF="posix-files-and-directories.html"><LINK
+REL="NEXT"
+TITLE="Device and Class Specific Functions [POSIX Section 7]"
+HREF="posix-device-and-class-specific-functions.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="posix-files-and-directories.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 31. POSIX Standard Support</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="posix-device-and-class-specific-functions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="POSIX-INPUT-AND-OUTPUT">Input and Output &#0091;POSIX Section 6&#0093;</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13062">Functions Implemented</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>int dup( int fd ); 
+int dup2( int fd, int fd2 ); 
+int close(int fd); 
+ssize&#0095;t	read(int fd, void &#0042;buf, size&#0095;t nbyte); 
+ssize&#0095;t	write(int fd, const void &#0042;buf, size&#0095;t nbyte); 
+int fcntl( int fd, int cmd, ... ); 
+off&#0095;t lseek(int fd, off&#0095;t offset, int whence); 
+int fsync( int fd );
+int fdatasync( int fd );</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13065">Functions Omitted</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>int pipe( int fildes&#0091;2&#0093; ); 
+int aio&#0095;read( struct aiocb &#0042;aiocbp );				&#0047;&#0047; TBA 
+int aio&#0095;write( struct aiocb &#0042;aiocbp );				&#0047;&#0047; TBA 
+int lio&#0095;listio( int mode, struct aiocb &#0042;const list&#0091;&#0093;,
+                int nent, struct sigevent &#0042;sig);		&#0047;&#0047; TBA 
+int aio&#0095;error( struct aiocb &#0042;aiocbp );				&#0047;&#0047; TBA 
+int aio&#0095;return( struct aiocb &#0042;aiocbp );				&#0047;&#0047; TBA 
+int aio&#0095;cancel( int fd, struct aiocb &#0042;aiocbp );			&#0047;&#0047; TBA 
+int aio&#0095;suspend( const struct aiocb &#0042;const list&#0091;&#0093;,
+                 int nent, const struct timespec &#0042;timeout );	&#0047;&#0047; TBA 
+int aio&#0095;fsync( int op, struct aiocb &#0042;aiocbp );
+&#0047;&#0047; TBA</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13068">Notes</H2
+><P
+></P
+><UL
+><LI
+><P
+>	    Only the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>F&#0095;DUPFD</I
+></SPAN
+> command
+	    of <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>fcntl()</I
+></SPAN
+> is currently implemented.
+	    </P
+></LI
+><LI
+><P
+>	    Most of the functionality of these functions depends on
+	    the underlying filesystem.
+	    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="posix-files-and-directories.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="posix-device-and-class-specific-functions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Files and Directories &#0091;POSIX Section 5&#0093;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="posix-standard-support.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Device and Class Specific Functions &#0091;POSIX Section 7&#0093;</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

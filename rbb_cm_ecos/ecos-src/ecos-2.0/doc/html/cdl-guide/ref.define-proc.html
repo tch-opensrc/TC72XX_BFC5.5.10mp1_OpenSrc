@@ -1,0 +1,408 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>define_proc</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="define_header"
+HREF="ref.define-header.html"><LINK
+REL="NEXT"
+TITLE="description"
+HREF="ref.description.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.define-header.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.description.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.DEFINE-PROC"><SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4169"
+></A
+><H2
+>Name</H2
+>Property <SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+>&nbsp;--&nbsp;Use a fragment of Tcl code to output additional data to
+configuration header files.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4173"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_option &lt;name&gt; {
+    define_proc &lt;Tcl script&gt;
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4175"
+></A
+><H2
+>Description</H2
+><P
+>For most configuration options it is sufficient to have an entry in
+the configuration header file of the form:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define &lt;name&gt; &lt;value&gt;</PRE
+></TD
+></TR
+></TABLE
+><P
+>In some cases it is desirable to perform some more complicated
+processing when generating a configuration header file. There are a
+number of CDL properties for this, including <SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+> and
+<SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+>. The most flexible is <SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+>: this allows the
+component writer to specify a Tcl script that gets invoked whenever
+the configuration system generates the header file for the owning
+package. The script can output anything to the header file, for
+example it could generate a C data structure based on various
+configuration values.</P
+><P
+>At the point that the <SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+> script is invoked there will be
+two channels to open files, accessible via Tcl variables:
+<TT
+CLASS="LITERAL"
+>cdl_header</TT
+> is a channel to the current package's
+own header file for example
+<TT
+CLASS="FILENAME"
+>pkgconf/kernel.h</TT
+>;
+<TT
+CLASS="LITERAL"
+>cdl_system_header</TT
+> is a channel to the global
+configuration file
+<TT
+CLASS="FILENAME"
+>pkgconf/system.h</TT
+>. A typical
+<SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+> script will use the <TT
+CLASS="LITERAL"
+>puts</TT
+> command to
+output data to one of these channels.</P
+><P
+><SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+> properties only take effect if the current option is
+active and enabled. The default behavior of the configuration system
+for an option with the <TT
+CLASS="LITERAL"
+>bool</TT
+> flavor corresponds to
+the following <SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+>:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    cdl_option XXX {
+        &#8230;
+        define_proc {
+            puts $cdl_header "#define XXX 1"
+        }
+}</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>In the current implementation it is not possible for a <SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+>
+property to examine the current values of various configuration
+options and adapt accordingly. This is a major limitation, and will be
+addressed in future versions of the configuration tools.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4199"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_HAL_ARM_PID {
+    display       "ARM PID evaluation board"
+    parent        CYGPKG_HAL_ARM
+    define_header hal_arm_pid.h
+    include_dir   cyg/hal
+    hardware
+
+    define_proc {
+        puts $::cdl_system_header "#define CYGBLD_HAL_TARGET_H   &lt;pkgconf/hal_arm.h&gt;"
+        puts $::cdl_system_header "#define CYGBLD_HAL_PLATFORM_H &lt;pkgconf/hal_arm_pid.h&gt;"
+        puts $::cdl_header ""
+        puts $::cdl_header "#define HAL_PLATFORM_CPU    \"ARM 7TDMI\""
+        puts $::cdl_header "#define HAL_PLATFORM_BOARD  \"PID\""
+        puts $::cdl_header "#define HAL_PLATFORM_EXTRA  \"\""
+        puts $::cdl_header ""
+    }
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4202"
+></A
+><H2
+>See Also</H2
+><P
+>Properties <A
+HREF="ref.define.html"
+><SPAN
+CLASS="PROPERTY"
+>define</SPAN
+></A
+>,
+<A
+HREF="ref.define-format.html"
+><SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+></A
+>,
+<A
+HREF="ref.define-header.html"
+><SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+></A
+>,
+<A
+HREF="ref.if-define.html"
+><SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+></A
+> and
+<A
+HREF="ref.no-define.html"
+><SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+></A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.define-header.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.description.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>description</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

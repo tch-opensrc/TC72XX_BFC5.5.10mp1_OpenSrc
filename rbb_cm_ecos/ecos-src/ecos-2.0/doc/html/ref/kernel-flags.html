@@ -1,0 +1,481 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Event Flags</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Kernel"
+HREF="kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="Mail boxes"
+HREF="kernel-mail-boxes.html"><LINK
+REL="NEXT"
+TITLE="Spinlocks"
+HREF="kernel-spinlocks.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="kernel-mail-boxes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="kernel-spinlocks.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="KERNEL-FLAGS">Event Flags</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN1555"
+></A
+><H2
+>Name</H2
+>cyg_flag_init, cyg_flag_destroy, cyg_flag_setbits, cyg_flag_maskbits, cyg_flag_wait, cyg_flag_timed_wait, cyg_flag_poll, cyg_flag_peek, cyg_flag_waiting&nbsp;--&nbsp;Synchronization primitive</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN1566"><H2
+>Synopsis</H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><A
+NAME="AEN1567"><P
+></P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &lt;cyg/kernel/kapi.h&gt;
+        </PRE
+></TD
+></TR
+></TABLE
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_flag_init</CODE
+>(cyg_flag_t* flag);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_flag_destroy</CODE
+>(cyg_flag_t* flag);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_flag_setbits</CODE
+>(cyg_flag_t* flag, cyg_flag_value_t value);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_flag_maskbits</CODE
+>(cyg_flag_t* flag, cyg_flag_value_t value);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_flag_value_t cyg_flag_wait</CODE
+>(cyg_flag_t* flag, cyg_flag_value_t pattern, cyg_flag_mode_t mode);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_flag_value_t cyg_flag_timed_wait</CODE
+>(cyg_flag_t* flag, cyg_flag_value_t pattern, cyg_flag_mode_t mode, cyg_tick_count_t abstime);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_flag_value_t cyg_flag_poll</CODE
+>(cyg_flag_t* flag, cyg_flag_value_t pattern, cyg_flag_mode_t mode);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_flag_value_t cyg_flag_peek</CODE
+>(cyg_flag_t* flag);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_bool_t cyg_flag_waiting</CODE
+>(cyg_flag_t* flag);</CODE
+></P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-FLAGS-DESCRIPTION"
+></A
+><H2
+>Description</H2
+><P
+>Event flags allow a consumer thread to wait for one of several
+different types of event to occur. Alternatively it is possible to
+wait for some combination of events. The implementation is relatively
+straightforward. Each event flag contains a 32-bit integer.
+Application code associates these bits with specific events, so for
+example bit 0 could indicate that an I/O operation has completed and
+data is available, while bit 1 could indicate that the user has
+pressed a start button. A producer thread or a DSR can cause one or
+more of the bits to be set, and a consumer thread currently waiting
+for these bits will be woken up.
+      </P
+><P
+>Unlike semaphores no attempt is made to keep track of event counts. It
+does not matter whether a given event occurs once or multiple times
+before being consumed, the corresponding bit in the event flag will
+change only once. However semaphores cannot easily be used to handle
+multiple event sources. Event flags can often be used as an
+alternative to condition variables, although they cannot be used for
+completely arbitrary conditions and they only support the equivalent
+of condition variable broadcasts, not signals.
+      </P
+><P
+>Before an event flag can be used it must be initialized by a call to
+<TT
+CLASS="FUNCTION"
+>cyg_flag_init</TT
+>. This takes a pointer to a
+<SPAN
+CLASS="STRUCTNAME"
+>cyg_flag_t</SPAN
+> data structure, which can be part of a
+larger structure. All 32 bits in the event flag will be set to 0,
+indicating that no events have yet occurred. If an event flag is no
+longer required it can be cleaned up with a call to
+<TT
+CLASS="FUNCTION"
+>cyg_flag_destroy</TT
+>, allowing the memory for the
+<TT
+CLASS="STRUCTFIELD"
+><I
+>cyg_flag_t</I
+></TT
+> structure to be re-used.
+      </P
+><P
+>A consumer thread can wait for one or more events by calling
+<TT
+CLASS="FUNCTION"
+>cyg_flag_wait</TT
+>. This takes three arguments. The
+first identifies a particular event flag. The second is some
+combination of bits, indicating which events are of interest. The
+final argument should be one of the following:
+      </P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_FLAG_WAITMODE_AND</TT
+></DT
+><DD
+><P
+>The call to <TT
+CLASS="FUNCTION"
+>cyg_flag_wait</TT
+> will block until all
+the specified event bits are set. The event flag is not cleared when
+the wait succeeds, in other words all the bits remain set.
+          </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_FLAG_WAITMODE_OR</TT
+></DT
+><DD
+><P
+>The call will block until at least one of the specified event bits is
+set. The event flag is not cleared on return.
+          </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_FLAG_WAITMODE_AND | CYG_FLAG_WAITMODE_CLR</TT
+></DT
+><DD
+><P
+>The call will block until all the specified event bits are set, and
+the entire event flag is cleared when the call succeeds. Note that
+if this mode of operation is used then a single event flag cannot be
+used to store disjoint sets of events, even though enough bits might
+be available. Instead each disjoint set of events requires its own
+event flag.
+          </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_FLAG_WAITMODE_OR | CYG_FLAG_WAITMODE_CLR</TT
+></DT
+><DD
+><P
+>The call will block until at least one of the specified event bits is
+set, and the entire flag is cleared when the call succeeds.
+          </P
+></DD
+></DL
+></DIV
+><P
+>A call to <TT
+CLASS="FUNCTION"
+>cyg_flag_wait</TT
+> normally blocks until the
+required condition is satisfied. It will return the value of the event
+flag at the point that the operation succeeded, which may be a
+superset of the requested events. If
+<TT
+CLASS="FUNCTION"
+>cyg_thread_release</TT
+> is used to unblock a thread
+that is currently in a wait operation, the
+<TT
+CLASS="FUNCTION"
+>cyg_flag_wait</TT
+> call will instead return 0.
+      </P
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_flag_timed_wait</TT
+> is a variant of
+<TT
+CLASS="FUNCTION"
+>cyg_flag_wait</TT
+> which adds a timeout: the wait
+operation must succeed within the specified number of ticks, or it
+will fail with a return value of 0. <TT
+CLASS="FUNCTION"
+>cyg_flag_poll</TT
+>
+is a non-blocking variant: if the wait operation can succeed
+immediately it acts like <TT
+CLASS="FUNCTION"
+>cyg_flag_wait</TT
+>, otherwise
+it returns immediately with a value of 0.
+      </P
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_flag_setbits</TT
+> is called by a producer thread
+or from inside a DSR when an event occurs. The specified bits are or'd
+into the current event flag value. This may cause a waiting thread to
+be woken up, if its condition is now satisfied.
+      </P
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_flag_maskbits</TT
+> can be used to clear one or
+more bits in the event flag. This can be called from a producer when a
+particular condition is no longer satisfied, for example when the user
+is no longer pressing a particular button. It can also be used by a
+consumer thread if <TT
+CLASS="LITERAL"
+>CYG_FLAG_WAITMODE_CLR</TT
+> was not
+used as part of the wait operation, to indicate that some but not all
+of the active events have been consumed. If there are multiple
+consumer threads performing wait operations without using
+<TT
+CLASS="FUNCTION"
+>CYG_FLAG_WAITMODE_CLR</TT
+> then typically some
+additional synchronization such as a mutex is needed to prevent
+multiple threads consuming the same event.
+      </P
+><P
+>Two additional functions are provided to query the current state of an
+event flag. <TT
+CLASS="FUNCTION"
+>cyg_flag_peek</TT
+> returns the current
+value of the event flag, and <TT
+CLASS="FUNCTION"
+>cyg_flag_waiting</TT
+> can
+be used to find out whether or not there are any threads currently
+blocked on the event flag. Both of these functions must be used with
+care because other threads may be operating on the event flag.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-FLAGS-CONTEXT"
+></A
+><H2
+>Valid contexts</H2
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_flag_init</TT
+> is typically called during system
+initialization but may also be called in thread context. The same
+applies to <TT
+CLASS="FUNCTION"
+>cyg_flag_destroy</TT
+>.
+<TT
+CLASS="FUNCTION"
+>cyg_flag_wait</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_flag_timed_wait</TT
+> may only be called from
+thread context. The remaining functions may be called from thread or
+DSR context.
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="kernel-mail-boxes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="kernel-spinlocks.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Mail boxes</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Spinlocks</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

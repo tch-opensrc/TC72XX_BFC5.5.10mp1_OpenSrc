@@ -1,0 +1,465 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Some implementation details</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="C and math library overview"
+HREF="c-and-math-library-overview.html"><LINK
+REL="PREVIOUS"
+TITLE="Math library compatibility modes"
+HREF="math-library-compatibility-modes.html"><LINK
+REL="NEXT"
+TITLE="Thread safety"
+HREF="libc-thread-safety.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="math-library-compatibility-modes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 13. C and math library overview</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="libc-thread-safety.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="LIBC-IMPLEMENTATION-DETAILS">Some implementation details</H1
+><P
+>Here are some details about the implementation
+which might be interesting, although they do not affect the ISO-defined
+semantics of the library. </P
+><P
+></P
+><UL
+><LI
+><P
+>It is possible to configure 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+>
+ to have the standard C library without the kernel. You might want
+to do this to use less memory. But if you disable the kernel, you
+will be unable to use memory allocation, thread-safety and certain
+stdio functions such as input. Other C library functionality is
+unaffected.</P
+></LI
+><LI
+><P
+>The opaque type returned by 
+<TT
+CLASS="FUNCTION"
+>clock()</TT
+>
+ is called clock_t, and is implemented as a 64 bit integer.
+The value returned by 
+<TT
+CLASS="FUNCTION"
+>clock()</TT
+>
+ is only correct if the kernel is configured with real-time clock
+support, as determined by the CYGVAR_KERNEL_COUNTERS_CLOCK
+configuration option in 
+<TT
+CLASS="FILENAME"
+>kernel.h</TT
+>
+.</P
+></LI
+><LI
+><P
+>The FILE type is not implemented as a structure, but rather
+as a CYG_ADDRESS. </P
+></LI
+><LI
+><P
+>The GNU C compiler will place its own <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>built-in</I
+></SPAN
+> implementations
+instead of some C library functions. This can be turned off with
+the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>-fno-builtin</I
+></SPAN
+> option. The functions affected
+by this are 
+<TT
+CLASS="FUNCTION"
+>abs()</TT
+>
+, 
+<TT
+CLASS="FUNCTION"
+>cos()</TT
+>
+, 
+<TT
+CLASS="FUNCTION"
+>fabs()</TT
+>
+, 
+<TT
+CLASS="FUNCTION"
+>labs()</TT
+>
+, 
+<TT
+CLASS="FUNCTION"
+>memcmp()</TT
+>
+, 
+<TT
+CLASS="FUNCTION"
+>memcpy()</TT
+>
+, 
+<TT
+CLASS="FUNCTION"
+>sin()</TT
+>
+, 
+<TT
+CLASS="FUNCTION"
+>sqrt()</TT
+>
+, 
+<TT
+CLASS="FUNCTION"
+>strcmp()</TT
+>
+, 
+<TT
+CLASS="FUNCTION"
+>strcpy()</TT
+>
+, and 
+<TT
+CLASS="FUNCTION"
+>strlen()</TT
+>
+.</P
+></LI
+><LI
+><P
+>For faster execution speed you should avoid this option
+and let the compiler use its built-ins. This can be turned off by
+invoking 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>GCC</I
+></SPAN
+>
+ with the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>-fno-builtin</I
+></SPAN
+> option. </P
+></LI
+><LI
+><P
+><TT
+CLASS="FUNCTION"
+>memcpy()</TT
+>
+ and 
+<TT
+CLASS="FUNCTION"
+>memset()</TT
+>
+ are located in the infrastructure package, not in the C library
+package. This is because the compiler calls these functions, and
+the kernel needs to resolve them even if the C library is not configured. </P
+></LI
+><LI
+><P
+>Error codes such as EDOM and ERANGE, as well as 
+<TT
+CLASS="FUNCTION"
+>strerror()</TT
+>
+, are implemented in the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>error</I
+></SPAN
+> package. The
+error package is separate from the rest of the C and math libraries
+so that the rest of 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+>
+ can use these error handling facilities even if the C library is
+not configured. </P
+></LI
+><LI
+><P
+>When 
+<TT
+CLASS="FUNCTION"
+>free()</TT
+>
+ is invoked, heap memory will normally be coalesced. If the CYGSEM_KERNEL_MEMORY_COALESCE
+configuration parameter is not set, memory will not be coalesced,
+which might cause programs to fail. </P
+></LI
+><LI
+><P
+>Signals, as implemented by 
+<TT
+CLASS="FILENAME"
+>&lt;signal.h&gt;</TT
+>, are guaranteed to work
+correctly if raised using the
+<TT
+CLASS="FUNCTION"
+>raise()</TT
+>
+ function from a normal working program context. Using signals from
+within an ISR or DSR context is not expected to work. Also, it is
+not guaranteed that if CYGSEM_LIBC_SIGNALS_HWEXCEPTIONS
+is set, that handling a signal using 
+<TT
+CLASS="FUNCTION"
+>signal()</TT
+>
+ will necessarily catch that form of exception. For example, it
+may be expected that a divide-by-zero error would be caught by handling 
+<TT
+CLASS="VARNAME"
+>SIGFPE</TT
+>. However it depends on the underlying HAL implementation to implement
+the required hardware exception. And indeed the hardware itself
+may not be capable of detecting these exceptions so it may not be
+possible for the HAL implementer to do this in any case. Despite
+this lack of guarantees in this respect, the signals implementation
+is still ISO C compliant since ISO C does not offer any such guarantees
+either. </P
+></LI
+><LI
+><P
+>The 
+<TT
+CLASS="FUNCTION"
+>getenv()</TT
+>
+ function is implemented (unless the CYGPKG_LIBC_ENVIRONMENT configuration
+option is turned off), but there is no shell or 
+<TT
+CLASS="FUNCTION"
+>putenv()</TT
+>
+ function to set the environment dynamically. The environment is
+set in a global variable environ, declared as:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>extern char **environ; // Standard environment definition</PRE
+></TD
+></TR
+></TABLE
+><P
+>The environment can be statically initialized at startup time
+using the CYGDAT_LIBC_DEFAULT_ENVIRONMENT
+option. If so, remember that the final entry of the array initializer
+must be NULL. </P
+></LI
+></UL
+><P
+>Here is a minimal <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+> program which
+demonstrates the use of environments (see also the test case in <TT
+CLASS="FILENAME"
+>language/c/libc/current/tests/stdlib/getenv.c</TT
+>): </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt; // Main header for stdlib functions
+
+extern char **environ; // Standard environment definition
+
+int
+main( int argc, char *argv[] )
+{
+ char *str;
+ char *env[] = { "PATH=/usr/local/bin:/usr/bin",
+ "HOME=/home/fred",
+ "TEST=1234=5678",
+ "home=hatstand",
+ NULL };
+
+ printf("Display the current PATH environment variable\n");
+
+ environ = (char **)&amp;env;
+
+ str = getenv("PATH");
+
+ if (str==NULL) {
+  printf("The current PATH is unset\n");
+ } else {
+  printf("The current PATH is \"%s\"\n", str);
+ }
+ return 0;
+} </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="math-library-compatibility-modes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="libc-thread-safety.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Math library compatibility modes</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c-and-math-library-overview.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Thread safety</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

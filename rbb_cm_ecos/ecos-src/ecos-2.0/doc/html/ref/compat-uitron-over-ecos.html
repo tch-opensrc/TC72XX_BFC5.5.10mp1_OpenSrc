@@ -1,0 +1,305 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>µITRON and eCos</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="µITRON API"
+HREF="compat-uitron-microitron-api.html"><LINK
+REL="PREVIOUS"
+TITLE="µITRON API"
+HREF="compat-uitron-microitron-api.html"><LINK
+REL="NEXT"
+TITLE="Task Management Functions"
+HREF="compat-uitron-task-management-functions.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="compat-uitron-microitron-api.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 32. &micro;ITRON API</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="compat-uitron-task-management-functions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="COMPAT-UITRON-OVER-ECOS">&micro;ITRON and <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+></H1
+><P
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+> kernel implements the functionality
+used by the &micro;ITRON compatibility subsystem.
+The configuration of the kernel influences the behavior of &micro;ITRON
+programs.</P
+><P
+>In particular, the default configuration has time slicing
+(also known as round-robin scheduling) switched on; this means that
+a task can be moved from <TT
+CLASS="VARNAME"
+>RUN</TT
+> state
+to <TT
+CLASS="VARNAME"
+>READY</TT
+> state at any time, in
+order that one of its peers may run. This is not strictly conformant
+to the &micro;ITRON specification, which
+states that timeslicing may be implemented by periodically issuing
+a <TT
+CLASS="LITERAL"
+>rot_rdq(0)</TT
+> call from
+within a periodic task or cyclic handler; otherwise it is expected
+that a task runs until it is pre-empted in consequence of synchronization
+or communication calls it makes, or the effects of an interrupt
+or other external event on a higher priority task cause that task
+to become <TT
+CLASS="VARNAME"
+>READY</TT
+>. To disable timeslicing
+functionality in the kernel and &micro;ITRON
+compatibility environment, please disable the 
+<TT
+CLASS="LITERAL"
+>CYGSEM_KERNEL_SCHED_TIMESLICE</TT
+>
+configuration option in the kernel package. A description of kernel
+scheduling is in <A
+HREF="kernel-overview.html"
+>Kernel Overview</A
+>. </P
+><P
+>For another example, the semantics of task queueing when waiting
+on a synchronization object depend solely on the way the underlying
+kernel is configured. As discussed above, the multi-level queue
+scheduler is the only one which is &micro;ITRON
+compliant, and it queues waiting tasks in FIFO order. Future releases
+of that scheduler might be configurable to support priority ordering
+of task queues. Other schedulers might be different again: for example
+the bitmap scheduler can be used with the &micro;ITRON
+compatibility layer, even though it only allows one task at each
+priority and as such is not &micro;ITRON
+compliant, but it supports only priority ordering of task queues.
+So which queueing scheme is supported is not really a property of
+the &micro;ITRON compatibility layer; it
+depends on the kernel. </P
+><P
+>In this version of the &micro;ITRON
+compatibility layer, the calls to disable and enable scheduling
+and interrupts (<TT
+CLASS="FUNCTION"
+>dis_dsp()</TT
+>,
+<TT
+CLASS="FUNCTION"
+>ena_dsp()</TT
+>, <TT
+CLASS="FUNCTION"
+>loc_cpu()</TT
+>
+and <TT
+CLASS="FUNCTION"
+>unl_cpu()</TT
+>)
+call underlying kernel functions; in particular, the <TT
+CLASS="FUNCTION"
+>xxx_dsp()</TT
+> functions
+lock the scheduler entirely, which prevents dispatching of DSRs; functions
+implemented by DSRs include clock counters and alarm timers. Thus time &#8220;stops&#8221; while
+dispatching is disabled with <TT
+CLASS="FUNCTION"
+>dis_dsp()</TT
+>. </P
+><P
+>Like all parts of the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+> system, the
+detailed semantics of the &micro;ITRON layer
+are dependent on its configuration and the configuration of other components
+that it uses. The &micro;ITRON configuration
+options are all defined in the file <TT
+CLASS="FILENAME"
+>pkgconf/uitron.h</TT
+>,
+and can be set using the configuration tool or editing the
+<TT
+CLASS="FILENAME"
+>.ecc</TT
+>
+file in your build directory by hand. </P
+><P
+>An important configuration option for the &micro;ITRON
+compatibility layer is &#8220;Option: Return Error Codes for Bad Params&#8221;
+(
+<TT
+CLASS="LITERAL"
+>CYGSEM_UITRON_BAD_PARAMS_RETURN_ERRORS</TT
+>
+), which allows a lot of the error
+checking code in the &micro;ITRON compatibility layer to
+be removed. Of course this leaves a program open to undetected errors,
+so it should only be used once an application is fully debugged and
+tested. Its benefits include reduced code size and faster execution.
+However, it affects the API significantly, in that with this option
+enabled, bad calls do not return errors, but cause an assert
+failure (if that is itself enabled) or malfunction internally. There
+is discussion in more detail about this in each section below.</P
+><P
+>We now give a brief description of the &micro;ITRON
+functions which are implemented in this release. Note that all C
+and C&#0043;&#0043; source files should have the following <TT
+CLASS="LITERAL"
+>#include</TT
+> statement: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#include &lt;cyg/compat/uitron/uit_func.h&gt;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="compat-uitron-microitron-api.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="compat-uitron-task-management-functions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>&micro;ITRON API</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="compat-uitron-microitron-api.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Task Management Functions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

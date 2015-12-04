@@ -1,0 +1,326 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>no_define</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="make_object"
+HREF="ref.make-object.html"><LINK
+REL="NEXT"
+TITLE="parent"
+HREF="ref.parent.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.make-object.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.parent.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.NO-DEFINE"><SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4836"
+></A
+><H2
+>Name</H2
+>Property <SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+>&nbsp;--&nbsp;Suppress the normal generation of a preprocessor
+<TT
+CLASS="LITERAL"
+>#define</TT
+> symbol in a configuration header file.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4841"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_option &lt;name&gt; {
+    no_define
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4843"
+></A
+><H2
+>Description</H2
+><P
+>By default all active and enabled properties result in either one or
+two <TT
+CLASS="LITERAL"
+>#define'd</TT
+> symbols in the package's
+configuration header file, and this is one of the main ways in which
+options can affect packages at build-time. It is possible to suppress
+the default <TT
+CLASS="LITERAL"
+>#define's</TT
+> by specifying a
+<SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+> property in the body of an option or other <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> entity. 
+This property takes no arguments and should occur only once in a given
+body. </P
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+> property is frequently used in conjunction with one of
+the other header-file related properties such as <SPAN
+CLASS="PROPERTY"
+>define</SPAN
+>. If one of
+the other properties is used to export the required information to a
+configuration header file then often there is little point in
+exporting the default <TT
+CLASS="LITERAL"
+>#define</TT
+> as
+well&nbsp;&#8212;&nbsp; in fact there could be a name clash. The
+<SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+> property can also be useful if the sole purpose of an
+option is to affect which files get built, and the default
+<TT
+CLASS="LITERAL"
+>#define</TT
+> would never get tested in any source code.
+However in such cases the default <TT
+CLASS="LITERAL"
+>#define</TT
+> is
+mostly harmless and there is little to be gained by suppressing it.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4857"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_component CYG_HAL_STARTUP {
+    display       "Startup type"
+    flavor        data
+    legal_values  { "RAM" "ROM" }
+    default_value {"RAM"}
+    no_define
+    define -file system.h CYG_HAL_STARTUP
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4860"
+></A
+><H2
+>See Also</H2
+><P
+>Properties <A
+HREF="ref.define.html"
+><SPAN
+CLASS="PROPERTY"
+>define</SPAN
+></A
+>,
+<A
+HREF="ref.define-format.html"
+><SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+></A
+>,
+<A
+HREF="ref.define-header.html"
+><SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+></A
+>,
+<A
+HREF="ref.define-proc.html"
+><SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+></A
+> and
+<A
+HREF="ref.if-define.html"
+><SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+></A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.make-object.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.parent.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>parent</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

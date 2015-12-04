@@ -1,0 +1,462 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Mail boxes</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Kernel"
+HREF="kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="Semaphores"
+HREF="kernel-semaphores.html"><LINK
+REL="NEXT"
+TITLE="Event Flags"
+HREF="kernel-flags.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="kernel-semaphores.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="kernel-flags.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="KERNEL-MAIL-BOXES">Mail boxes</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN1425"
+></A
+><H2
+>Name</H2
+>cyg_mbox_create, cyg_mbox_delete, cyg_mbox_get, cyg_mbox_timed_get, cyg_mbox_tryget, cyg_mbox_peek_item, cyg_mbox_put, cyg_mbox_timed_put, cyg_mbox_tryput, cyg_mbox_peek, cyg_mbox_waiting_to_get, cyg_mbox_waiting_to_put&nbsp;--&nbsp;Synchronization primitive</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN1439"><H2
+>Synopsis</H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><A
+NAME="AEN1440"><P
+></P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &lt;cyg/kernel/kapi.h&gt;
+        </PRE
+></TD
+></TR
+></TABLE
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_mbox_create</CODE
+>(cyg_handle_t* handle, cyg_mbox* mbox);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_mbox_delete</CODE
+>(cyg_handle_t mbox);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void* cyg_mbox_get</CODE
+>(cyg_handle_t mbox);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void* cyg_mbox_timed_get</CODE
+>(cyg_handle_t mbox, cyg_tick_count_t abstime);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void* cyg_mbox_tryget</CODE
+>(cyg_handle_t mbox);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_count32 cyg_mbox_peek</CODE
+>(cyg_handle_t mbox);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void* cyg_mbox_peek_item</CODE
+>(cyg_handle_t mbox);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_bool_t cyg_mbox_put</CODE
+>(cyg_handle_t mbox, void* item);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_bool_t cyg_mbox_timed_put</CODE
+>(cyg_handle_t mbox, void* item, cyg_tick_count_t abstime);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_bool_t cyg_mbox_tryput</CODE
+>(cyg_handle_t mbox, void* item);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_bool_t cyg_mbox_waiting_to_get</CODE
+>(cyg_handle_t mbox);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_bool_t cyg_mbox_waiting_to_put</CODE
+>(cyg_handle_t mbox);</CODE
+></P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-MAIL-BOXES-DESCRIPTION"
+></A
+><H2
+>Description</H2
+><P
+>Mail boxes are a synchronization primitive. Like semaphores they
+can be used by a consumer thread to wait until a certain event has
+occurred, but the producer also has the ability to transmit some data
+along with each event. This data, the message, is normally a pointer
+to some data structure. It is stored in the mail box itself, so the
+producer thread that generates the event and provides the data usually
+does not have to block until some consumer thread is ready to receive
+the event. However a mail box will only have a finite capacity,
+typically ten slots. Even if the system is balanced and events are
+typically consumed at least as fast as they are generated, a burst of
+events can cause the mail box to fill up and the generating thread
+will block until space is available again. This behaviour is very
+different from semaphores, where it is only necessary to maintain a
+counter and hence an overflow is unlikely.
+      </P
+><P
+>Before a mail box can be used it must be created with a call to
+<TT
+CLASS="FUNCTION"
+>cyg_mbox_create</TT
+>. Each mail box has a unique
+handle which will be returned via the first argument and which should
+be used for subsequent operations.
+<TT
+CLASS="FUNCTION"
+>cyg_mbox_create</TT
+> also requires an area of memory
+for the kernel structure, which is provided by the
+<SPAN
+CLASS="STRUCTNAME"
+>cyg_mbox</SPAN
+> second argument. If a mail box is
+no longer required then <TT
+CLASS="FUNCTION"
+>cyg_mbox_delete</TT
+> can be
+used. This will simply discard any messages that remain posted.
+      </P
+><P
+>The main function for waiting on a mail box is
+<TT
+CLASS="FUNCTION"
+>cyg_mbox_get</TT
+>. If there is a pending message
+because of a call to <TT
+CLASS="FUNCTION"
+>cyg_mbox_put</TT
+> then
+<TT
+CLASS="FUNCTION"
+>cyg_mbox_get</TT
+> will return immediately with the
+message that was put into the mail box. Otherwise this function
+will block until there is a put operation. Exceptionally the thread
+can instead be unblocked by a call to
+<TT
+CLASS="FUNCTION"
+>cyg_thread_release</TT
+>, in which case
+<TT
+CLASS="FUNCTION"
+>cyg_mbox_get</TT
+> will return a null pointer. It is
+assumed that there will never be a call to
+<TT
+CLASS="FUNCTION"
+>cyg_mbox_put</TT
+> with a null pointer, because it
+would not be possible to distinguish between that and a release
+operation. Messages are always retrieved in the order in which they
+were put into the mail box, and there is no support for messages
+with different priorities.
+      </P
+><P
+>There are two variants of <TT
+CLASS="FUNCTION"
+>cyg_mbox_get</TT
+>. The
+first, <TT
+CLASS="FUNCTION"
+>cyg_mbox_timed_get</TT
+> will wait until either
+a message is available or until a number of clock ticks have occurred.
+If no message is posted within the timeout then a null pointer will be
+returned. <TT
+CLASS="FUNCTION"
+>cyg_mbox_tryget</TT
+> is a non-blocking
+operation which will either return a message if one is available or a
+null pointer.
+      </P
+><P
+>New messages are placed in the mail box by calling
+<TT
+CLASS="FUNCTION"
+>cyg_mbox_put</TT
+> or one of its variants. The main put
+function takes two arguments, a handle to the mail box and a
+pointer for the message itself. If there is a spare slot in the
+mail box then the new message can be placed there immediately, and
+if there is a waiting thread it will be woken up so that it can
+receive the message. If the mail box is currently full then
+<TT
+CLASS="FUNCTION"
+>cyg_mbox_put</TT
+> will block until there has been a
+get operation and a slot is available. The
+<TT
+CLASS="FUNCTION"
+>cyg_mbox_timed_put</TT
+> variant imposes a time limit
+on the put operation, returning false if the operation cannot be
+completed within the specified number of clock ticks. The
+<TT
+CLASS="FUNCTION"
+>cyg_mbox_tryput</TT
+> variant is non-blocking,
+returning false if there are no free slots available and the message
+cannot be posted without blocking.
+      </P
+><P
+>There are a further four functions available for examining the current
+state of a mailbox. The results of these functions must be used with
+care because usually the state can change at any time as a result of
+activity within other threads, but they may prove occasionally useful
+during debugging or in special situations.
+<TT
+CLASS="FUNCTION"
+>cyg_mbox_peek</TT
+> returns a count of the number of
+messages currently stored in the mail box.
+<TT
+CLASS="FUNCTION"
+>cyg_mbox_peek_item</TT
+> retrieves the first message,
+but it remains in the mail box until a get operation is performed.
+<TT
+CLASS="FUNCTION"
+>cyg_mbox_waiting_to_get</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_mbox_waiting_to_put</TT
+> indicate whether or not
+there are currently threads blocked in a get or a put operation on a
+given mail box.
+      </P
+><P
+>The number of slots in each mail box is controlled by a
+configuration option
+<TT
+CLASS="VARNAME"
+>CYGNUM_KERNEL_SYNCH_MBOX_QUEUE_SIZE</TT
+>, with a default
+value of 10. All mail boxes are the same size.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-MAIL-BOXES-CONTEXT"
+></A
+><H2
+>Valid contexts</H2
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_mbox_create</TT
+> is typically called during
+system initialization but may also be called in thread context.
+The remaining functions are normally called only during thread
+context. Of special note is <TT
+CLASS="FUNCTION"
+>cyg_mbox_put</TT
+> which
+can be a blocking operation when the mail box is full, and which
+therefore must never be called from DSR context. It is permitted to
+call <TT
+CLASS="FUNCTION"
+>cyg_mbox_tryput</TT
+>,
+<TT
+CLASS="FUNCTION"
+>cyg_mbox_tryget</TT
+>, and the information functions
+from DSR context but this is rarely useful.
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="kernel-semaphores.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="kernel-flags.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Semaphores</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Event Flags</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

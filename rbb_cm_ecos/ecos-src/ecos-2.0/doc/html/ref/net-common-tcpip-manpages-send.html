@@ -1,0 +1,290 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>send</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="select"
+HREF="net-common-tcpip-manpages-select.html"><LINK
+REL="NEXT"
+TITLE="shutdown"
+HREF="net-common-tcpip-manpages-shutdown.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-select.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-shutdown.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-SEND">send</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>SEND(2)                       System Calls Manual                      SEND(2)
+
+NAME
+     send, sendto, sendmsg - send a message from a socket
+
+SYNOPSIS
+     #include &lt;sys/types.h&#62;
+     #include &lt;sys/socket.h&#62;
+
+     ssize_t
+     send(int s, const void *msg, size_t len, int flags);
+
+     ssize_t
+     sendto(int s, const void *msg, size_t len, int flags,
+             const struct sockaddr *to, socklen_t tolen);
+
+     ssize_t
+     sendmsg(int s, const struct msghdr *msg, int flags);
+
+DESCRIPTION
+     send(), sendto(), and sendmsg() are used to transmit a message to another
+     socket.  send() may be used only when the socket is in a connected state,
+     while sendto() and sendmsg() may be used at any time.
+
+     The address of the target is given by to with tolen specifying its size.
+     The length of the message is given by len.  If the message is too long to
+     pass atomically through the underlying protocol, the error EMSGSIZE is
+     returned, and the message is not transmitted.
+
+     No indication of failure to deliver is implicit in a send().  Locally
+     detected errors are indicated by a return value of -1.
+
+     If no messages space is available at the socket to hold the message to be
+     transmitted, then send() normally blocks, unless the socket has been
+     placed in non-blocking I/O mode.  The select(2) or poll(2) system calls
+     may be used to determine when it is possible to send more data.
+
+     The flags parameter may include one or more of the following:
+
+     #define MSG_OOB        0x1  /* process out-of-band data */
+     #define MSG_DONTROUTE  0x4  /* bypass routing, use direct interface */
+
+     The flag MSG_OOB is used to send ``out-of-band'' data on sockets that
+     support this notion (e.g., SOCK_STREAM); the underlying protocol must
+     also support ``out-of-band'' data.  MSG_DONTROUTE is usually used only by
+     diagnostic or routing programs.
+
+     See recv(2) for a description of the msghdr structure.
+
+RETURN VALUES
+     The call returns the number of characters sent, or -1 if an error
+     occurred.
+
+ERRORS
+     send(), sendto(), and sendmsg() fail if:
+
+     [EBADF]            An invalid descriptor was specified.
+
+     [ENOTSOCK]         The argument s is not a socket.
+
+     [EFAULT]           An invalid user space address was specified for a
+                        parameter.
+
+     [EMSGSIZE]         The socket requires that message be sent atomically,
+                        and the size of the message to be sent made this
+                        impossible.
+
+     [EAGAIN]           The socket is marked non-blocking and the requested
+                        operation would block.
+
+     [ENOBUFS]          The system was unable to allocate an internal buffer.
+                        The operation may succeed when buffers become avail-
+                        able.
+
+     [ENOBUFS]          The output queue for a network interface was full.
+                        This generally indicates that the interface has
+                        stopped sending, but may be caused by transient con-
+                        gestion.
+
+     [EACCES]           The SO_BROADCAST option is not set on the socket, and
+                        a broadcast address was given as the destination.
+
+     [EHOSTUNREACH]     The destination address specified an unreachable host.
+
+     [EINVAL]           The flags parameter is invalid.
+
+     [EHOSTDOWN]        The destination address specified a host that is down.
+
+     [ENETDOWN]         The destination address specified a network that is
+                        down.
+
+     [ECONNREFUSED]     The destination host rejected the message (or a previ-
+                        ous one).  This error can only be returned by con-
+                        nected sockets.
+
+     [ENOPROTOOPT]      There was a problem sending the message.  This error
+                        can only be returned by connected sockets.
+
+     [EDESTADDRREQ]     The socket is not connected, and no destination
+                        address was specified.
+
+     [EISCONN]          The socket is already connected, and a destination
+                        address was specified.
+
+     In addition, send() and sendto() may return the following error:
+
+     [EINVAL]           len was larger than SSIZE_MAX.
+
+     Also, sendmsg() may return the following errors:
+
+     [EINVAL]           The sum of the iov_len values in the msg_iov array
+                        overflowed an ssize_t.
+
+     [EMSGSIZE]         The msg_iovlen member of msg was less than 0 or larger
+                        than IOV_MAX.
+
+     [EAFNOSUPPORT]     Addresses in the specified address family cannot be
+                        used with this socket.
+
+SEE ALSO
+     fcntl(2), getsockopt(2), poll(2), recv(2), select(2), poll(2), socket(2),
+     write(2)
+
+HISTORY
+     The send() function call appeared in 4.2BSD.
+
+BSD                              July 28, 1998                             BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-select.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-shutdown.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>select</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>shutdown</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

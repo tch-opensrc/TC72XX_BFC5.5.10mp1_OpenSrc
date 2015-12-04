@@ -1,0 +1,1349 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Kernel Real-time Characterization</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Kernel"
+HREF="kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="Interrupt Handling"
+HREF="kernel-interrupts.html"><LINK
+REL="NEXT"
+TITLE="RedBoot&#8482; User's Guide"
+HREF="redboot.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="kernel-interrupts.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="redboot.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="KERNEL-CHARACTERIZATION">Kernel Real-time Characterization</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN2068"
+></A
+><H2
+>Name</H2
+>tm_basic&nbsp;--&nbsp;Measure the performance of the eCos kernel</DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-CHARACTERIZATION-DESCRIPTION"
+></A
+><H2
+>Description</H2
+><P
+>When building a real-time system, care must be taken to ensure that
+the system will be able to perform properly within the constraints of
+that system. One of these constraints may be how fast certain
+operations can be performed. Another might be how deterministic the
+overall behavior of the system is. Lastly the memory footprint (size)
+and unit cost may be important.
+        </P
+><P
+>One of the major problems encountered while evaluating a system will
+be how to compare it with possible alternatives. Most manufacturers of
+real-time systems publish performance numbers, ostensibly so that
+users can compare the different offerings. However, what these numbers
+mean and how they were gathered is often not clear. The values are
+typically measured on a particular piece of hardware, so in order to
+truly compare, one must obtain measurements for exactly the same set
+of hardware that were gathered in a similar fashion.
+        </P
+><P
+>Two major items need to be present in any given set of measurements.
+First, the raw values for the various operations; these are typically
+quite easy to measure and will be available for most systems. Second,
+the determinacy of the numbers; in other words how much the value
+might change depending on other factors within the system. This value
+is affected by a number of factors: how long interrupts might be
+masked, whether or not the function can be interrupted, even very
+hardware-specific effects such as cache locality and pipeline usage.
+It is very difficult to measure the determinacy of any given
+operation, but that determinacy is fundamentally important to proper
+overall characterization of a system.
+        </P
+><P
+>In the discussion and numbers that follow, three key measurements are
+provided. The first measurement is an estimate of the interrupt
+latency: this is the length of time from when a hardware interrupt
+occurs until its Interrupt Service Routine (ISR) is called. The second
+measurement is an estimate of overall interrupt overhead: this is the
+length of time average interrupt processing takes, as measured by the
+real-time clock interrupt (other interrupt sources will certainly take
+a different amount of time, but this data cannot be easily gathered).
+The third measurement consists of the timings for the various kernel
+primitives.
+          </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-CHARACTERIZATION-METHODOLOGY"
+></A
+><H2
+>Methodology</H2
+><P
+>Key operations in the kernel were measured by using a simple test
+program which exercises the various kernel primitive operations. A
+hardware timer, normally the one used to drive the real-time clock,
+was used for these measurements. In most cases this timer can be read
+with quite high resolution, typically in the range of a few
+microseconds. For each measurement, the operation was repeated a
+number of times. Time stamps were obtained directly before and after
+the operation was performed. The data gathered for the entire set of
+operations was then analyzed, generating average (mean), maximum and
+minimum values. The sample variance (a measure of how close most
+samples are to the mean) was also calculated. The cost of obtaining
+the real-time clock timer values was also measured, and was subtracted
+from all other times.
+          </P
+><P
+>Most kernel functions can be measured separately. In each case, a
+reasonable number of iterations are performed. Where the test case
+involves a kernel object, for example creating a task, each iteration
+is performed on a different object. There is also a set of tests which
+measures the interactions between multiple tasks and certain kernel
+primitives. Most functions are tested in such a way as to determine
+the variations introduced by varying numbers of objects in the system.
+For example, the mailbox tests measure the cost of a 'peek' operation
+when the mailbox is empty, has a single item, and has multiple items
+present. In this way, any effects of the state of the object or how
+many items it contains can be determined.
+          </P
+><P
+>There are a few things to consider about these measurements. Firstly,
+they are quite micro in scale and only measure the operation in
+question. These measurements do not adequately describe how the
+timings would be perturbed in a real system with multiple interrupting
+sources. Secondly, the possible aberration incurred by the real-time
+clock (system heartbeat tick) is explicitly avoided. Virtually all
+kernel functions have been designed to be interruptible. Thus the
+times presented are typical, but best case, since any particular
+function may be interrupted by the clock tick processing. This number
+is explicitly calculated so that the value may be included in any
+deadline calculations required by the end user. Lastly, the reported
+measurements were obtained from a system built with all options at
+their default values. Kernel instrumentation and asserts are also
+disabled for these measurements. Any number of configuration options
+can change the measured results, sometimes quite dramatically. For
+example, mutexes are using priority inheritance in these measurements.
+The numbers will change if the system is built with priority
+inheritance on mutex variables turned off.
+          </P
+><P
+>The final value that is measured is an estimate of interrupt latency.
+This particular value is not explicitly calculated in the test program
+used, but rather by instrumenting the kernel itself. The raw number of
+timer ticks that elapse between the time the timer generates an
+interrupt and the start of the timer ISR is kept in the kernel. These
+values are printed by the test program after all other operations have
+been tested. Thus this should be a reasonable estimate of the
+interrupt latency over time.
+          </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-CHARACTERIZATION-USING-MEASUREMENTS"
+></A
+><H2
+>Using these Measurements</H2
+><P
+>These measurements can be used in a number of ways. The most typical
+use will be to compare different real-time kernel offerings on similar
+hardware, another will be to estimate the cost of implementing a task
+using eCos (applications can be examined to see what effect the kernel
+operations will have on the total execution time). Another use would
+be to observe how the tuning of the kernel affects overall operation.
+          </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-CHARACTERIZATION-INFLUENCES"
+></A
+><H2
+>Influences on Performance</H2
+><P
+>A number of factors can affect real-time performance in a system. One
+of the most common factors, yet most difficult to characterize, is the
+effect of device drivers and interrupts on system timings. Different
+device drivers will have differing requirements as to how long
+interrupts are suppressed, for example. The eCos system has been
+designed with this in mind, by separating the management of interrupts
+(ISR handlers) and the processing required by the interrupt
+(DSR&#8212;Deferred Service Routine&#8212; handlers). However, since
+there is so much variability here, and indeed most device drivers will
+come from the end users themselves, these effects cannot be reliably
+measured. Attempts have been made to measure the overhead of the
+single interrupt that eCos relies on, the real-time clock timer. This
+should give you a reasonable idea of the cost of executing interrupt
+handling for devices.
+          </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-CHARACTERIZATION-MEASURED-ITEMS"
+></A
+><H2
+>Measured Items</H2
+><P
+>This section describes the various tests and the numbers presented.
+All tests use the C kernel API (available by way of
+<TT
+CLASS="FILENAME"
+>cyg/kernel/kapi.h</TT
+>). There is a single main thread
+in the system that performs the various tests. Additional threads may
+be created as part of the testing, but these are short lived and are
+destroyed between tests unless otherwise noted. The terminology
+&#8220;lower priority&#8221; means a priority that is less important,
+not necessarily lower in numerical value. A higher priority thread
+will run in preference to a lower priority thread even though the
+priority value of the higher priority thread may be numerically less
+than that of the lower priority thread.
+          </P
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="KERNEL-CHARACTERIZATION-MEASURE-THREADS"
+></A
+><H3
+>Thread Primitives</H3
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Create thread</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_thread_create()</TT
+> call.
+Each call creates a totally new thread. The set of threads created by
+this test will be reused in the subsequent thread primitive tests.
+                </P
+></DD
+><DT
+>Yield thread</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_thread_yield()</TT
+> call.
+For this test, there are no other runnable threads, thus the test
+should just measure the overhead of trying to give up the CPU.
+                </P
+></DD
+><DT
+>Suspend &#0091;suspended&#0093; thread</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_thread_suspend()</TT
+> call.
+A thread may be suspended multiple times; each thread is already
+suspended from its initial creation, and is suspended again.
+                </P
+></DD
+><DT
+>Resume thread</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_thread_resume()</TT
+> call.
+All of the threads have a suspend count of 2, thus this call does not
+make them runnable. This test just measures the overhead of resuming a
+thread.
+                </P
+></DD
+><DT
+>Set priority</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_thread_set_priority()</TT
+>
+call. Each thread, currently suspended, has its priority set to a new
+value.
+                </P
+></DD
+><DT
+>Get priority</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_thread_get_priority()</TT
+>
+call.
+                </P
+></DD
+><DT
+>Kill &#0091;suspended&#0093; thread</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_thread_kill()</TT
+> call.
+Each thread in the set is killed. All threads are known to be
+suspended before being killed.
+		</P
+></DD
+><DT
+>Yield &#0091;no other&#0093; thread</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_thread_yield()</TT
+> call
+again. This is to demonstrate that the
+<TT
+CLASS="FUNCTION"
+>cyg_thread_yield()</TT
+> call has a fixed overhead,
+regardless of whether there are other threads in the system.
+                </P
+></DD
+><DT
+>Resume &#0091;suspended low priority&#0093; thread</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_thread_resume()</TT
+> call
+again. In this case, the thread being resumed is lower priority than
+the main thread, thus it will simply become ready to run but not be
+granted the CPU. This test measures the cost of making a thread ready
+to run.
+                </P
+></DD
+><DT
+>Resume &#0091;runnable low priority&#0093; thread</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_thread_resume()</TT
+> call
+again. In this case, the thread being resumed is lower priority than
+the main thread and has already been made runnable, so in fact the
+resume call has no effect.
+                </P
+></DD
+><DT
+>Suspend &#0091;runnable&#0093; thread</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_thread_suspend()</TT
+> call
+again. In this case, each thread has already been made runnable (by
+previous tests).
+                </P
+></DD
+><DT
+>Yield &#0091;only low priority&#0093; thread</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_thread_yield()</TT
+> call.
+In this case, there are many other runnable threads, but they are all
+lower priority than the main thread, thus no thread switches will take
+place.
+                </P
+></DD
+><DT
+>Suspend &#0091;runnable-&gt;not runnable&#0093; thread</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_thread_suspend()</TT
+> call
+again. The thread being suspended will become non-runnable by this
+action.
+                </P
+></DD
+><DT
+>Kill &#0091;runnable&#0093; thread</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_thread_kill()</TT
+> call
+again. In this case, the thread being killed is currently runnable,
+but lower priority than the main thread.
+                </P
+></DD
+><DT
+>Resume &#0091;high priority&#0093; thread</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_thread_resume()</TT
+> call.
+The thread being resumed is higher priority than the main thread, thus
+a thread switch will take place on each call. In fact there will be
+two thread switches; one to the new higher priority thread and a
+second back to the test thread. The test thread exits immediately.
+                </P
+></DD
+><DT
+>Thread switch</DT
+><DD
+><P
+>This test attempts to measure the cost of switching from one thread to
+another. Two equal priority threads are started and they will each
+yield to the other for a number of iterations. A time stamp is
+gathered in one thread before the
+<TT
+CLASS="FUNCTION"
+>cyg_thread_yield()</TT
+> call and after the call in the
+other thread.
+                </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="KERNEL-CHARACTERIZATION-MEASURE-SCHEDULER"
+></A
+><H3
+>Scheduler Primitives</H3
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Scheduler lock</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_scheduler_lock()</TT
+> call.
+                </P
+></DD
+><DT
+>Scheduler unlock &#0091;0 threads&#0093;</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_scheduler_unlock()</TT
+>
+call. There are no other threads in the system and the unlock happens
+immediately after a lock so there will be no pending DSR&#8217;s to
+run.
+                </P
+></DD
+><DT
+>Scheduler unlock &#0091;1 suspended thread&#0093;</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_scheduler_unlock()</TT
+>
+call. There is one other thread in the system which is currently
+suspended.
+                </P
+></DD
+><DT
+>Scheduler unlock &#0091;many suspended threads&#0093;</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_scheduler_unlock()</TT
+>
+call. There are many other threads in the system which are currently
+suspended. The purpose of this test is to determine the cost of having
+additional threads in the system when the scheduler is activated by
+way of <TT
+CLASS="FUNCTION"
+>cyg_scheduler_unlock()</TT
+>.
+                </P
+></DD
+><DT
+>Scheduler unlock &#0091;many low priority threads&#0093;</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_scheduler_unlock()</TT
+>
+call. There are many other threads in the system which are runnable
+but are lower priority than the main thread. The purpose of this test
+is to determine the cost of having additional threads in the system
+when the scheduler is activated by way of
+<TT
+CLASS="FUNCTION"
+>cyg_scheduler_unlock()</TT
+>.
+                </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="KERNEL-CHARACTERIZATION-MEASURE-MUTEX"
+></A
+><H3
+>Mutex Primitives</H3
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Init mutex</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mutex_init()</TT
+> call. A
+number of separate mutex variables are created. The purpose of this
+test is to measure the cost of creating a new mutex and introducing it
+to the system.
+                </P
+></DD
+><DT
+>Lock &#0091;unlocked&#0093; mutex</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mutex_lock()</TT
+> call. The
+purpose of this test is to measure the cost of locking a mutex which
+is currently unlocked. There are no other threads executing in the
+system while this test runs.
+                </P
+></DD
+><DT
+>Unlock &#0091;locked&#0093; mutex</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mutex_unlock()</TT
+> call.
+The purpose of this test is to measure the cost of unlocking a mutex
+which is currently locked. There are no other threads executing in the
+system while this test runs.
+                </P
+></DD
+><DT
+>Trylock &#0091;unlocked&#0093; mutex</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mutex_trylock()</TT
+> call.
+The purpose of this test is to measure the cost of locking a mutex
+which is currently unlocked. There are no other threads executing in
+the system while this test runs.
+                </P
+></DD
+><DT
+>Trylock &#0091;locked&#0093; mutex</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mutex_trylock()</TT
+> call.
+The purpose of this test is to measure the cost of locking a mutex
+which is currently locked. There are no other threads executing in the
+system while this test runs.
+                </P
+></DD
+><DT
+>Destroy mutex</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mutex_destroy()</TT
+> call.
+The purpose of this test is to measure the cost of deleting a mutex
+from the system. There are no other threads executing in the system
+while this test runs.
+                </P
+></DD
+><DT
+>Unlock/Lock mutex</DT
+><DD
+><P
+>This test attempts to measure the cost of unlocking a mutex for which
+there is another higher priority thread waiting. When the mutex is
+unlocked, the higher priority waiting thread will immediately take the
+lock. The time from when the unlock is issued until after the lock
+succeeds in the second thread is measured, thus giving the round-trip
+or circuit time for this type of synchronizer.
+                </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="KERNEL-CHARACTERIZATION-MEASURE-MAILBOX"
+></A
+><H3
+>Mailbox Primitives</H3
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Create mbox</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mbox_create()</TT
+> call. A
+number of separate mailboxes is created. The purpose of this test is
+to measure the cost of creating a new mailbox and introducing it to
+the system.
+                </P
+></DD
+><DT
+>Peek &#0091;empty&#0093; mbox</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mbox_peek()</TT
+> call. An
+attempt is made to peek the value in each mailbox, which is currently
+empty. The purpose of this test is to measure the cost of checking a
+mailbox for a value without blocking.
+                </P
+></DD
+><DT
+>Put &#0091;first&#0093; mbox</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mbox_put()</TT
+> call. One
+item is added to a currently empty mailbox. The purpose of this test
+is to measure the cost of adding an item to a mailbox. There are no
+other threads currently waiting for mailbox items to arrive.
+                </P
+></DD
+><DT
+>Peek &#0091;1 msg&#0093; mbox</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mbox_peek()</TT
+> call. An
+attempt is made to peek the value in each mailbox, which contains a
+single item. The purpose of this test is to measure the cost of
+checking a mailbox which has data to deliver.
+                </P
+></DD
+><DT
+>Put &#0091;second&#0093; mbox</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mbox_put()</TT
+> call. A
+second item is added to a mailbox. The purpose of this test is to
+measure the cost of adding an additional item to a mailbox. There are
+no other threads currently waiting for mailbox items to arrive.
+                </P
+></DD
+><DT
+>Peek &#0091;2 msgs&#0093; mbox</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mbox_peek()</TT
+> call. An
+attempt is made to peek the value in each mailbox, which contains two
+items. The purpose of this test is to measure the cost of checking a
+mailbox which has data to deliver.
+                </P
+></DD
+><DT
+>Get &#0091;first&#0093; mbox</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mbox_get()</TT
+> call. The
+first item is removed from a mailbox that currently contains two
+items. The purpose of this test is to measure the cost of obtaining an
+item from a mailbox without blocking.
+              </P
+></DD
+><DT
+>Get &#0091;second&#0093; mbox</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mbox_get()</TT
+> call. The
+last item is removed from a mailbox that currently contains one item.
+The purpose of this test is to measure the cost of obtaining an item
+from a mailbox without blocking.
+                </P
+></DD
+><DT
+>Tryput &#0091;first&#0093; mbox</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mbox_tryput()</TT
+> call. A
+single item is added to a currently empty mailbox. The purpose of this
+test is to measure the cost of adding an item to a mailbox.
+                </P
+></DD
+><DT
+>Peek item &#0091;non-empty&#0093; mbox</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mbox_peek_item()</TT
+> call.
+A single item is fetched from a mailbox that contains a single item.
+The purpose of this test is to measure the cost of obtaining an item
+without disturbing the mailbox.
+                </P
+></DD
+><DT
+>Tryget &#0091;non-empty&#0093; mbox</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mbox_tryget()</TT
+> call. A
+single item is removed from a mailbox that contains exactly one item.
+The purpose of this test is to measure the cost of obtaining one item
+from a non-empty mailbox.
+                </P
+></DD
+><DT
+>Peek item &#0091;empty&#0093; mbox</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mbox_peek_item()</TT
+> call.
+An attempt is made to fetch an item from a mailbox that is empty. The
+purpose of this test is to measure the cost of trying to obtain an
+item when the mailbox is empty.
+                </P
+></DD
+><DT
+>Tryget &#0091;empty&#0093; mbox</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mbox_tryget()</TT
+> call. An
+attempt is made to fetch an item from a mailbox that is empty. The
+purpose of this test is to measure the cost of trying to obtain an
+item when the mailbox is empty.
+                </P
+></DD
+><DT
+>Waiting to get mbox</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mbox_waiting_to_get()</TT
+>
+call. The purpose of this test is to measure the cost of determining
+how many threads are waiting to obtain a message from this mailbox.
+                </P
+></DD
+><DT
+>Waiting to put mbox</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mbox_waiting_to_put()</TT
+>
+call. The purpose of this test is to measure the cost of determining
+how many threads are waiting to put a message into this mailbox.
+                </P
+></DD
+><DT
+>Delete mbox</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_mbox_delete()</TT
+> call.
+The purpose of this test is to measure the cost of destroying a
+mailbox and removing it from the system.
+                </P
+></DD
+><DT
+>Put/Get mbox</DT
+><DD
+><P
+>In this round-trip test, one thread is sending data to a mailbox that
+is being consumed by another thread. The time from when the data is
+put into the mailbox until it has been delivered to the waiting thread
+is measured. Note that this time will contain a thread switch.
+                </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="KERNEL-CHARACTERIZATION-MEASURE-SEMAPHORE"
+></A
+><H3
+>Semaphore Primitives</H3
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Init semaphore</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_semaphore_init()</TT
+> call.
+A number of separate semaphore objects are created and introduced to
+the system. The purpose of this test is to measure the cost of
+creating a new semaphore.
+                </P
+></DD
+><DT
+>Post &#0091;0&#0093; semaphore</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_semaphore_post()</TT
+> call.
+Each semaphore currently has a value of 0 and there are no other
+threads in the system. The purpose of this test is to measure the
+overhead cost of posting to a semaphore. This cost will differ if
+there is a thread waiting for the semaphore.
+                </P
+></DD
+><DT
+>Wait &#0091;1&#0093; semaphore</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_semaphore_wait()</TT
+> call.
+The semaphore has a current value of 1 so the call is non-blocking.
+The purpose of the test is to measure the overhead of
+&#8220;taking&#8221; a semaphore.
+                </P
+></DD
+><DT
+>Trywait &#0091;0&#0093; semaphore</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_semaphore_trywait()</TT
+>
+call. The semaphore has a value of 0 when the call is made. The
+purpose of this test is to measure the cost of seeing if a semaphore
+can be &#8220;taken&#8221; without blocking. In this case, the answer
+would be no.
+                </P
+></DD
+><DT
+>Trywait &#0091;1&#0093; semaphore</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_semaphore_trywait()</TT
+>
+call. The semaphore has a value of 1 when the call is made. The
+purpose of this test is to measure the cost of seeing if a semaphore
+can be &#8220;taken&#8221; without blocking. In this case, the answer
+would be yes.
+                </P
+></DD
+><DT
+>Peek semaphore</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_semaphore_peek()</TT
+> call.
+The purpose of this test is to measure the cost of obtaining the
+current semaphore count value.
+                </P
+></DD
+><DT
+>Destroy semaphore</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_semaphore_destroy()</TT
+>
+call. The purpose of this test is to measure the cost of deleting a
+semaphore from the system.
+                </P
+></DD
+><DT
+>Post/Wait semaphore</DT
+><DD
+><P
+>In this round-trip test, two threads are passing control back and
+forth by using a semaphore. The time from when one thread calls
+<TT
+CLASS="FUNCTION"
+>cyg_semaphore_post()</TT
+> until the other thread
+completes its <TT
+CLASS="FUNCTION"
+>cyg_semaphore_wait()</TT
+> is measured.
+Note that each iteration of this test will involve a thread switch.
+                </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="KERNEL-CHARACTERIZATION-MEASURE-COUNTERS"
+></A
+><H3
+>Counters</H3
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Create counter</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_counter_create()</TT
+> call.
+A number of separate counters are created. The purpose of this test is
+to measure the cost of creating a new counter and introducing it to
+the system.
+                </P
+></DD
+><DT
+>Get counter value</DT
+><DD
+><P
+>This test measures the
+<TT
+CLASS="FUNCTION"
+>cyg_counter_current_value()</TT
+> call. The current
+value of each counter is obtained.
+                </P
+></DD
+><DT
+>Set counter value</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_counter_set_value()</TT
+>
+call. Each counter is set to a new value.
+                </P
+></DD
+><DT
+>Tick counter</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_counter_tick()</TT
+> call.
+Each counter is &#8220;ticked&#8221; once.
+                </P
+></DD
+><DT
+>Delete counter</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_counter_delete()</TT
+> call.
+Each counter is deleted from the system. The purpose of this test is
+to measure the cost of deleting a counter object.
+                </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="KERNEL-CHARACTERIZATION-MEASURE-ALARMS"
+></A
+><H3
+>Alarms</H3
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Create alarm</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_alarm_create()</TT
+> call. A
+number of separate alarms are created, all attached to the same
+counter object. The purpose of this test is to measure the cost of
+creating a new counter and introducing it to the system.
+                </P
+></DD
+><DT
+>Initialize alarm</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_alarm_initialize()</TT
+>
+call. Each alarm is initialized to a small value.
+                </P
+></DD
+><DT
+>Disable alarm</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_alarm_disable()</TT
+> call.
+Each alarm is explicitly disabled.
+                </P
+></DD
+><DT
+>Enable alarm</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_alarm_enable()</TT
+> call.
+Each alarm is explicitly enabled.
+                </P
+></DD
+><DT
+>Delete alarm</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_alarm_delete()</TT
+> call.
+Each alarm is destroyed. The purpose of this test is to measure the
+cost of deleting an alarm and removing it from the system.
+                </P
+></DD
+><DT
+>Tick counter &#0091;1 alarm&#0093;</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_counter_tick()</TT
+> call. A
+counter is created that has a single alarm attached to it. The purpose
+of this test is to measure the cost of &#8220;ticking&#8221; a counter
+when it has a single attached alarm. In this test, the alarm is not
+activated (fired).
+                </P
+></DD
+><DT
+>Tick counter &#0091;many alarms&#0093;</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_counter_tick()</TT
+> call. A
+counter is created that has multiple alarms attached to it. The
+purpose of this test is to measure the cost of &#8220;ticking&#8221; a
+counter when it has many attached alarms. In this test, the alarms are
+not activated (fired).
+                </P
+></DD
+><DT
+>Tick &amp; fire counter &#0091;1 alarm&#0093;</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_counter_tick()</TT
+> call. A
+counter is created that has a single alarm attached to it. The purpose
+of this test is to measure the cost of &#8220;ticking&#8221; a counter
+when it has a single attached alarm. In this test, the alarm is
+activated (fired). Thus the measured time will include the overhead of
+calling the alarm callback function.
+                </P
+></DD
+><DT
+>Tick &amp; fire counter &#0091;many alarms&#0093;</DT
+><DD
+><P
+>This test measures the <TT
+CLASS="FUNCTION"
+>cyg_counter_tick()</TT
+> call. A
+counter is created that has multiple alarms attached to it. The
+purpose of this test is to measure the cost of &#8220;ticking&#8221; a
+counter when it has many attached alarms. In this test, the alarms are
+activated (fired). Thus the measured time will include the overhead of
+calling the alarm callback function.
+                </P
+></DD
+><DT
+>Alarm latency &#0091;0 threads&#0093;</DT
+><DD
+><P
+>This test attempts to measure the latency in calling an alarm callback
+function. The time from the clock interrupt until the alarm function
+is called is measured. In this test, there are no threads that can be
+run, other than the system idle thread, when the clock interrupt
+occurs (all threads are suspended).
+                </P
+></DD
+><DT
+>Alarm latency &#0091;2 threads&#0093;</DT
+><DD
+><P
+>This test attempts to measure the latency in calling an alarm callback
+function. The time from the clock interrupt until the alarm function
+is called is measured. In this test, there are exactly two threads
+which are running when the clock interrupt occurs. They are simply
+passing back and forth by way of the
+<TT
+CLASS="FUNCTION"
+>cyg_thread_yield()</TT
+> call. The purpose of this test
+is to measure the variations in the latency when there are executing
+threads.
+                </P
+></DD
+><DT
+>Alarm latency &#0091;many threads&#0093;</DT
+><DD
+><P
+>This test attempts to measure the latency in calling an alarm callback
+function. The time from the clock interrupt until the alarm function
+is called is measured. In this test, there are a number of threads
+which are running when the clock interrupt occurs. They are simply
+passing back and forth by way of the
+<TT
+CLASS="FUNCTION"
+>cyg_thread_yield()</TT
+> call. The purpose of this test
+is to measure the variations in the latency when there are many
+executing threads.
+                </P
+></DD
+></DL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="kernel-interrupts.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="redboot.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Interrupt Handling</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>RedBoot&#8482; User's Guide</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,405 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>The Build Process</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="PREVIOUS"
+TITLE="Updating the ecos.db database"
+HREF="language.database.html"><LINK
+REL="NEXT"
+TITLE="Configuration Header File Generation"
+HREF="build.headers.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.database.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="build.headers.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="BUILD">Chapter 4. The Build Process</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="build.html#BUILD.OUTLINE"
+>Build Tree Generation</A
+></DT
+><DT
+><A
+HREF="build.headers.html"
+>Configuration Header File Generation</A
+></DT
+><DT
+><A
+HREF="build.make.html"
+>Building eCos</A
+></DT
+><DT
+><A
+HREF="build.tests.html"
+>Building Test Cases</A
+></DT
+></DL
+></DIV
+><P
+>Some <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> properties describe the consequences of manipulating
+configuration options. There are two main types of consequences.
+Typically enabling a configuration option results in one or more
+<TT
+CLASS="LITERAL"
+>#define's</TT
+> in a configuration header file, and
+properties that affect this include <SPAN
+CLASS="PROPERTY"
+>define</SPAN
+>, <SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+> and
+<SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+>. Enabling a configuration option can also affect the build
+process, primarily determining which files get built and added to the
+appropriate library. Properties related to the build process include
+<SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> and <SPAN
+CLASS="PROPERTY"
+>make</SPAN
+>. This chapter describes the whole build process,
+including details such as compiler flags and custom build steps.</P
+><P
+>Part of the overall design of the <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> component framework is that
+it can interact with a number of different build systems. The most
+obvious of these is <SPAN
+CLASS="APPLICATION"
+>GNU
+make</SPAN
+>:the component framework can generate one or more
+makefiles, and the user can then build the various packages simply by
+invoking <SPAN
+CLASS="APPLICATION"
+>make</SPAN
+>. However it
+should also be possible to build <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> by other means: the
+component framework can be queried about what is involved in building
+a given configuration, and this information can then be fed into the
+desired build system. Component writers should be aware of this
+possibility. Most packages will not be affected because the <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+>
+property can be used to provide all the required information, but care
+has to be taken when writing custom build steps.</P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="BUILD.OUTLINE">Build Tree Generation</H1
+><P
+>It is necessary to create an <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> configuration before anything can
+be built. With some tools such as the graphical configuration tool
+this configuration will be created in memory, and it is not essential
+to produce an <TT
+CLASS="FILENAME"
+>ecos.ecc</TT
+> savefile first (although
+it is still very desirable to generate such a savefile at some point,
+to allow the configuration to be re-loaded later on). With other tools
+the savefile is generated first, for example using
+<TT
+CLASS="LITERAL"
+>ecosconfig&nbsp;new</TT
+>, and then a build tree is
+generated using <TT
+CLASS="LITERAL"
+>ecosconfig&nbsp;tree</TT
+>. The savefile
+contains all the information needed to recreate a configuration.</P
+><P
+>An <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> build actually involves three separate trees. The component
+repository acts as the source tree, and for application developers
+this should be considered a read-only resource. The build tree is
+where all intermediate files, especially object files, are created.
+The install tree is where the main library
+<TT
+CLASS="FILENAME"
+>libtarget.a</TT
+>, the exported header files, and
+similar files end up. Following a successful build it is possible to
+take just the install tree and use it for developing an application:
+none of the files in the component repository or the build tree are
+needed for that. The build tree will be needed again only if the user
+changes the configuration. However the install tree does not contain
+copies of all of the documentation for the various packages, instead
+the documentation is kept only in the component repository.</P
+><P
+>By default the build tree, the install tree, and the
+<TT
+CLASS="FILENAME"
+>ecos.ecc</TT
+> savefile all reside in the same
+directory tree. This is not a requirement, both the install tree and
+the savefile can be anywhere in the file system.</P
+><P
+>It is worth noting that the component framework does not separate the
+usual <TT
+CLASS="LITERAL"
+>make</TT
+> and <TT
+CLASS="LITERAL"
+>make&nbsp;install</TT
+>
+stages. A build always populates the install tree, and any
+<TT
+CLASS="LITERAL"
+>make&nbsp;install</TT
+> step would be redundant.</P
+><P
+>The install tree will always begin with two directories, <TT
+CLASS="FILENAME"
+>include</TT
+> for the exported header files and
+<TT
+CLASS="FILENAME"
+>lib</TT
+> for the main library
+<TT
+CLASS="FILENAME"
+>libtarget.a</TT
+> and other files
+such as the linker script. In addition there will be a subdirectory
+<TT
+CLASS="FILENAME"
+>include/pkgconf</TT
+> containing the
+configuration header files, which are generated or updated at the same
+time the build tree is created or updated. More details of header file
+generation are given below. Additional <TT
+CLASS="FILENAME"
+>include</TT
+> subdirectories such as <TT
+CLASS="FILENAME"
+>sys</TT
+> and <TT
+CLASS="FILENAME"
+>cyg/kernel</TT
+> will be created during the
+first build, when each package's exported header files are copied to
+the install tree. The install tree may also end up with additional
+subdirectories during a build, for example as a result of custom build
+steps. </P
+><P
+>The component framework does not define the structure of the build
+tree, and this may vary between build systems. It can be assumed that
+each package in the configuration will have its own directory in the
+build tree, and that this directory will be used for storing the
+package's object files and as the current directory for any build
+steps for that package. This avoids problems when custom build steps
+from different packages generate intermediate files which happen to
+have the same name.</P
+><P
+>Some build systems may allow application developers to copy a source
+file from the component repository to the build tree and edit the
+copy. This allows users to experiment with small changes, for example
+to add a couple of lines of debugging to a package, without having to
+modify the master copy in the component repository which could be
+shared by several projects or several people. Functionality such as
+this is transparent to component writers, and it is the responsibility
+of the build system to make sure that the right thing happens.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>There are some unresolved issues related to the build tree and install
+tree. Specifically, when updating an existing build or install tree,
+what should happen to unexpected files or directories? Suppose the
+user started with a configuration that included the math library, and
+the install tree contains header files <TT
+CLASS="FILENAME"
+>include/math.h</TT
+> and <TT
+CLASS="FILENAME"
+>include/sys/ieeefp.h</TT
+>. The user then removed
+the math library from the configuration and is updating the build
+tree. It is now desirable to remove these header files from the
+install tree, so that if any application code still attempts to use
+the math library this will fail at compile time rather than at link
+time. There will also be some object files in the existing
+<TT
+CLASS="LITERAL"
+>libtarget.a</TT
+> library which are no longer
+appropriate, and there may be other files in the install tree as a
+result of custom build steps. The build tree will still contain a
+directory for the math library, which no longer serves any purpose.</P
+><P
+>However, it is also possible that some of the files in the build tree
+or the install tree were placed there by the user, in which case
+removing them automatically would be a bad idea.</P
+><P
+>At present the component framework does not keep track of exactly what
+should be present in the build and install trees, so it cannot readily
+determine which files or library members are obsolete and can safely
+be removed, and which ones are unexpected and need to be reported to
+the user. This will be addressed in a future release of the system.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.database.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="build.headers.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Updating the <SPAN
+CLASS="DATABASE"
+>ecos.db</SPAN
+> database</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Configuration Header File Generation</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

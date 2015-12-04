@@ -1,0 +1,251 @@
+# ====================================================================
+#
+#      counters.cdl
+#
+#      configuration data related to the kernel counters and clocks
+#
+# ====================================================================
+#####ECOSGPLCOPYRIGHTBEGIN####
+## -------------------------------------------
+## This file is part of eCos, the Embedded Configurable Operating System.
+## Copyright (C) 1998, 1999, 2000, 2001, 2002 Red Hat, Inc.
+##
+## eCos is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free
+## Software Foundation; either version 2 or (at your option) any later version.
+##
+## eCos is distributed in the hope that it will be useful, but WITHOUT ANY
+## WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+## for more details.
+##
+## You should have received a copy of the GNU General Public License along
+## with eCos; if not, write to the Free Software Foundation, Inc.,
+## 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+##
+## As a special exception, if other files instantiate templates or use macros
+## or inline functions from this file, or you compile this file and link it
+## with other works to produce a work based on this file, this file does not
+## by itself cause the resulting work to be covered by the GNU General Public
+## License. However the source code for this file must still be made available
+## in accordance with section (3) of the GNU General Public License.
+##
+## This exception does not invalidate any other reasons why a work based on
+## this file might be covered by the GNU General Public License.
+##
+## Alternative licenses for eCos may be arranged by contacting Red Hat, Inc.
+## at http://sources.redhat.com/ecos/ecos-license/
+## -------------------------------------------
+#####ECOSGPLCOPYRIGHTEND####
+# ====================================================================
+######DESCRIPTIONBEGIN####
+#
+# Author(s):      jskov
+# Original data:  nickg
+# Contributors:
+# Date:           1999-07-05
+#
+#####DESCRIPTIONEND####
+#
+# ====================================================================
+
+cdl_option CYGVAR_KERNEL_COUNTERS_CLOCK {
+    display       "Provide real-time clock"
+    requires      CYGIMP_KERNEL_INTERRUPTS_DSRS
+    default_value 1
+    description   "
+        On all current target systems the kernel can provide a
+        real-time clock. This clock serves two purposes. First it is
+        necessary to support clock and alarm related functions.
+        Second it is needed to implement timeslicing in some of the
+        schedulers including the mlqueue scheduler. If the
+        application does not require any of these facilities then it
+        is possible to disable the real time clock support
+        completely."
+}
+
+cdl_component CYGPKG_KERNEL_COUNTERS_CLOCK_OVERRIDE {
+    display       "Override default clock settings"
+    requires      CYGVAR_KERNEL_COUNTERS_CLOCK
+    default_value 0
+    description   "
+        The kernel has default settings for the clock interrupt
+        frequency. These settings will vary from platform to
+        platform, but typically there will be a 100 clock interrupts
+        every second. It is possible to change this frequency, but
+        it requires some knowledge of the target hardware."
+
+    cdl_option CYGNUM_KERNEL_COUNTERS_CLOCK_OVERRIDE_PERIOD {
+        display       "Clock hardware initialization value"
+        flavor        data
+        legal_values  1 to 0x7fffffff
+        default_value 9999
+        description   "
+            During system initialization this value is used to initialize
+            the clock hardware. The exact meaning of the value and the
+            range of legal values therefore depends on the target hardware,
+            and the hardware documentation should be consulted for further
+            details. In addition the clock resolution numerator and
+            denominator values should be updated. Typical values for
+            this option would be 150000 on the MN10300 stdeval1 board,
+            15625 on the tx39 jmr3904 board, and 20833 on the powerpc
+            cogent board."
+    }
+
+    cdl_option CYGNUM_KERNEL_COUNTERS_CLOCK_OVERRIDE_NUMERATOR {
+        display       "Clock resolution numerator"
+        flavor        data
+        legal_values  1 to 0x7fffffff
+        default_value 1000000000
+        description   "
+            If a non-default clock interrupt frequency is used then it
+            is necessary to specify the clock resolution explicitly.
+            This resolution involves two separate values, the numerator
+            and the denominator. The result of dividing the numerator by
+            the denominator should correspond to the number of
+            nanoseconds between clock interrupts. For example a
+            numerator of 1000000000 and a denominator of 100 means that
+            there are 10000000 nanoseconds (or 10 milliseconds) between
+            clock interrupts. Expressing the resolution as a fraction
+            should minimize clock drift even for frequencies that cannot
+            be expressed as a simple integer. For example a frequency of
+            60Hz corresponds to a clock resolution of 16666666.66...
+            nanoseconds. This can be expressed accurately as 1000000000
+            over 60."
+    }
+
+    cdl_option CYGNUM_KERNEL_COUNTERS_CLOCK_OVERRIDE_DENOMINATOR {
+        display       "Clock resolution denominator"
+        flavor        data
+        legal_values  1 to 0x7fffffff
+        default_value 100
+        description   "
+            If a non-default clock interrupt frequency is used then it
+            is necessary to specify the clock resolution explicitly.
+            This resolution involves two separate values, the numerator
+            and the denominator. The result of dividing the numerator by
+            the denominator should correspond to the number of
+            nanoseconds between clock interrupts. For example a
+            numerator of 1000000000 and a denominator of 100 means that
+            there are 10000000 nanoseconds (or 10 milliseconds) between
+            clock interrupts. Expressing the resolution as a fraction
+            should minimize clock drift even for frequencies that cannot
+            be expressed as a simple integer. For example a frequency of
+            60Hz corresponds to a clock resolution of 16666666.66...
+            nanoseconds. This can be expressed accurately as 1000000000
+            over 60."
+    }
+}  
+
+cdl_interface CYGINT_KERNEL_COUNTERS {
+    requires 1 == CYGINT_KERNEL_COUNTERS
+    no_define
+}
+
+# NOTE: these option should really be a single enum.
+cdl_option CYGIMP_KERNEL_COUNTERS_SINGLE_LIST {
+    display       "Implement counters using a single list"
+    default_value 1
+    implements    CYGINT_KERNEL_COUNTERS
+    description "
+        There are two different implementations of the counter
+        objects. The first implementation stores all alarms in a
+        single linked list. The alternative implementation uses a
+        table of linked lists. A single list is more efficient in
+        terms of memory usage and is generally adequate when the
+        application only makes use of a small number of alarms."
+}
+
+cdl_component CYGIMP_KERNEL_COUNTERS_MULTI_LIST {
+    display       "Implement counters using a table of lists"
+    default_value 0
+    implements    CYGINT_KERNEL_COUNTERS
+    description   "
+        There are two different implementations of the counter
+        objects. The first implementation stores all alarms in a
+        single linked list. The alternative implementation uses a
+        table of linked lists, with the size of the table being a
+        separate configurable option. For more complicated
+        operations it is better to have a table of lists since this
+        reduces the amount of computation whenever the timer goes
+        off. Assuming a table size of 8 (the default value) on
+        average the timer code will only need to check 1/8 of the
+        pending alarms instead of all of them."
+
+    cdl_option CYGNUM_KERNEL_COUNTERS_MULTI_LIST_SIZE {
+	display       "Size of counter list table"
+	flavor        data
+	legal_values  1 to 1024
+	default_value 8
+	description   "
+	    If counters are implemented using an array of linked lists
+	    then this option controls the size of the array. A larger
+	    size reduces the amount of computation that needs to take
+	    place whenever the timer goes off, but requires extra
+	    memory."
+    }
+}
+
+cdl_option CYGIMP_KERNEL_COUNTERS_SORT_LIST {
+    display       "Sort the counter list"
+    default_value 0
+    description   "
+        Sorting the counter lists reduces the amount of work that
+        has to be done when a counter tick is processed, since the
+        next alarm to expire is always at the front of the list.
+        However, it makes adding an alarm to the list more expensive
+        since a search must be done for the correct place to put it.
+        Many alarms are used to implement timeouts, which seldom trigger,
+        so it is worthwhile optimizing this case. For this reason
+        sorted list are disabled by default."
+}
+
+cdl_option CYGVAR_KERNEL_COUNTERS_CLOCK_LATENCY {
+    display       "Measure real-time \[clock\] interrupt latency"
+    requires      CYGVAR_KERNEL_COUNTERS_CLOCK
+    default_value 0
+    description   "
+    Measure the interrupt latency as seen by the real-time clock
+    timer interrupt.  This requires hardware support, defined by
+    the HAL_CLOCK_LATENCY() macro."
+}
+
+cdl_option CYGVAR_KERNEL_COUNTERS_CLOCK_DSR_LATENCY {
+    display       "Measure real-time \[clock\] DSR latency"
+    requires      CYGVAR_KERNEL_COUNTERS_CLOCK_LATENCY
+    default_value CYGVAR_KERNEL_COUNTERS_CLOCK_LATENCY
+    description   "
+          Measure the DSR latency as seen by the real-time clock
+          timer interrupt.  This requires hardware support, defined by
+          the HAL_CLOCK_LATENCY() macro."
+}
+
+cdl_option CYGNUM_KERNEL_COUNTERS_RTC_RESOLUTION {
+    display       "RTC resolution"
+    flavor        data
+    calculated    { CYGPKG_KERNEL_COUNTERS_CLOCK_OVERRIDE ?                \
+                     "{CYGNUM_KERNEL_COUNTERS_CLOCK_OVERRIDE_NUMERATOR,    \
+                      CYGNUM_KERNEL_COUNTERS_CLOCK_OVERRIDE_DENOMINATOR}"  \
+                    : "{CYGNUM_HAL_RTC_NUMERATOR, CYGNUM_HAL_RTC_DENOMINATOR}"}
+    description   "
+	This option automatically defines the tuple which is used to
+	initialize the RTC resolution, consisting of a numerator and
+	denominator.  For more information, see the option to 
+        override default clock settings
+	(CYGPKG_KERNEL_COUNTERS_CLOCK_OVERRIDE) and associated options."
+}
+
+cdl_option CYGNUM_KERNEL_COUNTERS_RTC_PERIOD {
+    display       "RTC period"
+    flavor        data
+    calculated    { CYGPKG_KERNEL_COUNTERS_CLOCK_OVERRIDE ?                \
+                     "CYGNUM_KERNEL_COUNTERS_CLOCK_OVERRIDE_PERIOD"        \
+                    : "CYGNUM_HAL_RTC_PERIOD"}
+    description   "
+	This option automatically defines the RTC period to be used in
+	setting the system clock hardware.  For more information, see the
+	option to override default clock settings
+	(CYGPKG_KERNEL_COUNTERS_CLOCK_OVERRIDE) and associated options."
+}
+
+# EOF counters.cdl

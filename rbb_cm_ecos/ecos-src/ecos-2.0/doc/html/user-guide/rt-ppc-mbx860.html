@@ -1,0 +1,286 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Board: Motorola MBX</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Real-time characterization"
+HREF="real-time-characterization.html"><LINK
+REL="PREVIOUS"
+TITLE="Board: Intel SA1100 (Brutus)"
+HREF="rt-arm-brutus.html"><LINK
+REL="NEXT"
+TITLE="Board: Hitachi EDK7708"
+HREF="rt-sh-edk7708.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="rt-arm-brutus.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix B. Real-time characterization</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="rt-sh-edk7708.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RT-PPC-MBX860">Board: Motorola MBX</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="LITERALLAYOUT"
+>&#13;Board: Motorola MBX
+
+CPU  : Motorola MPC860 66MHZ
+
+
+Startup, main stack             : stack used   643 size  5664
+Startup              :  Interrupt stack used   427 size  4096
+Startup              : Idlethread stack used   236 size  2048
+
+eCos Kernel Timings
+Notes: all times are in microseconds (.000001) unless otherwise stated
+
+Reading the hardware clock takes 0 `ticks' overhead
+... this value will be factored out of all other measurements
+Clock interrupt took   25.36 microseconds (79 raw clock ticks)
+
+Testing parameters:
+   Clock samples:          32
+   Threads:                16
+   Thread switches:       128
+   Mutexes:                32
+   Mailboxes:              32
+   Semaphores:             32
+   Scheduler operations:  128
+   Counters:               32
+   Alarms:                 32
+
+
+                                 Confidence
+     Ave     Min     Max     Var  Ave  Min  Function
+  ======  ======  ======  ====== ========== ========
+   27.58   25.60   44.16    2.07   93%  93% Create thread
+    5.94    5.76    7.04    0.22   93%  62% Yield thread [all suspended]
+    6.06    5.44   10.56    0.57   75%  75% Suspend [suspended] thread
+    5.42    4.80    9.60    0.53   87%  81% Resume thread
+    7.10    6.40   14.08    0.90   93%  87% Set priority
+    0.86    0.64    1.92    0.22   93%  50% Get priority
+   16.74   15.04   36.48    2.47   93%  93% Kill [suspended] thread
+    6.14    5.76   10.56    0.55   93%  93% Yield [no other] thread
+    9.74    8.96   18.56    1.10   93%  93% Resume [suspended low prio] thread
+    5.28    4.80    9.28    0.54   93%  81% Resume [runnable low prio] thread
+    9.40    8.32   18.56    1.14   93%  93% Suspend [runnable] thread
+    6.04    5.76    8.96    0.38   93%  93% Yield [only low prio] thread
+    5.68    5.12    9.60    0.52   68%  75% Suspend [runnable-&#62;not runnable]
+   16.10   14.40   35.20    2.39   93%  93% Kill [runnable] thread
+    8.54    7.68   16.00    0.94   93%  87% Destroy [dead] thread
+   20.20   18.56   40.64    2.55   93%  93% Destroy [runnable] thread
+   39.02   36.48   57.28    3.28   87%  87% Resume [high priority] thread
+   13.13   12.80   22.08    0.15   78%  20% Thread switch
+
+    0.59    0.32    1.60    0.09   82%  16% Scheduler lock
+    3.67    3.52    5.12    0.17   99%  54% Scheduler unlock [0 threads]
+    3.67    3.52    4.80    0.17   99%  53% Scheduler unlock [1 suspended]
+    3.67    3.52    4.80    0.17   54%  54% Scheduler unlock [many suspended]
+    3.69    3.52    5.12    0.17   99%  50% Scheduler unlock [many low prio]
+
+    2.41    2.24    5.44    0.25   96%  75% Init mutex
+    6.83    6.40   11.84    0.34   75%  90% Lock [unlocked] mutex
+    6.74    6.40   13.12    0.40   96%  96% Unlock [locked] mutex
+    5.53    5.12    9.60    0.25   84%  12% Trylock [unlocked] mutex
+    4.84    4.48    7.36    0.17   78%  15% Trylock [locked] mutex
+    0.34    0.00    0.96    0.06   90%   3% Destroy mutex
+   56.10   55.68   59.52    0.21   93%   3% Unlock/Lock mutex
+
+    4.72    4.48   10.24    0.37   96%  96% Create mbox
+    0.75    0.64    1.92    0.16   75%  75% Peek [empty] mbox
+    6.79    6.40   12.80    0.41   96%  90% Put [first] mbox
+    0.46    0.32    1.60    0.19   93%  68% Peek [1 msg] mbox
+    6.68    6.40   12.16    0.37   96%  96% Put [second] mbox
+    0.50    0.32    1.60    0.20   93%  56% Peek [2 msgs] mbox
+    7.13    6.40   14.08    0.49   90%  46% Get [first] mbox
+    6.97    6.40   13.44    0.47   84%  78% Get [second] mbox
+    6.24    5.76   11.52    0.38   78%  81% Tryput [first] mbox
+    5.98    5.44   11.20    0.39   78%  62% Peek item [non-empty] mbox
+    6.52    6.08   13.12    0.49   93%  81% Tryget [non-empty] mbox
+    5.50    5.12   10.24    0.30   68%  28% Peek item [empty] mbox
+    5.76    5.44   10.88    0.32   96%  96% Tryget [empty] mbox
+    0.50    0.32    1.60    0.19   96%  53% Waiting to get mbox
+    0.50    0.32    1.60    0.19   96%  53% Waiting to put mbox
+    7.45    7.04   15.04    0.49   96%  93% Delete mbox
+   37.47   36.80   48.64    0.70   96%  96% Put/Get mbox
+
+    2.49    2.24    6.08    0.28   96%  56% Init semaphore
+    5.09    4.80    8.64    0.27   46%  46% Post [0] semaphore
+    6.25    5.76   10.88    0.32   93%   3% Wait [1] semaphore
+    4.84    4.48    8.32    0.23   68%  25% Trywait [0] semaphore
+    4.98    4.80    8.00    0.26   96%  71% Trywait [1] semaphore
+    1.66    1.28    3.84    0.20   68%  15% Peek semaphore
+    1.24    0.96    3.20    0.17   65%  31% Destroy semaphore
+   40.74   40.32   49.28    0.53   96%  96% Post/Wait semaphore
+
+    2.65    2.24    6.08    0.23   84%   9% Create counter
+    0.85    0.64    2.24    0.22   90%  53% Get counter value
+    0.68    0.64    1.92    0.08   96%  96% Set counter value
+    7.13    6.72    8.64    0.24   78%  18% Tick counter
+    1.30    0.96    3.20    0.12   84%  12% Delete counter
+
+    3.69    3.52    7.68    0.29   96%  84% Create alarm
+    8.98    8.32   17.60    0.61   68%  62% Initialize alarm
+    0.96    0.64    2.88    0.14   71%  21% Disable alarm
+    8.76    8.32   17.60    0.59   96%  87% Enable alarm
+    1.99    1.60    5.12    0.21   81%  12% Delete alarm
+    7.44    7.36    9.92    0.15   96%  96% Tick counter [1 alarm]
+   21.68   21.44   24.64    0.25   96%  53% Tick counter [many alarms]
+   10.95   10.56   15.04    0.26   78%  18% Tick &#38; fire counter [1 alarm]
+  132.79  132.48  136.32    0.23   59%  37% Tick &#38; fire counters [&#62;1 together]
+   25.18   24.96   28.80    0.29   96%  65% Tick &#38; fire counters [&#62;1 separately]
+   23.06   22.72   47.36    0.40   98%  98% Alarm latency [0 threads]
+   31.53   27.20   56.00    0.63   96%   0% Alarm latency [2 threads]
+   36.86   30.40   58.88    4.15   50%  28% Alarm latency [many threads]
+
+   11.41    8.96   16.32    0.00            Clock/interrupt latency
+
+  609     603     651  (main stack:  1059)  Thread stack used (1704 total)
+All done, main stack            : stack used  1059 size  5664
+All done             :  Interrupt stack used   251 size  4096
+All done             : Idlethread stack used   587 size  2048
+
+Timing complete - 23690 ms total
+
+PASS:&lt;Basic timing OK&#62;
+EXIT:&lt;done&#62;
+
+	</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="rt-arm-brutus.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="rt-sh-edk7708.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Board: Intel SA1100 (Brutus)</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="real-time-characterization.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Board: Hitachi EDK7708</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

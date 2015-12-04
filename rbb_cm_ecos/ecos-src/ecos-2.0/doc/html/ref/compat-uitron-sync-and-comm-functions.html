@@ -1,0 +1,1012 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>	  Synchronization and Communication Functions</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="µITRON API"
+HREF="compat-uitron-microitron-api.html"><LINK
+REL="PREVIOUS"
+TITLE="Task-Dependent Synchronization Functions"
+HREF="compat-uitron-task-dependent-synch-functions.html"><LINK
+REL="NEXT"
+TITLE="Extended Synchronization and Communication Functions"
+HREF="compat-uitron-extended-sync-comm-functions.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="compat-uitron-task-dependent-synch-functions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 32. &micro;ITRON API</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="compat-uitron-extended-sync-comm-functions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="COMPAT-UITRON-SYNC-AND-COMM-FUNCTIONS">Synchronization and Communication Functions</H1
+><P
+>These functions are fully supported in this release: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>sig_sem</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>semid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>wai_sem</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>semid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>preq_sem</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>semid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>twai_sem</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>semid,</I
+></SPAN
+>    TMO <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tmout</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>ref_sem</TT
+>( 
+    T_RSEM *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_rsem ,</I
+></SPAN
+>    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>semid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>set_flg</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>flgid,</I
+></SPAN
+>    UINT <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>setptn</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>clr_flg</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>flgid,</I
+></SPAN
+>    UINT <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>clrptn</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>wai_flg</TT
+>( 
+    UINT *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>p_flgptn,</I
+></SPAN
+>    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>flgid ,</I
+></SPAN
+>
+    UINT <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>waiptn ,</I
+></SPAN
+>    UINT <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>wfmode</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>pol_flg</TT
+>( 
+    UINT *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>p_flgptn,</I
+></SPAN
+>    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>flgid ,</I
+></SPAN
+>
+    UINT <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>waiptn ,</I
+></SPAN
+>    UINT <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>wfmode</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>twai_flg</TT
+>( 
+    UINT *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>p_flgptn</I
+></SPAN
+>    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>flgid ,</I
+></SPAN
+>
+    UINT <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>waiptn ,</I
+></SPAN
+>    UINT <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>wfmode,</I
+></SPAN
+>    TMO <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tmout</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>ref_flg</TT
+>( 
+    T_RFLG *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_rflg,</I
+></SPAN
+>    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>flgid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>snd_msg</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mbxid,</I
+></SPAN
+>    T_MSG <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>*pk_msg</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>rcv_msg</TT
+>( 
+    T_MSG **<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ppk_msg,</I
+></SPAN
+>    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mbxid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>prcv_msg</TT
+>( 
+    T_MSG **<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ppk_msg,</I
+></SPAN
+>    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mbxid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>trcv_msg</TT
+>( 
+    T_MSG **<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ppk_msg,</I
+></SPAN
+>    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mbxid ,</I
+></SPAN
+>    TMO <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tmout</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>ref_mbx</TT
+>( 
+    T_RMBX *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_rmbx,</I
+></SPAN
+>    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mbxid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><P
+>The following functions are supported in this release (with
+some restrictions) if enabled with the appropriate configuration
+option for the object type (for example 
+<TT
+CLASS="LITERAL"
+>CYGPKG_UITRON_SEMAS_CREATE_DELETE</TT
+>):</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>cre_sem</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>semid,</I
+></SPAN
+>    T_CSEM *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_csem</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>del_sem</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>semid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>cre_flg</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>flgid,</I
+></SPAN
+>    T_CFLG *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_cflg</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>del_flg</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>flgid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>cre_mbx</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mbxid,</I
+></SPAN
+>    T_CMBX *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_cmbx</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>del_mbx</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mbxid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><P
+>In general the queueing order when waiting on a synchronization
+object depends on the underlying kernel configuration. The multi-level
+queue scheduler is required for strict &micro;ITRON
+conformance and it queues tasks in FIFO order, so requests to create
+an object with priority queueing of tasks (<TT
+CLASS="LITERAL"
+>pk_cxxx-&gt;xxxatr = TA_TPRI</TT
+>)
+are rejected with E_RSATR. Additional undefined bits in
+the attributes fields must be zero. </P
+><P
+>In general, extended information (pk_cxxx-&gt;exinf)
+is ignored. </P
+><P
+>For semaphores, the initial semaphore count (pk_csem-&gt;isemcnt)
+is supported; the new semaphore's count is set. The maximum
+count is not supported, and is not in fact defined in type pk_csem. </P
+><P
+>For flags, multiple tasks are allowed to wait. Because single
+task waiting is a subset of this, the W bit (TA_WMUL) of
+the flag attributes is ignored; all other bits must be zero. The
+initial flag value is supported. </P
+><P
+>For mailboxes, the buffer count is defined statically by kernel
+configuration option 
+<TT
+CLASS="LITERAL"
+>CYGNUM_KERNEL_SYNCH_MBOX_QUEUE_SIZE</TT
+>;
+therefore the buffer count field is not supported and is not in
+fact defined in type pk_cmbx. Queueing of messages is FIFO
+ordered only, so TA_MPRI (in pk_cmbx-&gt;mbxatr)
+is not supported. </P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13716">Error checking</H2
+><P
+>The following conditions are only checked for, and only return
+errors if 
+<TT
+CLASS="LITERAL"
+>CYGSEM_UITRON_BAD_PARAMS_RETURN_ERRORS</TT
+>
+is enabled:</P
+><P
+></P
+><UL
+><LI
+><P
+>invalid object id; less than 1 or greater than 
+<TT
+CLASS="LITERAL"
+>CYGNUM_UITRON_TASKS/SEMAS/MBOXES</TT
+>
+as appropriate returns E_ID</P
+></LI
+><LI
+><P
+>dispatching is enabled in any call which can sleep, or
+E_CTX</P
+></LI
+><LI
+><P
+>tmout must be positive, otherwise E_PAR</P
+></LI
+><LI
+><P
+>pk_cxxx pointers in 
+<TT
+CLASS="FUNCTION"
+>cre_xxx()</TT
+>
+ must be valid pointers, or E_PAR</P
+></LI
+><LI
+><P
+>return value pointer in 
+<TT
+CLASS="FUNCTION"
+>ref_xxx()</TT
+>
+ is valid pointer, or E_PAR</P
+></LI
+><LI
+><P
+>flag wait pattern must be non-zero, and mode must be valid,
+or E_PAR</P
+></LI
+><LI
+><P
+>return value pointer in flag wait calls is a valid pointer,
+or E_PAR</P
+></LI
+></UL
+><P
+>The following conditions are checked for, and can return error
+codes, regardless of the setting of
+<TT
+CLASS="LITERAL"
+>CYGSEM_UITRON_BAD_PARAMS_RETURN_ERRORS</TT
+>
+:</P
+><P
+></P
+><UL
+><LI
+><P
+>When create and delete functions 
+<TT
+CLASS="FUNCTION"
+>cre_xxx()</TT
+>
+ and 
+<TT
+CLASS="FUNCTION"
+>del_xxx()</TT
+>
+ are supported, all calls which use a valid object ID number check
+that the object exists. If not, E_NOEXS is returned.</P
+></LI
+><LI
+><P
+>In create functions 
+<TT
+CLASS="FUNCTION"
+>cre_xxx()</TT
+>
+, when supported, if the object already exists, then E_OBJ</P
+></LI
+><LI
+><P
+>In any call which can sleep, such as 
+<TT
+CLASS="FUNCTION"
+>twai_sem()</TT
+>
+: return codes E_TMOUT, E_RLWAI, E_DLT
+or of course E_OK are returned depending on the reason
+for terminating the sleep</P
+></LI
+><LI
+><P
+>In polling functions such as 
+<TT
+CLASS="FUNCTION"
+>preq_sem()</TT
+>
+return codes E_TMOUT or E_OK are returned depending
+on the state of the synchronization object</P
+></LI
+><LI
+><P
+>In creation functions, the attributes must be compatible
+with the selected underlying kernel configuration: in 
+<TT
+CLASS="FUNCTION"
+>cre_sem()</TT
+>
+ <TT
+CLASS="LITERAL"
+>pk_csem-&gt;sematr</TT
+>
+ must be equal to 
+<TT
+CLASS="LITERAL"
+>TA_TFIFO</TT
+>
+ else E_RSATR.</P
+></LI
+><LI
+><P
+>In 
+<TT
+CLASS="FUNCTION"
+>cre_flg()</TT
+>
+ <TT
+CLASS="LITERAL"
+>pk_cflg-&gt;flgatr</TT
+>
+ must be either 
+<TT
+CLASS="VARNAME"
+>TA_WMUL</TT
+>
+ or 
+<TT
+CLASS="VARNAME"
+>TA_WSGL</TT
+>
+ else <TT
+CLASS="VARNAME"
+>E_RSATR</TT
+>.</P
+></LI
+><LI
+><P
+>In 
+<TT
+CLASS="FUNCTION"
+>cre_mbx()</TT
+>
+ 
+<TT
+CLASS="LITERAL"
+>pk_cmbx-&gt;mbxatr</TT
+>
+ must be 
+<TT
+CLASS="LITERAL"
+>TA_TFIFO &#0043; TA_MFIFO</TT
+>
+ else E_RSATR.</P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="compat-uitron-task-dependent-synch-functions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="compat-uitron-extended-sync-comm-functions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Task-Dependent Synchronization Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="compat-uitron-microitron-api.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Extended Synchronization and Communication Functions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

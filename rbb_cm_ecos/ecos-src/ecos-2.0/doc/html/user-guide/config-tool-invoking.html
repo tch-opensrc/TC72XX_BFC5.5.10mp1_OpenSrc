@@ -1,0 +1,424 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Invoking the eCos Configuration Tool</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Getting Started"
+HREF="config-tool-getting-started.html"><LINK
+REL="PREVIOUS"
+TITLE="Getting Started"
+HREF="config-tool-getting-started.html"><LINK
+REL="NEXT"
+TITLE="The Component Repository"
+HREF="config-tool-component-repository.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="config-tool-getting-started.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 15. Getting Started</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="config-tool-component-repository.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CONFIG-TOOL-INVOKING">Invoking the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN967">On Linux</H2
+><P
+>Add the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+> install directory to your PATH, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>export PATH=/opt/ecos/ecos<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+>/bin:$PATH</PRE
+></TD
+></TR
+></TABLE
+><P
+>You may run configtool with zero, one or two arguments. You can specify the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> repository
+ location, and/or an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> save file (extension .ecc) on the command line. The ordering of these
+two arguments is not significant. For example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>configtool /opt/ecos/ecos<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+>/packages myfile.ecc</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+> will be displayed (see <A
+HREF="config-tool-invoking.html#FIGURE-CONFIGURATION-TOOL"
+>Figure 15-1</A
+>).</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN982">On Windows</H2
+><P
+>There are two ways in which to invoke the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+>:</P
+><P
+></P
+><UL
+><LI
+><P
+>	      from the desktop explorer or program set up at installation
+	      time (by default 
+	      <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Start</I
+></SPAN
+>
+	      -&gt;
+	      <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Programs</I
+></SPAN
+>
+	      -&gt;
+	      <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+>
+	      -&gt;
+	      <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Configuration Tool</I
+></SPAN
+>
+	      ).</P
+></LI
+><LI
+><P
+>type (at a command prompt or in the 
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Start</I
+></SPAN
+>
+	    menu&#8217;s 
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Run</I
+></SPAN
+>
+	    item): &lt;foldername&gt;&#0092;ConfigTool.exe where &lt;foldername&gt; is
+	    the full path of the directory in which you installed the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>
+	    <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+>.</P
+></LI
+><LI
+><P
+>The 
+	    <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+>
+	    will be displayed (see <A
+HREF="config-tool-invoking.html#FIGURE-CONFIGURATION-TOOL"
+>Figure 15-1</A
+>).</P
+></LI
+></UL
+><P
+>You may run configtool with zero, one or two arguments. You can specify the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> repository
+location, and/or an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> save file (extension .ecc) on the command line. The ordering of these
+two arguments is not significant. For example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>configtool "c:\Program Files\eCos\packages" myfile.ecc</PRE
+></TD
+></TR
+></TABLE
+><P
+>If you invoke the configuration tool from the command line with
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>--help</I
+></SPAN
+>, you will see this output:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Usage: eCos Configuration Tool [-h] [-e] [-v] [-c] [input file 1] [input file 2]
+  -h  --help        	displays help on the command line parameters
+  -e  --edit-only   	edit save file only
+  -v  --version     	print version
+  -c  --compile-help	compile online help only</PRE
+></TD
+></TR
+></TABLE
+><P
+>This summarizes valid parameters and switches. Switches are shown with
+both short form and long form.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>--help</I
+></SPAN
+> shows valid options and parameters, as above.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>--edit-only</I
+></SPAN
+> runs the <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+> in a mode that
+suppresses creation of a build tree, in case you only want to create and edit save files.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>--version</I
+></SPAN
+> shows version and build date information, and exits.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>--compile-help</I
+></SPAN
+> compiles help contents files from the HTML documentation
+files that the tool finds in the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> repository, and exits.</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="FIGURE-CONFIGURATION-TOOL"><P
+><B
+>Figure 15-1. <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+></B
+></P
+><P
+><IMG
+SRC="pix/config-f1.png"></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="config-tool-getting-started.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="config-tool-component-repository.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Getting Started</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="config-tool-getting-started.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>The Component Repository</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,275 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Directories</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="File System Support Infrastructure"
+HREF="fileio.html"><LINK
+REL="PREVIOUS"
+TITLE="File Table"
+HREF="fileio-file-table.html"><LINK
+REL="NEXT"
+TITLE="Synchronization"
+HREF="fileio-synchronization.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="fileio-file-table.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="fileio-synchronization.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="FILEIO-DIRECTORIES">Chapter 23. Directories</H1
+><P
+>Filesystem operations all take a directory pointer as one of their
+arguments.  A directory pointer is an opaque handle managed by the
+filesystem. It should encapsulate a reference to a specific directory
+within the filesystem. For example, it may be a pointer to the data
+structure that represents that directory (such as an inode), or a
+pointer to a pathname for the directory.</P
+><P
+>The <TT
+CLASS="FUNCTION"
+>chdir()</TT
+> filesystem function pointer has two
+modes of use. When passed a pointer in the
+<TT
+CLASS="PARAMETER"
+><I
+>dir_out</I
+></TT
+> argument, it should locate the named
+directory and place a directory pointer there. If the
+<TT
+CLASS="PARAMETER"
+><I
+>dir_out</I
+></TT
+> argument is NULL then the
+<TT
+CLASS="PARAMETER"
+><I
+>dir</I
+></TT
+> argument is a previously generated
+directory pointer that can now be disposed of. When the infrastructure
+is implementing the <TT
+CLASS="FUNCTION"
+>chdir()</TT
+> function it makes two
+calls to filesystem <TT
+CLASS="FUNCTION"
+>chdir()</TT
+> functions. The first
+is to get a directory pointer for the new current directory. If this
+succeeds the second is to dispose of the old current directory
+pointer.</P
+><P
+>The <TT
+CLASS="FUNCTION"
+>opendir()</TT
+> function is used to open a
+directory for reading. This results in an open file object that can be
+read to return a sequence of <SPAN
+CLASS="STRUCTNAME"
+>struct dirent</SPAN
+>
+objects. The only operations that are allowed on this file are
+<TT
+CLASS="FUNCTION"
+>read</TT
+>, <TT
+CLASS="FUNCTION"
+>lseek</TT
+> and
+<TT
+CLASS="FUNCTION"
+>close</TT
+>. Each read operation on this file should
+return a single <SPAN
+CLASS="STRUCTNAME"
+>struct dirent</SPAN
+> object. When
+the end of the directory is reached, zero should be returned. The only
+seek operation allowed is a rewind to the start of the directory, by
+supplying an offset of zero and a <TT
+CLASS="PARAMETER"
+><I
+>whence</I
+></TT
+>
+specifier of <TT
+CLASS="LITERAL"
+>SEEK_SET</TT
+>.</P
+><P
+>Most of these considerations are invisible to clients of a filesystem
+since they will access directories via the POSIX
+<TT
+CLASS="FUNCTION"
+>opendir()</TT
+>, <TT
+CLASS="FUNCTION"
+>readdir()</TT
+> and
+<TT
+CLASS="FUNCTION"
+>closedir()</TT
+> functions.</P
+><P
+>Support for the <TT
+CLASS="FUNCTION"
+>getcwd()</TT
+> function is provided by
+three mechanisms.  The first is to use the
+<TT
+CLASS="LITERAL"
+>FS_INFO_GETCWD</TT
+> getinfo key on the filesystem to use
+any internal support that it has for this. If that fails it falls back
+on one of the two other mechanisms. If
+<TT
+CLASS="LITERAL"
+>CYGPKG_IO_FILEIO_TRACK_CWD</TT
+> is set then the current
+directory is tracked textually in <TT
+CLASS="FUNCTION"
+>chdir()</TT
+> and the result of that is
+reported in getcwd(). Otherwise an attempt is made to traverse the
+directory tree to its root using &quot;..&quot; entries.</P
+><P
+>This last option is complicated and expensive, and relies on the
+filesystem supporting &quot;.&quot; and &quot;..&quot;  entries. This is not always the
+case, particularly if the filesystem has been ported from a
+non-UNIX-compatible source. Tracking the pathname textually will
+usually work, but might not produce optimum results when symbolic
+links are being used.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="fileio-file-table.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="fileio-synchronization.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>File Table</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="fileio.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Synchronization</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

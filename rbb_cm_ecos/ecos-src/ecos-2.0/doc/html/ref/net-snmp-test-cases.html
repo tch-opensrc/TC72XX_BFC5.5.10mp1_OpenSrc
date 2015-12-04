@@ -1,0 +1,262 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Test cases</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="SNMP for eCos"
+HREF="net-snmp-ecos-port.html"><LINK
+REL="PREVIOUS"
+TITLE="Configuring eCos"
+HREF="net-snmp-configuring-ecos.html"><LINK
+REL="NEXT"
+TITLE="SNMP clients and package use"
+HREF="net-snmp-clients-and-package-use.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-snmp-configuring-ecos.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 47. SNMP for <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-snmp-clients-and-package-use.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-SNMP-TEST-CASES">Test cases</H1
+><P
+>Currently only one test program is provided which uses SNMP.</P
+><P
+>"snmpping" in the SNMP agent package runs the ping test from
+the TCPIP package, with the snmpd running also. This allows you
+to interrogate it using host tools of your choice. It supports MIBs
+as documented above, so eg. <B
+CLASS="COMMAND"
+>snmpwalk
+<TT
+CLASS="REPLACEABLE"
+><I
+>&lt;hostname&gt;</I
+></TT
+> public dot3</B
+> under
+Linux/UNIX should have the desired effect.</P
+><P
+>For serious testing, you should increase the length of time
+the test runs by setting CYGNUM_SNMPAGENT_TESTS_ITERATIONS
+to something big (e.g., 999999). Build the test
+(<B
+CLASS="COMMAND"
+>make -C net/snmp/agent/current tests</B
+>)
+and run it on the target.</P
+><P
+>Then start several jobs, some for pinging the board (to make
+the stats change) and some for interrogating the snmpd. Set &#0036;IP
+to whatever IP address the board has:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+># in a root shell, for flood ping
+while(1)
+date
+ping -f -c 3001 &#0036;IP
+sleep 5
+ping -c 32 -s 2345 &#0036;IP
+end</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+># have more than one of these going at once
+setenv MIBS all
+while (1)
+snmpwalk -OS &#0036;IP  public
+date
+end</PRE
+></TD
+></TR
+></TABLE
+><P
+>Leave to run for a couple of days or so to test stability.</P
+><P
+>The test program can also test snmpd.conf support. It tries to build a minimal
+snmpd.conf file on a RAM filesystem and passes it to the snmp sub-system. With
+this profile on target, the following snmp[cmd] (cmd=walk, get, set) should
+work :</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>snmp[cmd] -v1 $IP crux $OID
+snmp[cmd] -v2 $IP crux $OID
+snmp[cmd] -v3 $IP -u root -L noAuthNoPriv $OID
+snmp[cmd] -v3 $IP -u root -L authNoPriv -A MD5 -a md5passwd $OID</PRE
+></TD
+></TR
+></TABLE
+><P
+>The following commands would however fail since they violate the access model :</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>snmp[cmd] $IP public $OID
+snmp[cmd] -v1 $IP public $OID
+snmp[cmd] -v2c $IP public $OID
+snmp[cmd] -v3 $IP -u no_user -L noAuthNoPriv $OID
+snmp[cmd] -v3 $IP -u root -L authNoPriv -A MD5 -a badpasswd $OID</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-snmp-configuring-ecos.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-snmp-clients-and-package-use.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Configuring eCos</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-snmp-ecos-port.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SNMP clients and package use</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

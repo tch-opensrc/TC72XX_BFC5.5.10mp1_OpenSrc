@@ -1,0 +1,775 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>ARM/Xscale Cyclone IQ80310</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Installation and Testing"
+HREF="installation-and-testing.html"><LINK
+REL="PREVIOUS"
+TITLE="ARM/StrongARM(SA11X0) Intrinsyc CerfCube"
+HREF="cerfcube.html"><LINK
+REL="NEXT"
+TITLE="ARM/Xscale Intel IQ80321"
+HREF="iq80321.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="cerfcube.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Installation and Testing</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="iq80321.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="IQ80310">ARM/Xscale Cyclone IQ80310</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6164">Overview</H2
+><P
+>RedBoot supports
+both serial ports and the built-in ethernet port for communication and downloads.
+The default serial port settings are 115200,8,N,1. RedBoot also supports flash
+management for the onboard 8MB flash.</P
+><P
+>The following RedBoot configurations are supported:
+
+      <DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6174"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Configuration</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Mode</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>ROM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from the board's flash boot
+	      sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_ROM.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RAM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[RAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM with RedBoot in the
+	      flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_RAM.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>ROMA</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from flash address 0x40000, with
+	      ARM bootloader in flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_ROMA.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RAMA</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[RAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM with ARM bootloader in
+	      flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_RAMA.ecm</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6203">Initial Installation Method</H2
+><P
+>The board manufacturer provides a DOS application which is
+capable of programming the flash over the PCI bus, and this is
+required for initial installations of RedBoot. Please see the board
+manual for information on using this utility.  In general, the process
+involves programming one of the two flash based RedBoot images to
+flash. The ROM mode RedBoot (which runs from the flash boot sector)
+should be programmed to flash address 0x00000000. The ROMA RedBoot
+mode (which is started by the ARM bootloader) should be programmed to
+flash address 0x00004000.</P
+><P
+> To install RedBoot to run from the flash boot sector, use the manufacturer's
+flash utility to install the ROM mode image at address zero.</P
+><P
+>To install RedBoot to run from address 0x40000 with the ARM bootloader
+in the flash boot sector, use the manufacturer's flash utility to install
+the ROMA mode image at address 0x40000. </P
+><P
+>After booting the initial installation of RedBoot, this warning may
+be printed: <TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>flash configuration checksum error or invalid key</PRE
+></TD
+></TR
+></TABLE
+>This is normal, and indicates that the flash must be configured
+for use by RedBoot. Even if the above message is not printed, it may be a
+good idea to reinitialize the flash anyway. Do this with the <B
+CLASS="COMMAND"
+>fis</B
+> command: <TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fis init</B
+></TT
+>
+About to initialize [format] flash image system - continue (y/n)? <TT
+CLASS="USERINPUT"
+><B
+>y</B
+></TT
+>
+*** Initialize flash Image System
+Warning: device contents not erased, some blocks may not be usable
+... Unlock from 0x007e0000-0x00800000: .
+... Erase from 0x007e0000-0x00800000: .
+... Program from 0xa1fd0000-0xa1fd0400 at 0x007e0000: .
+... Lock from 0x007e0000-0x00800000: .
+Followed by the fconfig command:
+   RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fconfig</B
+></TT
+>
+   Run script at boot: <TT
+CLASS="USERINPUT"
+><B
+>false</B
+></TT
+>
+   Use BOOTP for network configuration: <TT
+CLASS="USERINPUT"
+><B
+>false</B
+></TT
+>
+   Local IP address: <TT
+CLASS="USERINPUT"
+><B
+>192.168.1.153</B
+></TT
+>
+   Default server IP address: <TT
+CLASS="USERINPUT"
+><B
+>192.168.1.10</B
+></TT
+>
+   GDB connection port: <TT
+CLASS="USERINPUT"
+><B
+>1000</B
+></TT
+>
+   Network debug at boot time: <TT
+CLASS="USERINPUT"
+><B
+>false</B
+></TT
+>
+   Update RedBoot non-volatile configuration - continue (y/n)? <TT
+CLASS="USERINPUT"
+><B
+>y</B
+></TT
+>
+   ... Unlock from 0x007c0000-0x007e0000: .
+   ... Erase from 0x007c0000-0x007e0000: .
+   ... Program from 0xa0013018-0xa0013418 at 0x007c0000: .
+   ... Lock from 0x007c0000-0x007e0000: .</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>When later updating RedBoot in situ, it is important to
+use a matching ROM and RAM mode pair of images. So use either RAM/ROM
+or RAMA/ROMA images. Do not mix them.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6224">Error codes</H2
+><P
+>RedBoot uses the two digit LED display to indicate errors during   board
+initialization. Possible error codes are:      <P
+CLASS="LITERALLAYOUT"
+>88&nbsp;-&nbsp;Unknown&nbsp;Error<br>
+55&nbsp;-&nbsp;I2C&nbsp;Error<br>
+FF&nbsp;-&nbsp;SDRAM&nbsp;Error<br>
+01&nbsp;-&nbsp;No&nbsp;Error</P
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6228">Using RedBoot with ARM Bootloader</H2
+><P
+>RedBoot can coexist with ARM tools in flash on the IQ80310 board. In
+this configuration, the ARM bootloader will occupy the flash boot sector while
+RedBoot is located at flash address 0x40000. The sixteen position rotary switch
+is used to tell the ARM bootloader to jump to the RedBoot image located at
+address 0x40000. RedBoot is selected by switch position 0 or 1. Other switch
+positions are used by the ARM firmware and RedBoot will not be started. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6231">Special RedBoot Commands</H2
+><P
+>A special RedBoot command, <B
+CLASS="COMMAND"
+>diag</B
+>, is used to
+access a set of hardware diagnostics provided by the board
+manufacturer. To access the diagnostic menu, enter diag at the RedBoot prompt: 
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>diag</B
+></TT
+>
+Entering Hardware Diagnostics - Disabling Data Cache!
+1 - Memory Tests
+2 - Repeating Memory Tests
+3 - 16C552 DUART Serial Port Tests
+4 - Rotary Switch S1 Test for positions 0-3 
+5 - seven Segment LED Tests
+6 - Backplane Detection Test
+7 - Battery Status Test
+8 - External Timer Test
+9 - i82559 Ethernet Configuration
+10 - i82559 Ethernet Test
+11 - Secondary PCI Bus Test
+12 - Primary PCI Bus Test
+13 - i960Rx/303 PCI Interrupt Test
+14 - Internal Timer Test
+15 - GPIO Test
+0 - quit Enter the menu item number (0 to quit):</PRE
+></TD
+></TR
+></TABLE
+>
+Tests for various hardware subsystems are provided, and some
+tests require special hardware in order to execute normally. The Ethernet
+Configuration item may be used to set the board ethernet address.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6237">IQ80310 Hardware Tests</H2
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>1 - Memory Tests
+2 - Repeating Memory Tests
+3 - 16C552 DUART Serial Port Tests
+4 - Rotary Switch S1 Test for positions 0-3
+5 - 7 Segment LED Tests
+6 - Backplane Detection Test
+7 - Battery Status Test
+8 - External Timer Test
+9 - i82559 Ethernet Configuration
+10 - i82559 Ethernet Test
+11 - i960Rx/303 PCI Interrupt Test
+12 - Internal Timer Test
+13 - Secondary PCI Bus Test
+14 - Primary PCI Bus Test
+15 - Battery Backup SDRAM Memory Test
+16 - GPIO Test
+17 - Repeat-On-Fail Memory Test
+18 - Coyonosa Cache Loop (No return)
+19 - Show Software and Hardware Revision
+0 - quit
+Enter the menu item number (0 to quit):  </PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>Tests for various hardware subsystems are provided, and some tests require
+special hardware in order to execute normally. The Ethernet Configuration
+item may be used to set the board ethernet address.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6242">Rebuilding RedBoot</H2
+><P
+>These shell variables provide the platform-specific information
+needed for building RedBoot according to the procedure described in
+<A
+HREF="rebuilding-redboot.html"
+>Chapter 3</A
+>:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>export TARGET=iq80310
+export ARCH_DIR=arm
+export PLATFORM_DIR=iq80310</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The names of configuration files are listed above with the
+description of the associated modes.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6248">Interrupts</H2
+><P
+>RedBoot uses an interrupt vector table which is located at address 0xA000A004.
+Entries in this table are pointers to functions with this protoype::      <TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int irq_handler( unsigned vector, unsigned data )</PRE
+></TD
+></TR
+></TABLE
+>On an IQ80310
+board, the vector argument is one of 49 interrupts defined in <TT
+CLASS="COMPUTEROUTPUT"
+>hal/arm/iq80310/current/include/hal_platform_ints.h:</TT
+>:   <TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>// *** 80200 CPU ***
+#define CYGNUM_HAL_INTERRUPT_reserved0     0
+#define CYGNUM_HAL_INTERRUPT_PMU_PMN0_OVFL 1 // See Ch.12 - Performance Mon.
+#define CYGNUM_HAL_INTERRUPT_PMU_PMN1_OVFL 2 // PMU counter 0/1 overflow
+#define CYGNUM_HAL_INTERRUPT_PMU_CCNT_OVFL 3 // PMU clock overflow
+#define CYGNUM_HAL_INTERRUPT_BCU_INTERRUPT 4 // See Ch.11 - Bus Control Unit
+#define CYGNUM_HAL_INTERRUPT_NIRQ          5 // external IRQ
+#define CYGNUM_HAL_INTERRUPT_NFIQ          6 // external FIQ
+
+
+// *** XINT6 interrupts ***
+#define CYGNUM_HAL_INTERRUPT_DMA_0         7
+#define CYGNUM_HAL_INTERRUPT_DMA_1         8
+#define CYGNUM_HAL_INTERRUPT_DMA_2         9
+#define CYGNUM_HAL_INTERRUPT_GTSC         10 // Global Time Stamp Counter
+#define CYGNUM_HAL_INTERRUPT_PEC          11 // Performance Event Counter
+#define CYGNUM_HAL_INTERRUPT_AAIP         12 // application accelerator unit
+
+
+// *** XINT7 interrupts ***
+// I2C interrupts
+#define CYGNUM_HAL_INTERRUPT_I2C_TX_EMPTY 13
+#define CYGNUM_HAL_INTERRUPT_I2C_RX_FULL  14
+#define CYGNUM_HAL_INTERRUPT_I2C_BUS_ERR  15
+#define CYGNUM_HAL_INTERRUPT_I2C_STOP     16
+#define CYGNUM_HAL_INTERRUPT_I2C_LOSS     17
+#define CYGNUM_HAL_INTERRUPT_I2C_ADDRESS  18
+
+
+// Messaging Unit interrupts
+#define CYGNUM_HAL_INTERRUPT_MESSAGE_0           19
+#define CYGNUM_HAL_INTERRUPT_MESSAGE_1           20
+#define CYGNUM_HAL_INTERRUPT_DOORBELL            21
+#define CYGNUM_HAL_INTERRUPT_NMI_DOORBELL        22
+#define CYGNUM_HAL_INTERRUPT_QUEUE_POST          23
+#define CYGNUM_HAL_INTERRUPT_OUTBOUND_QUEUE_FULL 24
+#define CYGNUM_HAL_INTERRUPT_INDEX_REGISTER      25
+// PCI Address Translation Unit
+#define CYGNUM_HAL_INTERRUPT_BIST                26
+
+
+// *** External board interrupts (XINT3) ***
+#define CYGNUM_HAL_INTERRUPT_TIMER        27 // external timer
+#define CYGNUM_HAL_INTERRUPT_ETHERNET     28 // onboard enet
+#define CYGNUM_HAL_INTERRUPT_SERIAL_A     29 // 16x50 uart A
+#define CYGNUM_HAL_INTERRUPT_SERIAL_B     30 // 16x50 uart B
+#define CYGNUM_HAL_INTERRUPT_PCI_S_INTD   31 // secondary PCI INTD
+// The hardware doesn't (yet?) provide masking or status for these
+// even though they can trigger cpu interrupts. ISRs will need to
+// poll the device to see if the device actually triggered the
+// interrupt.
+#define CYGNUM_HAL_INTERRUPT_PCI_S_INTC   32 // secondary PCI INTC
+#define CYGNUM_HAL_INTERRUPT_PCI_S_INTB   33 // secondary PCI INTB
+#define CYGNUM_HAL_INTERRUPT_PCI_S_INTA   34 // secondary PCI INTA
+
+
+// *** NMI Interrupts go to FIQ ***
+#define CYGNUM_HAL_INTERRUPT_MCU_ERR       35
+#define CYGNUM_HAL_INTERRUPT_PATU_ERR      36
+#define CYGNUM_HAL_INTERRUPT_SATU_ERR      37
+#define CYGNUM_HAL_INTERRUPT_PBDG_ERR      38
+#define CYGNUM_HAL_INTERRUPT_SBDG_ERR      39
+#define CYGNUM_HAL_INTERRUPT_DMA0_ERR      40
+#define CYGNUM_HAL_INTERRUPT_DMA1_ERR      41
+#define CYGNUM_HAL_INTERRUPT_DMA2_ERR      42
+#define CYGNUM_HAL_INTERRUPT_MU_ERR        43
+#define CYGNUM_HAL_INTERRUPT_reserved52    44
+#define CYGNUM_HAL_INTERRUPT_AAU_ERR       45
+#define CYGNUM_HAL_INTERRUPT_BIU_ERR       46
+
+
+// *** ATU FIQ sources ***
+#define CYGNUM_HAL_INTERRUPT_P_SERR        47
+#define CYGNUM_HAL_INTERRUPT_S_SERR        48</PRE
+></TD
+></TR
+></TABLE
+>The data passed
+to the ISR is pulled from a data table <TT
+CLASS="COMPUTEROUTPUT"
+>(hal_interrupt_data)</TT
+> which immediately follows the interrupt vector table. With
+49 interrupts, the data table starts at address 0xA000A0C8.   </P
+><P
+>An application may create a normal C function with the above prototype
+to be an ISR. Just poke its address into the table at the correct index and
+enable the interrupt at its source. The return value of the ISR is ignored
+by RedBoot.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6256">Memory Maps</H2
+><P
+>The first level page table is located at 0xa0004000. Two second level
+tables are also used. One second level table is located at 0xa0008000 and
+maps the first 1MB of flash. The other second level table is at 0xa0008400,
+and maps the first 1MB of SDRAM. <DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>NOTE: </B
+>The virtual memory maps in this section use a C and B column to indicate
+whether or not the region is cached (C) or buffered (B).</P
+></BLOCKQUOTE
+></DIV
+></P
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Physical Address Range     Description
+-----------------------    ----------------------------------
+0x00000000 - 0x00000fff    flash Memory
+0x00001000 - 0x00001fff    80312 Internal Registers
+0x00002000 - 0x007fffff    flash Memory
+0x00800000 - 0x7fffffff    PCI ATU Outbound Direct Window
+0x80000000 - 0x83ffffff    Primary PCI 32-bit Memory
+0x84000000 - 0x87ffffff    Primary PCI 64-bit Memory
+0x88000000 - 0x8bffffff    Secondary PCI 32-bit Memory
+0x8c000000 - 0x8fffffff    Secondary PCI 64-bit Memory
+0x90000000 - 0x9000ffff    Primary PCI IO Space
+0x90010000 - 0x9001ffff    Secondary PCI IO Space
+0x90020000 - 0x9fffffff    Unused
+0xa0000000 - 0xbfffffff    SDRAM
+0xc0000000 - 0xefffffff    Unused
+0xf0000000 - 0xffffffff    80200 Internal Registers
+
+
+Virtual Address Range    C B  Description
+-----------------------  - -  ----------------------------------
+0x00000000 - 0x00000fff  Y Y  SDRAM
+0x00001000 - 0x00001fff  N N  80312 Internal Registers
+0x00002000 - 0x007fffff  Y N  flash Memory
+0x00800000 - 0x7fffffff  N N  PCI ATU Outbound Direct Window
+0x80000000 - 0x83ffffff  N N  Primary PCI 32-bit Memory
+0x84000000 - 0x87ffffff  N N  Primary PCI 64-bit Memory
+0x88000000 - 0x8bffffff  N N  Secondary PCI 32-bit Memory
+0x8c000000 - 0x8fffffff  N N  Secondary PCI 64-bit Memory
+0x90000000 - 0x9000ffff  N N  Primary PCI IO Space
+0x90010000 - 0x9001ffff  N N  Secondary PCI IO Space
+0xa0000000 - 0xbfffffff  Y Y  SDRAM
+0xc0000000 - 0xcfffffff  Y Y  Cache Flush Region
+0xd0000000 - 0xd0000fff  Y N  first 4k page of flash
+0xf0000000 - 0xffffffff  N N  80200 Internal Registers </PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6264">Platform Resource Usage</H2
+><P
+>The external timer is used as a polled timer to provide timeout support
+for networking and XModem file transfers.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="cerfcube.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="iq80321.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>ARM/StrongARM(SA11X0) Intrinsyc CerfCube</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="installation-and-testing.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>ARM/Xscale Intel IQ80321</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,828 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>	  Memory pool Management Functions</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="µITRON API"
+HREF="compat-uitron-microitron-api.html"><LINK
+REL="PREVIOUS"
+TITLE="Interrupt management functions"
+HREF="compat-uitron-interrupt-management-functions.html"><LINK
+REL="NEXT"
+TITLE="Time Management Functions"
+HREF="compat-uitron-time-mgmt-functions.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="compat-uitron-interrupt-management-functions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 32. &micro;ITRON API</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="compat-uitron-time-mgmt-functions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="COMPAT-UITRON-MEMORY-POOL-MGMT-FUNCTIONS">Memory pool Management Functions</H1
+><P
+>These functions are fully supported in this release: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>get_blf</TT
+>( 
+    VP *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>p_blf,</I
+></SPAN
+>    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mpfid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>pget_blf</TT
+>( 
+    VP *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>p_blf,</I
+></SPAN
+>    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mpfid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>tget_blf</TT
+>( 
+    VP *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>p_blf,</I
+></SPAN
+>    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mpfid,</I
+></SPAN
+>    TMO <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tmout</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>rel_blf</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mpfid,</I
+></SPAN
+>    VP <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>blf</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>ref_mpf</TT
+>( 
+    T_RMPF *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_rmpf,</I
+></SPAN
+>    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mpfid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>get_blk</TT
+>( 
+    VP *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>p_blk,</I
+></SPAN
+>    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mplid,</I
+></SPAN
+>    INT <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>blksz</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>pget_blk</TT
+>( 
+    VP *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>p_blk,</I
+></SPAN
+>    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mplid,</I
+></SPAN
+>    INT <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>blksz</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>tget_blk</TT
+>( 
+    VP *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>p_blk,</I
+></SPAN
+>    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mplid,</I
+></SPAN
+>    INT <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>blksz,</I
+></SPAN
+>    TMO <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tmout</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>rel_blk</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mplid,</I
+></SPAN
+>    VP <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>blk</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>ref_mpl</TT
+>( 
+    T_RMPL *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_rmpl,</I
+></SPAN
+>    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mplid )</I
+></SPAN
+></PRE
+></TD
+></TR
+></TABLE
+><P
+>Note that of the memory provided for a particular pool to
+manage in the static initialization of the memory pool objects,
+some memory will be used to manage the pool itself. Therefore the
+number of blocks * the blocksize will be less than the total
+memory size. </P
+><P
+>The following functions are supported in this release, when
+enabled with 
+<TT
+CLASS="LITERAL"
+>CYGPKG_UITRON_MEMPOOLVAR_CREATE_DELETE</TT
+>
+or 
+<TT
+CLASS="LITERAL"
+>CYGPKG_UITRON_MEMPOOLFIXED_CREATE_DELETE</TT
+>
+as appropriate, with some restrictions: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>cre_mpl</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mplid,</I
+></SPAN
+>    T_CMPL *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_cmpl</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>del_mpl</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mplid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>cre_mpf</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mpfid,</I
+></SPAN
+>    T_CMPF *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_cmpf</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>del_mpf</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mpfid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><P
+>Because of the static initialization facilities provided for
+system objects, a memory pool is allocated a region of memory to
+manage statically in the configuration. So while memory pools can
+be created and deleted, the same area of memory is used for that
+memory pool (memory pool ID number) each time. The requested variable pool
+size (pk_cmpl-&gt;mplsz) or the number of fixed-size
+blocks (pk_cmpf-&gt;mpfcnt) times the block size
+(pk_cmpf-&gt;blfsz) are checked for fitting within
+the statically allocated memory area, so if a create call succeeds,
+the resulting pool will be at least as large as that requested.
+For this reason <TT
+CLASS="FUNCTION"
+>del_mpl()</TT
+> and <TT
+CLASS="FUNCTION"
+>del_mpf()</TT
+> do
+not in any sense free the memory that was managed by the deleted
+pool for use by other pools; it may only be managed by a pool of
+the same object id. </P
+><P
+>For both fixed and variable memory pools, the queueing order
+when waiting on a synchronization object depends on the underlying
+kernel configuration. The multi-level queue scheduler is required
+for strict &micro;ITRON conformance and
+it queues tasks in FIFO order, so requests to create an object with
+priority queueing of tasks (pk_cxxx-&gt;xxxatr = TA_TPRI)
+are rejected with E_RSATR. Additional undefined bits in
+the attributes fields must be zero. </P
+><P
+>In general, extended information (pk_cxxx-&gt;exinf)
+is ignored. </P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13913">Error checking</H2
+><P
+>The following conditions are only checked for, and only return
+errors if 
+<TT
+CLASS="LITERAL"
+>CYGSEM_UITRON_BAD_PARAMS_RETURN_ERRORS</TT
+>
+is enabled:</P
+><P
+></P
+><UL
+><LI
+><P
+>invalid object id; less than 1 or greater than 
+<TT
+CLASS="LITERAL"
+>CYGNUM_UITRON_MEMPOOLVAR/MEMPOOLFIXED</TT
+>
+as appropriate returns E_ID</P
+></LI
+><LI
+><P
+>dispatching is enabled in any call which can sleep, or
+E_CTX</P
+></LI
+><LI
+><P
+>tmout must be positive, otherwise E_PAR</P
+></LI
+><LI
+><P
+>pk_cxxx pointers in 
+<TT
+CLASS="FUNCTION"
+>cre_xxx()</TT
+>
+ must be valid pointers, or E_PAR</P
+></LI
+><LI
+><P
+>return value pointer in 
+<TT
+CLASS="FUNCTION"
+>ref_xxx()</TT
+>
+ is a valid pointer, or E_PAR</P
+></LI
+><LI
+><P
+>return value pointers in get block routines is a valid
+pointer, or E_PAR</P
+></LI
+><LI
+><P
+>blocksize request in get variable block routines is greater
+than zero, or E_PAR</P
+></LI
+></UL
+><P
+>The following conditions are checked for, and can return error
+codes, regardless of the setting of 
+<TT
+CLASS="LITERAL"
+>CYGSEM_UITRON_BAD_PARAMS_RETURN_ERRORS</TT
+>:</P
+><P
+></P
+><UL
+><LI
+><P
+>When create and delete functions 
+<TT
+CLASS="FUNCTION"
+>cre_xxx()</TT
+>
+ and 
+<TT
+CLASS="FUNCTION"
+>del_xxx()</TT
+>
+ are supported, all calls which use a valid object ID number check
+that the object exists. If not, E_NOEXS is returned.</P
+></LI
+><LI
+><P
+>When create functions 
+<TT
+CLASS="FUNCTION"
+>cre_xxx()</TT
+>
+ are supported, if the object already exists, then E_OBJ</P
+></LI
+><LI
+><P
+>In any call which can sleep, such as 
+<TT
+CLASS="FUNCTION"
+>get_blk()</TT
+>
+: return codes E_TMOUT, E_RLWAI, E_DLT
+or of course E_OK are returned depending on the reason
+for terminating the sleep</P
+></LI
+><LI
+><P
+>In polling functions such as 
+<TT
+CLASS="FUNCTION"
+>pget_blk()</TT
+>
+return codes E_TMOUT or E_OK are returned depending
+on the state of the synchronization object</P
+></LI
+><LI
+><P
+>In creation functions, the attributes must be compatible
+with the selected underlying kernel configuration: in 
+<TT
+CLASS="FUNCTION"
+>cre_mpl()</TT
+>
+ 
+<TT
+CLASS="LITERAL"
+>pk_cmpl-&gt;mplatr</TT
+>
+ must be equal to 
+<TT
+CLASS="LITERAL"
+>TA_TFIFO</TT
+>
+ else E_RSATR.</P
+></LI
+><LI
+><P
+>In 
+<TT
+CLASS="FUNCTION"
+>cre_mpf()</TT
+>
+ 
+<TT
+CLASS="LITERAL"
+>pk_cmpf-&gt;mpfatr</TT
+>
+ must be equal to 
+<TT
+CLASS="LITERAL"
+>TA_TFIFO</TT
+>
+ else E_RSATR.</P
+></LI
+><LI
+><P
+>In creation functions, the requested size of the memory
+pool must not be larger than that statically configured for the
+pool else E_RSATR; see the configuration option
+&#8220;Option: Static initializers&#8221;.
+ In 
+<TT
+CLASS="FUNCTION"
+>cre_mpl()</TT
+>
+ 
+<TT
+CLASS="LITERAL"
+>pk_cmpl-&gt;mplsz</TT
+>
+ is the field of interest</P
+></LI
+><LI
+><P
+>In 
+<TT
+CLASS="FUNCTION"
+>cre_mpf()</TT
+>
+ the product of 
+<TT
+CLASS="LITERAL"
+>pk_cmpf-&gt;blfsz</TT
+>
+ and 
+<TT
+CLASS="LITERAL"
+>pk_cmpf-&gt;mpfcnt</TT
+>
+ must be smaller than the memory statically configured for the pool
+else E_RSATR</P
+></LI
+><LI
+><P
+>In functions which return memory to the pool 
+<TT
+CLASS="FUNCTION"
+>rel_blk()</TT
+>
+ and 
+<TT
+CLASS="FUNCTION"
+>rel_blf()</TT
+>
+, if the free fails, for example because the memory did not come
+from that pool originally, then E_PAR is returned</P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="compat-uitron-interrupt-management-functions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="compat-uitron-time-mgmt-functions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Interrupt management functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="compat-uitron-microitron-api.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Time Management Functions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

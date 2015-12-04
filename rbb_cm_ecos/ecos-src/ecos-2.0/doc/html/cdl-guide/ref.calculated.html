@@ -1,0 +1,532 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>calculated</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="active_if"
+HREF="ref.active-if.html"><LINK
+REL="NEXT"
+TITLE="compile"
+HREF="ref.compile.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.active-if.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.compile.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.CALCULATED"><SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN3722"
+></A
+><H2
+>Name</H2
+>Property <SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+>&nbsp;--&nbsp;Used if the current option's value is not user-modifiable,
+but is calculated using a suitable CDL expression.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN3726"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_option &lt;name&gt; {
+    calculated &lt;expression&gt;
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3728"
+></A
+><H2
+>Description</H2
+><P
+>In some cases it is useful to have a configuration option whose value
+cannot be modified directly by the user. This can be achieved using a
+<SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+>, which takes a CDL expression as argument (see <A
+HREF="language.values.html#LANGUAGE.EXPRESSION"
+>the Section called <I
+>Ordinary Expressions</I
+> in Chapter 3</A
+> for a description of expression
+syntax). The configuration system evaluates the expression when the
+current package is loaded and whenever there is a change to any other
+option referenced in the expression. The result depends on the
+option's flavor:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>flavor none</TT
+></DT
+><DD
+><P
+>Options with this flavor have no value, so the <SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+>
+property is not applicable.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>flavor bool</TT
+></DT
+><DD
+><P
+>If the expression evaluates to a non-zero result the option is
+enabled, otherwise it is disabled.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>flavor booldata</TT
+></DT
+><DD
+><P
+>If the result of evaluating the expression is zero then the option is
+disabled, otherwise the option is enabled and its value is the result.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>flavor data</TT
+></DT
+><DD
+><P
+>The value of the option is the result of evaluating the expression.</P
+></DD
+></DL
+></DIV
+><P
+>There are a number of valid uses for calculated options, and there are
+also many cases where some other CDL facility would be more
+appropriate. Valid uses of calculated options include the following:</P
+><P
+></P
+><UL
+><LI
+><P
+>On some target hardware a particular feature may be user-configurable,
+while on other targets it is fixed. For example some processors can
+operate in either big-endian or little-endian mode, while other
+processors do not provide any choice. It is possible to have an
+option <TT
+CLASS="LITERAL"
+>CYGARC_BIGENDIAN</TT
+> which is calculated in
+some architectural HAL packages but user-modifiable in others.</P
+></LI
+><LI
+><P
+>Calculated options can provide an alternative way for one package to
+affect the behavior of another one. Suppose a package may provide two
+possible implementations, a preferred one involving self-modifying
+code and a slower alternative. If the system involves a ROM bootstrap
+then the slower alternative must be used, but it would be
+inappropriate to modify the startup option in every HAL to impose
+constraints on this package. Instead it is possible to have a
+calculated option whose value is
+<TT
+CLASS="LITERAL"
+>{&nbsp;CYG_HAL_STARTUP&nbsp;==&nbsp;"ROM"&nbsp;}</TT
+>,
+and which has appropriate consequences. Arguably this is a spurious
+example, and it should be a user choice whether or not to use
+self-modifying code with a <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+> based on
+<TT
+CLASS="LITERAL"
+>CYG_HAL_STARTUP</TT
+>, but that is for the component
+writer to decide.</P
+></LI
+><LI
+><P
+>Sometimes it should be possible to perform a particular test at
+compile-time, for example by using a C preprocessor
+<TT
+CLASS="LITERAL"
+>#if</TT
+> construct. However the preprocessor has only
+limited functionality, for example it cannot perform string
+comparisons. CDL expressions are more powerful.</P
+></LI
+><LI
+><P
+>Occasionally a particular sub-expression may occur multiple times in
+a CDL script. If the sub-expression is sufficiently complex then it
+may be worthwhile to have a calculated option whose value is the
+sub-expression, and then reference that calculated option in the
+appropriate places. </P
+></LI
+></UL
+><P
+>Alternatives to using calculated options include the following:</P
+><P
+></P
+><UL
+><LI
+><P
+>CDL <A
+HREF="language.interface.html"
+>interfaces</A
+> are a form of
+calculated option intended as an abstraction mechanism. An interface
+can be used to express the concept of <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>any
+scheduler</I
+></SPAN
+>, as opposed to a specific one such as the bitmap scheduler.</P
+></LI
+><LI
+><P
+>If a calculated option would serve only to add additional information
+to a configuration header file, it may be possible to achieve the same
+effect using a <A
+HREF="ref.define-proc.html"
+><SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+></A
+>
+property or one of the other properties related to header file
+generation.</P
+></LI
+></UL
+><DIV
+CLASS="TIP"
+><BLOCKQUOTE
+CLASS="TIP"
+><P
+><B
+>Tip: </B
+>If the first entry in a <SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+> expression is a negative
+number, for example <TT
+CLASS="LITERAL"
+>calculated&nbsp;-1</TT
+> then this
+can be misinterpreted as an option instead of as part of the
+expression. Currently the <SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+> property does not take any
+options, but this may change in future. Option processing halts at the
+sequence <TT
+CLASS="LITERAL"
+>--</TT
+>, so the desired value can be expressed
+safely using
+<TT
+CLASS="LITERAL"
+>calculated&nbsp;--&nbsp;-1</TT
+></P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>Some of the CDL scripts in current <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> releases make excessive use
+of calculated options. This is partly because the recommended
+alternatives were not always available at the time the scripts were
+written. It is also partly because there is still some missing
+functionality, for example <SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+> properties cannot yet access
+the configuration data so it may be necessary to use <SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+>
+properties to access the data and perform the desired manipulation via
+a <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> expression. New scripts should use calculated options only in
+accordance with the guidelines.</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>For options with the booldata flavor the current CDL syntax does not
+allow the enabled flag and the value to be calculated separately.
+Functionality to permit this may be added in a future release.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>It has been suggested that having options which are not
+user-modifiable is potentially confusing, and that a top-level
+<TT
+CLASS="LITERAL"
+>cdl_constant</TT
+> command should be added to the
+language instead of or in addition to the <SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+> property. Such
+a change is under consideration. However because the value of a
+calculated option can depend on other options, it is not necessarily
+constant.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3799"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+># A constant on some target hardware, perhaps user-modifiable on other
+# targets.
+cdl_option CYGNUM_HAL_RTC_PERIOD {
+    display       "Real-time clock period"
+    flavor        data
+    calculated    12500
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3802"
+></A
+><H2
+>See Also</H2
+><P
+>Properties <A
+HREF="ref.default-value.html"
+><SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+></A
+>,
+<A
+HREF="ref.flavor.html"
+><SPAN
+CLASS="PROPERTY"
+>flavor</SPAN
+></A
+> and
+<A
+HREF="ref.legal-values.html"
+><SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+></A
+>,</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.active-if.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.compile.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

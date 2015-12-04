@@ -1,0 +1,690 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>MIPS/MIPS32(CoreLV 4Kc)+MIPS64(CoreLV 5Kc) Malta Board </TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Installation and Testing"
+HREF="installation-and-testing.html"><LINK
+REL="PREVIOUS"
+TITLE="MIPS/MIPS32(CoreLV 4Kc)+MIPS64(CoreLV 5Kc) Atlas Board"
+HREF="atlas.html"><LINK
+REL="NEXT"
+TITLE="MIPS/RM7000 PMC-Sierra Ocelot"
+HREF="ocelot.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="atlas.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Installation and Testing</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ocelot.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MALTA">MIPS/MIPS32(CoreLV 4Kc)+MIPS64(CoreLV 5Kc) Malta Board</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6809">Overview</H2
+><P
+>RedBoot supports both front
+facing serial ports and the built in ethernet port for communication and downloads.
+The default serial port settings are 38400,8,N,1. RedBoot runs from and supports
+flash management for the system flash region.</P
+><P
+>The following RedBoot configurations are supported:
+
+      <DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6819"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Configuration</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Mode</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>ROM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from the board's flash boot
+	      sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_ROM.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RAM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[RAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM with RedBoot in the
+	      flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_RAM.ecm</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6838">Initial Installation</H2
+><P
+>RedBoot is installed using the code download facility built into the
+Malta board. See the Malta User manual for details, and also the Malta download
+format in <A
+HREF="malta.html#MALTA-DOWNLOAD-FORMAT"
+>the Section called <I
+>Malta download format</I
+></A
+>.</P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN6842">Quick download instructions</H3
+><P
+>Here are quick start instructions for downloading the prebuilt RedBoot
+image. </P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Locate the prebuilt files in the bin directory: <TT
+CLASS="FILENAME"
+>deleteall.fl</TT
+> and <TT
+CLASS="FILENAME"
+>redboot_ROM.fl</TT
+>. </P
+></LI
+><LI
+><P
+>Make sure switch S5-1 is ON. Reset the board and verify that
+the LED display reads <TT
+CLASS="COMPUTEROUTPUT"
+>Flash DL</TT
+>. </P
+></LI
+><LI
+><P
+>Make sure your parallel port is connected to the 1284 port
+Of the Atlas board. </P
+></LI
+><LI
+><P
+>Send the <TT
+CLASS="FILENAME"
+>deleteall.fl</TT
+> file to the
+parallel port to erase previous images:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ <TT
+CLASS="USERINPUT"
+><B
+>cat deleteall.fl &#62;/dev/lp0</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+>
+When this is complete, the LED display should read
+<TT
+CLASS="COMPUTEROUTPUT"
+>Deleted</TT
+>.</P
+></LI
+><LI
+><P
+>Send the RedBoot image to the board:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ <TT
+CLASS="USERINPUT"
+><B
+>cat redboot_ROM.fl &#62;/dev/lp0</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+>
+When this is complete, the LED display should show the last address
+programmed. This will be something like:
+<TT
+CLASS="COMPUTEROUTPUT"
+>1fc17000</TT
+>. </P
+></LI
+><LI
+><P
+>Change switch S5-1 to OFF and reset the board. The LED display
+should read <TT
+CLASS="COMPUTEROUTPUT"
+>RedBoot</TT
+>. </P
+></LI
+><LI
+><P
+>Run the RedBoot <B
+CLASS="COMMAND"
+>fis init</B
+> and <B
+CLASS="COMMAND"
+>fconfig</B
+> commands to initialize the flash. See <A
+HREF="flash-image-system.html"
+>the Section called <I
+>Flash Image System (FIS)</I
+> in Chapter 2</A
+>
+and <A
+HREF="persistent-state-flash.html"
+>the Section called <I
+>Persistent State Flash-based Configuration and Control</I
+> in Chapter 2</A
+> for details. </P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="MALTA-DOWNLOAD-FORMAT">Malta download format</H3
+><P
+>In order to download RedBoot to the Malta board, it must be converted
+to the Malta download format.</P
+><P
+>The <I
+CLASS="CITETITLE"
+>Atlas/Malta Developer's Kit</I
+> CD contains an <SPAN
+CLASS="APPLICATION"
+>srecconv.pl</SPAN
+> utility which requires Perl. This utility is part
+of the <TT
+CLASS="FILENAME"
+>yamon/yamon-src-02.00.tar.gz</TT
+> tarball
+on the Dev Kit CD. The path in the expanded tarball is <TT
+CLASS="FILENAME"
+>yamon/bin/tools</TT
+>.  To use
+<SPAN
+CLASS="APPLICATION"
+>srecconv</SPAN
+> to convert the S-record file:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ <TT
+CLASS="USERINPUT"
+><B
+>cp redboot_ROM.srec redboot_ROM.rec</B
+></TT
+>
+$ <TT
+CLASS="USERINPUT"
+><B
+>srecconv.pl -ES L -A 29 redboot_ROM</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+>
+The resulting file is named <TT
+CLASS="FILENAME"
+>redboot_ROM.fl</TT
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6888">Additional commands</H2
+><P
+>The <B
+CLASS="COMMAND"
+>exec</B
+> command which allows the
+loading and execution of Linux kernels, is supported for this architecture
+ (see <A
+HREF="executing-programs.html"
+>the Section called <I
+>Executing Programs from RedBoot</I
+> in Chapter 2</A
+>). The
+<B
+CLASS="COMMAND"
+>exec</B
+> parameters used for MIPS boards are:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>-b <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;addr&#62;</I
+></TT
+></DT
+><DD
+><P
+>Location to store command line and environment passed to kernel</P
+></DD
+><DT
+>-w <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;time&#62;</I
+></TT
+></DT
+><DD
+><P
+>Wait time in seconds before starting kernel</P
+></DD
+><DT
+>-c <TT
+CLASS="REPLACEABLE"
+><I
+>"params"</I
+></TT
+></DT
+><DD
+><P
+>Parameters passed to kernel</P
+></DD
+><DT
+><TT
+CLASS="REPLACEABLE"
+><I
+>&lt;addr&#62;</I
+></TT
+></DT
+><DD
+><P
+>Kernel entry point, defaulting to the entry point of the last image
+loaded</P
+></DD
+></DL
+></DIV
+><P
+>Linux kernels on MIPS platforms expect the entry point to be called with arguments
+in the registers equivalent to a C call with prototype:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void Linux(int argc, char **argv, char **envp);</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>RedBoot will place the appropriate data at the offset specified by the
+<TT
+CLASS="PARAMETER"
+><I
+>-b</I
+></TT
+> parameter, or by default at address 0x80080000, and will set the
+arguments accordingly when calling into the kernel.</P
+><P
+>The default entry point, if no image with explicit entry point has been loaded and
+none is specified, is 0x80000750.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6920">Interrupts</H2
+><P
+>RedBoot uses an interrupt vector table which is located at address 0x80000200.
+Entries in this table are pointers to functions with this protoype:      <TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int irq_handler( unsigned vector, unsigned data )</PRE
+></TD
+></TR
+></TABLE
+>On the malta
+board, the vector argument is one of 22 interrupts defined in <TT
+CLASS="COMPUTEROUTPUT"
+>hal/mips/malta/<TT
+CLASS="REPLACEABLE"
+><I
+>VERSION</I
+></TT
+>/include/plf_intr.h</TT
+>: <TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&#13;#define CYGNUM_HAL_INTERRUPT_SOUTH_BRIDGE_INTR   0
+#define CYGNUM_HAL_INTERRUPT_SOUTH_BRIDGE_SMI    1
+#define CYGNUM_HAL_INTERRUPT_CBUS_UART           2
+#define CYGNUM_HAL_INTERRUPT_COREHI              3
+#define CYGNUM_HAL_INTERRUPT_CORELO              4
+#define CYGNUM_HAL_INTERRUPT_COMPARE             5
+#define CYGNUM_HAL_INTERRUPT_TIMER               6
+#define CYGNUM_HAL_INTERRUPT_KEYBOARD            7
+#define CYGNUM_HAL_INTERRUPT_CASCADE             8
+#define CYGNUM_HAL_INTERRUPT_TTY1                9
+#define CYGNUM_HAL_INTERRUPT_TTY0               10
+#define CYGNUM_HAL_INTERRUPT_11                 11
+#define CYGNUM_HAL_INTERRUPT_FLOPPY             12
+#define CYGNUM_HAL_INTERRUPT_PARALLEL           13
+#define CYGNUM_HAL_INTERRUPT_REAL_TIME_CLOCK    14
+#define CYGNUM_HAL_INTERRUPT_I2C                15
+#define CYGNUM_HAL_INTERRUPT_PCI_AB             16
+#define CYGNUM_HAL_INTERRUPT_PCI_CD             17
+#define CYGNUM_HAL_INTERRUPT_MOUSE              18
+#define CYGNUM_HAL_INTERRUPT_19                 19
+#define CYGNUM_HAL_INTERRUPT_IDE_PRIMARY        20
+#define CYGNUM_HAL_INTERRUPT_IDE_SECONDARY      21</PRE
+></TD
+></TR
+></TABLE
+>The data
+passed to the ISR is pulled from a data table (<TT
+CLASS="COMPUTEROUTPUT"
+>hal_interrupt_data</TT
+>) which immediately follows the interrupt vector table. With
+22 interrupts, the data table starts at address 0x80000258.</P
+><P
+>An application may create a normal C function with the above prototype
+to be an ISR. Just poke its address into the table at the correct index and
+enable the interrupt at its source. The return value of the ISR is ignored
+by RedBoot. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6929">Memory Maps</H2
+><P
+>Memory Maps RedBoot sets up the following memory map on the Malta board.<DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>NOTE: </B
+>The virtual memory maps in this section use a C and B column to indicate
+whether or not the region is cached (C) or buffered (B).</P
+></BLOCKQUOTE
+></DIV
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Physical Address Range  C B  Description
+----------------------- - -  -----------
+0x80000000 - 0x81ffffff Y Y  SDRAM
+0x9e000000 - 0x9e3fffff Y N  System flash (cached)
+0x9fc00000 - 0x9fffffff Y N  System flash (mirrored)
+0xa8000000 - 0xb7ffffff N N  PCI Memory Space
+0xb4000000 - 0xb40fffff N N  Galileo System Controller
+0xb8000000 - 0xb80fffff N N  Southbridge / ISA
+0xb8100000 - 0xbbdfffff N N  PCI I/O Space
+0xbe000000 - 0xbe3fffff N N  System flash (noncached)
+0xbf000000 - 0xbfffffff N N  Board logic FPGA</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6936">Rebuilding RedBoot</H2
+><P
+>These shell variables provide the platform-specific information
+needed for building RedBoot according to the procedure described in
+<A
+HREF="rebuilding-redboot.html"
+>Chapter 3</A
+>:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>export TARGET=malta_mips32_4kc
+export ARCH_DIR=mips
+export PLATFORM_DIR=malta</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The names of configuration files are listed above with the
+description of the associated modes.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="atlas.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ocelot.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>MIPS/MIPS32(CoreLV 4Kc)+MIPS64(CoreLV 5Kc) Atlas Board</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="installation-and-testing.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>MIPS/RM7000 PMC-Sierra Ocelot</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

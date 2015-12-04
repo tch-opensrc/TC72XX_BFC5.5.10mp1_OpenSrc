@@ -1,0 +1,180 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Default Synchronous Exception Handling</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Exception Handling"
+HREF="hal-exception-handling.html"><LINK
+REL="PREVIOUS"
+TITLE="Vectors and VSRs"
+HREF="hal-vectors-and-vsrs.html"><LINK
+REL="NEXT"
+TITLE="Default Interrupt Handling"
+HREF="hal-default-interrupt-handling.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="hal-vectors-and-vsrs.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 10. Exception Handling</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="hal-default-interrupt-handling.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="HAL-DEFAULT-SYNCHRONOUS-EXCEPTION-HANDLING">Default Synchronous Exception Handling</H1
+><P
+>Most synchronous exception VSR table entries will point to a default
+exception VSR which is responsible for handling all exceptions in a
+generic manner. The default VSR simply saves the CPU state, makes any
+adjustments to the CPU state that is necessary, and calls
+<TT
+CLASS="FUNCTION"
+>cyg_hal_exception_handler()</TT
+>.</P
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_hal_exception_handler()</TT
+> needs to pass the
+exception on to some handling code.  There are two basic destinations:
+enter GDB or pass the exception up to eCos. Exactly which
+destination is taken depends on the configuration. When the GDB stubs are
+included then the exception is passed to them, otherwise it is passed
+to eCos.</P
+><P
+>If an eCos application has been loaded by RedBoot then the VSR table
+entries will all point into RedBoot's exception VSR, and will
+therefore enter GDB if an exception occurs. If the eCos application
+wants to handle an exception itself, it needs to replace the the VSR
+table entry with one pointing to its own VSR. It can do this with the
+<TT
+CLASS="FUNCTION"
+>HAL_VSR_SET_TO_ECOS_HANDLER()</TT
+> macro.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="hal-vectors-and-vsrs.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="hal-default-interrupt-handling.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Vectors and VSRs</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="hal-exception-handling.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Default Interrupt Handling</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

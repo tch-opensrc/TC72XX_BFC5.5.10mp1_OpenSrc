@@ -1,0 +1,681 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Cirrus Logic ARM EP7211 Development
+Board Hardware Setup</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Target Setup"
+HREF="appendix-target-setup.html"><LINK
+REL="PREVIOUS"
+TITLE="ARM Cogent CMA230 Hardware Setup"
+HREF="setup-arm-cma230.html"><LINK
+REL="NEXT"
+TITLE="Cirrus Logic ARM EP7212 Development Board
+Hardware Setup"
+HREF="setup-arm-ep7212.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="setup-arm-cma230.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Target Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="setup-arm-ep7212.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SETUP-ARM-EP7211">Cirrus Logic ARM EP7211 Development
+Board Hardware Setup</H1
+><P
+>eCos comes with two Flash ROM images that provide GDB support
+for the Cirrus Logic EP7211 Development Board (also known as the
+EDB7211).. Note that on some board revisions, the board is silk-screened
+as EDB7111-2. The first Flash ROM image provides a port of the CygMon
+ROM monitor, which includes a command-line interface and a GDB remote
+stub. The second Flash ROM image provides a remote GDB stub only.</P
+><P
+>Both ROM images are provided in the directory loaders/arm-edb7211
+under the root of your eCos installation. CygMon images are prefixed
+with the name 'edb7211_cygmon' and are
+provided in a number of formats including binary (.bin extension)
+and SREC (.srec) extension. GDB stub ROM images are given the prefix 'edb7211_gdb_module'. </P
+><P
+>The ROM images provided for the EP7211 Development Board must
+be programmed into the FLASH. Please refer to the section titled
+"Loading the ROM image into On-Board flash" on how to program the
+ROM onto the board.</P
+><P
+>Both Cygmon and GDB Stub ROMS allow communication with GDB
+via the serial connector labelled 'UART 1'. The
+communication parameters are fixed at 38400 baud, 8 data bits, no
+parity bit and 1 stop bit (8-N-1). No flow control is employed.
+Connection to the host computer should be made using a null modem cable.
+A gender changer may also be required. Note that the GDB Configuration tool
+uses the serial port identifiers 0 and 1 to identify the EB7211
+serial ports UART1 and UART2 respectively.</P
+><P
+>Both eCos and the ROM images assume the core clock is generated
+with a 3.6864 MHz PLL input. The CPU will be configured to run at
+73.728MHz.</P
+><P
+>Note: The EP7211 CPU needs a two step RESET process. After
+pressing the &grave;URESET' pushbutton, the &grave;WAKEUP' pushbutton
+must be pressed to complete the process.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>When an eCos program is run on an EDB7211 board fitted with
+either CygMon or a GDB stub ROM, then the code in ROM loses control.
+This means that if you require the ability to remotely stop execution
+on the target, or want thread debugging capabilities, you must include
+GDB stub support when configuring eCos.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3826">Building programs for programming into FLASH</H2
+><P
+>If your application is to be run directly from FLASH, you
+must configure eCos appropriately for "ROM" startup. This can be
+done in the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos Configuration Tool</I
+></SPAN
+> by setting
+the "Startup type" HAL option to "ROM". If using the ecosconfig utility,
+set the user_value of the CYG_HAL_STARTUP
+option in ecos.ecc to "ROM".</P
+><P
+>When you have linked your application with eCos, you will
+then have an ELF executable. To convert this into a format appropriate
+for the Cirrus Logic FLASH download utility, or the dl_7xxx
+utility on Linux, you can use the utility arm-elf-objcopy, as in
+the following example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ arm-elf-objcopy -O binary helloworld.exe helloworld.bin</PRE
+></TD
+></TR
+></TABLE
+><P
+>This will produce a binary format image helloworld.bin which
+can be downloaded into FLASH.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3833">Building the GDB Stub FLASH ROM images</H2
+><P
+>Pre-built GDB stubs images are provided in the directory loaders/arm-edb7211 relative
+to the root of your eCos installation, but here are instructions
+on how to rebuild them if you should ever need to.</P
+><P
+>CygMon images are prefixed with the name 'cygmon' and
+GDB stub ROM images are given the prefix 'gdb_module'.
+Images may be provided in a number of formats including ELF (.img
+extension), binary (.bin extension) and SREC (.srec extension). </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3837">Building the ROM images with the eCos Configuration Tool</H2
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Start with a new document - selecting the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>File</I
+></SPAN
+>-&#62;<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>New</I
+></SPAN
+>
+ menu item if necessary to do this.</P
+></LI
+><LI
+><P
+>Choose the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build</I
+></SPAN
+>-&#62;<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Templates</I
+></SPAN
+>
+ menu item, and then select the "Cirrus Logic development board"
+hardware.</P
+></LI
+><LI
+><P
+>While still displaying the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build</I
+></SPAN
+>
+-&#62;
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Templates</I
+></SPAN
+>
+ dialog box, select either the "stubs" package template to build
+a GDB stub image, or the "cygmon" template to build the CygMon ROM
+Monitor. Click 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>OK</I
+></SPAN
+>.</P
+></LI
+><LI
+><P
+>Build eCos using 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build</I
+></SPAN
+>
+-&#62;
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Library</I
+></SPAN
+></P
+></LI
+><LI
+><P
+>When the build completes, the image files can be found
+in the bin/ subdirectory of the install tree. GDB stub
+ROM images have the prefix "gdb_module". CygMon images
+have the prefix "cygmon".</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3859">Building the ROM images with ecosconfig</H2
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Make an empty directory to contain the build tree,
+and cd into it.</P
+></LI
+><LI
+><P
+>To build a GDB stub ROM image, enter the command:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig new edb7xxx stubs</PRE
+></TD
+></TR
+></TABLE
+><P
+>or to build a CygMon ROM monitor image, enter the command:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig new edb7xxx cygmon</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>Enter the commands:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig tree
+$ make</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>When the build completes, the image files can be found
+in the bin/ subdirectory of the install tree. GDB stub
+ROM images have the prefix "gdb_module". CygMon images
+have the prefix "cygmon".</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3874">Loading the ROM Image into On-board Flash</H2
+><P
+>Program images can be written into Flash memory by means of
+a bootstrap program which is built into the  EDB7211.  This program
+communicates with a support program on your host to download and
+program an image into the Flash memory.</P
+><P
+>Cirrus Logic provides such a program for use with Windows/DOS.
+ eCos comes with a similar program which will run under Linux. The
+basic operation of both programs is the same.</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Connect a serial line to 'UART 1'.</P
+></LI
+><LI
+><P
+>Power off the  EDB7211.</P
+></LI
+><LI
+><P
+>Install jumper 'PROGRAM ENABLE' which
+enables this special mode for downloading Flash images. Note that
+some board revisions have this jumper labelled &#8220;BOOT ENABLE&#8221;.</P
+></LI
+><LI
+><P
+>Power on the  EDB7211.</P
+></LI
+><LI
+><P
+>Execute the Flash writing program on your host.  On Linux,
+this would be:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>     # dl_edb7xxx &lt;PATH&#62;/gdb_module.bin</PRE
+></TD
+></TR
+></TABLE
+><P
+>where '&lt;PATH&#62;' is the path to
+the binary format version of the ROM image you wish to load, either
+as built in the previous section or the "loaders/arm-edb7211/" subdirectory
+of your eCos installation. The download tool defaults to 38400 baud and
+device /dev/ttyS1 for communication. To change
+these, specify them as parameters, e.g.
+	      </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+># dl_edb7xxx &lt;PATH&#62;/gdb_module.bin 9600 /dev/ttyS0</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>The download program will indicate that it is waiting
+for the board to come alive.  At this point, press 'RESET' and
+then 'WAKEUP' switches in order.  There should be
+some indication of progress, first of the code being downloaded,
+then of the programming process.</P
+></LI
+><LI
+><P
+>Upon completion of the programming, power off the  EDB7211.</P
+></LI
+><LI
+><P
+>Remove the 'PROGRAM ENABLE/BOOT ENABLE' jumper.</P
+></LI
+><LI
+><P
+>Power on the  EDB7211, press 'RESET' and 'WAKEUP'.
+ The new ROM image should now be running on the board.</P
+></LI
+><LI
+><P
+>The GDB debugger will now be able to communicate with
+the board to download and debug RAM based programs.
+
+This procedure also applies for loading ROM-startup eCos programs
+into the on-board FLASH memory, given a binary format image of the
+program from arm-elf-objcopy.  Loading a ROM-startup eCos program
+into Flash will overwrite the GDB Stub ROM/CygMon in Flash,
+so you would have to reload the GDB Stub ROM/CygMon to
+return to normal RAM-startup program development.</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3902">Building the Flash Downloader on Linux</H2
+><P
+>eCos provides a Flash download program suitable for use with
+the  EP7211 Development Board which will run on Linux.  Follow these
+steps to build this program.  Note: at the time of the writing of
+these instructions, the download program is built directly within
+the eCos source repository since it is
+not configuration specific.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  # cd &lt;eCos install dir&#62;/packages/hal/arm/edb7xxx/<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+>/support</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  # make</PRE
+></TD
+></TR
+></TABLE
+><P
+>(where '# ' is your shell prompt)</P
+><P
+>Note: this program was adapted from the Cirrus Logic original
+DOS program and still contains some vestiges of that environment.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3910">Developing eCos Programs with the ARM Multi-ICE</H2
+><P
+>The EP7211 Development Board supports use of the ARM
+	    Multi-processor EmbeddedICE(tm), also known as the
+	    Multi-ICE. Full instructions on how to install and use the
+	    Multi-ICE in conjunction with GDB are provided in the
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>"GNUPro Toolkit Reference for eCos
+	      ARM/Thumb"</I
+></SPAN
+> manual. However, the following
+	    platform-specific details should be noted.</P
+><P
+>You will need an ARM Multi-ICE Server configuration
+	    file for the EP7211 Development Board. Here is a suggested
+	    configuration file to use:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>======== File "720T.cfg" ======== 
+;Total IR length = 4 
+[TITLE] 
+Multi-ICE configuration for EP7211 
+ 
+[TAP 0] 
+ARM720T 
+ 
+[TAPINFO] 
+YES 
+ 
+[Timing] 
+Low=0 
+High=0 
+Adaptive=OFF 
+==================================</PRE
+></TD
+></TR
+></TABLE
+><P
+>You must ensure that the board has the appropriate soldered
+connections. For the EP7211 this involves connecting TEST0 and TEST1
+of the EP7211 to ground. To do this you must solder a wire from
+ground at JP33 to TP8 and TP9.</P
+><P
+>With respect to using multiple devices simultaneously, note
+that the EP7211 is not ID sensitive.</P
+><P
+>If you wish to view diagnostic output from your program that
+was downloaded via the Multi-ICE, you will note that by default
+the output on the serial line (as viewed by a terminal such as Hyperterm
+in Windows, or cu in Unix) is in the form of GDB packets.</P
+><P
+>To get legible output, the solution is to set the "GDB Serial
+port" to a different device from the "Diagnostic serial port", and
+you should use the Diagnostic serial port to view the diagnostic
+output.</P
+><P
+>Warning: The multi-ice-gdb-server will fail on startup if
+the board has not been both reset and awakened before running the
+server. </P
+><P
+>To resolve this, it is necessary to free up the connection
+from within the ARM Multi-ICE server itself. However when this happens,
+the next time you use GDB to load the program into the board, you
+will see lots of "Readback did not match original data" messages
+in the output of the multi-ice-gdb-server program. This indicates
+your program did not load correctly, and you should restart the
+multi-ice-gdb-server program, taking care to reset the board correctly
+before reconnecting. </P
+><P
+>As a reminder, you must specify --config-dialog to the
+	    multi-ice-gdb-server program to connect to the board
+	    correctly. If you do not, the multi-ice-gdb-server program
+	    will not be able to connect.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="setup-arm-cma230.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="setup-arm-ep7212.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>ARM Cogent CMA230 Hardware Setup</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="appendix-target-setup.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Cirrus Logic ARM EP7212 Development Board
+Hardware Setup</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,318 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>eCos POSIX compatibility layer</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="PREVIOUS"
+TITLE="PCI Library reference"
+HREF="pci-library-reference.html"><LINK
+REL="NEXT"
+TITLE="POSIX Standard Support"
+HREF="posix-standard-support.html"></HEAD
+><BODY
+CLASS="PART"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="pci-library-reference.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="posix-standard-support.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="PART"
+><A
+NAME="POSIX-COMPATIBILITY"><DIV
+CLASS="TITLEPAGE"
+><H1
+CLASS="TITLE"
+>VIII. eCos POSIX compatibility layer</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+>31. <A
+HREF="posix-standard-support.html"
+>POSIX Standard Support</A
+></DT
+><DT
+><A
+HREF="posix-compatibility.html#POSIX-REFERENCES-AND-BIBLIOGRAPHY"
+>References and Bibliography</A
+></DT
+></DL
+></DIV
+></DIV
+><H3
+><A
+NAME="POSIX-REFERENCES-AND-BIBLIOGRAPHY"
+>References and Bibliography</A
+></H3
+><DIV
+CLASS="BIBLIOMIXED"
+><A
+NAME="AEN13327"
+></A
+><P
+CLASS="BIBLIOMIXED"
+>      &#0091;Lewine&#0093;
+      <SPAN
+CLASS="AUTHOR"
+>Donald A. Lweine</SPAN
+>
+      <I
+>Posix Programmer&#8217;s Guide: Writing Portable Unix
+	Programs With the POSIX.1 Standard O&#8217;Reilly &amp;
+	Associates; ISBN: 0937175730.</I
+></P
+></DIV
+><DIV
+CLASS="BIBLIOMIXED"
+><A
+NAME="AEN13334"
+></A
+><P
+CLASS="BIBLIOMIXED"
+>      &#0091;Lewis1&#0093;
+      <SPAN
+CLASS="AUTHOR"
+>Bil Lewis</SPAN
+>
+      <SPAN
+CLASS="AUTHOR"
+>Daniel J. Berg</SPAN
+>
+      <I
+>Threads Primer: A Guide to Multithreaded Programming</I
+>
+      Prentice Hall
+      ISBN: 013443698
+    </P
+></DIV
+><DIV
+CLASS="BIBLIOMIXED"
+><A
+NAME="AEN13346"
+></A
+><P
+CLASS="BIBLIOMIXED"
+>      &#0091;Lewis2&#0093;
+      <SPAN
+CLASS="AUTHOR"
+>Bil Lewis</SPAN
+>
+      <SPAN
+CLASS="AUTHOR"
+>Daniel J. Berg</SPAN
+>
+      <I
+>Multithreaded Programming With Pthreads</I
+>
+      Prentice Hall Computer Books
+      ISBN: 0136807291
+    </P
+></DIV
+><DIV
+CLASS="BIBLIOMIXED"
+><A
+NAME="AEN13359"
+></A
+><P
+CLASS="BIBLIOMIXED"
+>      &#0091;Nichols&#0093;
+      <SPAN
+CLASS="AUTHOR"
+>Bradford Nichols</SPAN
+>
+      <SPAN
+CLASS="AUTHOR"
+>Dick Buttlar</SPAN
+>
+      <SPAN
+CLASS="AUTHOR"
+>Jacqueline Proulx Farrell</SPAN
+>
+      <I
+>Pthreads Programming: A POSIX Standard for Better
+	Multiprocessing (O&#8217;Reilly Nutshell)</I
+>
+      O&#8217;Reilly &amp; Associates
+      ISBN: 1565921151
+    </P
+></DIV
+><DIV
+CLASS="BIBLIOMIXED"
+><A
+NAME="AEN13375"
+></A
+><P
+CLASS="BIBLIOMIXED"
+>      &#0091;Norton&#0093;
+      <SPAN
+CLASS="AUTHOR"
+>Scott J. Norton</SPAN
+>
+      <SPAN
+CLASS="AUTHOR"
+>Mark D. Depasquale</SPAN
+>
+      <I
+>Thread Time: The MultiThreaded Programming Guide</I
+>
+      Prentice Hall
+      ISBN: 0131900676</P
+></DIV
+><DIV
+CLASS="BIBLIOMIXED"
+><A
+NAME="AEN13389"
+></A
+><P
+CLASS="BIBLIOMIXED"
+>      &#0091;POSIX&#0093;
+      <I
+>Portable Operating System Interface(POSIX) -
+Part 1: System Application Programming Interface (API)&#0091;C
+Language&#0093;</I
+>
+      ISO&#0047;IEC 9945-1:1996, IEEE</P
+></DIV
+><DIV
+CLASS="BIBLIOMIXED"
+><A
+NAME="AEN13393"
+></A
+><P
+CLASS="BIBLIOMIXED"
+>      &#0091;SUS2&#0093;
+      <I
+>Open Group; Single Unix Specification, Version 2</I
+>
+      <A
+HREF="http://www.opengroup.org/public/pubs/online/7908799/index.html"
+TARGET="_top"
+>http://www.opengroup.org/public/pubs/online/7908799/index.html</A
+>
+    </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="pci-library-reference.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="posix-standard-support.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>PCI Library reference</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>POSIX Standard Support</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

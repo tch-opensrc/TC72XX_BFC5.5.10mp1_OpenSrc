@@ -1,0 +1,118 @@
+<!-- {{{ Banner                         -->
+
+<!-- =============================================================== -->
+<!--                                                                 -->
+<!--     dns.sgml                                                    -->
+<!--                                                                 -->
+<!--     eCos TCP/IP Stacks                                          -->
+<!--                                                                 -->
+<!-- =============================================================== -->
+<!-- ####COPYRIGHTBEGIN####                                          -->
+<!--                                                                 -->
+<!-- =============================================================== -->
+<!-- Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002 Red Hat, Inc.  -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/)                            -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission obtained from the copyright holder                   -->
+<!-- =============================================================== -->
+<!--                                                                 -->      
+<!-- ####COPYRIGHTEND####                                            -->
+<!-- =============================================================== -->
+<!-- #####DESCRIPTIONBEGIN####                                       -->
+<!--                                                                 -->
+<!-- ####DESCRIPTIONEND####                                          -->
+<!-- =============================================================== -->
+
+<!-- }}} -->
+
+<PART ID="net-ns-dns">
+<TITLE>DNS for eCos and RedBoot</TITLE>
+<PARTINTRO>
+<PARA>
+<productname>eCos</productname> and
+<productname>RedBoot</productname>
+can both use the DNS package to perform network name lookups.
+</PARA>
+</PARTINTRO>
+<CHAPTER id="net-ns-dns-api">
+<TITLE>DNS</TITLE>
+<SECT1 id="net-ns-dns-api1">
+<TITLE>DNS API</TITLE>
+<PARA>The DNS client uses the normal BSD API for performing lookups:
+<function>gethostbyname()</function> and
+<FUNCTION>gethostbyaddr()</FUNCTION>.
+</PARA>
+<PARA>There are a few restrictions:</PARA>
+<ITEMIZEDLIST>
+<LISTITEM>
+<PARA>Only IPv4 is supported, ie IPv6 addresses cannot be looked
+up.</PARA>
+</LISTITEM>
+<LISTITEM>
+<PARA>If the DNS server returns multiple authoritive records
+for a host name, the hostent will only contain a record for the
+first entry.</PARA>
+</LISTITEM>
+<LISTITEM>
+<PARA>The code has been made thread safe. ie multiple threads
+may call 
+<FUNCTION>gethostbyname()</FUNCTION>
+ without causing problems to the hostent structure returned. What
+is not safe is one thread using both 
+<FUNCTION>gethostbyname()</FUNCTION>
+ and 
+<FUNCTION>gethostbyaddr()</FUNCTION>.
+A call to one will destroy the results from the previous call
+to the other function.</PARA>
+</LISTITEM>
+</ITEMIZEDLIST>
+<PARA>To initialise the DNS client the following function must be
+called:</PARA>
+<PROGRAMLISTING>#include &lt;network.h&gt;
+int cyg_dns_res_init(struct in_addr *dns_server)</PROGRAMLISTING>
+<PARA>where dns_server is the address of the DNS server
+the client should query. On Error this function returns -1, otherwise
+0 for success. If lookups are attemped before this function has
+been called, they will fail and return NULL.</PARA>
+
+<PARA>A default, hard coded, server may be specified in the CDL option
+<literal>CYGDAT_NS_DNS_DEFAULT_SERVER</literal>. The use of this is
+controlled by <literal>CYGPKG_NS_DNS_DEFAULT</literal>. If this is
+enabled, <literal>init_all_network_interfaces</literal> will
+initialize the resolver with the hard coded address. The DHCP client
+or user code my override this address by calling
+<literal>cyg_dns_res_init</literal> again. </PARA>
+
+<PARA>The DNS client understands the concepts of the target being
+in a domain. By default no domain will be used. Host name lookups
+should be for fully qualified names. The domain name can be set
+and retrieved using the functions:
+<funcsynopsis>
+  <funcprototype>
+    <funcdef>int <function>getdomainname</function></funcdef>
+    <paramdef>char *<parameter>name</parameter></paramdef>
+    <paramdef>size_t <parameter>len</parameter></paramdef>
+  </funcprototype>
+  <funcprototype>
+    <funcdef>int <function>setdomainname</function></funcdef>
+    <paramdef>const char *<parameter>name</parameter></paramdef>
+    <paramdef>size_t <parameter>len</parameter></paramdef>
+  </funcprototype>
+</funcsynopsis>
+</para>
+
+<PARA>Alternatively, a hard coded domain name can be set using CDL.
+The boolean <literal>CYGPKG_NS_DNS_DOMAINNAME</literal> enables this
+and the domain name is taken from
+<literal>CYGPKG_NS_DNS_DOMAINNAME_NAME</literal>.</PARA>
+
+<PARA>Once set, the DNS client will first perform a lookup with the domain
+name appended. If this fails it will then perform a second lookup
+without the appended domain name. </PARA>
+</SECT1>
+</CHAPTER>
+</PART>

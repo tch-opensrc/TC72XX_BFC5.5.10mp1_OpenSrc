@@ -1,0 +1,266 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>The eCos Kernel</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="PREVIOUS"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="NEXT"
+TITLE="Kernel Overview"
+HREF="kernel-overview.html"></HEAD
+><BODY
+CLASS="PART"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="kernel-overview.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="PART"
+><A
+NAME="KERNEL"><DIV
+CLASS="TITLEPAGE"
+><H1
+CLASS="TITLE"
+>I. The eCos Kernel</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="kernel-overview.html"
+>Kernel Overview</A
+>&nbsp;--&nbsp;Overview of the eCos Kernel</DT
+><DT
+><A
+HREF="kernel-smp.html"
+>SMP Support</A
+>&nbsp;--&nbsp;Support Symmetric Multiprocessing Systems</DT
+><DT
+><A
+HREF="kernel-thread-create.html"
+>Thread creation</A
+>&nbsp;--&nbsp;Create a new thread</DT
+><DT
+><A
+HREF="kernel-thread-info.html"
+>Thread information</A
+>&nbsp;--&nbsp;Get basic thread information</DT
+><DT
+><A
+HREF="kernel-thread-control.html"
+>Thread control</A
+>&nbsp;--&nbsp;Control whether or not a thread is running</DT
+><DT
+><A
+HREF="kernel-thread-termination.html"
+>Thread termination</A
+>&nbsp;--&nbsp;Allow threads to terminate</DT
+><DT
+><A
+HREF="kernel-thread-priorities.html"
+>Thread priorities</A
+>&nbsp;--&nbsp;Examine and manipulate thread priorities</DT
+><DT
+><A
+HREF="kernel-thread-data.html"
+>Per-thread data</A
+>&nbsp;--&nbsp;Manipulate per-thread data</DT
+><DT
+><A
+HREF="kernel-thread-destructors.html"
+>Thread destructors</A
+>&nbsp;--&nbsp;Call functions on thread termination</DT
+><DT
+><A
+HREF="kernel-exceptions.html"
+>Exception handling</A
+>&nbsp;--&nbsp;Handle processor exceptions</DT
+><DT
+><A
+HREF="kernel-counters.html"
+>Counters</A
+>&nbsp;--&nbsp;Count event occurrences</DT
+><DT
+><A
+HREF="kernel-clocks.html"
+>Clocks</A
+>&nbsp;--&nbsp;Provide system clocks</DT
+><DT
+><A
+HREF="kernel-alarms.html"
+>Alarms</A
+>&nbsp;--&nbsp;Run an alarm function when a number of events have occurred</DT
+><DT
+><A
+HREF="kernel-mutexes.html"
+>Mutexes</A
+>&nbsp;--&nbsp;Synchronization primitive</DT
+><DT
+><A
+HREF="kernel-condition-variables.html"
+>Condition Variables</A
+>&nbsp;--&nbsp;Synchronization primitive</DT
+><DT
+><A
+HREF="kernel-semaphores.html"
+>Semaphores</A
+>&nbsp;--&nbsp;Synchronization primitive</DT
+><DT
+><A
+HREF="kernel-mail-boxes.html"
+>Mail boxes</A
+>&nbsp;--&nbsp;Synchronization primitive</DT
+><DT
+><A
+HREF="kernel-flags.html"
+>Event Flags</A
+>&nbsp;--&nbsp;Synchronization primitive</DT
+><DT
+><A
+HREF="kernel-spinlocks.html"
+>Spinlocks</A
+>&nbsp;--&nbsp;Low-level Synchronization Primitive</DT
+><DT
+><A
+HREF="kernel-schedcontrol.html"
+>Scheduler Control</A
+>&nbsp;--&nbsp;Control the state of the scheduler</DT
+><DT
+><A
+HREF="kernel-interrupts.html"
+>Interrupt Handling</A
+>&nbsp;--&nbsp;Manage interrupt handlers</DT
+><DT
+><A
+HREF="kernel-characterization.html"
+>Kernel Real-time Characterization</A
+>&nbsp;--&nbsp;Measure the performance of the eCos kernel</DT
+></DL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="kernel-overview.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>eCos Reference Manual</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Kernel Overview</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

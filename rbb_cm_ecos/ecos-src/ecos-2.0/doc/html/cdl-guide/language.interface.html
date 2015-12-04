@@ -1,0 +1,395 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Interfaces</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="The CDL Language"
+HREF="language.html"><LINK
+REL="PREVIOUS"
+TITLE="Values and Expressions"
+HREF="language.values.html"><LINK
+REL="NEXT"
+TITLE="Updating the ecos.db database"
+HREF="language.database.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.values.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. The CDL Language</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.database.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="LANGUAGE.INTERFACE">Interfaces</H1
+><P
+>For many configurability requirements, options provide sufficient
+expressive power. However there are times when a higher level of
+abstraction is appropriate. As an example, suppose that some package
+relies on the presence of code that implements the standard kernel
+scheduling interface. However the requirement is no more stringent
+than this, so the constraint can be satisfied by the mlqueue
+scheduler, the bitmap scheduler, or any additional schedulers that may
+get implemented in future. A first attempt at expressing the
+dependency might be:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    requires CYGSEM_KERNEL_SCHED_MLQUEUE || CYGSEM_KERNEL_SCHED_BITMAP</PRE
+></TD
+></TR
+></TABLE
+><P
+>This constraint will work with the current release, but it is limited.
+Suppose there is a new release of the kernel which adds another
+scheduler such as a deadline scheduler, or suppose that there is a new
+third party package which adds such a scheduler. The package
+containing the limited constraint would now have to be updated and
+another release made, with possible knock-on effects.</P
+><P
+><SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> interfaces provide an abstraction mechanism: constraints can be
+expressed in terms of an abstract concept, for example
+&#8220;scheduler&#8221;, rather than specific implementations such as
+<TT
+CLASS="VARNAME"
+>CYGSEM_KERNEL_SCHED_MLQUEUE</TT
+> and
+<TT
+CLASS="VARNAME"
+>CYGSEM_KERNEL_SCHED_BITMAP</TT
+>. Basically an interface
+is a calculated configuration option:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_interface CYGINT_KERNEL_SCHEDULER {
+    display  "Number of schedulers in this configuration"
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The individual schedulers can then implement this interface:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYGSEM_KERNEL_SCHED_MLQUEUE {
+    display       "Multi-level queue scheduler"
+    default_value 1
+    implements    CYGINT_KERNEL_SCHEDULER
+    &#8230;
+}
+
+cdl_option CYGSEM_KERNEL_SCHED_BITMAP {
+    display       "Bitmap scheduler"
+    default_value 0
+    implements    CYGINT_KERNEL_SCHEDULER
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>Future schedulers can also implement this interface. The value of an
+interface, for the purposes of expression evaluation, is the number of
+active and enabled options which implement this interface. Packages
+which rely on the presence of a scheduler can impose constraints such
+as:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    requires CYGINT_KERNEL_SCHEDULER</PRE
+></TD
+></TR
+></TABLE
+><P
+>If none of the schedulers are enabled, or if the kernel package is not
+loaded, then <TT
+CLASS="VARNAME"
+>CYGINT_KERNEL_SCHEDULER</TT
+> will evaluate
+to <TT
+CLASS="LITERAL"
+>0</TT
+>. If at least one scheduler is active and
+enabled then the constraint will be satisfied.</P
+><P
+>Because interfaces have a calculated value determined by the
+implementors, the <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+> and <SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+> properties are not
+applicable and should not appear in the body of a <TT
+CLASS="LITERAL"
+>cdl_interface</TT
+>
+command. Interfaces have the <TT
+CLASS="LITERAL"
+>data</TT
+> flavor by
+default, but the <TT
+CLASS="LITERAL"
+>bool</TT
+> and
+<TT
+CLASS="LITERAL"
+>booldata</TT
+> flavors may be specified instead. A
+<TT
+CLASS="LITERAL"
+>bool</TT
+> interface is disabled if there are no active
+and enabled implementors, otherwise it is enabled. A
+<TT
+CLASS="LITERAL"
+>booldata</TT
+> interface is disabled if there are no
+active and enabled implementors, otherwise it is enabled and has a
+value corresponding to the number of these implementors. Other
+properties such as <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> and <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> can be used as normal.</P
+><P
+>Some component writers will not want to use interfaces in this way.
+The reasoning is that their code will only have been tested with the
+existing schedulers, so the <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> constraint needs to be
+expressed in terms of those schedulers; it is possible that the
+component will still work with a new scheduler, but there are no
+guarantees. Other component writers may take a more optimistic view
+and assume that their code will work with any scheduler until proven
+otherwise. It is up to individual component writers to decide which
+approach is most appropriate in any given case.</P
+><P
+>One common use for interfaces is to describe the hardware
+functionality provided by a given target. For example the <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+>
+scripts for a TCP/IP package might want to know whether or not the
+target hardware has an ethernet interface. Generally it is not
+necessary for the TCP/IP stack to know exactly which ethernet hardware
+is present, since there should be a device driver which implements the
+appropriate functionality. In <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> terms the device drivers should
+implement an interface <TT
+CLASS="VARNAME"
+>CYGHWR_NET_DRIVERS</TT
+>, and the
+<SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> scripts for the TCP/IP stack can use this in appropriate
+expressions. </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Using the term <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>interface</I
+></SPAN
+> for this concept is
+sometimes confusing, since the term has various other meanings as
+well. In practice, it is often correct. If there is a configuration
+option that implements a given <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> interface, then usually this
+option will enable some code that provides a particular interface at
+the C or C++ level. For example an ethernet device driver implements
+the <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> interface <TT
+CLASS="VARNAME"
+>CYGHWR_NET_DRIVERS</TT
+>, and also
+implements a set of C functions that can be used by the TCP/IP stack.
+Similarly <TT
+CLASS="VARNAME"
+>CYGSEM_KERNEL_SCHED_MLQUEUE</TT
+> implements
+the <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> interface <TT
+CLASS="VARNAME"
+>CYGINT_KERNEL_SCHEDULER</TT
+> and
+also provides the appropriate scheduling functions.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.values.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.database.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Values and Expressions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Updating the <SPAN
+CLASS="DATABASE"
+>ecos.db</SPAN
+> database</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

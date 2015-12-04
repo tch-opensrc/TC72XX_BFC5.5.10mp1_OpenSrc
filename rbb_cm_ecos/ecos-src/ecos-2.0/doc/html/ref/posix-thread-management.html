@@ -1,0 +1,286 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Thread Management [POSIX Section 16]</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="POSIX Standard Support"
+HREF="posix-standard-support.html"><LINK
+REL="PREVIOUS"
+TITLE="Message Passing [POSIX Section 15]"
+HREF="posix-message-passing.html"><LINK
+REL="NEXT"
+TITLE="Thread-Specific Data [POSIX Section 17]"
+HREF="posix-thread-specific-data.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="posix-message-passing.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 31. POSIX Standard Support</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="posix-thread-specific-data.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="POSIX-THREAD-MANAGEMENT">Thread Management &#0091;POSIX Section 16&#0093;</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13263">Functions Implemented</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>int pthread&#0095;attr&#0095;init(pthread&#0095;attr&#0095;t &#0042;attr); 
+int pthread&#0095;attr&#0095;destroy(pthread&#0095;attr&#0095;t &#0042;attr); 
+int pthread&#0095;attr&#0095;setdetachstate(pthread&#0095;attr&#0095;t &#0042;attr,
+                                int detachstate); 
+int pthread&#0095;attr&#0095;getdetachstate(const pthread&#0095;attr&#0095;t &#0042;attr,
+	                        int &#0042;detachstate); 
+int pthread&#0095;attr&#0095;setstackaddr(pthread&#0095;attr&#0095;t &#0042;attr,
+                              void &#0042;stackaddr); 
+int pthread&#0095;attr&#0095;getstackaddr(const pthread&#0095;attr&#0095;t &#0042;attr,
+	                      void &#0042;&#0042;stackaddr); 
+int pthread&#0095;attr&#0095;setstacksize(pthread&#0095;attr&#0095;t &#0042;attr,
+                              size&#0095;t stacksize); 
+int pthread&#0095;attr&#0095;getstacksize(const pthread&#0095;attr&#0095;t &#0042;attr,
+	                      size&#0095;t &#0042;stacksize); 
+int pthread&#0095;create( pthread&#0095;t &#0042;thread,
+                    const pthread&#0095;attr&#0095;t &#0042;attr,
+	            void &#0042;(&#0042;start&#0095;routine)(void &#0042;),
+	            void &#0042;arg);
+pthread&#0095;t pthread&#0095;self( void ); 
+int pthread&#0095;equal(pthread&#0095;t thread1, pthread&#0095;t thread2); 
+void pthread&#0095;exit(void &#0042;retval); 
+int pthread&#0095;join(pthread&#0095;t thread, void &#0042;&#0042;thread&#0095;return); 
+int pthread&#0095;detach(pthread&#0095;t thread); 
+int pthread&#0095;once(pthread&#0095;once&#0095;t &#0042;once&#0095;control,
+	         void (&#0042;init&#0095;routine)(void));</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13266">Functions Omitted</H2
+><P
+>&lt;none&gt;</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13269">Notes</H2
+><P
+></P
+><UL
+><LI
+><P
+>    The presence of thread support as a whole is controlled by the the
+    CYGPKG_POSIX_PTHREAD configuration option. Note that disabling
+    this will also disable many other features of the POSIX package,
+    since these are intimately bound up with the thread mechanism.
+    </P
+></LI
+><LI
+><P
+>    The default (non-scheduling) thread attributes are:
+    </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>    detachstate            PTHREAD&#0095;CREATE&#0095;JOINABLE
+    stackaddr              unset
+    stacksize              unset
+    </PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>      Dynamic thread stack allocation is only provided if there is an
+      implementation of
+      <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>malloc()</I
+></SPAN
+> configured (i.e. a package
+      implements the
+      CYGINT&#0095;MEMALLOC&#0095;MALLOC&#0095;ALLOCATORS
+      interface). If there is no malloc() available, then the thread
+      creator must supply a stack. If only a stack address is supplied
+      then the stack is assumed to be PTHREAD&#0095;STACK&#0095;MIN
+      bytes long. This size is seldom useful for any but the most
+      trivial of threads.  If a different sized stack is used, both
+      the stack address and stack size must be supplied.
+    </P
+></LI
+><LI
+><P
+>      The value of PTHREAD&#0095;THREADS&#0095;MAX is supplied by
+      the CYGNUM&#0095;POSIX&#0095;PTHREAD&#0095;THREADS&#0095;MAX
+      option. This defines the maximum number of threads allowed. The
+      POSIX standard requires this value to be at least 64, and this
+      is the default value set.
+    </P
+></LI
+><LI
+><P
+>    When the POSIX package is installed, the thread that calls 
+    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>main()</I
+></SPAN
+> is initialized as a POSIX thread. The
+    priority of that thread is controlled by the
+    CYGNUM&#0095;POSIX&#0095;MAIN&#0095;DEFAULT&#0095;PRIORITY option.
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="posix-message-passing.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="posix-thread-specific-data.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Message Passing &#0091;POSIX Section 15&#0093;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="posix-standard-support.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Thread-Specific Data &#0091;POSIX Section 17&#0093;</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

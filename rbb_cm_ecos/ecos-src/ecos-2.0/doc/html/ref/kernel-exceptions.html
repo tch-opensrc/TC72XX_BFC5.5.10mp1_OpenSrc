@@ -1,0 +1,413 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Exception handling</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Kernel"
+HREF="kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="Thread destructors"
+HREF="kernel-thread-destructors.html"><LINK
+REL="NEXT"
+TITLE="Counters"
+HREF="kernel-counters.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="kernel-thread-destructors.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="kernel-counters.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="KERNEL-EXCEPTIONS">Exception handling</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN782"
+></A
+><H2
+>Name</H2
+>cyg_exception_set_handler, cyg_exception_clear_handler, cyg_exception_call_handler&nbsp;--&nbsp;Handle processor exceptions</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN787"><H2
+>Synopsis</H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><A
+NAME="AEN788"><P
+></P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &lt;cyg/kernel/kapi.h&gt;
+        </PRE
+></TD
+></TR
+></TABLE
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_exception_set_handler</CODE
+>(cyg_code_t exception_number, cyg_exception_handler_t* new_handler, cyg_addrword_t new_data, cyg_exception_handler_t** old_handler, cyg_addrword_t* old_data);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_exception_clear_handler</CODE
+>(cyg_code_t exception_number);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_exception_call_handler</CODE
+>(cyg_handle_t thread, cyg_code_t exception_number, cyg_addrword_t exception_info);</CODE
+></P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN817"
+></A
+><H2
+>Description</H2
+><P
+>Sometimes code attempts operations that are not legal on the current
+hardware, for example dividing by zero, or accessing data through a
+pointer that is not properly aligned. When this happens the hardware
+will raise an exception. This is very similar to an interrupt, but
+happens synchronously with code execution rather than asynchronously
+and hence can be tied to the thread that is currently running.
+      </P
+><P
+>The exceptions that can be raised depend very much on the hardware,
+especially the processor. The corresponding documentation should be
+consulted for more details. Alternatively the architectural HAL header
+file <TT
+CLASS="FILENAME"
+>hal_intr.h</TT
+>, or one of the
+variant or platform header files it includes, will contain appropriate
+definitions. The details of how to handle exceptions, including
+whether or not it is possible to recover from them, also depend on the
+hardware. 
+      </P
+><P
+>Exception handling is optional, and can be disabled through the
+configuration option <TT
+CLASS="VARNAME"
+>CYGPKG_KERNEL_EXCEPTIONS</TT
+>. If
+an application has been exhaustively tested and is trusted never to
+raise a hardware exception then this option can be disabled and code
+and data sizes will be reduced somewhat. If exceptions are left
+enabled then the system will provide default handlers for the various
+exceptions, but these do nothing. Even the specific type of exception
+is ignored, so there is no point in attempting to decode this and
+distinguish between say a divide-by-zero and an unaligned access.
+If the application installs its own handlers and wants details of the
+specific exception being raised then the configuration option
+<TT
+CLASS="VARNAME"
+>CYGSEM_KERNEL_EXCEPTIONS_DECODE</TT
+> has to be enabled.
+      </P
+><P
+>An alternative handler can be installed using
+<TT
+CLASS="FUNCTION"
+>cyg_exception_set_handler</TT
+>. This requires a code
+for the exception, a function pointer for the new exception handler,
+and a parameter to be passed to this handler. Details of the
+previously installed exception handler will be returned via the
+remaining two arguments, allowing that handler to be reinstated, or
+null pointers can be used if this information is of no interest. An
+exception handling function should take the following form:
+      </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void
+my_exception_handler(cyg_addrword_t data, cyg_code_t exception, cyg_addrword_t info)
+{
+    &#8230;
+}
+      </PRE
+></TD
+></TR
+></TABLE
+><P
+>The data argument corresponds to the <TT
+CLASS="PARAMETER"
+><I
+>new_data</I
+></TT
+> 
+parameter supplied to <TT
+CLASS="FUNCTION"
+>cyg_exception_set_handler</TT
+>.
+The exception code is provided as well, in case a single handler is
+expected to support multiple exceptions. The <TT
+CLASS="PARAMETER"
+><I
+>info</I
+></TT
+> 
+argument will depend on the hardware and on the specific exception.
+      </P
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_exception_clear_handler</TT
+> can be used to
+restore the default handler, if desired. It is also possible for
+software to raise an exception and cause the current handler to be
+invoked, but generally this is useful only for testing.
+      </P
+><P
+>By default the system maintains a single set of global exception
+handlers. However, since exceptions occur synchronously it is
+sometimes useful to handle them on a per-thread basis, and have a
+different set of handlers for each thread. This behaviour can be
+obtained by disabling the configuration option
+<TT
+CLASS="VARNAME"
+>CYGSEM_KERNEL_EXCEPTIONS_GLOBAL</TT
+>. If per-thread
+exception handlers are being used then
+<TT
+CLASS="FUNCTION"
+>cyg_exception_set_handler</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_exception_clear_handler</TT
+> apply to the current
+thread. Otherwise they apply to the global set of handlers.
+      </P
+><DIV
+CLASS="CAUTION"
+><P
+></P
+><TABLE
+CLASS="CAUTION"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Caution</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>In the current implementation
+<TT
+CLASS="FUNCTION"
+>cyg_exception_call_handler</TT
+> can only be used on
+the current thread. There is no support for delivering an exception to
+another thread.
+      </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Exceptions at the eCos kernel level refer specifically to
+hardware-related events such as unaligned accesses to memory or
+division by zero. There is no relation with other concepts that are
+also known as exceptions, for example the <TT
+CLASS="LITERAL"
+>throw</TT
+> and
+<TT
+CLASS="LITERAL"
+>catch</TT
+> facilities associated with C++.
+      </P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-EXCEPTIONS-CONTEXT"
+></A
+><H2
+>Valid contexts</H2
+><P
+>If the system is configured with a single set of global exception
+handlers then
+<TT
+CLASS="FUNCTION"
+>cyg_exception_set_handler</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_exception_clear_handler</TT
+> may be called during
+initialization or from thread context. If instead per-thread exception
+handlers are being used then it is not possible to install new
+handlers during initialization because the functions operate
+implicitly on the current thread, so they can only be called from
+thread context. <TT
+CLASS="FUNCTION"
+>cyg_exception_call_handler</TT
+> should
+only be called from thread context.
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="kernel-thread-destructors.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="kernel-counters.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Thread destructors</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Counters</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

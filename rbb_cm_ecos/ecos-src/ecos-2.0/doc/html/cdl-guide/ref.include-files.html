@@ -1,0 +1,318 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>include_files</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="include_dir"
+HREF="ref.include-dir.html"><LINK
+REL="NEXT"
+TITLE="legal_values"
+HREF="ref.legal-values.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.include-dir.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.legal-values.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.INCLUDE-FILES"><SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4577"
+></A
+><H2
+>Name</H2
+>Property <SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+>&nbsp;--&nbsp;List the header files that are exported by a package.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4581"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_package &lt;name&gt; {
+    include_files &lt;file1&gt; &#8230;
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4583"
+></A
+><H2
+>Description</H2
+><P
+>Most packages export one or more header files defining their public
+interface. For example the C library exports header files such as
+<TT
+CLASS="FILENAME"
+>stdio.h</TT
+> and
+<TT
+CLASS="FILENAME"
+>ctype.h</TT
+>. 
+If the package follows the <A
+HREF="package.html#PACKAGE.HIERARCHY"
+>directory
+layout conventions</A
+> then the exported header files will normally
+be found in the package's
+<TT
+CLASS="FILENAME"
+>include</TT
+> sub-directory. For
+packages which do not follow these conventions, typically simple ones
+for which a complicated sub-directory hierarchy is undesirable, there
+has to be an alternative way of specifying which header file or files
+define the public interface. The <SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+> property provides
+support for this.</P
+><P
+>By default, if a package does not have an
+<TT
+CLASS="FILENAME"
+>include</TT
+> subdirectory and it
+does not have an <SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+> property then all files with a suffix
+of <TT
+CLASS="LITERAL"
+>.h</TT
+>, <TT
+CLASS="LITERAL"
+>.hxx</TT
+>,
+<TT
+CLASS="LITERAL"
+>.inl</TT
+> or <TT
+CLASS="LITERAL"
+>.inc</TT
+> will be treated as
+public header files. However some of these may be private files
+containing implementation details. If there is an
+<SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+> property then only the files listed in that property
+will be exported.</P
+><P
+>If a package should not export any header files but does contain
+private implementation headers, an <SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+> property with no
+arguments should be used.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4601"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package &lt;SOME_PACKAGE&gt; {
+    &#8230;
+    include_dir   &lt;some directory&gt;
+    include_files interface.h
+}
+
+cdl_package &lt;ANOTHER_PACKAGE&gt; {
+    &#8230;
+    include_files
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4604"
+></A
+><H2
+>See Also</H2
+><P
+>Property <A
+HREF="ref.include-dir.html"
+><SPAN
+CLASS="PROPERTY"
+>include_dir</SPAN
+></A
+>, and
+command <A
+HREF="ref.cdl-package.html"
+><TT
+CLASS="LITERAL"
+>cdl_package</TT
+></A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.include-dir.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.legal-values.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>include_dir</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

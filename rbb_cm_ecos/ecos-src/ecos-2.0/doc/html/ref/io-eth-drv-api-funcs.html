@@ -1,0 +1,942 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Review of the functions</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Generic Ethernet Device Driver"
+HREF="io-eth-drv-generic1.html"><LINK
+REL="PREVIOUS"
+TITLE="Generic Ethernet Device Driver"
+HREF="io-eth-drv-generic1.html"><LINK
+REL="NEXT"
+TITLE="Upper Layer Functions"
+HREF="io-eth-drv-upper-api.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="io-eth-drv-generic1.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 46. Generic Ethernet Device Driver</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="io-eth-drv-upper-api.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="IO-ETH-DRV-API-FUNCS">Review of the functions</H1
+><P
+>Now a brief review of the functions.  This discussion will use generic
+names for the functions &#8212; your driver should use hardware-specific
+names to maintain uniqueness against any other drivers.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="IO-ETH-DRV-API-INIT">Init function</H2
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>static bool <TT
+CLASS="REPLACEABLE"
+><I
+>DRV_HDWR</I
+></TT
+>_init(struct cyg_netdevtab_entry *tab)</PRE
+></TD
+></TR
+></TABLE
+>
+This function is called as part of system initialization.  Its primary
+function is to decide if the hardware (as indicated via
+<SPAN
+CLASS="TYPE"
+>tab-&gt;device_instance</SPAN
+>)
+is working and if the interface needs to be made
+available in the system.  If this is the case, this function needs to
+finish with a call to the ethernet driver function:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    struct eth_drv_sc *sc = (struct eth_drv_sc *)tab-&#62;device_instance;
+    <TT
+CLASS="REPLACEABLE"
+><I
+>....initialization code....</I
+></TT
+>
+    // Initialize upper level driver
+    (sc-&gt;funs-&gt;eth_drv-&gt;init)( sc, unsigned char *enaddr );</PRE
+></TD
+></TR
+></TABLE
+>
+where <TT
+CLASS="PARAMETER"
+><I
+>enaddr</I
+></TT
+>
+is a pointer to the ethernet station address for this unit, to inform
+the stack of this device's readiness and availability.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>The ethernet station address
+(<SPAN
+CLASS="ACRONYM"
+>ESA</SPAN
+>)
+is supposed to be a
+world-unique, 48 bit address for this particular ethernet interface.
+Typically it is provided by the board/hardware manufacturer in ROM.</P
+><P
+>In many packages it is possible for the
+<SPAN
+CLASS="ACRONYM"
+>ESA</SPAN
+>
+to be set from RedBoot,
+(perhaps from 'fconfig' data), hard-coded from
+<SPAN
+CLASS="ACRONYM"
+>CDL</SPAN
+>, or from an <SPAN
+CLASS="ACRONYM"
+>EPROM</SPAN
+>.
+A driver should choose a run-time specified
+<SPAN
+CLASS="ACRONYM"
+>ESA</SPAN
+>
+(e.g. from RedBoot)
+preferentially, otherwise (in order) it should use a <SPAN
+CLASS="ACRONYM"
+>CDL</SPAN
+> specified
+<SPAN
+CLASS="ACRONYM"
+>ESA</SPAN
+>
+if one has been set, otherwise an <SPAN
+CLASS="ACRONYM"
+>EPROM</SPAN
+> set
+<SPAN
+CLASS="ACRONYM"
+>ESA</SPAN
+>, or otherwise
+fail. See the <TT
+CLASS="FILENAME"
+>cl/cs8900a</TT
+>
+ethernet driver for an example.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="IO-ETH-DRV-API-START">Start function</H2
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>static void
+<TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_start(struct eth_drv_sc *sc, unsigned char *enaddr, int flags)</PRE
+></TD
+></TR
+></TABLE
+>
+This function is called, perhaps much later than system initialization
+time, when the system (an application) is ready for the interface to
+become active.  The purpose of this function is to set up the hardware
+interface to start accepting packets from the network and be able to
+send packets out.  The receiver hardware should not be enabled prior to
+this call.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>This function will be called whenever the
+up/down state of the logical interface changes, e.g. when the IP address
+changes, or when promiscuous mode is selected by means of an
+<TT
+CLASS="FUNCTION"
+>ioctl()</TT
+> call in the application.
+This may occur more than once, so this function needs to
+be prepared for that case.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>In future, the <TT
+CLASS="PARAMETER"
+><I
+>flags</I
+></TT
+>
+field (currently unused) may be used to tell the
+function how to start up, e.g. whether interrupts will be used,
+alternate means of selecting promiscuous mode etc.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="IO-ETH-DRV-API-STOP">Stop function</H2
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>static void <TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_stop(struct eth_drv_sc *sc)</PRE
+></TD
+></TR
+></TABLE
+>
+This function is the inverse of &#8220;start.&#8221;
+It should shut down the hardware, disable the receiver, and keep it from
+interacting with the physical network.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="IO-ETH-DRV-API-CONTROL">Control function</H2
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>static int
+<TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_control(
+	struct eth_drv_sc *sc, unsigned long key,
+	void *data, int len)</PRE
+></TD
+></TR
+></TABLE
+>
+This function is used to perform low-level &#8220;control&#8221;
+operations on the
+interface.  These operations would typically be initiated via
+<TT
+CLASS="FUNCTION"
+>ioctl()</TT
+> calls in the BSD
+stack, and would be anything that might require the hardware setup to
+change (i.e. cannot be performed totally by the
+platform-independent layers).</P
+><P
+>The <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+> parameter selects the operation, and the
+<TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>len</I
+></TT
+> params point describe,
+as required, some data for the operation in question.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+>Available Operations:</B
+></P
+><DL
+><DT
+>ETH_DRV_SET_MAC_ADDRESS</DT
+><DD
+><P
+>This operation sets the ethernet station address (ESA or MAC) for the
+device.  Normally this address is kept in non-volatile memory and is
+unique in the world.  This function must at least set the interface to
+use the new address.  It may also update the NVM as appropriate.</P
+></DD
+><DT
+>ETH_DRV_GET_IF_STATS_UD, ETH_DRV_GET_IF_STATS</DT
+><DD
+><P
+>These acquire a set of statistical counters from the interface, and write
+the information into the memory pointed to by <TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>.
+The &#8220;UD&#8221; variant explicitly instructs the driver to acquire
+up-to-date values.  This is a separate option because doing so may take
+some time, depending on the hardware.</P
+><P
+>The definition of the data structure is in
+<TT
+CLASS="FILENAME"
+>cyg/io/eth/eth_drv_stats.h</TT
+>.</P
+><P
+>This call is typically made by SNMP, see <A
+HREF="net-snmp-ecos-port.html"
+>Chapter 47</A
+>.</P
+></DD
+><DT
+>ETH_DRV_SET_MC_LIST</DT
+><DD
+><P
+>This entry instructs the device to set up multicast packet filtering
+to receive only packets addressed to the multicast ESAs in the list pointed
+to by <TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>.</P
+><P
+>The format of the data is a 32-bit count of the ESAs in the list, followed
+by packed bytes which are the ESAs themselves, thus:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define ETH_DRV_MAX_MC 8
+struct eth_drv_mc_list {
+    int len;
+    unsigned char addrs[ETH_DRV_MAX_MC][ETHER_ADDR_LEN];
+};</PRE
+></TD
+></TR
+></TABLE
+></P
+></DD
+><DT
+>ETH_DRV_SET_MC_ALL</DT
+><DD
+><P
+>This entry instructs the device to receive all multicast packets, and
+delete any explicit filtering which had been set up.</P
+></DD
+></DL
+></DIV
+><P
+>This function should return zero if the specified operation was
+completed successfully.  It should return non-zero if the operation
+could not be performed, for any reason.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="IO-ETH-DRV-API-CAN-SEND">Can-send function</H2
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>static int <TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_can_send(struct eth_drv_sc *sc)</PRE
+></TD
+></TR
+></TABLE
+>
+This function is called to determine if it is possible to start the
+transmission of a packet on the interface.  Some interfaces will allow
+multiple packets to be "queued" and this function allows for the highest
+possible utilization of that mode.</P
+><P
+>Return the number of packets which could be accepted at this time, zero
+implies that the interface is saturated/busy.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="IO-ETH-DRV-API-SEND">Send function</H2
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct eth_drv_sg {
+    CYG_ADDRESS  buf;
+    CYG_ADDRWORD len;
+};
+
+static void
+<TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_send(
+	struct eth_drv_sc *sc,
+	struct eth_drv_sg *sg_list, int sg_len,
+        int total_len, unsigned long key)</PRE
+></TD
+></TR
+></TABLE
+>
+This function is used to send a packet of data to the network.  It is
+the responsibility of this function to somehow hand the data over to the
+hardware interface.  This will most likely require copying, but just the
+address/length values could be used by smart hardware.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>All data in/out of the driver is specified via a
+&#8220;scatter-gather&#8221;
+list.  This is just an array of address/length pairs which describe
+sections of data to move (in the order given by the array), as in the
+<SPAN
+CLASS="TYPE"
+>struct eth_drv_sg</SPAN
+> defined above and pointed to by
+<TT
+CLASS="PARAMETER"
+><I
+>sg_list</I
+></TT
+>.</P
+></BLOCKQUOTE
+></DIV
+><P
+>Once the data has been successfully sent by the interface (or if an
+error occurs), the driver should call
+<TT
+CLASS="FUNCTION"
+>(sc-&#62;funs-&#62;eth_drv-&#62;tx_done)()</TT
+>
+(see <A
+HREF="io-eth-drv-upper-api.html#IO-ETH-DRV-TX-DONE"
+>the Section called <I
+>Callback Tx-Done function</I
+></A
+>)
+using the specified <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>.
+Only then will the upper layers release the resources
+for that packet and start another transmission.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>In future, this function may be extended so that the data need not be
+copied by having the function return a &#8220;disposition&#8221; code
+(done, send pending, etc).  At this point, you should move the data to some
+&#8220;safe&#8221; location before returning.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="IO-ETH-DRV-API-DELIVER">Deliver function</H2
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>static void
+<TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_deliver(struct eth_drv_sc *sc)</PRE
+></TD
+></TR
+></TABLE
+>
+This function is called from the &#8220;Network Delivery Thread&#8221; in
+order to let the device driver do the time-consuming work associated with
+receiving a packet &#8212; usually copying the entire packet from the
+hardware or a special memory location into the network stack's memory.</P
+><P
+>After handling any outstanding incoming packets or pending transmission
+status, it can unmask the device's interrupts, and free any relevant
+resources so it can process further packets.</P
+><P
+>It will be called when the interrupt handler for the network device
+has called
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    eth_drv_dsr( vector, count, (cyg_addrword_t)sc );</PRE
+></TD
+></TR
+></TABLE
+>
+to alert the system that &#8220;something requires attention.&#8221;
+This <TT
+CLASS="FUNCTION"
+>eth_drv_dsr()</TT
+> call must occur from within the
+interrupt handler's DSR (not the ISR) or actually <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>be</I
+></SPAN
+>
+the DSR, whenever it is determined that
+the device needs attention from the foreground.  The third parameter
+(<TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+> in the prototype of
+<TT
+CLASS="FUNCTION"
+>eth_drv_dsr()</TT
+> <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>must</I
+></SPAN
+>
+be a valid <SPAN
+CLASS="TYPE"
+>struct eth_drv_sc</SPAN
+> pointer <TT
+CLASS="VARNAME"
+>sc</TT
+>.</P
+><P
+>The reason for this slightly convoluted train of events is to keep the DSR
+(and ISR) execution time as short as possible, so that other activities of
+higher priority than network servicing are not denied the CPU by network
+traffic.</P
+><P
+>To deliver a newly-received packet into the network stack, the deliver
+routine must call
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>(sc-&#62;funs-&#62;eth_drv-&#62;recv)(sc, len);</PRE
+></TD
+></TR
+></TABLE
+>
+which will in turn call the receive function, which we talk about next.
+See also <A
+HREF="io-eth-drv-upper-api.html#IO-ETH-DRV-UPPER-RECV"
+>the Section called <I
+>Callback Receive function</I
+></A
+> below.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="IO-ETH-DRV-API-RECV">Receive function</H2
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>static void
+<TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_recv(
+	struct eth_drv_sc *sc,
+	struct eth_drv_sg *sg_list, int sg_len)</PRE
+></TD
+></TR
+></TABLE
+>
+This function is a call back, only invoked after the
+upper-level function
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>(sc-&#62;funs-&#62;eth_drv-&#62;recv)(struct eth_drv_sc *sc, int total_len)</PRE
+></TD
+></TR
+></TABLE
+>
+has been called itself from your deliver function when it knows that a
+packet of data is available on the
+interface.  The <TT
+CLASS="FUNCTION"
+>(sc-&#62;funs-&#62;eth_drv-&#62;recv)()</TT
+>
+function then arranges network buffers
+and structures for the data and then calls
+<TT
+CLASS="FUNCTION"
+><TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_recv()</TT
+> to actually
+move the data from the interface.</P
+><P
+>A scatter-gather list (<SPAN
+CLASS="TYPE"
+>struct eth_drv_sg</SPAN
+>) is used once more,
+just like in the send case.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="IO-ETH-DRV-API-POLL">Poll function</H2
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>static void
+<TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_poll(struct eth_drv_sc *sc)</PRE
+></TD
+></TR
+></TABLE
+>
+This function is used when in a non-interrupt driven system, e.g. when
+interrupts are completely disabled. This allows the driver time to check
+whether anything needs doing either for transmission, or to check if
+anything has been received, or if any other processing needs doing.</P
+><P
+>It is perfectly correct and acceptable for the poll function to look like
+this:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>static void
+<TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_poll(struct eth_drv_sc *sc)
+{
+   <TT
+CLASS="REPLACEABLE"
+><I
+>my_interrupt_ISR</I
+></TT
+>(sc);
+   <TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_deliver(struct eth_drv_sc *sc);
+}</PRE
+></TD
+></TR
+></TABLE
+>
+provided that both the ISR and the deliver functions are idempotent and
+harmless if called when there is no attention needed by the hardware.  Some
+devices might not need a call to the ISR here if the deliver function
+contains all the &#8220;intelligence.&#8221;</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="IO-ETH-DRV-API-INT-VECTOR">Interrupt-vector function</H2
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>static int
+<TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_int_vector(struct eth_drv_sc *sc)</PRE
+></TD
+></TR
+></TABLE
+>
+This function returns the interrupt vector number used for receive
+interrupts.
+This is so that the common GDB stubs can detect when to check
+for incoming &#8220;CTRL-C&#8221; packets (used to asynchronously
+halt the application) when debugging over ethernet.
+The GDB stubs need to know which interrupt the ethernet device uses
+so that they can mask or unmask that interrupt as required.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="io-eth-drv-generic1.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="io-eth-drv-upper-api.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Generic Ethernet Device Driver</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="io-eth-drv-generic1.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Upper Layer Functions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

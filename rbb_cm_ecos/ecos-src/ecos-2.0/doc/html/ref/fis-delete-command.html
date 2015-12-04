@@ -1,0 +1,314 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>fis delete</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Flash Image System (FIS)"
+HREF="flash-image-system.html"><LINK
+REL="PREVIOUS"
+TITLE="fis load"
+HREF="fis-load-command.html"><LINK
+REL="NEXT"
+TITLE="fis lock"
+HREF="fis-lock-command.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="fis-load-command.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="fis-lock-command.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="FIS-DELETE-COMMAND">fis delete</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4166"
+></A
+><H2
+>Name</H2
+>fis delete&nbsp;--&nbsp;Delete flash image</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4169"><H2
+>Synopsis</H2
+><P
+><B
+CLASS="COMMAND"
+>fis delete</B
+>  {<TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+>}</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4174"
+></A
+><H2
+>Arguments</H2
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4176"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Name</TH
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Type</TH
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Default</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+></TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Number</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Name of image that should be deleted.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4195"
+></A
+><H2
+>Description</H2
+><P
+>This command removes an image from the FIS. The flash memory will be
+erased as part of the execution of this command, as well as removal of the
+name from the FIS directory.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Certain images are reserved by RedBoot and cannot be deleted.
+RedBoot will issue a warning if this is attempted.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4200"
+></A
+><H2
+>Examples</H2
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fis list</B
+></TT
+>
+Name              flash addr   Mem addr    Length    Entry point
+RedBoot          0xA0000000   0xA0000000  0x020000  0x80000000
+RedBoot config   0xA0FC0000   0xA0FC0000  0x020000  0x00000000
+FIS directory    0xA0FE0000   0xA0FE0000  0x020000  0x00000000
+junk             0xA0040000   0x8C400000  0x020000  0x80000000
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fis delete junk</B
+></TT
+>
+Delete image &#8216;junk&#8217; - continue (y/n)? <TT
+CLASS="USERINPUT"
+><B
+>y</B
+></TT
+>
+... Erase from 0xa0040000-0xa0060000: .
+... Erase from 0xa0fe0000-0xa1000000: .
+... Program from 0x8c7d0000-0x8c7f0000 at 0xa0fe0000: .</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="fis-load-command.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="fis-lock-command.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>fis load</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="flash-image-system.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>fis lock</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

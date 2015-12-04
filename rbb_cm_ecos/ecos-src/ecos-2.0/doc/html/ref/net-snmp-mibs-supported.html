@@ -1,0 +1,227 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>MIBs supported</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="SNMP for eCos"
+HREF="net-snmp-ecos-port.html"><LINK
+REL="PREVIOUS"
+TITLE="SNMP packages in the eCos source repository"
+HREF="net-snmp-package-contents.html"><LINK
+REL="NEXT"
+TITLE="Changes to eCos sources"
+HREF="net-snmp-ecos-changes.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-snmp-package-contents.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 47. SNMP for <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-snmp-ecos-changes.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-SNMP-MIBS-SUPPORTED">MIBs supported</H1
+><P
+>The standard set in MIB-II, together with the Ether-Like MIB, are supported
+by default.  The MIB files used to compile the handlers in the agent and to
+&#8220;drive&#8221; the testing (<B
+CLASS="COMMAND"
+>snmpwalk</B
+> <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>et
+al</I
+></SPAN
+> under <TT
+CLASS="LITERAL"
+>LINUX</TT
+>)
+are those acquired from that same UCD distribution.</P
+><P
+>These are the supported MIBs; all are below mib2 == 1.3.6.1.2.1:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>system        { mib2 1 }   
+interfaces    { mib2 2 }
+              [ address-translation &#8220;at&#8221; { mib2 3 } is deprecated ]
+ip            { mib2 4 }   
+icmp          { mib2 5 }   
+tcp           { mib2 6 }   
+udp           { mib2 7 }
+              [ exterior gateway protocol &#8220;egp&#8221; { mib2 8 } not supported ]
+              [ cmot { mib2 9 } is &#8220;historic&#8221;, just a placeholder ]
+dot3          { mib2 10 7 } == { transmission 7 } &#8220;EtherLike MIB&#8221;
+snmp          { mib2 11 }</PRE
+></TD
+></TR
+></TABLE
+><P
+>On inclusion of SNMPv3 support packages, the following MIBs are added to the
+default set of MIBs enumerated above : </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>snmpEngine    { snmpFrameworkMIBObjects 1 }  SNMP-FRAMEWORK-MIB, as described in
+                                             RFC-2571 for support of SNMPv3
+                                             framework.
+
+usmStats      {           usmMIBObjects 1 }  SNMP-USER-BASED-SM-MIB, as 
+usmUser       {           usmMIBObjects 2 }  specified in RFC-2574 for support 
+                                             of user based security model in 
+                                             SNMPv3 management domains.</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-snmp-package-contents.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-snmp-ecos-changes.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SNMP packages in the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+> source repository</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-snmp-ecos-port.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Changes to eCos sources</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

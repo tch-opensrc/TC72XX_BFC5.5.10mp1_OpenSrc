@@ -1,0 +1,245 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>getservent</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="getrrsetbyname"
+HREF="net-common-tcpip-manpages-getrrsetbyname.html"><LINK
+REL="NEXT"
+TITLE="if_nametoindex"
+HREF="net-common-tcpip-manpages-if-nametoindex.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-getrrsetbyname.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-if-nametoindex.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-GETSERVENT">getservent</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>GETSERVENT(3)           System Library Functions Manual          GETSERVENT(3)
+
+NAME
+     getservent, getservbyport, getservbyname, setservent, endservent - get
+     service entry
+
+SYNOPSIS
+     #include &lt;netdb.h&#62;
+
+     struct servent *
+     getservent(void);
+
+     struct servent *
+     getservbyname(char *name, char *proto);
+
+     struct servent *
+     getservbyport(int port, char *proto);
+
+     void
+     setservent(int stayopen);
+
+     void
+     endservent(void);
+
+DESCRIPTION
+     The getservent(), getservbyname(), and getservbyport() functions each
+     return a pointer to an object with the following structure containing the
+     broken-out fields of a line in the network services database,
+     /etc/services.
+
+           struct  servent {
+                   char    *s_name;        /* official name of service */
+                   char    **s_aliases;    /* alias list */
+                   int     s_port;         /* port service resides at */
+                   char    *s_proto;       /* protocol to use */
+           };
+
+     The members of this structure are:
+
+     s_name     The official name of the service.
+
+     s_aliases  A zero-terminated list of alternate names for the service.
+
+     s_port     The port number at which the service resides.  Port numbers
+                are returned in network byte order.
+
+     s_proto    The name of the protocol to use when contacting the service.
+
+     The getservent() function reads the next line of the file, opening the
+     file if necessary.
+
+     The setservent() function opens and rewinds the file.  If the stayopen
+     flag is non-zero, the net database will not be closed after each call to
+     getservbyname() or getservbyport().
+
+     The endservent() function closes the file.
+
+     The getservbyname() and getservbyport() functions sequentially search
+     from the beginning of the file until a matching protocol name or port
+     number (specified in network byte order) is found, or until EOF is
+     encountered.  If a protocol name is also supplied (non-null), searches
+     must also match the protocol.
+
+FILES
+     /etc/services
+
+DIAGNOSTICS
+     Null pointer (0) returned on EOF or error.
+
+SEE ALSO
+     getprotoent(3), services(5)
+
+HISTORY
+     The getservent(), getservbyport(), getservbyname(), setservent(), and
+     endservent() functions appeared in 4.2BSD.
+
+BUGS
+     These functions use static data storage; if the data is needed for future
+     use, it should be copied before any subsequent calls overwrite it.
+     Expecting port numbers to fit in a 32-bit quantity is probably naive.
+
+BSD                            January 12, 1994                            BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-getrrsetbyname.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-if-nametoindex.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>getrrsetbyname</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>if_nametoindex</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

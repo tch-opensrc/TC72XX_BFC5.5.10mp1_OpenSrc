@@ -1,0 +1,272 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Updating the Configuration</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="The eCos Configuration Tool"
+HREF="the-ecos-configuration-tool.html"><LINK
+REL="PREVIOUS"
+TITLE="Screen Layout"
+HREF="config-tool-screen-layout.html"><LINK
+REL="NEXT"
+TITLE="Platform Selection"
+HREF="config-tool-platform-selection.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="config-tool-screen-layout.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="config-tool-platform-selection.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="CONFIG-TOOL-UPDATING-CONFIGURATION">Chapter 19. Updating the Configuration</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="config-tool-updating-configuration.html#CONFIG-TOOL-ADDING-REMOVING-PACKAGES"
+>Adding and Removing Packages</A
+></DT
+><DT
+><A
+HREF="config-tool-platform-selection.html"
+>Platform Selection</A
+></DT
+><DT
+><A
+HREF="config-tool-using-templates.html"
+>Using Templates</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CONFIG-TOOL-ADDING-REMOVING-PACKAGES">Adding and Removing Packages</H1
+><P
+>To add or remove packages from the configuration, select
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build</I
+></SPAN
+>-&gt;<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Packages</I
+></SPAN
+>. 
+	    The following dialog box will be displayed:</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN1376"><P
+><B
+>Figure 19-1. Packages dialog box</B
+></P
+><P
+><IMG
+SRC="pix/BuildPackages.png"></P
+></DIV
+><P
+>The left-hand list shows those packages that are available to
+	  be loaded. The right-hand list shows those that are
+	  currently loaded. In order to transfer packages from one
+	  list to another (that is, to load or unload packages)
+	  double-click the selection or click the
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Add</I
+></SPAN
+> or <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Remove</I
+></SPAN
+>
+	  buttons.</P
+><P
+>The version drop-down list displays the versions of the
+	  selected packages. When loading packages, this control may
+	  be used to load versions other than the most recent
+	  (current). Note that if more than one package is selected,
+	  the version drop-down list will display only the versions
+	  common to all the selected packages.</P
+><P
+>The window under the version displays a brief
+	  description of the selected package. If more than one
+	  package is selected, this window will be blank.</P
+><P
+>	Under the description window there is a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Keywords</I
+></SPAN
+>
+control into which you can type a string to be matched against
+package names, macro names and descriptions. The lists are updated
+a second or so after typing has stopped.
+If you type several separate words,
+all of these words must be associated with a given package
+for that package to be displayed. If you select
+the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Match exactly</I
+></SPAN
+> checkbox, then the string
+is taken to be a complete fragment and matched against the beginning
+of a name, macro name or descriptions. All matches are done
+case-insensitively.</P
+><P
+>If you check <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Omit hardware packages</I
+></SPAN
+>, only
+non-hardware packages will be shown.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="config-tool-screen-layout.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="config-tool-platform-selection.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Screen Layout</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="the-ecos-configuration-tool.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Platform Selection</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

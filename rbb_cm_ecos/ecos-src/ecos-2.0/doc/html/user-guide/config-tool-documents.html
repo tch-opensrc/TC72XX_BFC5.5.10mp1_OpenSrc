@@ -1,0 +1,395 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>eCos Configuration Tool Documents</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Getting Started"
+HREF="config-tool-getting-started.html"><LINK
+REL="PREVIOUS"
+TITLE="The Component Repository"
+HREF="config-tool-component-repository.html"><LINK
+REL="NEXT"
+TITLE="Getting Help"
+HREF="config-tool-getting-help.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="config-tool-component-repository.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 15. Getting Started</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="config-tool-getting-help.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CONFIG-TOOL-DOCUMENTS"><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+> Documents</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN1063">Configuration Save File</H2
+><P
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> configuration settings and other information
+	    (such as disabled conflicts) that are set using the
+	    <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+> are saved to
+	    a file between sessions. By default, when the
+	    <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+> is first
+	    invoked, it reads and displays information from the
+	    Component Registry and displays the information in an
+	    untitled blank document. You can perform the following
+	    operations on a document:</P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN1071">Save the currently active document</H3
+><P
+>Use the &#8220;<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>File-&gt;Save</I
+></SPAN
+>&#8221; menu
+	    item or click the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Save Document</I
+></SPAN
+> icon on the
+	    toolbar; if the current document is unnamed, you will be prompted
+	    to supply a name for the configuration save file.</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN1076"><P
+><B
+>Figure 15-3. Save As dialog box</B
+></P
+><P
+><IMG
+SRC="pix/save-as-dialog.png"></P
+></DIV
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN1079">Open an existing document</H3
+><P
+>Select <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>File</I
+></SPAN
+>-&gt;<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Open</I
+></SPAN
+>,
+	    or click the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Open Document</I
+></SPAN
+> icon on the toolbar.
+	    You will be prompted to supply a name for the configuration save
+	    file. </P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN1085"><P
+><B
+>Figure 15-4. Open dialog box</B
+></P
+><P
+><IMG
+SRC="pix/open-dialog.png"></P
+></DIV
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN1088">Open a document you have used recently</H3
+><P
+>Click its name at the bottom of the
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>File</I
+></SPAN
+> menu. </P
+><P
+>Documents may also be opened by:</P
+><P
+></P
+><UL
+><LI
+><P
+>double-clicking a Configuration Save File in the desktop
+explorer (Windows only);</P
+></LI
+><LI
+><P
+>invoking the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>
+<SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+>
+with the name of a Configuration File as command-line argument,
+or by creating a shortcut to the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+> with such an argument
+(under Windows or a suitable Linux desktop environment).</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN1102">Create a new blank document based on the Component
+	      Registry</H3
+><P
+>Select <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>File</I
+></SPAN
+>-&gt;<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>New</I
+></SPAN
+>,
+or click the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>New Document</I
+></SPAN
+> icon on the toolbar.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN1108">Save to a different file name</H3
+><P
+>Select <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>File</I
+></SPAN
+>-&gt;<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Save
+		As</I
+></SPAN
+>. You will be prompted to supply a new
+	      name for the configuration save file.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN1113">Build and Install Trees</H2
+><P
+>The location of the build and install trees are
+	    derived from the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> save file name as illustrated in the
+	    following example:</P
+><P
+>Save file name = &#8220;c:&#0092;My
+	    eCos&#0092;config1.ecc&#8221;</P
+><P
+>Install tree folder = &#8220;c:&#0092;My
+	    eCos&#0092;config1_install&#8221;</P
+><P
+>Build tree folder = &#8220;c:&#0092;My
+	    eCos&#0092;config1_build&#8221;</P
+><P
+>These names are automatically generated from the name
+	    of the save file.</P
+><P
+>See also <A
+HREF="cdl-concepts.html"
+>Chapter 24</A
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="config-tool-component-repository.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="config-tool-getting-help.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>The Component Repository</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="config-tool-getting-started.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Getting Help</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

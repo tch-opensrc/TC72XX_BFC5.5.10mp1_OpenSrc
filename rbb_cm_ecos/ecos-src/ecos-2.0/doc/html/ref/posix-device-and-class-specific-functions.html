@@ -1,0 +1,253 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Device and Class Specific Functions [POSIX Section 7]</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="POSIX Standard Support"
+HREF="posix-standard-support.html"><LINK
+REL="PREVIOUS"
+TITLE="Input and Output [POSIX Section 6]"
+HREF="posix-input-and-output.html"><LINK
+REL="NEXT"
+TITLE="C Language Services [POSIX Section 8]"
+HREF="posix-c-language-services.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="posix-input-and-output.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 31. POSIX Standard Support</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="posix-c-language-services.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="POSIX-DEVICE-AND-CLASS-SPECIFIC-FUNCTIONS">Device and Class Specific Functions &#0091;POSIX Section 7&#0093;</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13079">Functions Implemented</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>speed&#0095;t cfgetospeed( const struct termios &#0042;termios&#0095;p ); 
+int cfsetospeed( struct termios &#0042;termios&#0095;p, speed&#0095;t speed ); 
+speed&#0095;t cfgetispeed( const struct termios &#0042;termios&#0095;p ); 
+int cfsetispeed( struct termios &#0042;termios&#0095;p, speed&#0095;t speed ); 
+int tcgetattr( int fd, struct termios &#0042;termios&#0095;p ); 
+int tcsetattr( int fd, int optional&#0095;actions,
+	       const struct termios &#0042;termios&#0095;p ); 
+int tcsendbreak( int fd, int duration ); 
+int tcdrain( int fd );
+int tcflush( int fd, int queue&#0095;selector ); 
+int tcsendbreak( int fd, int action );</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13082">Functions Omitted</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>pid&#0095;t tcgetpgrp( int fd ); 
+int tcsetpgrp( int fd, pid&#0095;t pgrp );</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13085">Notes</H2
+><P
+></P
+><UL
+><LI
+><P
+>	    Only the functionality relevant to basic serial device
+	    control is implemented. Only very limited support for
+	    canonical input is provided, and then only via the
+	    &#8220;tty&#8221; devices, not the &#8220;serial&#8221;
+	    devices. None of the functionality relevant to job
+	    control, controlling terminals and sessions is
+	    implemented.
+	    </P
+></LI
+><LI
+><P
+>	    Only <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>MIN</I
+></SPAN
+> &#0061; 0 and
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>TIME</I
+></SPAN
+> &#0061; 0 functionality is
+	    provided.
+	    </P
+></LI
+><LI
+><P
+>	    Hardware flow control is supported if the underlying
+	    device driver and serial port support it.
+	    </P
+></LI
+><LI
+><P
+>	    Support for break, framing and parity errors depends on
+	    the functionality of the hardware and device driver.
+	    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="posix-input-and-output.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="posix-c-language-services.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Input and Output &#0091;POSIX Section 6&#0093;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="posix-standard-support.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>C Language Services &#0091;POSIX Section 8&#0093;</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,426 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>make_object</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="make"
+HREF="ref.make.html"><LINK
+REL="NEXT"
+TITLE="no_define"
+HREF="ref.no-define.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.make.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.no-define.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.MAKE-OBJECT"><SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4770"
+></A
+><H2
+>Name</H2
+>Property <SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+>&nbsp;--&nbsp;Define a custom build step, resulting in an object file
+that should go into a library.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4774"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_option &lt;name&gt; {
+    make_object [-library=&lt;library&gt;] [-priority=&lt;pri&gt;]  {
+        &lt;custom build step&gt;
+    }
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4776"
+></A
+><H2
+>Description</H2
+><P
+>When building an <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> configuration the primary target is a single
+library, <TT
+CLASS="FILENAME"
+>libtarget.a</TT
+>. Most of the object files
+which go into this library will be generated as a result of <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+>
+properties. Occasionally it may be necessary to have special build
+steps for a given object file, and this can be achieved with a
+<SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+> property. The use of this property should be avoided
+whenever possible because it greatly increases the risk of portability
+problems, both on the host side because of possible problems with the
+tools, and on the target side because a custom build step may not
+allow adequately for the wide variety of architectures supported by
+<SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+>.</P
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+> property takes a single argument, which resembles a
+makefile rule: it consists of a target, a list of dependencies, and
+one or more commands that should be executed. The target should be an
+object file. However the <SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+> argument is not a makefile
+fragment, and custom build steps may get executed in build
+environments that do not involve make. For full details of custom
+build steps see <A
+HREF="build.make.html#BUILD.CUSTOM"
+>the Section called <I
+>Custom Build Steps</I
+> in Chapter 4</A
+>.</P
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>The exact syntax and limitations of custom build steps have not yet
+been finalized, and may change in future versions of the
+configuration tools.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+> property takes an optional library argument. If no
+library is specified then the default library for the current package
+will be used, which will be <TT
+CLASS="FILENAME"
+>libtarget.a</TT
+> unless
+the <TT
+CLASS="LITERAL"
+>cdl_package</TT
+> command contains a <SPAN
+CLASS="PROPERTY"
+>library</SPAN
+> property.</P
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+> property also takes an optional priority argument
+indicating the order in which build steps take place. This priority
+complements the dependency list, and avoids problems with packages
+needing to know details of custom build steps in other packages (which
+may change between releases). The defined order is:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Priority 0</DT
+><DD
+><P
+>The header files exported by the current set of packages are copied
+to the appropriate places in the
+<TT
+CLASS="FILENAME"
+>include</TT
+> subdirectory of the
+install tree. Any unnecessary copies are avoided, to prevent rebuilds
+of package and application source modules caused by header file dependencies.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>A possible future enhancement of the build system may result in the
+build and install trees being updated automatically if there has been
+a change to the <TT
+CLASS="FILENAME"
+>ecos.ecc</TT
+> configuration savefile.</P
+></BLOCKQUOTE
+></DIV
+></DD
+><DT
+>Priority 100</DT
+><DD
+><P
+>All files specified in <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> properties will get built, producing
+the corresponding object files. In addition any custom build steps
+defined by <SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+> properties get executed, unless there is a
+<TT
+CLASS="LITERAL"
+>-priority=</TT
+> option.</P
+></DD
+><DT
+>Priority 200</DT
+><DD
+><P
+>The libraries now get built using the appropriate object files.</P
+></DD
+><DT
+>Priority 300</DT
+><DD
+><P
+>Any custom build steps specified by <SPAN
+CLASS="PROPERTY"
+>make</SPAN
+> properties now get
+executed, unless the priority for a particular build step is changed
+from its default.</P
+></DD
+></DL
+></DIV
+><P
+>For example, if a custom build step needs to take place before any of
+the normal source files get compiled then it should be given a
+priority somewhere between 0 and 100. If a custom build step involves
+post-processing an object file prior to its incorporation into a
+library then a priority between 100 and 200 should be used. It is not
+sensible to have a priority above 200, since that would imply building
+an additional object file for a library that has already been created.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4823"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option XXX {
+    &#8230;
+    make_object {
+        parser.o: parser.y
+                yacc $&lt;
+                $(CC) $(CFLAGS) -o $@ y.tab.c
+    }
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4826"
+></A
+><H2
+>See Also</H2
+><P
+>Properties <A
+HREF="ref.compile.html"
+>compile</A
+>,
+<A
+HREF="ref.make.html"
+>make</A
+> and
+<A
+HREF="ref.library.html"
+>library</A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.make.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.no-define.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>make</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,269 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>APIs</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="OpenBSD TCP/IP Stack port for eCos"
+HREF="tcpip-openbsd.html"><LINK
+REL="PREVIOUS"
+TITLE="Building the Network Stack"
+HREF="tcpip-openbsd-building-the-network-stack.html"><LINK
+REL="NEXT"
+TITLE="Enhanced Select()"
+HREF="tcpip-openbsd-enhanced-select.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="tcpip-openbsd-building-the-network-stack.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="tcpip-openbsd-enhanced-select.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="TCPIP-OPENBSD-TCPIP-APIS">Chapter 44. APIs</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="tcpip-openbsd-tcpip-apis.html#TCPIP-OPENBSD-STANDARD-NETWORKING-API"
+>Standard networking</A
+></DT
+><DT
+><A
+HREF="tcpip-openbsd-enhanced-select.html"
+>Enhanced Select()</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="TCPIP-OPENBSD-STANDARD-NETWORKING-API">Standard networking</H1
+><P
+>The APIs for the standard networking calls such as
+<TT
+CLASS="FUNCTION"
+>socket()</TT
+>, <TT
+CLASS="FUNCTION"
+>recv()</TT
+> and so on, are
+in header files relative to the top-level
+include directory, within the standard subdirectories as conventionally
+found in <TT
+CLASS="FILENAME"
+>/usr/include</TT
+>.  For example:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+> install/include/arpa/tftp.h
+ install/include/netinet/tcpip.h
+ install/include/sys/socket.h
+ install/include/sys/socketvar.h
+ install/include/sys/sockio.h</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+><TT
+CLASS="FILENAME"
+>network.h</TT
+> at the top level
+defines various extensions, for example the API
+<TT
+CLASS="FUNCTION"
+>init_all_network_interfaces(void)</TT
+>
+described
+above.  We advise including <TT
+CLASS="FILENAME"
+>network.h</TT
+> whether
+you use these features or not.</P
+><P
+>In general, using the networking code may require definition
+of two symbols: _KERNEL and __ECOS.  _KERNEL
+is not normally required; __ECOS is normally required.
+So add this to your compile lines for files which use the network
+stack:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>	-D__ECOS</PRE
+></TD
+></TR
+></TABLE
+><P
+>To expand a little, it&#8217;s like this because this is
+a port of a standard distribution external to Red Hat.  One goal
+is to perturb the sources as little as possible, so that upgrading
+and maintenance from the external distribution is simplified.  The __ECOS
+symbol marks out Red Hat&#8217;s additions in making the port.
+The _KERNEL symbol is traditional UNIX practice: it distinguishes
+a compilation which is to be linked into the kernel from one which
+is part of an application.  eCos applications are fully linked,
+so this distinction does not apply.  _KERNEL can however
+be used to control the visibility of the internals of the stack,
+so depending on what features your application uses, it may or may
+not be necessary.</P
+><P
+>The include file <TT
+CLASS="FILENAME"
+>network.h</TT
+> undefines _KERNEL
+unconditionally, to provide an application-like compilation environment.
+If you were writing code which, for example,
+enumerates the stack&#8217;s internal
+structures, that is a kernel-like compilation environment, so you
+would need to define _KERNEL (in addition to __ECOS)
+and avoid including <TT
+CLASS="FILENAME"
+>network.h</TT
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="tcpip-openbsd-building-the-network-stack.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="tcpip-openbsd-enhanced-select.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Building the Network Stack</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-openbsd.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Enhanced Select()</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

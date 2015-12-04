@@ -1,0 +1,635 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Screen Layout</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="The eCos Configuration Tool"
+HREF="the-ecos-configuration-tool.html"><LINK
+REL="PREVIOUS"
+TITLE="Settings"
+HREF="config-tool-settings.html"><LINK
+REL="NEXT"
+TITLE="Updating the Configuration"
+HREF="config-tool-updating-configuration.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="config-tool-settings.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="config-tool-updating-configuration.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="CONFIG-TOOL-SCREEN-LAYOUT">Chapter 18. Screen Layout</H1
+><P
+>The following windows are available within the
+      <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+> Configuration
+        Tool</SPAN
+>:
+    </P
+><P
+></P
+><UL
+><LI
+><P
+>		Configuration Window</P
+></LI
+><LI
+><P
+>		Properties Window</P
+></LI
+><LI
+><P
+>		Short Description</P
+></LI
+><LI
+><P
+>		Conflicts</P
+></LI
+><LI
+><P
+>		Output</P
+></LI
+></UL
+><P
+>The layout of the windows may be adjusted to suit your
+	preferences: see <A
+HREF="config-tool-settings.html"
+>the Section called <I
+>Settings</I
+> in Chapter 17</A
+>.</P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CONFIG-TOOL-CONFIGURATION-WINDOW">Configuration Window</H1
+><P
+>This is the principal window used to configure <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>. It
+	  takes the form of a tree-based representation of the
+	  configuration items within the currently loaded <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>
+	  packages.</P
+><P
+>In the case of items whose values may be changed,
+	  controls are available to set the item values. These either
+	  take the form of check boxes or radio buttons within the
+	  tree itself or cells to the right of the thin vertical
+	  splitter bar. Controls in the tree may be used in the usual
+	  way; cells, however, must first be activated.</P
+><P
+>To activate a cell, simply click on it: it will assume a sunken
+appearance and data can then be edited in the cell. To terminate
+in-cell editing, click elsewhere in the configuration window or
+press <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ENTER</I
+></SPAN
+>. To discard the partial results
+of in-cell editing and revert to the previous value, press <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ESCAPE</I
+></SPAN
+>.</P
+><P
+><P
+><IMG
+SRC="pix/configwin.png"></P
+></P
+><P
+>Cells come in three varieties, according to the type of
+	  data they accept:</P
+><DIV
+CLASS="TABLE"
+><A
+NAME="AEN1273"><P
+><B
+>Table 18-1. Cell types</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Cell Type</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Data Accepted</P
+></TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Integer</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Decimal or hexadecimal values</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Floating Point</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Floating point values</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>String</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Any</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>In the case of string cells, you can double-click the cell
+to display a dialog box containing a larger region in which to edit
+the string value. This is useful in the case of long strings, or
+those spanning multiple lines.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN1292">Disabled items</H2
+><P
+>Some items will appear disabled. In this case the item
+	    label and any associated controls and cells will be
+	    grayed. It is not be possible to change the values of
+	    disabled items.</P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN1295">Right-Clicking</H3
+><P
+>You can right-click on an item in the configuration
+	      window item to display a pop-up menu which (depending on
+	      the type of the item selected) allows you to:</P
+><P
+></P
+><UL
+><LI
+><P
+> <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Properties</I
+></SPAN
+> &#8211;
+		  information relating to the currently selected item
+		  is displayed. The information is equivalent to that
+		  displayed in the Properties
+		  Window.</P
+></LI
+><LI
+><P
+> <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Restore Defaults</I
+></SPAN
+> -
+		  the default value of the currently selected item is
+		  restored.</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Visit Documentation</I
+></SPAN
+>
+		  - causes the HTML page most closely relating to the
+		  currently selected item to be displayed. This has
+		  the same effect as double-clicking the URL property
+		  in the Properties Window.</P
+></LI
+><LI
+><P
+> <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>View Header File</I
+></SPAN
+>
+		  &#8211; this causes the file containing the items to
+		  be displayed. This is equivalent to double-clicking
+		  on the File property in the Properties Window. The
+		  viewer used for this purpose may be changed using
+		  the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>View-&gt;Settings</I
+></SPAN
+> menu item
+		  (see <A
+HREF="config-tool-settings.html"
+>the Section called <I
+>Settings</I
+> in Chapter 17</A
+>).
+		  Note that this operation is only possible when the
+		  current configuration is saved, in order to avoid
+		  the possibility of changing the source
+		  repository.</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Unload Package</I
+></SPAN
+> -
+		  this is equivalent to using the
+		  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build-&gt;Packages</I
+></SPAN
+> menu item to
+		  select and unload the package in
+		  question.</P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN1317">Conflicts Window</H2
+><P
+>This window exists to display any configuration item
+	    conflicts. Conflicts are the result of failures to meet
+	    the requirements between configuration items expressed in
+	    the CDL. See <A
+HREF="cdl-conflicts.html"
+>the Section called <I
+>Conflicts</I
+> in Chapter 24</A
+> .<P
+><IMG
+SRC="pix/conflictwin.png"></P
+></P
+><P
+>The window comprises three columns:</P
+><P
+></P
+><UL
+><LI
+><P
+>		<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Item</I
+></SPAN
+></P
+><P
+>This is the macro name of the first item involved
+		in the conflict.</P
+></LI
+><LI
+><P
+>			
+		<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Conflict</I
+></SPAN
+></P
+><P
+>This is a description of the conflict type. The currently
+		supported types are &#8220;unresolved&#8221;, &#8220;illegal
+		value&#8221;, &#8220;evaluation exception&#8221;, &#8220;goal
+		unsatisfied&#8221; and &#8220;bad data&#8221;.</P
+></LI
+><LI
+><P
+>			
+		<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Property</I
+></SPAN
+></P
+><P
+>This contains a description of the configuration
+		item&#8217;s property that caused the conflict.</P
+><P
+>Within the conflicts window you can right-click on
+		any item to display a context menu which allows you to
+		choose from one of the following options:</P
+></LI
+></UL
+><P
+>To locate the item involved in the
+conflict, double-click in the first or third column, or
+right-click over the item and choose <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Locate</I
+></SPAN
+>
+from the popup menu.</P
+><P
+>You can use the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Tools-&gt;Resolve Conflicts</I
+></SPAN
+> menu
+item, or right-click over the item and select <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Resolve</I
+></SPAN
+> from the popup menu,
+to resolve conflicts &#8212; <A
+HREF="config-tool-using-templates.html#RESOLVING-CONFLICTS"
+>the Section called <I
+>Resolving conflicts</I
+> in Chapter 19</A
+>.</P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN1343">Output Window</H3
+><P
+>This window displays any output generated by
+	      execution of external tools and any error messages that
+	      are not suitable for display in other forms (for
+	      example, as message boxes).</P
+><P
+>Within the output window you can right-click to display a
+context menu which allows you to:</P
+><P
+></P
+><UL
+><LI
+><P
+>Save the contents of the window to a
+		  file</P
+></LI
+><LI
+><P
+>Clear the contents of the
+		  window</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN1352">Properties Window</H3
+><P
+>This window displays the CDL properties of the item
+	      currently selected in the configuration window. The same
+	      information may be displayed by right-clicking the item
+	      and selecting &#8220;properties&#8221;.</P
+><P
+>	      <P
+><IMG
+SRC="pix/propwin.png"></P
+></P
+><P
+>Two properties may be double-clicked as
+	    follows:</P
+><P
+></P
+><UL
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>URL</I
+></SPAN
+> &#8211;
+		  double-clicking on a URL property causes the
+		  referenced HTML page to be displayed. This has the
+		  same effect as right-clicking on the item and
+		  choosing &#8220;Visit
+		  Documentation&#8221;.</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>File</I
+></SPAN
+> &#8211;
+		  double-clicking on a File property in a saved
+		  configuration causes the File to be displayed. The
+		  viewer used for this purpose may be changed using
+		  the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>View-&gt;Settings</I
+></SPAN
+> menu
+		  item. Note that this operation is only possible when
+		  the current configuration is saved, in order to
+		  avoid the possibility of changing the source
+		  repository.</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN1366">Short Description Window</H3
+><P
+>This window displays a short description of the item
+	      currently selected in the configuration window. More
+	      extensive documentation may be available by
+	      right-clicking on the item and choosing &#8220;Visit
+	      Documentation&#8221;.</P
+></DIV
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="config-tool-settings.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="config-tool-updating-configuration.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Settings</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="the-ecos-configuration-tool.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Updating the Configuration</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

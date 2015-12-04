@@ -1,0 +1,862 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>ARM PID Hardware Setup</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Target Setup"
+HREF="appendix-target-setup.html"><LINK
+REL="PREVIOUS"
+TITLE="SPARClite Architectural Simulator Setup"
+HREF="setup-sparclite-sim.html"><LINK
+REL="NEXT"
+TITLE="ARM AEB-1 Hardware Setup"
+HREF="setup-arm-aeb1.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="setup-sparclite-sim.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Target Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="setup-arm-aeb1.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SETUP-ARM-PID">ARM PID Hardware Setup</H1
+><P
+>eCos comes with two ROM images that provide GDB support for
+the ARM PID board. The first ROM image provides a port of the CygMon
+ROM monitor, which includes a command-line interface and a GDB remote
+stub. The second ROM image provides a remote GDB stub only, which
+is a minimal environment for downloading and debugging eCos programs
+solely using GDB.</P
+><P
+>eCos, CygMon and the GDB stubs all support the PID fitted
+with both ARM7T and ARM9 daughterboards. CygMon and the stubs can
+be programmed into either the programmable ROM (U12) or the FLASH
+(U13). Pre-built forms of both ROM images are provided in the directory
+loaders/arm-pid under the root of your eCos installation,
+along with a tool that will program the stubs into the FLASH memory on
+the board. CygMon images are prefixed with the name 'cygmon' and
+GDB stub ROM images are given the prefix 'gdb_module'.
+Images may be provided in a number of formats including ELF (.img
+extension), binary (.bin extension) and SREC (.srec extension).
+Note that some unreliability has been experienced in downloading
+files using Angel 1.00. Angel 1.02 appears to be more robust in
+this application.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3542">Installing the Stubs into FLASH</H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN3544">Preparing the Binaries</H3
+><P
+>These two binary preparation steps are not strictly necessary
+as the eCos distribution ships with pre-compiled binaries in the
+directory loaders/arm-pid relative to the installation
+root.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN3547">Building the ROM images with the eCos Configuration Tool</H3
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Start with a new document - selecting the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>File</I
+></SPAN
+>-&#62;<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>New</I
+></SPAN
+>
+ menu item if necessary to do this.</P
+></LI
+><LI
+><P
+>Choose the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build</I
+></SPAN
+>
+-&#62;
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Templates</I
+></SPAN
+>
+ menu item, and then select the ARM PID hardware.</P
+></LI
+><LI
+><P
+>While still displaying the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build</I
+></SPAN
+>
+-&#62;
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Templates</I
+></SPAN
+>
+ dialog box, select either the "stubs" package template to build
+a GDB stub image, or the "cygmon" template to build the CygMon ROM
+Monitor. Click 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>OK</I
+></SPAN
+>.</P
+></LI
+><LI
+><P
+>Build eCos using 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build</I
+></SPAN
+>
+-&#62;
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Library</I
+></SPAN
+></P
+></LI
+><LI
+><P
+>When the build completes, the image files can be found
+in the bin/ subdirectory of the install tree. GDB stub
+ROM images have the prefix "gdb_module". CygMon images
+have the prefix "cygmon".</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN3569">Building the ROM images with ecosconfig</H3
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>		    Make an empty directory to contain the build tree,
+and cd into it.</P
+></LI
+><LI
+><P
+>To build a GDB stub ROM image, enter the command:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig new pid stubs</PRE
+></TD
+></TR
+></TABLE
+><P
+>or to build a CygMon ROM monitor image, enter the command:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig new pid cygmon</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>Enter the commands:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig tree
+$ make</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>When the build completes, the image files can be found
+in the bin/ subdirectory of the install tree. GDB stub
+ROM images have the prefix "gdb_module". CygMon images
+have the prefix "cygmon".</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN3584">Building the FLASH Tool with the eCos Configuration Tool</H3
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Start with a new document - selecting the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>File</I
+></SPAN
+>-&#62;<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>New</I
+></SPAN
+>
+ menu item if necessary to do this.</P
+></LI
+><LI
+><P
+>Choose the
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build</I
+></SPAN
+>-&#62;<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Templates</I
+></SPAN
+>
+ menu item, and then select the ARM PID hardware.</P
+></LI
+><LI
+><P
+>Enable the "Build flash programming tool" option in the
+ARM PID HAL (CYGBLD_BUILD_FLASH_TOOL)
+and resolve any resulting configuration conflicts.</P
+></LI
+><LI
+><P
+>Build eCos using 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build</I
+></SPAN
+>
+-&#62;
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Library</I
+></SPAN
+></P
+></LI
+><LI
+><P
+>When the build completes, the FLASH tool image file can
+be found in the bin/ subdirectory of the install tree,
+with the prefix "prog_flash"</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN3603">Building the FLASH Tool with ecosconfig</H3
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>		    Make an empty directory to contain the build tree,
+and cd into it
+		    </P
+></LI
+><LI
+><P
+>Enter the command:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig new pid</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>Edit the file ecos.ecc and enable the option CYGBLD_BUILD_FLASH_TOOL
+by uncommenting its user_value property and setting it
+to 1.</P
+></LI
+><LI
+><P
+>Enter the commands:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig resolve</PRE
+></TD
+></TR
+></TABLE
+><P
+>[there will be some output]</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig tree
+$ make</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>When the build completes, the FLASH tool image file can
+be found in the bin/ subdirectory of the install tree,
+with the prefix "prog_flash"</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN3620">Prepare the Board for FLASH Programming</H3
+><P
+>Each time a new image is to be programmed in the FLASH, the
+jumpers on the board must be set to allow Angel to run:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>		    Set jumper 7-8 on LK6   [using the Angel code
+in the 16 bit EPROM]</P
+></LI
+><LI
+><P
+>Set jumper 5-6 on LK6   [select 8bit ROM mode]</P
+></LI
+><LI
+><P
+>Set jumper LK18         [ROM remap - this is
+also required for eCos]</P
+></LI
+><LI
+><P
+>Set S1 to 0-0-1-1       [20MHz operation]</P
+></LI
+><LI
+><P
+>Open jumper LK4  [enable little-endian operation]
+
+Attach a serial cable from Serial A on the PID board to connector
+1 on the development system. This is the cable through which the
+binaries will be downloaded. Attach a serial cable from Serial B
+on the PID board to connector 2 on the development system (or any
+system that will work as a terminal). Through this cable, the FLASH
+tool will write its instructions (at 38400 baud).</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN3634">Program the FLASH</H3
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Download the FLASH ROM image onto the PID board. For
+example. for the GDB stubs image:
+
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>bash$ arm-elf-gdb -nw gdb_module.img
+GNU gdb 4.18-DEVTOOLSVERSION
+Copyright 1998 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License,
+and you are welcome to change it and/or distribute copies
+of it under certain conditions. Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB. Type "show warranty" for details.
+This GDB was configured as "--host=i586-pc-cygwin32 --target=arm-elf".
+(no debugging symbols found)...
+(gdb) target rdi s=com1
+Angel Debug Monitor for PID (Built with Serial(x1), Parallel, DCC) 1.00
+(Advanced RISC Machines SDT 2.10)
+Angel Debug Monitor rebuilt on Jan 20 1997 at 02:33:43
+Connected to ARM RDI target.
+(gdb) load
+Loading section .rom_vectors, size 0x44 lma 0x60000
+Loading section .text, size 0x1f3c lma 0x60044
+Loading section .rodata, size 0x2c lma 0x61f80
+Loading section .data, size 0x124 lma 0x61fac
+Start address 0x60044 , load size 8400
+Transfer rate: 5169 bits/sec.
+(gdb) q 
+The program is running.  Exit anyway? (y or n) y </PRE
+></TD
+></TR
+></TABLE
+>
+
+<DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+> On a UNIX or Linux system, the serial port must be
+ /dev/ttyS0 instead of COM1.
+ You need to make sure that the /dev/ttyS0 files
+have the right permissions:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ su
+ Password:
+ # chmod o+rw /dev/ttyS0*
+ # exit 
+		      </PRE
+></TD
+></TR
+></TABLE
+>
+If you are programming the GDB stub image, it will now be located
+at 0x60000..0x64000. If you are programming the Cygmon ROM Monitor,
+it will be located at 0x60000..0x80000.</P
+></BLOCKQUOTE
+></DIV
+></P
+></LI
+><LI
+><P
+>Now download the FLASH programmer tool</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>bash$ arm-elf-gdb prog_flash.img 
+GNU gdb 4.18-DEVTOOLSVERSION
+Copyright 1998 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License,
+and you are welcome to change it and/or distribute
+copies of it under certain conditions. Type "show copying" to see
+the conditions. There is absolutely no warranty for GDB.  Type "show
+warranty" for details.
+This GDB was configured as "--host=i586-pc-cygwin32 --target=arm-elf".
+(gdb) target rdi s=com1
+Angel Debug Monitor for PID (Built with Serial(x1), Parallel, DCC) 1.00
+(Advanced RISC Machines SDT 2.10)
+Angel Debug Monitor rebuilt on Jan 20 1997 at 02:33:43
+Connected to ARM RDI target.
+(gdb) load
+Loading section .rom_vectors, size 0x44 lma 0x40000
+Loading section .text, size 0x44a4 lma 0x40044
+Loading section .rodata, size 0x318 lma 0x444e8
+Loading section .data, size 0x1c8 lma 0x44800
+Start address 0x40044 , load size 18888
+Transfer rate: 5596 bits/sec.
+(gdb) c</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>The FLASH tool will output some text on the board serial
+port B at 38400 baud:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ARM
+eCos
+
+FLASH here!
+manuf: 8, device: 40
+Error: Wrong Manufaturer: 08
+... Please change FLASH jumper</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>This text is repeated until you remove the jumper 7-8
+on LK6. Then the output will be:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>manuf: 1F, device: A4
+AT29C040A recognised
+About to program FLASH using data at 60000..64000
+*** Press RESET now to abort!</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+> You have about 10 seconds to abort the operation by pressing
+reset. After this timeout, the FLASH programming happens:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>...Programming FLASH 
+All done!</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>Quit/kill the GDB process, which will hang.</P
+></LI
+><LI
+><P
+>Next time you reset the board, the stub will be in control,
+communicating on Serial A at 38400 baud.</P
+></LI
+></OL
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>If you do not have two serial ports available on your host
+computer, you may still verify the FLASH programming completed successfully
+by quitting/killing the GDB process after running "c" in
+step 2 above. Then switch the serial cable on the PID from Serial
+A to Serial B and run a terminal emulator on the host computer.
+In a few seconds you should see the the repeated text described
+in step 2 above and you may continue the remaining steps as normal.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN3661">Programming the FLASH for big-endian mode</H3
+><P
+>The process is almost identical to the previous instructions
+which apply to a PID board running in little-endian mode only.</P
+><P
+>The only adjustments to make are that if programming a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>GDB</I
+></SPAN
+> stub
+ROM image (or CygMon ROM monitor image), you must enable the option "Use
+Big-endian mode" in the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos Configuration Tool</I
+></SPAN
+> (CYGHWR_HAL_ARM_BIGENDIAN
+if using ecosconfig and editing ecos.ecc).</P
+><P
+>When programming the FLASH there are two options:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Program FLASH using the little-endian FLASH tool. After
+powering off, replace the ROM controller with the special big-endian
+version which can be acquired from ARM. (This has not been tested
+by Red Hat).</P
+></LI
+><LI
+><P
+>Use a special big-endian version of the FLASH tool which
+byte-swaps all the words as they are written to the FLASH.</P
+></LI
+></OL
+><P
+>Build this tool by enabling the "Build flash programming tool
+for BE images on LE boards" option (CYGBLD_BUILD_FLASH_TOOL_BE),
+resulting in a utility with the prefix "prog_flash_BE_image_LE_system"
+which should be used instead of "prog_flash".</P
+><P
+>Note that there is a limitation to this method: no sub-word
+data can be read from the ROM. To work around this, the .rodata
+section is folded into the .data section and thus copied to RAM
+before the system starts.</P
+><P
+>Given that Thumb instructions are 16 bit, it is not possible
+to run ROM-startup Thumb binaries on the PID board using this method.</P
+><P
+>When the image has been programmed, power off the board, and
+set jumper LK4 to enable big-endian operation.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3677">Installing the Stubs into ROM</H2
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Program the binary image file gdb_module.bin
+into ROM referring to the instructions of your ROM programmer.</P
+></LI
+><LI
+><P
+>Plug the ROM into socket U12 and install jumper LK6 pins
+7-8 to enable the ROM.</P
+></LI
+></OL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="setup-sparclite-sim.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="setup-arm-aeb1.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SPARClite Architectural Simulator Setup</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="appendix-target-setup.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>ARM AEB-1 Hardware Setup</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

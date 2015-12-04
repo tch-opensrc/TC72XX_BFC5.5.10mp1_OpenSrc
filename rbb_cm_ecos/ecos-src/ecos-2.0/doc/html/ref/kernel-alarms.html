@@ -1,0 +1,378 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Alarms</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Kernel"
+HREF="kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="Clocks"
+HREF="kernel-clocks.html"><LINK
+REL="NEXT"
+TITLE="Mutexes"
+HREF="kernel-mutexes.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="kernel-clocks.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="kernel-mutexes.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="KERNEL-ALARMS">Alarms</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN1016"
+></A
+><H2
+>Name</H2
+>cyg_alarm_create, cyg_alarm_delete, cyg_alarm_initialize, cyg_alarm_enable, cyg_alarm_disable&nbsp;--&nbsp;Run an alarm function when a number of events have occurred</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN1023"><H2
+>Synopsis</H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><A
+NAME="AEN1024"><P
+></P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &lt;cyg/kernel/kapi.h&gt;
+        </PRE
+></TD
+></TR
+></TABLE
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_alarm_create</CODE
+>(cyg_handle_t counter, cyg_alarm_t* alarmfn, cyg_addrword_t data, cyg_handle_t* handle, cyg_alarm* alarm);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_alarm_delete</CODE
+>(cyg_handle_t alarm);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_alarm_initialize</CODE
+>(cyg_handle_t alarm, cyg_tick_count_t trigger, cyg_tick_count_t interval);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_alarm_enable</CODE
+>(cyg_handle_t alarm);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_alarm_disable</CODE
+>(cyg_handle_t alarm);</CODE
+></P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-ALARMS-DESCRIPTION"
+></A
+><H2
+>Description</H2
+><P
+>Kernel alarms are used together with counters and allow for action to
+be taken when a certain number of events have occurred. If the counter
+is associated with a clock then the alarm action happens when the
+appropriate number of clock ticks have occurred, in other words after
+a certain period of time.
+      </P
+><P
+>Setting up an alarm involves a two-step process. First the alarm must
+be created with a call to <TT
+CLASS="FUNCTION"
+>cyg_alarm_create</TT
+>. This
+takes five arguments. The first identifies the counter to which the
+alarm should be attached. If the alarm should be attached to the
+system's real-time clock then <TT
+CLASS="FUNCTION"
+>cyg_real_time_clock</TT
+>
+and <TT
+CLASS="FUNCTION"
+>cyg_clock_to_counter</TT
+> can be used to get hold
+of the appropriate handle. The next two arguments specify the action
+to be taken when the alarm is triggered, in the form of a function
+pointer and some data. This function should take the form:
+      </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void
+alarm_handler(cyg_handle_t alarm, cyg_addrword_t data)
+{
+    &#8230;
+}
+      </PRE
+></TD
+></TR
+></TABLE
+><P
+>The data argument passed to the alarm function corresponds to the
+third argument passed to <TT
+CLASS="FUNCTION"
+>cyg_alarm_create</TT
+>.
+The fourth argument to <TT
+CLASS="FUNCTION"
+>cyg_alarm_create</TT
+> is used
+to return a handle to the newly-created alarm object, and the final
+argument provides the memory needed for the alarm object and thus
+avoids any need for dynamic memory allocation within the kernel.
+      </P
+><P
+>Once an alarm has been created a further call to
+<TT
+CLASS="FUNCTION"
+>cyg_alarm_initialize</TT
+> is needed to activate it.
+The first argument specifies the alarm. The second argument indicates
+the number of events, for example clock ticks, that need to occur
+before the alarm triggers. If the third argument is 0 then the alarm
+will only trigger once. A non-zero value specifies that the alarm
+should trigger repeatedly, with an interval of the specified number of
+events.
+      </P
+><P
+>Alarms can be temporarily disabled and reenabled using
+<TT
+CLASS="FUNCTION"
+>cyg_alarm_disable</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_alarm_enable</TT
+>. Alternatively another call to
+<TT
+CLASS="FUNCTION"
+>cyg_alarm_initialize</TT
+> can be used to modify the
+behaviour of an existing alarm. If an alarm is no longer required then
+the associated resources can be released using
+<TT
+CLASS="FUNCTION"
+>cyg_alarm_delete</TT
+>. 
+      </P
+><P
+>The alarm function is invoked when a counter tick occurs, in other
+words when there is a call to <TT
+CLASS="FUNCTION"
+>cyg_counter_tick</TT
+>,
+and will happen in the same context. If the alarm is associated with
+the system's real-time clock then this will be DSR context, following
+a clock interrupt. If the alarm is associated with some other
+application-specific counter then the details will depend on how that
+counter is updated.
+      </P
+><P
+>If two or more alarms are registered for precisely the same counter tick,
+the order of execution of the alarm functions is unspecified.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-ALARMS-CONTEXT"
+></A
+><H2
+>Valid contexts</H2
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_alarm_create</TT
+>
+<TT
+CLASS="FUNCTION"
+>cyg_alarm_initialize</TT
+> is typically called during
+system initialization but may also be called in thread context. The
+same applies to <TT
+CLASS="FUNCTION"
+>cyg_alarm_delete</TT
+>.
+<TT
+CLASS="FUNCTION"
+>cyg_alarm_initialize</TT
+>,
+<TT
+CLASS="FUNCTION"
+>cyg_alarm_disable</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_alarm_enable</TT
+> may be called during
+initialization or from thread or DSR context, but
+<TT
+CLASS="FUNCTION"
+>cyg_alarm_enable</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_alarm_initialize</TT
+> may be expensive operations
+and should only be called when necessary.
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="kernel-clocks.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="kernel-mutexes.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Clocks</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Mutexes</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

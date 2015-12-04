@@ -1,0 +1,219 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>socketpair</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="socket"
+HREF="net-common-tcpip-manpages-socket.html"><LINK
+REL="NEXT"
+TITLE="FreeBSD TCP/IP Stack port for eCos"
+HREF="tcpip-freebsd.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-socket.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="tcpip-freebsd.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-SOCKETPAIR">socketpair</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>SOCKETPAIR(2)                 System Calls Manual                SOCKETPAIR(2)
+
+NAME
+     socketpair - create a pair of connected sockets
+
+SYNOPSIS
+     #include &lt;sys/types.h&#62;
+     #include &lt;sys/socket.h&#62;
+
+     int
+     socketpair(int d, int type, int protocol, int *sv);
+
+DESCRIPTION
+     The socketpair() call creates an unnamed pair of connected sockets in the
+     specified domain d, of the specified type, and using the optionally spec-
+     ified protocol.  The descriptors used in referencing the new sockets are
+     returned in sv[0] and sv[1].  The two sockets are indistinguishable.
+
+RETURN VALUES
+     A 0 is returned if the call succeeds, -1 if it fails.
+
+ERRORS
+     The call succeeds unless:
+
+     [EMFILE]           Too many descriptors are in use by this process.
+
+     [EAFNOSUPPORT]     The specified address family is not supported on this
+                        machine.
+
+     [EPROTONOSUPPORT]  The specified protocol is not supported on this
+                        machine.
+
+     [EOPNOTSUPP]       The specified protocol does not support creation of
+                        socket pairs.
+
+     [EFAULT]           The address sv does not specify a valid part of the
+                        process address space.
+
+     [ENFILE]           The system file table is full.
+
+SEE ALSO
+     pipe(2), read(2), write(2)
+
+BUGS
+     This call is currently implemented only for the LOCAL domain.  Many oper-
+     ating systems only accept a protocol of PF_UNSPEC, so that should be used
+     instead of PF_LOCAL for maximal portability.
+
+STANDARDS
+     The socketpair() function conforms to X/Open Portability Guide Issue 4.2
+     (``XPG4.2'').
+
+HISTORY
+     The socketpair() function call appeared in 4.2BSD.
+
+BSD                              June 4, 1993                              BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-socket.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="tcpip-freebsd.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>socket</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>FreeBSD TCP/IP Stack port for eCos</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

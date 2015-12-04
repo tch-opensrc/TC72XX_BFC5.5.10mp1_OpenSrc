@@ -1,0 +1,439 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Exception Handling</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Hardware Abstraction Layer (HAL)"
+HREF="the-ecos-hardware-abstraction-layer.html"><LINK
+REL="PREVIOUS"
+TITLE="SMP Support"
+HREF="hal-smp-support.html"><LINK
+REL="NEXT"
+TITLE="Vectors and VSRs"
+HREF="hal-vectors-and-vsrs.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="hal-smp-support.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="hal-vectors-and-vsrs.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="HAL-EXCEPTION-HANDLING">Chapter 10. Exception Handling</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="hal-exception-handling.html#HAL-STARTUP"
+>HAL Startup</A
+></DT
+><DT
+><A
+HREF="hal-vectors-and-vsrs.html"
+>Vectors and VSRs</A
+></DT
+><DT
+><A
+HREF="hal-default-synchronous-exception-handling.html"
+>Default Synchronous Exception Handling</A
+></DT
+><DT
+><A
+HREF="hal-default-interrupt-handling.html"
+>Default Interrupt Handling</A
+></DT
+></DL
+></DIV
+><P
+>Most of the HAL consists of simple macros or functions that are
+called via the interfaces described in the previous section. These
+just perform whatever operation is required by accessing the hardware
+and then return. The exception to this is the handling of exceptions:
+either synchronous hardware traps or asynchronous device
+interrupts. Here control is passed first to the HAL, which then passed
+it on to eCos or the application. After eCos has finished with it,
+control is then passed back to the HAL for it to tidy up the CPU state
+and resume processing from the point at which the exception occurred.</P
+><P
+>The HAL exceptions handling code is usually found in the file
+<TT
+CLASS="FILENAME"
+>vectors.S</TT
+> in the architecture HAL.  Since the
+reset entry point is usually implemented as one of these it also deals
+with system startup.</P
+><P
+>The exact implementation of this code is under the control of the HAL
+implementer. So long as it interacts correctly with the interfaces
+defined previously it may take any form.  However, all current
+implementation follow the same pattern, and there should be a very
+good reason to break with this. The rest of this section describes
+these operate.</P
+><P
+>Exception handling normally deals with the following broad areas of
+functionality:</P
+><P
+></P
+><UL
+><LI
+><P
+>Startup and initialization.</P
+></LI
+><LI
+><P
+>Hardware exception delivery.</P
+></LI
+><LI
+><P
+>Default handling of synchronous exceptions.</P
+></LI
+><LI
+><P
+>Default handling of asynchronous interrupts.</P
+></LI
+></UL
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="HAL-STARTUP">HAL Startup</H1
+><P
+>Execution normally begins at the reset vector with
+the machine in a minimal startup state. From here the HAL needs to get
+the machine running, set up the execution environment for the
+application, and finally invoke its entry point.</P
+><P
+>The following is a list of the jobs that need to be done in
+approximately the order in which they should be accomplished. Many
+of these will not be needed in some configurations.</P
+><P
+></P
+><UL
+><LI
+><P
+>  Initialize the hardware. This may involve initializing several
+  subsystems in both the architecture, variant and platform
+  HALs. These include:
+  </P
+><P
+></P
+><UL
+><LI
+><P
+>	Initialize various CPU status registers. Most importantly, the CPU
+	interrupt mask should be set to disable interrupts.
+	</P
+></LI
+><LI
+><P
+>	Initialize the MMU, if it is used. On many platforms it is
+	only possible to control the cacheability of address ranges
+	via the MMU. Also, it may be necessary to remap RAM and device
+	registers to locations other than their defaults. However, for
+	simplicity, the mapping should be kept as close to one-to-one
+	physical-to-virtual as possible.
+	</P
+></LI
+><LI
+><P
+>	Set up the memory controller to access RAM, ROM and I/O devices
+	correctly. Until this is done it may not be possible to access
+	RAM. If this is a ROMRAM startup then the program code can
+	now be copied to its RAM address and control transferred to it.
+	</P
+></LI
+><LI
+><P
+>	Set up any bus bridges and support chips. Often access to
+	device registers needs to go through various bus bridges and
+	other intermediary devices. In many systems these are combined
+	with the memory controller, so it makes sense to set these up
+	together. This is particularly important if early diagnostic
+	output needs to go through one of these devices.
+	</P
+></LI
+><LI
+><P
+>	Set up diagnostic mechanisms. If the platform includes an LED or
+	LCD output device, it often makes sense to output progress
+	indications on this during startup. This helps with diagnosing
+	hardware and software errors.
+	</P
+></LI
+><LI
+><P
+>	Initialize floating point and other extensions such as SIMD
+	and multimedia engines. It is usually necessary to enable
+	these and maybe initialize control and exception registers for
+	these extensions.
+	</P
+></LI
+><LI
+><P
+>	Initialize interrupt controller. At the very least, it should
+	be configured to mask all interrupts. It may also be necessary
+	to set up the mapping from the interrupt controller's vector
+	number space to the CPU's exception number space. Similar
+	mappings may need to be set up between primary and secondary
+	interrupt controllers.
+	</P
+></LI
+><LI
+><P
+>	Disable and initialize the caches. The caches should not
+	normally be enabled at this point, but it may be necessary to
+	clear or initialize them so that they can be enabled
+	later. Some architectures require that the caches be
+	explicitly reinitialized after a power-on reset.
+	</P
+></LI
+><LI
+><P
+>	Initialize the timer, clock etc. While the timer used for RTC
+	interrupts will be initialized later, it may be necessary to
+	set up the clocks that drive it here.
+	</P
+></LI
+></UL
+><P
+>    The exact order in which these initializations is done is
+    architecture or variant specific. It is also often not necessary
+    to do anything at all for some of these options. These fragments
+    of code should concentrate on getting the target up and running so
+    that C function calls can be made and code can be run. More
+    complex initializations that cannot be done in assembly code may
+    be postponed until calls to
+    <TT
+CLASS="FUNCTION"
+>hal_variant_init()</TT
+> or
+    <TT
+CLASS="FUNCTION"
+>hal_platform_init()</TT
+> are made.
+    </P
+><P
+>    Not all of these initializations need to be done for all startup
+    types. In particular, RAM startups can reasonably assume that the
+    ROM monitor or loader has already done most of this work.
+    </P
+></LI
+><LI
+><P
+>    Set up the stack pointer, this allows subsequent initialization
+    code to make proper procedure calls. Usually the interrupt stack
+    is used for this purpose since it is available, large enough, and
+    will be reused for other purposes later.
+    </P
+></LI
+><LI
+><P
+>    Initialize any global pointer register needed for access to
+    globally defined variables. This allows subsequent initialization
+    code to access global variables.
+    </P
+></LI
+><LI
+><P
+>    If the system is starting from ROM, copy the ROM template of the 
+    <TT
+CLASS="FILENAME"
+>.data</TT
+> section out to its correct position in
+    RAM. (<A
+HREF="hal-linker-scripts.html"
+>the Section called <I
+>Linker Scripts</I
+> in Chapter 9</A
+>).
+    </P
+></LI
+><LI
+><P
+>    Zero the <TT
+CLASS="FILENAME"
+>.bss</TT
+> section.
+    </P
+></LI
+><LI
+><P
+>    Create a suitable C call stack frame. This may involve making
+    stack space for call frames, and arguments, and initializing the
+    back pointers to halt a GDB backtrace operation.
+    </P
+></LI
+><LI
+><P
+>    Call <TT
+CLASS="FUNCTION"
+>hal_variant_init()</TT
+> and
+    <TT
+CLASS="FUNCTION"
+>hal_platform_init()</TT
+>. These will perform any
+    additional initialization needed by the variant and platform. This
+    typically includes further initialization of the interrupt
+    controller, PCI bus bridges, basic IO devices and enabling the
+    caches.
+    </P
+></LI
+><LI
+><P
+>    Call <TT
+CLASS="FUNCTION"
+>cyg_hal_invoke_constructors()</TT
+> to run any
+    static constructors.
+    </P
+></LI
+><LI
+><P
+>    Call <TT
+CLASS="FUNCTION"
+>cyg_start()</TT
+>. If
+    <TT
+CLASS="FUNCTION"
+>cyg_start()</TT
+> returns, drop into an infinite
+    loop.
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="hal-smp-support.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="hal-vectors-and-vsrs.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SMP Support</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="the-ecos-hardware-abstraction-layer.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Vectors and VSRs</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

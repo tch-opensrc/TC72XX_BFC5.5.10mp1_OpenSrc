@@ -1,0 +1,375 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>HAL Interfaces</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Hardware Abstraction Layer (HAL)"
+HREF="the-ecos-hardware-abstraction-layer.html"><LINK
+REL="PREVIOUS"
+TITLE="General principles"
+HREF="hal-general-principles.html"><LINK
+REL="NEXT"
+TITLE="Architecture Characterization"
+HREF="hal-architecture-characterization.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="hal-general-principles.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="hal-architecture-characterization.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="HAL-INTERFACES">Chapter 9. HAL Interfaces</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="hal-interfaces.html#HAL-BASE-DEFINITIONS"
+>Base Definitions</A
+></DT
+><DT
+><A
+HREF="hal-architecture-characterization.html"
+>Architecture Characterization</A
+></DT
+><DT
+><A
+HREF="hal-interrupt-handling.html"
+>Interrupt Handling</A
+></DT
+><DT
+><A
+HREF="hal-input-and-output.html"
+>HAL I/O</A
+></DT
+><DT
+><A
+HREF="hal-cache-control.html"
+>Cache Control</A
+></DT
+><DT
+><A
+HREF="hal-linker-scripts.html"
+>Linker Scripts</A
+></DT
+><DT
+><A
+HREF="hal-diagnostic-support.html"
+>Diagnostic Support</A
+></DT
+><DT
+><A
+HREF="hal-smp-support.html"
+>SMP Support</A
+></DT
+></DL
+></DIV
+><P
+>This section describes the main HAL interfaces. </P
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="HAL-BASE-DEFINITIONS">Base Definitions</H1
+><P
+>These are definitions that characterize the properties of the base
+architecture that are used to compile the portable parts of the
+kernel. They are concerned with such things a portable type
+definitions, endianness, and labeling.</P
+><P
+>These definitions are supplied by the
+<TT
+CLASS="FILENAME"
+>cyg/hal/basetype.h</TT
+> header file which is supplied
+by the architecture HAL. It is included automatically by
+<TT
+CLASS="FILENAME"
+>cyg/infra/cyg_type.h</TT
+>.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN7743">Byte order</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="VARNAME"
+>CYG_BYTEORDER</TT
+></DT
+><DD
+><P
+>      This defines the byte order of the target and must be set to either
+      <TT
+CLASS="VARNAME"
+>CYG_LSBFIRST</TT
+> or <TT
+CLASS="VARNAME"
+>CYG_MSBFIRST</TT
+>.
+      </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN7753">Label Translation</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="FUNCTION"
+>CYG_LABEL_NAME(name)</TT
+></DT
+><DD
+><P
+>      This is a wrapper used in some C and C&#0043;&#0043; files which
+      use labels defined in assembly code or the linker script.
+      It need only be defined if the default implementation in
+      <TT
+CLASS="FILENAME"
+>cyg/infra/cyg_type.h</TT
+>, which passes the name
+      argument unaltered, is inadequate. It should be paired with
+      <TT
+CLASS="FUNCTION"
+>CYG_LABEL_DEFN()</TT
+>.
+      </P
+></DD
+><DT
+><TT
+CLASS="FUNCTION"
+>CYG_LABEL_DEFN(name)</TT
+></DT
+><DD
+><P
+>      This is a wrapper used in assembler sources and linker scripts
+      which define labels.  It need only be defined if the default
+      implementation in
+      <TT
+CLASS="FILENAME"
+>cyg/infra/cyg_type.h</TT
+>, which passes the name
+      argument unaltered, is inadequate. The most usual alternative
+      definition of this macro prepends an underscore to the label
+      name. 
+      </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN7769">Base types</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>	cyg_halint8
+	cyg_halint16
+	cyg_halint32
+	cyg_halint64
+	cyg_halcount8
+	cyg_halcount16
+	cyg_halcount32
+	cyg_halcount64
+	cyg_halbool</PRE
+></TD
+></TR
+></TABLE
+><P
+>These macros define the C base types that should be used to define
+variables of the given size. They only need to be defined if the
+default types specified in <TT
+CLASS="FILENAME"
+>cyg/infra/cyg_type.h</TT
+>
+cannot be used. Note that these are only the base types, they will be
+composed with <TT
+CLASS="LITERAL"
+>signed</TT
+> and
+<TT
+CLASS="LITERAL"
+>unsigned</TT
+> to form full type specifications.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN7776">Atomic types</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>	cyg_halatomic CYG_ATOMIC</PRE
+></TD
+></TR
+></TABLE
+><P
+>These types are guaranteed to be read or written in a single
+uninterruptible operation. It is architecture defined what size this
+type is, but it will be at least a byte.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="hal-general-principles.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="hal-architecture-characterization.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>General principles</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="the-ecos-hardware-abstraction-layer.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Architecture Characterization</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,231 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>DHCP</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Support Features"
+HREF="net-common-support.html"><LINK
+REL="PREVIOUS"
+TITLE="Support Features"
+HREF="net-common-support.html"><LINK
+REL="NEXT"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-support.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 37. Support Features</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-DHCP">DHCP</H1
+><P
+>This API publishes a routine to maintain DHCP state, and a
+semaphore that is signalled when a lease requires attention: this
+is your clue to call the aforementioned routine.</P
+><P
+>The intent with this API is that a simple DHCP client thread,
+which maintains the state of the interfaces, can go as follows:
+(after <TT
+CLASS="FUNCTION"
+>init_all_network_interfaces()</TT
+> is
+called from elsewhere)</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>while ( 1 ) {
+        while ( 1 ) {
+            cyg_semaphore_wait( &amp;dhcp_needs_attention );
+            if ( ! dhcp_bind() ) // a lease expired
+                break; // If we need to re-bind
+        }
+        dhcp_halt(); // tear everything down
+        init_all_network_interfaces(); // re-initialize
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>and if the application does not want to suffer the overhead
+of a separate thread and its stack for this, this functionality
+can be placed in the app&#8217;s server loop in an obvious fashion.
+ That is the goal of breaking out these internal elements.  For example,
+some server might be arranged to poll DHCP from time to time like
+this:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>while ( 1 ) {
+    init_all_network_interfaces();
+    open-my-listen-sockets();
+    while ( 1 ) {
+       serve-one-request();
+       // sleeps if no connections, but not forever; 
+       // so this loop is polled a few times a minute...
+       if ( cyg_semaphore_trywait( &amp;dhcp_needs_attention )) {
+             if ( ! dhcp_bind() ) {
+                 close-my-listen-sockets();
+                 dhcp_halt();
+                 break;
+             }
+       }
+    }
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>If the configuration option CYGOPT_NET_DHCP_DHCP_THREAD
+is defined, then eCos provides a thread as described initially.
+Independent of this option, initialization of the interfaces still
+occurs in <TT
+CLASS="FUNCTION"
+>init_all_network_interfaces()</TT
+> and
+your startup code can call that.  It will start the DHCP management
+thread if configured.  If a lease fails to be renewed, the management
+thread will shut down all interfaces and attempt to initialize all
+the interfaces again from scratch.  This may cause chaos in the
+app, which is why managing the DHCP state in an application aware
+thread is actually better, just far less convenient for testing.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-support.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Support Features</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-common-support.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>TCP/IP Library Reference</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

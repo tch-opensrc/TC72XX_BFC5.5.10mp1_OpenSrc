@@ -1,0 +1,244 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>getsockname</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="getpeername"
+HREF="net-common-tcpip-manpages-getpeername.html"><LINK
+REL="NEXT"
+TITLE="getsockopt"
+HREF="net-common-tcpip-manpages-getsockopt.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-getpeername.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-getsockopt.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-GETSOCKNAME">getsockname</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>GETSOCKNAME(2)                System Calls Manual               GETSOCKNAME(2)
+
+NAME
+     getsockname - get socket name
+
+SYNOPSIS
+     #include &lt;sys/types.h&#62;
+     #include &lt;sys/socket.h&#62;
+
+     int
+     getsockname(int s, struct sockaddr *name, socklen_t *namelen);
+
+DESCRIPTION
+     getsockname() returns the locally bound address information for a speci-
+     fied socket.
+
+     Common uses of this function are as follows:
+
+     o   When bind(2) is called with a port number of 0 (indicating the kernel
+         should pick an ephemeral port) getsockname() is used to retrieve the
+         kernel-assigned port number.
+
+     o   When a process calls bind(2) on a wildcard IP address, getsockname()
+         is used to retrieve the local IP address for the connection.
+
+     o   When a function wishes to know the address family of a socket,
+         getsockname() can be used.
+
+     getsockname() takes three parameters:
+
+     s, Contains the file desriptor for the socket to be looked up.
+
+     name points to a sockaddr structure which will hold the resulting address
+     information.  Normal use requires one to use a structure specific to the
+     protocol family in use, such as sockaddr_in (IPv4) or sockaddr_in6
+     (IPv6), cast to a (struct sockaddr *).
+
+     For greater portability (such as newer protocol families) the new struc-
+     ture sockaddr_storage exists.  sockaddr_storage is large enough to hold
+     any of the other sockaddr_* variants.  On return, it should be cast to
+     the correct sockaddr type, according to the current protocol family.
+
+     namelen Indicates the amount of space pointed to by name, in bytes.  Upon
+     return, namelen is set to the actual size of the returned address infor-
+     mation.
+
+     If the address of the destination socket for a given socket connection is
+     needed, the getpeername(2) function should be used instead.
+
+     If name does not point to enough space to hold the entire socket address,
+     the result will be truncated to namelen bytes.
+
+RETURN VALUES
+     On success, getsockname() returns a 0, and namelen is set to the actual
+     size of the socket address returned in name.  Otherwise, errno is set,
+     and a value of -1 is returned.
+
+ERRORS
+     If getsockname() fails, errno is set to one of the following:
+
+     [EBADF]            The argument s is not a valid descriptor.
+
+     [ENOTSOCK]         The argument s is a file, not a socket.
+
+     [ENOBUFS]          Insufficient resources were available in the system to
+                        perform the operation.
+
+     [EFAULT]           The name parameter points to memory not in a valid
+                        part of the process address space.
+
+SEE ALSO
+     accept(2), bind(2), getpeername(2), getpeereid(2), socket(2)
+
+BUGS
+     Names bound to sockets in the UNIX domain are inaccessible; getsockname
+     returns a zero length name.
+
+HISTORY
+     The getsockname() function call appeared in 4.2BSD.
+
+BSD                              July 17, 1999                             BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-getpeername.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-getsockopt.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>getpeername</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>getsockopt</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

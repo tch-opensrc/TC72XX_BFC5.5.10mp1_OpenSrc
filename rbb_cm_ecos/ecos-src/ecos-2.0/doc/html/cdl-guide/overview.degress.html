@@ -1,0 +1,305 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Degrees of Configurability</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="Overview"
+HREF="overview.html"><LINK
+REL="PREVIOUS"
+TITLE="Approaches to Configurability"
+HREF="overview.approaches.html"><LINK
+REL="NEXT"
+TITLE="Warnings"
+HREF="overview.warning.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="overview.approaches.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Overview</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="overview.warning.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="OVERVIEW.DEGRESS">Degrees of Configurability</H1
+><P
+>Components can support configurability in varying degrees. It is not
+necessary to have any configuration options at all, and the only user
+choice is whether or not to load a particular package. Alternatively
+it is possible to implement highly-configurable code. As an example
+consider a typical facility that is provided by many real-time
+kernels, mutex locks. The possible configuration options include:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>If no part of the application and no other component requires mutexes
+then there is no point in having the mutex code compiled into a
+library at all. This saves having to compile the code. In addition
+there will never be any need for the user to configure the detailed
+behavior of mutexes. Therefore the presence of mutexes is a
+configuration option in itself.</P
+></LI
+><LI
+><P
+>Even if the application does make use of mutexes directly or
+indirectly, this does not mean that all mutex functions have to be
+included. The minimum functionality consists of lock and unlock
+functions. However there are variants of the locking primitive such as
+try-lock and try-with-timeout which may or may not be needed.</P
+><P
+>Generally it will be harmless to compile the try-lock function even if
+it is not actually required, because the function will get eliminated
+at link-time. Some users might take the view that the try-lock
+function should never get compiled in unless it is actually needed, to
+reduce compile-time and disk usage. Other users might argue that there
+are very few valid uses for a try-lock function and it should not be
+compiled by default to discourage incorrect uses. The presence of a
+try-lock function is a possible configuration option, although it may
+be sensible to default it to true.</P
+><P
+>The try-with-timeout variant is more complicated because it adds a
+dependency: the mutex code will now rely on some other component to
+provide a timer facility. To make things worse the presence of this
+timer might impact other components, for example it may now be
+necessary to guard against timer interrupts, and thus have an
+insidious effect on code size. The presence of a lock-with-timeout
+function is clearly a sensible configuration option, but the default
+value is less obvious. If the option is enabled by default then the
+final application image may end up with code that is not actually
+essential. If the option is disabled by default then users will have
+to enable the option somehow in order to use the function, implying
+more effort on the part of the user. One possible approach is to
+calculate the default value based on whether or not a timer component
+is present anyway.</P
+></LI
+><LI
+><P
+>The application may or may not require the ability to create and
+destroy mutexes dynamically. For most embedded systems it is both less
+error-prone and more efficient to create objects like mutexes
+statically. Dynamic creation of mutexes can be implemented using a
+pre-allocated pool of mutex objects, involving some extra code to
+manipulate the pool and an additional configuration option to define
+the size of the pool. Alternatively it can be implemented using a
+general-purpose memory allocator, involving quite a lot of extra code
+and configuration options. However this general-purpose memory
+allocator may be present anyway to support the application itself or
+some other component. The ability to create and destroy mutexes
+dynamically is a configuration option, and there may not be a sensible
+default that is appropriate for all applications.</P
+></LI
+><LI
+><P
+>An important issue for mutex locks is the handling of priority
+inversion, where a high priority thread is prevented from running
+because it needs a lock owned by a lower priority thread. This is only
+an issue if there is a scheduler with multiple priorities: some
+systems may need multi-threading and hence synchronization primitives,
+but a single priority level may suffice. If priority inversion is a
+theoretical possibility then the application developer may still want
+to ignore it because the application has been designed such that the
+problem cannot arise in practice. Alternatively the developer may want
+some sort of exception raised if priority inversion does occur,
+because it should not happen but there may still be bugs in the code.
+If priority inversion can occur legally then there are three main ways
+of handling it: priority ceilings, priority inheritance, and ignoring
+the problem. Priority ceilings require little code but extra effort on
+the part of the application developer. Priority inheritance requires
+more code but is automatic. Ignoring priority inversion may or may not
+be acceptable, depending on the application and exactly when priority
+inversion can occur. Some of these choices involve additional
+configuration options, for example there are different ways of raising
+an exception, and priority inheritance may or may not be applied
+recursively.</P
+></LI
+><LI
+><P
+>As a further complication some mutexes may be hidden inside a
+component rather than being an explicit part of the application. For
+example, if the C library is configured to provide a
+<TT
+CLASS="FUNCTION"
+>malloc</TT
+> call then there may be an associated mutex
+to make the function automatically thread-safe, with no need for
+external locking. In such cases the memory allocation component of the
+C library can impose a constraint on the kernel, requiring that
+mutexes be provided. If the user attempts to disable mutexes anyway
+then the configuration tools will report a conflict.</P
+></LI
+><LI
+><P
+>The mutex code should contain some general debugging code such as
+assertions and tracing. Usually such debug support will be enabled or
+disabled at a coarse level such as the entire system or everything
+inside the kernel, but sometimes it will be desirable to enable the
+support more selectively. One reason would be memory requirements: the
+target may not have enough memory to hold the system if all debugging
+is enabled. Another reason is if most of the system is working but
+there are a few problems still to resolved; enabling debugging in the
+entire system might change the system's timing behavior too much, but
+enabling some debug options selectively can still be useful. There
+should be configuration options to allow specific types of debugging
+to be enabled at a fine-grain, but with default settings inherited
+from an enclosing component or from global settings.</P
+></LI
+><LI
+><P
+>The mutex code may contain specialized code to interact
+with a debugging tool running on the host. It should be
+possible to enable or disable this debugging code, and there may
+be additional configuration options controlling the detailed
+behavior.</P
+></LI
+></OL
+><P
+>Altogether there may be something like ten to twenty configuration
+options that are specific to the mutex code. There may be a similar
+number of additional options related to assertions and other debug
+facilities. All of the options should have sensible default values,
+possibly fixed, possibly calculated depending on what is happening
+elsewhere in the configuration. For example the default setting for
+an assertion option should generally inherit from a kernel-wide
+assertion control option, which in turn inherits from a global option.
+This allows users to enable or disable assertions globally or at
+a more fine-grained level, as desired.</P
+><P
+>Different components may be configurable to different degrees, ranging
+from no options at all to the fine-grained configurability of the
+above mutex example (or possibly even further). It is up to component
+writers to decide what options should be provided and how best to
+serve the needs of application developers who want to use that
+component.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="overview.approaches.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="overview.warning.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Approaches to Configurability</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="overview.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Warnings</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

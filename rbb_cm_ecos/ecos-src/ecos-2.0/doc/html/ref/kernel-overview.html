@@ -1,0 +1,1066 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Kernel Overview</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Kernel"
+HREF="kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="The eCos Kernel"
+HREF="kernel.html"><LINK
+REL="NEXT"
+TITLE="SMP Support"
+HREF="kernel-smp.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="kernel.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="kernel-smp.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="KERNEL-OVERVIEW">Kernel Overview</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN56"
+></A
+><H2
+>Name</H2
+>Kernel&nbsp;--&nbsp;Overview of the eCos Kernel</DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-OVERVIEW-DESCRIPTION"
+></A
+><H2
+>Description</H2
+><P
+>The kernel is one of the key packages in all of eCos. It provides the
+core functionality needed for developing multi-threaded applications:
+      </P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>The ability to create new threads in the system, either during startup
+or when the system is already running.
+        </P
+></LI
+><LI
+><P
+>Control over the various threads in the system, for example
+manipulating their priorities.
+        </P
+></LI
+><LI
+><P
+>A choice of schedulers, determining which thread should currently be
+running. 
+        </P
+></LI
+><LI
+><P
+>A range of synchronization primitives, allowing threads to interact
+and share data safely.
+        </P
+></LI
+><LI
+><P
+>Integration with the system's support for interrupts and exceptions.
+        </P
+></LI
+></OL
+><P
+>In some other operating systems the kernel provides additional
+functionality. For example the kernel may also provide memory
+allocation functionality, and device drivers may be part of the kernel
+as well. This is not the case for eCos. Memory allocation is handled
+by a separate package. Similary each device driver will typically be a
+separate package. Various packages are combined and configured using
+the eCos configuration technology to meet the requirements of the
+application.
+      </P
+><P
+>The eCos kernel package is optional. It is possible to write
+single-threaded applications which do not use any kernel
+functionality, for example RedBoot. Typically such applications are
+based around a central polling loop, continually checking all devices
+and taking appropriate action when I/O occurs. A small amount of
+calculation is possible every iteration, at the cost of an increased
+delay between an I/O event occurring and the polling loop detecting
+the event. When the requirements are straightforward it may well be
+easier to develop the application using a polling loop, avoiding the
+complexities of multiple threads and synchronization between threads.
+As requirements get more complicated a multi-threaded solution becomes
+more appropriate, requiring the use of the kernel. In fact some of the
+more advanced packages in eCos, for example the TCP/IP stack, use
+multi-threading internally. Therefore if the application uses any of
+those packages then the kernel becomes a required package, not an
+optional one.
+      </P
+><P
+>The kernel functionality can be used in one of two ways. The kernel
+provides its own C API, with functions like
+<TT
+CLASS="FUNCTION"
+>cyg_thread_create</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_mutex_lock</TT
+>. These can be called directly from
+application code or from other packages. Alternatively there are a
+number of packages which provide compatibility with existing API's,
+for example POSIX threads or &micro;ITRON. These allow application
+code to call standard functions such as
+<TT
+CLASS="FUNCTION"
+>pthread_create</TT
+>, and those functions are
+implemented using the basic functionality provided by the eCos kernel.
+Using compatibility packages in an eCos application can make it much
+easier to reuse code developed in other environments, and to share
+code.
+      </P
+><P
+>Although the different compatibility packages have similar
+requirements on the underlying kernel, for example the ability to
+create a new thread, there are differences in the exact semantics. For
+example, strict &micro;ITRON compliance requires that kernel
+timeslicing is disabled. This is achieved largely through the
+configuration technology. The kernel provides a number of
+configuration options that control the exact semantics that are
+provided, and the various compatibility packages require particular
+settings for those options. This has two important consequences.
+First, it is not usually possible to have two different compatibility
+packages in one eCos configuration because they will have conflicting
+requirements on the underlying kernel. Second, the semantics of the
+kernel's own API are only loosely defined because of the many
+configuration options. For example <TT
+CLASS="FUNCTION"
+>cyg_mutex_lock</TT
+>
+will always attempt to lock a mutex, but various configuration options
+determine the behaviour when the mutex is already locked and there is
+a possibility of priority inversion.
+      </P
+><P
+>The optional nature of the kernel package presents some complications
+for other code, especially device drivers. Wherever possible a device
+driver should work whether or not the kernel is present. However there
+are some parts of the system, especially those related to interrupt
+handling, which should be implemented differently in multi-threaded
+environments containing the eCos kernel and in single-threaded
+environments without the kernel. To cope with both scenarios the
+common HAL package provides a driver API, with functions such as
+<TT
+CLASS="FUNCTION"
+>cyg_drv_interrupt_attach</TT
+>. When the kernel package
+is present these driver API functions map directly on to the
+equivalent kernel functions such as
+<TT
+CLASS="FUNCTION"
+>cyg_interrupt_attach</TT
+>, using macros to avoid any
+overheads. When the kernel is absent the common HAL package implements
+the driver API directly, but this implementation is simpler than the
+one in the kernel because it can assume a single-threaded environment. 
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-OVERVIEW-SCHEDULERS"
+></A
+><H2
+>Schedulers</H2
+><P
+>When a system involves multiple threads, a scheduler is needed to
+determine which thread should currently be running. The eCos kernel
+can be configured with one of two schedulers, the bitmap scheduler and
+the multi-level queue (MLQ) scheduler. The bitmap scheduler is
+somewhat more efficient, but has a number of limitations. Most systems
+will instead use the MLQ scheduler. Other schedulers may be added in
+the future, either as extensions to the kernel package or in separate
+packages.
+      </P
+><P
+>Both the bitmap and the MLQ scheduler use a simple numerical priority
+to determine which thread should be running. The number of priority
+levels is configurable via the option
+<TT
+CLASS="VARNAME"
+>CYGNUM_KERNEL_SCHED_PRIORITIES</TT
+>, but a typical
+system will have up to 32 priority levels. Therefore thread priorities
+will be in the range 0 to 31, with 0 being the highest priority and 31
+the lowest. Usually only the system's idle thread will run at the
+lowest priority. Thread priorities are absolute, so the kernel will
+only run a lower-priority thread if all higher-priority threads are
+currently blocked.
+      </P
+><P
+>The bitmap scheduler only allows one thread per priority level, so if
+the system is configured with 32 priority levels then it is limited to
+only 32 threads &#8212; still enough for many applications. A simple
+bitmap can be used to keep track of which threads are currently
+runnable. Bitmaps can also be used to keep track of threads waiting on
+a mutex or other synchronization primitive. Identifying the
+highest-priority runnable or waiting thread involves a simple
+operation on the bitmap, and an array index operation can then be used
+to get hold of the thread data structure itself. This makes the
+bitmap scheduler fast and totally deterministic.
+      </P
+><P
+>The MLQ scheduler allows multiple threads to run at the same priority.
+This means that there is no limit on the number of threads in the
+system, other than the amount of memory available. However operations
+such as finding the highest priority runnable thread are a little bit
+more expensive than for the bitmap scheduler.
+      </P
+><P
+>Optionally the MLQ scheduler supports timeslicing, where the scheduler
+automatically switches from one runnable thread to another when some
+number of clock ticks have occurred. Timeslicing only comes into play
+when there are two runnable threads at the same priority and no higher
+priority runnable threads. If timeslicing is disabled then a thread
+will not be preempted by another thread of the same priority, and will
+continue running until either it explicitly yields the processor or
+until it blocks by, for example, waiting on a synchronization
+primitive. The configuration options
+<TT
+CLASS="VARNAME"
+>CYGSEM_KERNEL_SCHED_TIMESLICE</TT
+> and
+<TT
+CLASS="VARNAME"
+>CYGNUM_KERNEL_SCHED_TIMESLICE_TICKS</TT
+> control
+timeslicing. The bitmap scheduler does not provide timeslicing
+support. It only allows one thread per priority level, so it is not
+possible to preempt the current thread in favour of another one with
+the same priority.
+      </P
+><P
+>Another important configuration option that affects the MLQ scheduler
+is <TT
+CLASS="VARNAME"
+>CYGIMP_KERNEL_SCHED_SORTED_QUEUES</TT
+>. This
+determines what happens when a thread blocks, for example by waiting
+on a semaphore which has no pending events. The default behaviour of
+the system is last-in-first-out queuing. For example if several
+threads are waiting on a semaphore and an event is posted, the thread
+that gets woken up is the last one that called
+<TT
+CLASS="FUNCTION"
+>cyg_semaphore_wait</TT
+>. This allows for a simple and
+fast implementation of both the queue and dequeue operations. However
+if there are several queued threads with different priorities, it may
+not be the highest priority one that gets woken up. In practice this
+is rarely a problem: usually there will be at most one thread waiting
+on a queue, or when there are several threads they will be of the same
+priority. However if the application does require strict priority
+queueing then the option
+<TT
+CLASS="VARNAME"
+>CYGIMP_KERNEL_SCHED_SORTED_QUEUES</TT
+> should be
+enabled. There are disadvantages: more work is needed whenever a
+thread is queued, and the scheduler needs to be locked for this
+operation so the system's dispatch latency is worse. If the bitmap
+scheduler is used then priority queueing is automatic and does not
+involve any penalties.
+      </P
+><P
+>Some kernel functionality is currently only supported with the MLQ
+scheduler, not the bitmap scheduler. This includes support for SMP
+systems, and protection against priority inversion using either mutex
+priority ceilings or priority inheritance.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-OVERVIEW-SYNCH-PRIMITIVES"
+></A
+><H2
+>Synchronization Primitives</H2
+><P
+>The eCos kernel provides a number of different synchronization
+primitives: <A
+HREF="kernel-mutexes.html"
+>mutexes</A
+>,
+<A
+HREF="kernel-condition-variables.html"
+>condition variables</A
+>,
+<A
+HREF="kernel-semaphores.html"
+>counting semaphores</A
+>,
+<A
+HREF="kernel-mail-boxes.html"
+>mail boxes</A
+> and
+<A
+HREF="kernel-flags.html"
+>event flags</A
+>.
+      </P
+><P
+>Mutexes serve a very different purpose from the other primitives. A
+mutex allows multiple threads to share a resource safely: a thread
+locks a mutex, manipulates the shared resource, and then unlocks the
+mutex again. The other primitives are used to communicate information
+between threads, or alternatively from a DSR associated with an
+interrupt handler to a thread.
+      </P
+><P
+>When a thread that has locked a mutex needs to wait for some condition
+to become true, it should use a condition variable. A condition
+variable is essentially just a place for a thread to wait, and which
+another thread, or DSR, can use to wake it up. When a thread waits on
+a condition variable it releases the mutex before waiting, and when it
+wakes up it reacquires it before proceeding. These operations are
+atomic so that synchronization race conditions cannot be introduced.
+      </P
+><P
+>A counting semaphore is used to indicate that a particular event has
+occurred. A consumer thread can wait for this event to occur, and a
+producer thread or a DSR can post the event. There is a count
+associated with the semaphore so if the event occurs multiple times in
+quick succession this information is not lost, and the appropriate
+number of semaphore wait operations will succeed.
+      </P
+><P
+>Mail boxes are also used to indicate that a particular event has
+occurred, and allows for one item of data to be exchanged per event.
+Typically this item of data would be a pointer to some data structure.
+Because of the need to store this extra data, mail boxes have a
+finite capacity. If a producer thread generates mail box events
+faster than they can be consumed then, to avoid overflow, it will be
+blocked until space is again available in the mail box. This means
+that mail boxes usually cannot be used by a DSR to wake up a
+thread. Instead mail boxes are typically only used between threads.
+      </P
+><P
+>Event flags can be used to wait on some number of different events,
+and to signal that one or several of these events have occurred. This
+is achieved by associating bits in a bit mask with the different
+events. Unlike a counting semaphore no attempt is made to keep track
+of the number of events that have occurred, only the fact that an
+event has occurred at least once. Unlike a mail box it is not
+possible to send additional data with the event, but this does mean
+that there is no possibility of an overflow and hence event flags can
+be used between a DSR and a thread as well as between threads.
+      </P
+><P
+>The eCos common HAL package provides its own device driver API which
+contains some of the above synchronization primitives. These allow
+the DSR for an interrupt handler to signal events to higher-level
+code. If the configuration includes the eCos kernel package then
+the driver API routines map directly on to the equivalent kernel
+routines, allowing interrupt handlers to interact with threads. If the
+kernel package is not included and the application consists of just a
+single thread running in polled mode then the driver API is
+implemented entirely within the common HAL, and with no need to worry
+about multiple threads the implementation can obviously be rather
+simpler. 
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-OVERVIEW-THREADS-INTERRUPTS"
+></A
+><H2
+>Threads and Interrupt Handling</H2
+><P
+>During normal operation the processor will be running one of the
+threads in the system. This may be an application thread, a system
+thread running inside say the TCP/IP stack, or the idle thread. From
+time to time a hardware interrupt will occur, causing control to be
+transferred briefly to an interrupt handler. When the interrupt has
+been completed the system's scheduler will decide whether to return
+control to the interrupted thread or to some other runnable thread.
+      </P
+><P
+>Threads and interrupt handlers must be able to interact. If a thread
+is waiting for some I/O operation to complete, the interrupt handler
+associated with that I/O must be able to inform the thread that the
+operation has completed. This can be achieved in a number of ways. One
+very simple approach is for the interrupt handler to set a volatile
+variable. A thread can then poll continuously until this flag is set,
+possibly sleeping for a clock tick in between. Polling continuously
+means that the cpu time is not available for other activities, which
+may be acceptable for some but not all applications. Polling once
+every clock tick imposes much less overhead, but means that the thread
+may not detect that the I/O event has occurred until an entire clock
+tick has elapsed. In typical systems this could be as long as 10
+milliseconds. Such a delay might be acceptable for some applications,
+but not all.
+      </P
+><P
+>A better solution would be to use one of the synchronization
+primitives. The interrupt handler could signal a condition variable,
+post to a semaphore, or use one of the other primitives. The thread
+would perform a wait operation on the same primitive. It would not
+consume any cpu cycles until the I/O event had occurred, and when the
+event does occur the thread can start running again immediately
+(subject to any higher priority threads that might also be runnable).
+      </P
+><P
+>Synchronization primitives constitute shared data, so care must be
+taken to avoid problems with concurrent access. If the thread that was
+interrupted was just performing some calculations then the interrupt
+handler could manipulate the synchronization primitive quite safely.
+However if the interrupted thread happened to be inside some kernel
+call then there is a real possibility that some kernel data structure
+will be corrupted. 
+      </P
+><P
+>One way of avoiding such problems would be for the kernel functions to
+disable interrupts when executing any critical region. On most
+architectures this would be simple to implement and very fast, but it
+would mean that interrupts would be disabled often and for quite a
+long time. For some applications that might not matter, but many
+embedded applications require that the interrupt handler run as soon
+as possible after the hardware interrupt has occurred. If the kernel
+relied on disabling interrupts then it would not be able to support
+such applications.
+      </P
+><P
+>Instead the kernel uses a two-level approach to interrupt handling.
+Associated with every interrupt vector is an Interrupt Service Routine
+or ISR, which will run as quickly as possible so that it can service
+the hardware. However an ISR can make only a small number of kernel
+calls, mostly related to the interrupt subsystem, and it cannot make
+any call that would cause a thread to wake up. If an ISR detects that
+an I/O operation has completed and hence that a thread should be woken
+up, it can cause the associated Deferred Service Routine or DSR to
+run. A DSR is allowed to make more kernel calls, for example it can
+signal a condition variable or post to a semaphore.
+      </P
+><P
+>Disabling interrupts prevents ISRs from running, but very few parts of
+the system disable interrupts and then only for short periods of time.
+The main reason for a thread to disable interrupts is to manipulate
+some state that is shared with an ISR. For example if a thread needs
+to add another buffer to a linked list of free buffers and the ISR may
+remove a buffer from this list at any time, the thread would need to
+disable interrupts for the few instructions needed to manipulate the
+list. If the hardware raises an interrupt at this time, it remains
+pending until interrupts are reenabled.
+      </P
+><P
+>Analogous to interrupts being disabled or enabled, the kernel has a
+scheduler lock. The various kernel functions such as
+<TT
+CLASS="FUNCTION"
+>cyg_mutex_lock</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_semaphore_post</TT
+> will claim the scheduler lock,
+manipulate the kernel data structures, and then release the scheduler
+lock. If an interrupt results in a DSR being requested and the
+scheduler is currently locked, the DSR remains pending. When the
+scheduler lock is released any pending DSRs will run. These may post
+events to synchronization primitives, causing other higher priority
+threads to be woken up.
+      </P
+><P
+>For an example, consider the following scenario. The system has a high
+priority thread A, responsible for processing some data coming from an
+external device. This device will raise an interrupt when data is
+available. There are two other threads B and C which spend their time
+performing calculations and occasionally writing results to a display
+of some sort. This display is a shared resource so a mutex is used to
+control access.
+      </P
+><P
+>At a particular moment in time thread A is likely to be blocked,
+waiting on a semaphore or another synchronization primitive until data
+is available. Thread B might be running performing some calculations,
+and thread C is runnable waiting for its next timeslice. Interrupts
+are enabled, and the scheduler is unlocked because none of the threads
+are in the middle of a kernel operation. At this point the device
+raises an interrupt. The hardware transfers control to a low-level
+interrupt handler provided by eCos which works out exactly which
+interrupt occurs, and then the corresponding ISR is run. This ISR
+manipulates the hardware as appropriate, determines that there is now
+data available, and wants to wake up thread A by posting to the
+semaphore. However ISR's are not allowed to call
+<TT
+CLASS="FUNCTION"
+>cyg_semaphore_post</TT
+> directly, so instead the ISR
+requests that its associated DSR be run and returns. There are no more
+interrupts to be processed, so the kernel next checks for DSR's. One
+DSR is pending and the scheduler is currently unlocked, so the DSR can
+run immediately and post the semaphore. This will have the effect of
+making thread A runnable again, so the scheduler's data structures are
+adjusted accordingly. When the DSR returns thread B is no longer the
+highest priority runnable thread so it will be suspended, and instead
+thread A gains control over the cpu.
+      </P
+><P
+>In the above example no kernel data structures were being manipulated
+at the exact moment that the interrupt happened. However that cannot
+be assumed. Suppose that thread B had finished its current set of
+calculations and wanted to write the results to the display. It would
+claim the appropriate mutex and manipulate the display. Now suppose
+that thread B was timesliced in favour of thread C, and that thread C
+also finished its calculations and wanted to write the results to the
+display. It would call <TT
+CLASS="FUNCTION"
+>cyg_mutex_lock</TT
+>. This
+kernel call locks the scheduler, examines the current state of the
+mutex, discovers that the mutex is already owned by another thread,
+suspends the current thread, and switches control to another runnable
+thread. Another interrupt happens in the middle of this
+<TT
+CLASS="FUNCTION"
+>cyg_mutex_lock</TT
+> call, causing the ISR to run
+immediately. The ISR decides that thread A should be woken up so it
+requests that its DSR be run and returns back to the kernel. At this
+point there is a pending DSR, but the scheduler is still locked by the
+call to <TT
+CLASS="FUNCTION"
+>cyg_mutex_lock</TT
+> so the DSR cannot run
+immediately. Instead the call to <TT
+CLASS="FUNCTION"
+>cyg_mutex_lock</TT
+>
+is allowed to continue, which at some point involves unlocking the
+scheduler. The pending DSR can now run, safely post the semaphore, and
+thus wake up thread A.
+      </P
+><P
+>If the ISR had called <TT
+CLASS="FUNCTION"
+>cyg_semaphore_post</TT
+> directly
+rather than leaving it to a DSR, it is likely that there would have
+been some sort of corruption of a kernel data structure. For example
+the kernel might have completely lost track of one of the threads, and
+that thread would never have run again. The two-level approach to
+interrupt handling, ISR's and DSR's, prevents such problems with no
+need to disable interrupts.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-OVERVIEW-CONTEXTS"
+></A
+><H2
+>Calling Contexts</H2
+><P
+>eCos defines a number of contexts. Only certain calls are allowed from
+inside each context, for example most operations on threads or
+synchronization primitives are not allowed from ISR context. The
+different contexts are initialization, thread, ISR and DSR.
+      </P
+><P
+>When eCos starts up it goes through a number of phases, including
+setting up the hardware and invoking C++ static constructors. During
+this time interrupts are disabled and the scheduler is locked. When a
+configuration includes the kernel package the final operation is a
+call to <A
+HREF="kernel-schedcontrol.html"
+><TT
+CLASS="FUNCTION"
+>cyg_scheduler_start</TT
+></A
+>.
+At this point interrupts are enabled, the scheduler is unlocked, and
+control is transferred to the highest priority runnable thread. If the
+configuration also includes the C library package then usually the C
+library startup package will have created a thread which will call the
+application's <TT
+CLASS="FUNCTION"
+>main</TT
+> entry point.
+      </P
+><P
+>Some application code can also run before the scheduler is started,
+and this code runs in initialization context. If the application is
+written partly or completely in C++ then the constructors for any
+static objects will be run. Alternatively application code can define
+a function <TT
+CLASS="FUNCTION"
+>cyg_user_start</TT
+> which gets called after
+any C++ static constructors. This allows applications to be written
+entirely in C.
+      </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void
+cyg_user_start(void)
+{
+    /* Perform application-specific initialization here */
+}
+      </PRE
+></TD
+></TR
+></TABLE
+><P
+>It is not necessary for applications to provide a
+<TT
+CLASS="FUNCTION"
+>cyg_user_start</TT
+> function since the system will
+provide a default implementation which does nothing.
+      </P
+><P
+>Typical operations that are performed from inside static constructors
+or <TT
+CLASS="FUNCTION"
+>cyg_user_start</TT
+> include creating threads,
+synchronization primitives, setting up alarms, and registering
+application-specific interrupt handlers. In fact for many applications
+all such creation operations happen at this time, using statically
+allocated data, avoiding any need for dynamic memory allocation or
+other overheads.
+      </P
+><P
+>Code running in initialization context runs with interrupts disabled
+and the scheduler locked. It is not permitted to reenable interrupts
+or unlock the scheduler because the system is not guaranteed to be in
+a totally consistent state at this point. A consequence is that
+initialization code cannot use synchronization primitives such as
+<TT
+CLASS="FUNCTION"
+>cyg_semaphore_wait</TT
+> to wait for an external event.
+It is permitted to lock and unlock a mutex: there are no other threads
+running so it is guaranteed that the mutex is not yet locked, and
+therefore the lock operation will never block; this is useful when
+making library calls that may use a mutex internally.
+      </P
+><P
+>At the end of the startup sequence the system will call
+<TT
+CLASS="FUNCTION"
+>cyg_scheduler_start</TT
+> and the various threads will
+start running. In thread context nearly all of the kernel functions
+are available. There may be some restrictions on interrupt-related
+operations, depending on the target hardware. For example the hardware
+may require that interrupts be acknowledged in the ISR or DSR before
+control returns to thread context, in which case
+<TT
+CLASS="FILENAME"
+>cyg_interrupt_acknowledge</TT
+> should not be called
+by a thread.
+      </P
+><P
+>At any time the processor may receive an external interrupt, causing
+control to be transferred from the current thread. Typically a VSR
+provided by eCos will run and determine exactly which interrupt
+occurred. Then the VSR will switch to the appropriate ISR, which can
+be provided by a HAL package, a device driver, or by the application.
+During this time the system is running at ISR context, and most of the
+kernel function calls are disallowed. This includes the various
+synchronization primitives, so for example an ISR is not allowed to
+post to a semaphore to indicate that an event has happened. Usually
+the only operations that should be performed from inside an ISR are
+ones related to the interrupt subsystem itself, for example masking an
+interrupt or acknowledging that an interrupt has been processed. On
+SMP systems it is also possible to use spinlocks from ISR context.
+      </P
+><P
+>When an ISR returns it can request that the corresponding DSR be run
+as soon as it is safe to do so, and that will run in DSR context. This
+context is also used for running alarm functions, and threads can
+switch temporarily to DSR context by locking the scheduler. Only
+certain kernel functions can be called from DSR context, although more
+than in ISR context. In particular it is possible to use any
+synchronization primitives which cannot block.  These include
+<TT
+CLASS="FUNCTION"
+>cyg_semaphore_post</TT
+>,
+<TT
+CLASS="FILENAME"
+>cyg_cond_signal</TT
+>,
+<TT
+CLASS="FUNCTION"
+>cyg_cond_broadcast</TT
+>,
+<TT
+CLASS="FUNCTION"
+>cyg_flag_setbits</TT
+>, and
+<TT
+CLASS="FUNCTION"
+>cyg_mbox_tryput</TT
+>. It is not possible to use any
+primitives that may block such as
+<TT
+CLASS="FUNCTION"
+>cyg_semaphore_wait</TT
+>,
+<TT
+CLASS="FUNCTION"
+>cyg_mutex_lock</TT
+>, or
+<TT
+CLASS="FUNCTION"
+>cyg_mbox_put</TT
+>. Calling such functions from inside
+a DSR may cause the system to hang.
+      </P
+><P
+>The specific documentation for the various kernel functions gives more
+details about valid contexts.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-OVERVIEW-ERRORS"
+></A
+><H2
+>Error Handling and Assertions</H2
+><P
+>In many APIs each function is expected to perform some validation of
+its parameters and possibly of the current state of the system. This
+is supposed to ensure that each function is used correctly, and that
+application code is not attempting to perform a semaphore operation on
+a mutex or anything like that. If an error is detected then a suitable
+error code is returned, for example the POSIX function
+<TT
+CLASS="FUNCTION"
+>pthread_mutex_lock</TT
+> can return various error codes
+including <TT
+CLASS="LITERAL"
+>EINVAL</TT
+> and <TT
+CLASS="LITERAL"
+>EDEADLK</TT
+>.
+There are a number of problems with this approach, especially in the
+context of deeply embedded systems:
+      </P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Performing these checks inside the mutex lock and all the other
+functions requires extra cpu cycles and adds significantly to the code
+size. Even if the application is written correctly and only makes
+system function calls with sensible arguments and under the right
+conditions, these overheads still exist.
+        </P
+></LI
+><LI
+><P
+>Returning an error code is only useful if the calling code detects
+these error codes and takes appropriate action. In practice the
+calling code will often ignore any errors because the programmer
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>&#8220;knows&#8221;</I
+></SPAN
+> that the function is being
+used correctly. If the programmer is mistaken then an error condition
+may be detected and reported, but the application continues running
+anyway and is likely to fail some time later in mysterious ways.
+        </P
+></LI
+><LI
+><P
+>If the calling code does always check for error codes, that adds yet
+more cpu cycles and code size overhead. 
+        </P
+></LI
+><LI
+><P
+>Usually there will be no way to recover from certain errors, so if the
+application code detected an error such as <TT
+CLASS="LITERAL"
+>EINVAL</TT
+>
+then all it could do is abort the application somehow.
+        </P
+></LI
+></OL
+><P
+>The approach taken within the eCos kernel is different. Functions such
+as <TT
+CLASS="FUNCTION"
+>cyg_mutex_lock</TT
+> will not return an error code.
+Instead they contain various assertions, which can be enabled or
+disabled. During the development process assertions are normally left
+enabled, and the various kernel functions will perform parameter
+checks and other system consistency checks. If a problem is detected
+then an assertion failure will be reported and the application will be
+terminated. In a typical debug session a suitable breakpoint will have
+been installed and the developer can now examine the state of the
+system and work out exactly what is going on. Towards the end of the
+development cycle assertions will be disabled by manipulating
+configuration options within the eCos infrastructure package, and all
+assertions will be eliminated at compile-time. The assumption is that
+by this time the application code has been mostly debugged: the
+initial version of the code might have tried to perform a semaphore
+operation on a mutex, but any problems like that will have been fixed
+some time ago. This approach has a number of advantages:
+      </P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>In the final application there will be no overheads for checking
+parameters and other conditions. All that code will have been
+eliminated at compile-time.
+        </P
+></LI
+><LI
+><P
+>Because the final application will not suffer any overheads, it is
+reasonable for the system to do more work during the development
+process. In particular the various assertions can test for more error
+conditions and more complicated errors. When an error is detected
+it is possible to give a text message describing the error rather than
+just return an error code.
+        </P
+></LI
+><LI
+><P
+>There is no need for application programmers to handle error codes
+returned by various kernel function calls. This simplifies the
+application code.
+        </P
+></LI
+><LI
+><P
+>If an error is detected then an assertion failure will be reported
+immediately and the application will be halted. There is no
+possibility of an error condition being ignored because application
+code did not check for an error code.
+        </P
+></LI
+></OL
+><P
+>Although none of the kernel functions return an error code, many of
+them do return a status condition. For example the function
+<TT
+CLASS="FUNCTION"
+>cyg_semaphore_timed_wait</TT
+> waits until either an
+event has been posted to a semaphore, or until a certain number of
+clock ticks have occurred. Usually the calling code will need to know
+whether the wait operation succeeded or whether a timeout occurred.
+<TT
+CLASS="FUNCTION"
+>cyg_semaphore_timed_wait</TT
+> returns a boolean: a
+return value of zero or false indicates a timeout, a non-zero return
+value indicates that the wait succeeded.
+      </P
+><P
+>In conventional APIs one common error conditions is lack of memory.
+For example the POSIX function <TT
+CLASS="FUNCTION"
+>pthread_create</TT
+>
+usually has to allocate some memory dynamically for the thread stack
+and other per-thread data. If the target hardware does not have enough
+memory to meet all demands, or more commonly if the application
+contains a memory leak, then there may not be enough memory available
+and the function call would fail. The eCos kernel avoids such problems
+by never performing any dynamic memory allocation. Instead it is the
+responsibility of the application code to provide all the memory
+required for kernel data structures and other needs. In the case of
+<TT
+CLASS="FUNCTION"
+>cyg_thread_create</TT
+> this means a
+<SPAN
+CLASS="STRUCTNAME"
+>cyg_thread</SPAN
+> data structure to hold the thread
+details, and a <SPAN
+CLASS="TYPE"
+>char</SPAN
+> array for the thread stack.
+      </P
+><P
+>In many applications this approach results in all data structures
+being allocated statically rather than dynamically. This has several
+advantages. If the application is in fact too large for the target
+hardware's memory then there will be an error at link-time rather than
+at run-time, making the problem much easier to diagnose. Static
+allocation does not involve any of the usual overheads associated with
+dynamic allocation, for example there is no need to keep track of the
+various free blocks in the system, and it may be possible to eliminate
+<TT
+CLASS="FUNCTION"
+>malloc</TT
+> from the system completely. Problems such
+as fragmentation and memory leaks cannot occur if all data is
+allocated statically. However, some applications are sufficiently
+complicated that dynamic memory allocation is required, and the
+various kernel functions do not distinguish between statically and
+dynamically allocated memory. It still remains the responsibility of
+the calling code to ensure that sufficient memory is available, and
+passing null pointers to the kernel will result in assertions or
+system failure.
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="kernel.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="kernel-smp.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>The eCos Kernel</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SMP Support</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

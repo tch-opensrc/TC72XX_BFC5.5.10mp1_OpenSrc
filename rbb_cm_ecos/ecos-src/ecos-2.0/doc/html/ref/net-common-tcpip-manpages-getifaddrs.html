@@ -1,0 +1,255 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>getifaddrs</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="gethostbyname"
+HREF="net-common-tcpip-manpages-gethostbyname.html"><LINK
+REL="NEXT"
+TITLE="getnameinfo"
+HREF="net-common-tcpip-manpages-getnameinfo.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-gethostbyname.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-getnameinfo.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-GETIFADDRS">getifaddrs</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>GETIFADDRS(3)           System Library Functions Manual          GETIFADDRS(3)
+
+NAME
+     getifaddrs - get interface addresses
+
+SYNOPSIS
+     #include &lt;sys/types.h&#62;
+     #include &lt;sys/socket.h&#62;
+     #include &lt;ifaddrs.h&#62;
+
+     int
+     getifaddrs(struct ifaddrs **ifap);
+
+     void
+     freeifaddrs(struct ifaddrs *ifap);
+
+DESCRIPTION
+     The getifaddrs() function stores a reference to a linked list of the net-
+     work interfaces on the local machine in the memory referenced by ifap.
+     The list consists of ifaddrs structures, as defined in the include file
+     &lt;ifaddrs.h&#62;.  The ifaddrs structure contains at least the following
+     entries:
+
+         struct ifaddrs   *ifa_next;         /* Pointer to next struct */
+         char             *ifa_name;         /* Interface name */
+         u_int             ifa_flags;        /* Interface flags */
+         struct sockaddr  *ifa_addr;         /* Interface address */
+         struct sockaddr  *ifa_netmask;      /* Interface netmask */
+         struct sockaddr  *ifa_broadaddr;    /* Interface broadcast address */
+         struct sockaddr  *ifa_dstaddr;      /* P2P interface destination */
+         void             *ifa_data;         /* Address specific data */
+
+     ifa_next
+             Contains a pointer to the next structure on the list.  This field
+             is set to NULL in last structure on the list.
+
+     ifa_name
+             Contains the interface name.
+
+     ifa_flags
+             Contains the interface flags, as set by ifconfig(8).
+
+     ifa_addr
+             References either the address of the interface or the link level
+             address of the interface, if one exists, otherwise it is NULL.
+             (The sa_family field of the ifa_addr field should be consulted to
+             determine the format of the ifa_addr address.)
+
+     ifa_netmask
+             References the netmask associated with ifa_addr, if one is set,
+             otherwise it is NULL.
+
+     ifa_broadaddr
+             This field, which should only be referenced for non-P2P inter-
+             faces, references the broadcast address associated with ifa_addr,
+             if one exists, otherwise it is NULL.
+
+     ifa_dstaddr
+             References the destination address on a P2P interface, if one
+             exists, otherwise it is NULL.
+
+     ifa_data
+             References address family specific data.  For AF_LINK addresses
+             it contains a pointer to the struct if_data (as defined in
+             include file &lt;net/if.h&#62;) which contains various interface
+             attributes and statistics.  For all other address families, it
+             contains a pointer to the struct ifa_data (as defined in include
+             file &lt;net/if.h&#62;) which contains per-address interface statistics.
+
+     The data returned by getifaddrs() is dynamically allocated and should be
+     freed using freeifaddrs() when no longer needed.
+
+RETURN VALUES
+     Upon successful completion, a value of 0 is returned.  Otherwise, a value
+     of -1 is returned and errno is set to indicate the error.
+
+ERRORS
+     The getifaddrs() may fail and set errno for any of the errors specified
+     for the library routines ioctl(2), socket(2), malloc(3), or sysctl(3).
+
+BUGS
+     If both &lt;net/if.h&#62; and &lt;ifaddrs.h&#62; are being included, &lt;net/if.h&#62; must be
+     included before &lt;ifaddrs.h&#62;.
+
+SEE ALSO
+     ioctl(2), socket(2), sysctl(3), networking(4), ifconfig(8)
+
+HISTORY
+     The getifaddrs() function first appeared in BSDI BSD/OS.  The function is
+     supplied on OpenBSD since OpenBSD 2.7.
+
+BSD                            February 24, 2003                           BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-gethostbyname.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-getnameinfo.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>gethostbyname</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>getnameinfo</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

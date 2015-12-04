@@ -1,0 +1,373 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Using Templates</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Updating the Configuration"
+HREF="config-tool-updating-configuration.html"><LINK
+REL="PREVIOUS"
+TITLE="Platform Selection"
+HREF="config-tool-platform-selection.html"><LINK
+REL="NEXT"
+TITLE="Searching"
+HREF="config-tool-searching.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="config-tool-platform-selection.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 19. Updating the Configuration</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="config-tool-searching.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CONFIG-TOOL-USING-TEMPLATES">Using Templates</H1
+><P
+>To load a configuration based on a template, select
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build</I
+></SPAN
+>-&gt;<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Templates</I
+></SPAN
+>.</P
+><P
+>The following dialog box will be displayed:</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN1417"><P
+><B
+>Figure 19-4. Templates dialog box</B
+></P
+><P
+><IMG
+SRC="pix/templates.png"></P
+></DIV
+><P
+>Change the hardware template, the packages template, or
+	  both. To select a hardware template, choose from the first
+	  drop-list. To choose a packages template, choose from the
+	  second. Brief descriptions of each kind of template are
+	  provided in the corresponding edit boxes.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="RESOLVING-CONFLICTS">Resolving conflicts</H2
+><P
+>During the process of configuring <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> it is possible
+	    that conflicts will be created. For more details of the
+	    meaning of conflicts, see <A
+HREF="cdl-concepts.html"
+>Chapter 24</A
+>.</P
+><P
+>The Conflicts Window displays all conflicts in the
+	    current configuration. Additionally, a window in the
+	    status bar displays a count of the conflicts. Because the
+	    resolution of conflicts can be time-consuming, a mechanism
+	    exists whereby conflicts can be resolved
+	    automatically.</P
+><P
+>You can choose to have a conflicts resolution dialog
+	    box displayed by means of the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>View-&gt;Settings...
+	      </I
+></SPAN
+>menu item, on the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Conflict Resolution</I
+></SPAN
+>
+tab of the dialog.</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN1430"><P
+><B
+>Figure 19-5. Options</B
+></P
+><P
+><IMG
+SRC="pix/ToolsOptions.png"></P
+></DIV
+><P
+>You can choose to have conflicts checked under the
+	    following circumstances:</P
+><P
+></P
+><UL
+><LI
+><P
+>After any item is changed (in other words,
+		as soon as the conflict is created)</P
+></LI
+><LI
+><P
+>Before saving the configuration (including
+		building)</P
+></LI
+><LI
+><P
+>Never</P
+></LI
+></UL
+><P
+>The method you chose depends on how much you need
+		your configuration to be free of conflicts. You may
+		want to avoid having to clean up all the conflicts at
+		once, or you may want to keep the configuration
+		consistent at all times. If you have major changes to
+		implement, which may resolve the conflicts, then you
+		might want to wait until after you have completed
+		these changes before you check for conflicts.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>If you choose to check conflicts after any item
+	      is changed, only newly arising conflicts are displayed.
+	      If you choose to check for conflicts before saving the
+	      configuration, the complete set is
+	      displayed.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN1444">Automatic resolution</H2
+><P
+>If you check the &#8220;Automatically suggest
+	    fixes&#8221; check box, a conflicts resolution dialog box
+	    will be displayed whenever new conflicts are created. The
+	    same dialog box may be displayed at any stage by means of
+	    the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Tools-&gt;Resolve Conflicts</I
+></SPAN
+>
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+></I
+></SPAN
+>menu item.
+	    </P
+><P
+>The conflicts resolution dialog box contains two major windows. </P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN1450"><P
+><B
+>Figure 19-6. Resolve conflicts window</B
+></P
+><P
+><IMG
+SRC="pix/Conflicts.png"></P
+></DIV
+><P
+>The upper contains the set of conflicts to be addressed; the
+format of the data being as that of the Conflicts Window. The lower
+window contains a set of proposed resolutions &#8211; each entry
+is a suggested configuration item value change that as a whole may
+be expected to lead to the currently selected conflict being resolved. </P
+><P
+>Note that there is no guarantee:</P
+><P
+></P
+><UL
+><LI
+><P
+>that automatic resolutions will be determinable for every
+conflict.</P
+></LI
+><LI
+><P
+>	that the resolutions for separate conflicts will be independent.
+In other words, the resolution of one conflict may serve to prevent
+the resolution of another.</P
+></LI
+><LI
+><P
+>	that the resolution conflicts will not create further
+conflicts.</P
+></LI
+></UL
+><P
+>The above warnings are, however, conservative. In practice
+(so long as the number and extent of conflicts are limited) automatic
+conflict resolution may be used to good effect to correct problems
+without undue amounts of programmer intervention.</P
+><P
+>In order to select the conflicts to be applied, select or
+clear the check boxes against the resolutions for each proposed
+resolution. By default all resolutions are selected; you can return
+to the default state (in other words, cause all check boxes for
+each conflict to again become checked) by pressing the &#8220;Reset&#8221; button.
+Note that multiple selection may be used in the resolutions control
+to allow ranges of check boxes to be toggled in one gesture.</P
+><P
+>When you are happy to apply the selected resolutions for each
+conflict displayed, click <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Apply</I
+></SPAN
+>; this will
+apply the resolutions. Alternatively you may cancel from the dialog
+box without any resolutions being applied.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="config-tool-platform-selection.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="config-tool-searching.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Platform Selection</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="config-tool-updating-configuration.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Searching</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

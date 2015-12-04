@@ -1,0 +1,1060 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>ARM/Xscale Intel IQ80321</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Installation and Testing"
+HREF="installation-and-testing.html"><LINK
+REL="PREVIOUS"
+TITLE="ARM/Xscale Cyclone IQ80310"
+HREF="iq80310.html"><LINK
+REL="NEXT"
+TITLE="CalmRISC/CalmRISC16 Samsung CalmRISC16 Core Evaluation Board "
+HREF="calmrisc16.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="iq80310.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Installation and Testing</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="calmrisc16.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="IQ80321">ARM/Xscale Intel IQ80321</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6269">Overview</H2
+><P
+>RedBoot supports
+the serial port and the built-in ethernet port for communication and downloads.
+The default serial port settings are 115200,8,N,1. RedBoot also supports flash
+management for the onboard 8MB flash.</P
+><P
+>The following RedBoot configurations are supported:
+
+      <DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6279"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Configuration</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Mode</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>ROM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from the board's flash boot
+	      sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_ROM.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RAM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[RAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM with RedBoot in the
+	      flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_RAM.ecm</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6298">Initial Installation Method</H2
+><P
+>The board manufacturer provides a DOS application which is capable of
+programming the flash over the PCI bus, and this is required for initial installations
+of RedBoot. Please see the board manual for information on using this utility.
+In general, the process involves programming the ROM mode RedBoot
+image to flash. RedBoot should be programmed to flash address
+0x00000000 using the DOS utility.</P
+><P
+>After booting the initial installation of RedBoot, this warning may
+be printed: <TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>flash configuration checksum error or invalid key</PRE
+></TD
+></TR
+></TABLE
+>This is normal, and indicates that the flash must be configured
+for use by RedBoot. Even if the above message is not printed, it may be a
+good idea to reinitialize the flash anyway. Do this with the <B
+CLASS="COMMAND"
+>fis</B
+> command: <TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fis init</B
+></TT
+>
+About to initialize [format] FLASH image system - continue (y/n)? <TT
+CLASS="USERINPUT"
+><B
+>y</B
+></TT
+>
+*** Initialize FLASH Image System
+    Warning: device contents not erased, some blocks may not be usable
+    ... Unlock from 0xf07e0000-0xf0800000: .
+    ... Erase from 0xf07e0000-0xf0800000: .
+    ... Program from 0x01ddf000-0x01ddf400 at 0xf07e0000: .
+    ... Lock from 0xf07e0000-0xf0800000: .</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6307">Switch Settings</H2
+><P
+>The 80321 board is highly configurable through a number of switches and jumpers.
+RedBoot makes some assumptions about board configuration and attention must be paid
+to these assumptions for reliable RedBoot operation:
+<P
+></P
+><UL
+><LI
+><P
+>The onboard ethernet and the secondary slot may be placed in a
+private space so that they are not seen by a PC BIOS. If the board is to be used
+in a PC with BIOS, then the ethernet should be placed in this private space so that
+RedBoot and the BIOS do not conflict.</P
+></LI
+><LI
+><P
+>RedBoot assumes that the board is plugged into a PC with BIOS. This
+requires RedBoot to detect when the BIOS has configured the PCI-X secondary bus. If
+the board is placed in a backplane, RedBoot will never see the BIOS configure the
+secondary bus. To prevent this wait, set switch S7E1-3 to ON when using the board
+in a backplane.</P
+></LI
+><LI
+><P
+>For the remaining switch settings, the following is a known good
+configuration:
+<DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6317"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>S1D1</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>All OFF</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>S7E1</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>7 is ON, all others OFF</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>S8E1</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>2,3,5,6 are ON, all others OFF</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>S8E2</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>2,3 are ON, all others OFF</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>S9E1</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>3 is ON, all others OFF</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>S4D1</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>1,3 are ON, all others OFF</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>J9E1</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>2,3 jumpered</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>J9F1</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>2,3 jumpered</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>J3F1</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Nothing jumpered</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>J3G1</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>2,3 jumpered</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>J1G2</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>2,3 jumpered</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></P
+></LI
+></UL
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6353">LED Codes</H2
+><P
+>RedBoot uses the two digit LED display to indicate status during   board
+initialization. Possible codes are:</P
+><P
+CLASS="LITERALLAYOUT"
+>LED&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actions<br>
+-------------------------------------------------------------<br>
+&nbsp;&nbsp;	Power-On/Reset<br>
+88<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Set&nbsp;the&nbsp;CPSR<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enable&nbsp;coprocessor&nbsp;access<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Drain&nbsp;write&nbsp;and&nbsp;fill&nbsp;buffer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Setup&nbsp;PBIU&nbsp;chip&nbsp;selects<br>
+A1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enable&nbsp;the&nbsp;Icache<br>
+A2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Move&nbsp;FLASH&nbsp;chip&nbsp;select&nbsp;from&nbsp;0x0&nbsp;to&nbsp;0xF0000000<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jump&nbsp;to&nbsp;new&nbsp;FLASH&nbsp;location<br>
+A3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Setup&nbsp;and&nbsp;enable&nbsp;the&nbsp;MMU<br>
+A4<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;I2C&nbsp;interface&nbsp;initialization<br>
+90<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Wait&nbsp;for&nbsp;I2C&nbsp;initialization&nbsp;to&nbsp;complete<br>
+91<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Send&nbsp;address&nbsp;(via&nbsp;I2C)&nbsp;to&nbsp;the&nbsp;DIMM<br>
+92<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Wait&nbsp;for&nbsp;transmit&nbsp;complete<br>
+93<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Read&nbsp;SDRAM&nbsp;PD&nbsp;data&nbsp;from&nbsp;DIMM<br>
+94<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Read&nbsp;remainder&nbsp;of&nbsp;EEPROM&nbsp;data.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An&nbsp;error&nbsp;will&nbsp;result&nbsp;in&nbsp;one&nbsp;of&nbsp;the&nbsp;following<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;error&nbsp;codes&nbsp;on&nbsp;the&nbsp;LEDs:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;77&nbsp;BAD&nbsp;EEPROM&nbsp;checksum<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;55&nbsp;I2C&nbsp;protocol&nbsp;error<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FF&nbsp;bank&nbsp;size&nbsp;error<br>
+A5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Setup&nbsp;DDR&nbsp;memory&nbsp;interface<br>
+A6<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enable&nbsp;branch&nbsp;target&nbsp;buffer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Drain&nbsp;the&nbsp;write&nbsp;&#38;&nbsp;fill&nbsp;buffers<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flush&nbsp;Icache,&nbsp;Dcache&nbsp;and&nbsp;BTB<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flush&nbsp;instuction&nbsp;and&nbsp;data&nbsp;TLBs<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Drain&nbsp;the&nbsp;write&nbsp;&#38;&nbsp;fill&nbsp;buffers<br>
+SL<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ECC&nbsp;Scrub&nbsp;Loop<br>
+SE<br>
+A7<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Clean,&nbsp;drain,&nbsp;flush&nbsp;the&nbsp;main&nbsp;Dcache<br>
+A8<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Clean,&nbsp;drain,&nbsp;flush&nbsp;the&nbsp;mini&nbsp;Dcache<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flush&nbsp;Dcache<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Drain&nbsp;the&nbsp;write&nbsp;&#38;&nbsp;fill&nbsp;buffers<br>
+A9<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enable&nbsp;ECC<br>
+AA<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Save&nbsp;SDRAM&nbsp;size<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Move&nbsp;MMU&nbsp;tables&nbsp;into&nbsp;RAM<br>
+AB<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Clean,&nbsp;drain,&nbsp;flush&nbsp;the&nbsp;main&nbsp;Dcache<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Clean,&nbsp;drain,&nbsp;flush&nbsp;the&nbsp;mini&nbsp;Dcache<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Drain&nbsp;the&nbsp;write&nbsp;&#38;&nbsp;fill&nbsp;buffers<br>
+AC<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Set&nbsp;the&nbsp;TTB&nbsp;register&nbsp;to&nbsp;DRAM&nbsp;mmu_table<br>
+AD<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Set&nbsp;mode&nbsp;to&nbsp;IRQ&nbsp;mode<br>
+A7<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Move&nbsp;SWI&nbsp;&#38;&nbsp;Undefined&nbsp;"vectors"&nbsp;to&nbsp;RAM&nbsp;(at&nbsp;0x0)<br>
+A6<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Switch&nbsp;to&nbsp;supervisor&nbsp;mode<br>
+A5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Move&nbsp;remaining&nbsp;"vectors"&nbsp;to&nbsp;RAM&nbsp;(at&nbsp;0x0)<br>
+A4<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Copy&nbsp;DATA&nbsp;to&nbsp;RAM<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Initialize&nbsp;interrupt&nbsp;exception&nbsp;environment<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Initialize&nbsp;stack<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Clear&nbsp;BSS&nbsp;section<br>
+A3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Call&nbsp;platform&nbsp;specific&nbsp;hardware&nbsp;initialization<br>
+A2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Run&nbsp;through&nbsp;static&nbsp;constructors<br>
+A1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start&nbsp;up&nbsp;the&nbsp;eCos&nbsp;kernel&nbsp;or&nbsp;RedBoot</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6357">Special RedBoot Commands</H2
+><P
+>A special RedBoot command, <B
+CLASS="COMMAND"
+>diag</B
+>, is used to
+access a set of hardware diagnostics. To access the diagnostic menu,
+enter <B
+CLASS="COMMAND"
+>diag</B
+> at the RedBoot prompt:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>diag</B
+></TT
+>
+Entering Hardware Diagnostics - Disabling Data Cache!
+
+  IQ80321 Hardware Tests
+
+ 1 - Memory Tests
+ 2 - Repeating Memory Tests
+ 3 - Repeat-On-Fail Memory Tests
+ 4 - Rotary Switch S1 Test
+ 5 - 7 Segment LED Tests
+ 6 - i82544 Ethernet Configuration
+ 7 - Baterry Status Test
+ 8 - Battery Backup SDRAM Memory Test
+ 9 - Timer Test
+10 - PCI Bus test
+11 - CPU Cache Loop (No Return)
+ 0 - quit
+Enter the menu item number (0 to quit):</PRE
+></TD
+></TR
+></TABLE
+>
+Tests for various hardware subsystems are provided, and some tests require
+special hardware in order to execute normally. The Ethernet Configuration
+item may be used to set the board ethernet address.</P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN6364">Memory Tests</H3
+><P
+>This test is used to test installed DDR SDRAM memory. Five different
+tests are run over the given address ranges. If errors are encountered, the
+test is aborted and information about the failure is printed. When selected,
+the user will be prompted to enter the base address of the test range and its
+size. The numbers must be in hex with no leading &#8220;0x&#8221;</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Enter the menu item number (0 to quit): <TT
+CLASS="USERINPUT"
+><B
+>1</B
+></TT
+>
+
+Base address of memory to test (in hex): <TT
+CLASS="USERINPUT"
+><B
+>100000</B
+></TT
+>
+
+Size of memory to test (in hex): <TT
+CLASS="USERINPUT"
+><B
+>200000</B
+></TT
+>
+
+Testing memory from 0x00100000 to 0x002fffff.
+
+Walking 1's test: 
+0000000100000002000000040000000800000010000000200000004000000080
+0000010000000200000004000000080000001000000020000000400000008000
+0001000000020000000400000008000000100000002000000040000000800000
+0100000002000000040000000800000010000000200000004000000080000000
+passed
+32-bit address test: passed
+32-bit address bar test: passed
+8-bit address test: passed
+Byte address bar test: passed
+Memory test done.</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN6371">Repeating Memory Tests</H3
+><P
+>The repeating memory tests are exactly the same as the above memory tests,
+except that the tests are automatically rerun after completion. The only way out
+of this test is to reset the board.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN6374">Repeat-On-Fail Memory Tests</H3
+><P
+>This is similar to the repeating memory tests except that when an error
+is found, the failing test continuously retries on the failing address.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN6377">Rotary Switch S1 Test</H3
+><P
+>This tests the operation of the sixteen position rotary switch. When run,
+this test will display the current position of the rotary switch on the LED
+display. Slowly dial through each position and confirm reading on LED.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN6380">7 Segment LED Tests</H3
+><P
+>This tests the operation of the seven segment displays. When run, each
+LED cycles through 0 through F and a decimal point.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN6383">i82544 Ethernet Configuration</H3
+><P
+>This test initializes the ethernet controller&#8217;s serial EEPROM if
+the current contents are invalid. In any case, this test will also allow the
+user to enter a six byte ethernet MAC address into the serial EEPROM.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Enter the menu item number (0 to quit): <TT
+CLASS="USERINPUT"
+><B
+>6</B
+></TT
+>
+
+
+Current MAC address: 00:80:4d:46:00:02
+Enter desired MAC address: <TT
+CLASS="USERINPUT"
+><B
+>00:80:4d:46:00:01</B
+></TT
+>
+Writing to the Serial EEPROM... Done
+
+******** Reset The Board To Have Changes Take Effect ********</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN6389">Battery Status Test</H3
+><P
+>This tests the current status of the battery. First, the test checks to
+see if the battery is installed and reports that finding. If the battery is
+installed, the test further determines whether the battery status is one or
+more of the following:
+<P
+></P
+><UL
+><LI
+><P
+>Battery is charging.</P
+></LI
+><LI
+><P
+>Battery is fully discharged.</P
+></LI
+><LI
+><P
+>Battery voltage measures within normal operating range.</P
+></LI
+></UL
+></P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN6399">Battery Backup SDRAM Memory Test</H3
+><P
+>This tests the battery backup of SDRAM memory. This test is a three
+step process:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Select Battery backup test from main diag menu, then write
+data to SDRAM.</P
+></LI
+><LI
+><P
+>Turn off power for 60 seconds, then repower the board.</P
+></LI
+><LI
+><P
+>Select Battery backup test from main diag menu, then check
+data that was written in step 1.</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN6409">Timer Test</H3
+><P
+>This tests the internal timer by printing a number of dots at one
+second intervals.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN6412">PCI Bus Test</H3
+><P
+>This tests the secondary PCI-X bus and socket. This test requires that
+an IQ80310 board be plugged into the secondary slot of the IOP80321 board.
+The test assumes at least 32MB of installed memory on the IQ80310. That memory
+is mapped into the IOP80321 address space and the memory tests are run on that
+memory.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN6415">CPU Cache Loop</H3
+><P
+>This test puts the CPU into a tight loop run entirely from the ICache.
+This should prevent all external bus accesses.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6418">Rebuilding RedBoot</H2
+><P
+>These shell variables provide the platform-specific information
+needed for building RedBoot according to the procedure described in
+<A
+HREF="rebuilding-redboot.html"
+>Chapter 3</A
+>:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>export TARGET=iq80321
+export ARCH_DIR=arm
+export PLATFORM_DIR=xscale/iq80321</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The names of configuration files are listed above with the
+description of the associated modes.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6424">Interrupts</H2
+><P
+>RedBoot uses an interrupt vector table which is located at address 0x8004.
+Entries in this table are pointers to functions with this protoype::      <TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int irq_handler( unsigned vector, unsigned data )</PRE
+></TD
+></TR
+></TABLE
+>On an IQ80321
+board, the vector argument is one of 32 interrupts defined in <TT
+CLASS="COMPUTEROUTPUT"
+>hal/arm/xscale/verde/current/include/hal_var_ints.h:</TT
+>:   <TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>// *** 80200 CPU ***
+#define CYGNUM_HAL_INTERRUPT_DMA0_EOT      0
+#define CYGNUM_HAL_INTERRUPT_DMA0_EOC      1
+#define CYGNUM_HAL_INTERRUPT_DMA1_EOT      2
+#define CYGNUM_HAL_INTERRUPT_DMA1_EOC      3
+#define CYGNUM_HAL_INTERRUPT_RSVD_4        4
+#define CYGNUM_HAL_INTERRUPT_RSVD_5        5
+#define CYGNUM_HAL_INTERRUPT_AA_EOT        6
+#define CYGNUM_HAL_INTERRUPT_AA_EOC        7
+#define CYGNUM_HAL_INTERRUPT_CORE_PMON     8
+#define CYGNUM_HAL_INTERRUPT_TIMER0        9
+#define CYGNUM_HAL_INTERRUPT_TIMER1        10
+#define CYGNUM_HAL_INTERRUPT_I2C_0         11
+#define CYGNUM_HAL_INTERRUPT_I2C_1         12
+#define CYGNUM_HAL_INTERRUPT_MESSAGING     13
+#define CYGNUM_HAL_INTERRUPT_ATU_BIST      14
+#define CYGNUM_HAL_INTERRUPT_PERFMON       15
+#define CYGNUM_HAL_INTERRUPT_CORE_PMU      16
+#define CYGNUM_HAL_INTERRUPT_BIU_ERR       17
+#define CYGNUM_HAL_INTERRUPT_ATU_ERR       18
+#define CYGNUM_HAL_INTERRUPT_MCU_ERR       19
+#define CYGNUM_HAL_INTERRUPT_DMA0_ERR      20
+#define CYGNUM_HAL_INTERRUPT_DMA1_ERR      22
+#define CYGNUM_HAL_INTERRUPT_AA_ERR        23
+#define CYGNUM_HAL_INTERRUPT_MSG_ERR       24
+#define CYGNUM_HAL_INTERRUPT_SSP           25
+#define CYGNUM_HAL_INTERRUPT_RSVD_26       26
+#define CYGNUM_HAL_INTERRUPT_XINT0         27
+#define CYGNUM_HAL_INTERRUPT_XINT1         28
+#define CYGNUM_HAL_INTERRUPT_XINT2         29
+#define CYGNUM_HAL_INTERRUPT_XINT3         30
+#define CYGNUM_HAL_INTERRUPT_HPI           31</PRE
+></TD
+></TR
+></TABLE
+>
+The data passed to the ISR is pulled from a data table <TT
+CLASS="COMPUTEROUTPUT"
+>(hal_interrupt_data)</TT
+> which immediately follows the interrupt vector table. With
+32 interrupts, the data table starts at address 0x8084.   </P
+><P
+>An application may create a normal C function with the above prototype
+to be an ISR. Just poke its address into the table at the correct index and
+enable the interrupt at its source. The return value of the ISR is ignored
+by RedBoot.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6432">Memory Maps</H2
+><P
+>The RAM based page table is located at RAM start + 0x4000. RedBoot may be configured
+for one of two memory maps. The difference between them is the location of RAM and the
+PCI outbound windows. The alternative memory map may be used when
+building RedBoot or eCos by using the <TT
+CLASS="LITERAL"
+>RAM_ALTMAP</TT
+>
+and <TT
+CLASS="LITERAL"
+>ROM_ALTMAP</TT
+> startup types in the configuration.
+<DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>NOTE: </B
+>The virtual memory maps in this section use a C, B, and X column to indicate
+the caching policy for the region..</P
+></BLOCKQUOTE
+></DIV
+></P
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>X C B  Description
+- - -  ---------------------------------------------
+0 0 0  Uncached/Unbuffered
+0 0 1  Uncached/Buffered
+0 1 0  Cached/Buffered    Write Through, Read Allocate
+0 1 1  Cached/Buffered    Write Back, Read Allocate
+1 0 0  Invalid -- not used
+1 0 1  Uncached/Buffered  No write buffer coalescing
+1 1 0  Mini DCache - Policy set by Aux Ctl Register
+1 1 1  Cached/Buffered    Write Back, Read/Write Allocate
+
+Physical Address Range     Description
+-----------------------    ----------------------------------
+0x00000000 - 0x7fffffff    ATU Outbound Direct Window
+0x80000000 - 0x900fffff    ATU Outbound Translate Windows
+0xa0000000 - 0xbfffffff    SDRAM
+0xf0000000 - 0xf0800000    FLASH               (PBIU CS0)
+0xfe800000 - 0xfe800fff    UART                (PBIU CS1)
+0xfe840000 - 0xfe840fff    Left 7-segment LED  (PBIU CS3)
+0xfe850000 - 0xfe850fff    Right 7-segment LED (PBIU CS2)
+0xfe8d0000 - 0xfe8d0fff    Rotary Switch       (PBIU CS4)
+0xfe8f0000 - 0xfe8f0fff    Baterry Status      (PBIU CS5)
+0xfff00000 - 0xffffffff    Verde Memory mapped Registers
+
+
+Default Virtual Map      X C B  Description
+-----------------------  - - -  ----------------------------------
+0x00000000 - 0x1fffffff  1 1 1  SDRAM
+0x20000000 - 0x9fffffff  0 0 0  ATU Outbound Direct Window
+0xa0000000 - 0xb00fffff  0 0 0  ATU Outbound Translate Windows
+0xc0000000 - 0xdfffffff  0 0 0  Uncached alias for SDRAM
+0xe0000000 - 0xe00fffff  1 1 1  Cache flush region (no phys mem)
+0xf0000000 - 0xf0800000  0 1 0  FLASH               (PBIU CS0)
+0xfe800000 - 0xfe800fff  0 0 0  UART                (PBIU CS1)
+0xfe840000 - 0xfe840fff  0 0 0  Left 7-segment LED  (PBIU CS3)
+0xfe850000 - 0xfe850fff  0 0 0  Right 7-segment LED (PBIU CS2)
+0xfe8d0000 - 0xfe8d0fff  0 0 0  Rotary Switch       (PBIU CS4)
+0xfe8f0000 - 0xfe8f0fff  0 0 0  Baterry Status      (PBIU CS5)
+0xfff00000 - 0xffffffff  0 0 0  Verde Memory mapped Registers
+
+Alternate Virtual Map    X C B  Description
+-----------------------  - - -  ----------------------------------
+0x00000000 - 0x000fffff  1 1 1  Alias for 1st MB of SDRAM
+0x00100000 - 0x7fffffff  0 0 0  ATU Outbound Direct Window
+0x80000000 - 0x900fffff  0 0 0  ATU Outbound Translate Windows
+0xa0000000 - 0xbfffffff  1 1 1  SDRAM
+0xc0000000 - 0xdfffffff  0 0 0  Uncached alias for SDRAM
+0xe0000000 - 0xe00fffff  1 1 1  Cache flush region (no phys mem)
+0xf0000000 - 0xf0800000  0 1 0  FLASH               (PBIU CS0)
+0xfe800000 - 0xfe800fff  0 0 0  UART                (PBIU CS1)
+0xfe840000 - 0xfe840fff  0 0 0  Left 7-segment LED  (PBIU CS3)
+0xfe850000 - 0xfe850fff  0 0 0  Right 7-segment LED (PBIU CS2)
+0xfe8d0000 - 0xfe8d0fff  0 0 0  Rotary Switch       (PBIU CS4)
+0xfe8f0000 - 0xfe8f0fff  0 0 0  Baterry Status      (PBIU CS5)
+0xfff00000 - 0xffffffff  0 0 0  Verde Memory mapped Registers&#13;</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6442">Platform Resource Usage</H2
+><P
+>The Verde programmable timer0 is used for timeout support
+for networking and XModem file transfers.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="iq80310.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="calmrisc16.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>ARM/Xscale Cyclone IQ80310</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="installation-and-testing.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>CalmRISC/CalmRISC16 Samsung CalmRISC16 Core Evaluation Board</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

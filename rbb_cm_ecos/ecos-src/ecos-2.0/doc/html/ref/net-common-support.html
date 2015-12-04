@@ -1,0 +1,231 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Support Features</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Stack Support for eCos"
+HREF="net-common-tcpip.html"><LINK
+REL="PREVIOUS"
+TITLE="Maintenance Tools "
+HREF="net-common-maintenance-tools.html"><LINK
+REL="NEXT"
+TITLE="DHCP"
+HREF="net-common-dhcp.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-maintenance-tools.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-dhcp.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="NET-COMMON-SUPPORT">Chapter 37. Support Features</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="net-common-support.html#NET-COMMON-TFTP"
+>TFTP</A
+></DT
+><DT
+><A
+HREF="net-common-dhcp.html"
+>DHCP</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TFTP">TFTP</H1
+><P
+>The TFTP client and server are described in
+<TT
+CLASS="FILENAME"
+>tftp_support.h</TT
+>;
+the client API is simple and can be easily understood by reading
+<TT
+CLASS="FILENAME"
+>tftp_client_test.c</TT
+>.</P
+><P
+>The server is more complex.  It requires a filesystem implementation
+to be supplied by the user, and attached to the tftp server by means
+of a vector of function pointers:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct tftpd_fileops {
+             int (&#0042;open)(const char &#0042;, int);
+             int (&#0042;close)(int);
+             int (&#0042;write)(int, const void &#0042;, int);
+             int (&#0042;read)(int, void &#0042;, int);
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+>These functions have the obvious semantics.  The structure
+describing the filesystem is an argument to the <TT
+CLASS="FUNCTION"
+>tftpd_start(int,
+struct tftpd_fileops &#0042;);</TT
+> call.
+ The first argument is the port to use for the server.</P
+><P
+>As discussed in the description of the tftp_server_test
+above, an example filesystem is provided in
+<TT
+CLASS="FILENAME"
+>net/common/<TT
+CLASS="REPLACEABLE"
+><I
+>VERSION</I
+></TT
+>/src/tftp_dummy_file.c</TT
+>
+for
+use by the tftp server test.  The dummy filesystem is not a supported
+part of the network stack, it exists purely for demonstration purposes.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-maintenance-tools.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-dhcp.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Maintenance Tools</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-common-tcpip.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>DHCP</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

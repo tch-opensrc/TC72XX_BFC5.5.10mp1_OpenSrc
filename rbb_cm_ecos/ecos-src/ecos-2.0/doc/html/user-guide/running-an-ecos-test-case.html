@@ -1,0 +1,345 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Running an eCos Test Case</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Programming With eCos"
+HREF="user-guide-programming.html"><LINK
+REL="PREVIOUS"
+TITLE="Ecosconfig on Windows and Linux Quick Start"
+HREF="using-ecosconfig-on-linux.html"><LINK
+REL="NEXT"
+TITLE="Using the command line"
+HREF="using-commandline-testcase.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="using-ecosconfig-on-linux.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="using-commandline-testcase.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="RUNNING-AN-ECOS-TEST-CASE">Chapter 12. Running an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Test Case</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="running-an-ecos-test-case.html#USING-CONFIGTOOL-TESTCASE"
+>Using the <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+></A
+></DT
+><DT
+><A
+HREF="using-commandline-testcase.html"
+>Using the command line</A
+></DT
+><DT
+><A
+HREF="testing-filters.html"
+>Testing Filters</A
+></DT
+></DL
+></DIV
+><P
+>In <A
+HREF="using-configtool-windows-linux.html"
+>the Section called <I
+>Configuration Tool on Windows and Linux Quick Start</I
+> in Chapter 11</A
+> or <A
+HREF="using-ecosconfig-on-linux.html"
+>the Section called <I
+>Ecosconfig on Windows and Linux Quick Start</I
+> in Chapter 11</A
+> you created the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> test cases
+as part of the build process. Now it is time to try and run one.</P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="USING-CONFIGTOOL-TESTCASE">Using the <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+></H1
+><P
+>Test executables that have been linked using the
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build-&gt;Tests</I
+></SPAN
+> operation against the current
+configuration can be executed by selecting <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Tools-&#62;Run
+Tests</I
+></SPAN
+>.</P
+><P
+>When a test run is invoked, a property sheet is displayed, see
+<A
+HREF="running-an-ecos-test-case.html#PROGRAMMING-RUN-TESTS"
+>Figure 12-1</A
+>. Press the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Uncheck
+All</I
+></SPAN
+> button and then find and check just one test,
+<TT
+CLASS="FILENAME"
+>bin_sem0</TT
+> for example.</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="PROGRAMMING-RUN-TESTS"><P
+><B
+>Figure 12-1. Run tests</B
+></P
+><P
+><IMG
+SRC="pix/run-tests.png"></P
+></DIV
+><P
+>Now press the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Properties</I
+></SPAN
+> button to set up
+communications with the target. This will bring up a properties dialog
+shown in <A
+HREF="running-an-ecos-test-case.html#PROGRAMMING-RUN-PROPERTIES"
+>Figure 12-2</A
+>. If you have
+connected the target board via a serial cable, check the
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Serial</I
+></SPAN
+> radio button, and select the serial port
+and baud rate for the board. If the target is connected via the
+network select the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>TCP/IP</I
+></SPAN
+> button and enter the IP
+address that the board has been given, and the port number (usually
+9000).</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="PROGRAMMING-RUN-PROPERTIES"><P
+><B
+>Figure 12-2. Properties dialog box</B
+></P
+><P
+><IMG
+SRC="pix/ch-properties-dialog.png"></P
+></DIV
+><P
+>Click OK on this dialog and go back to the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Run
+Tests</I
+></SPAN
+> dialog. Press the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Run</I
+></SPAN
+> button and
+the selected test will be downloaded and run. The
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Output</I
+></SPAN
+> tab will show you how this is
+progressing. If it seems to stop for a long time, check that the
+target board is correctly connected, and that <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> has been correctly
+configured -- especially the start-up type.</P
+><P
+>When the program runs you should see a couple of line similar to this appear:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>PASS:&lt;Binary Semaphore 0 OK&gt;
+EXIT:&lt;done&gt;</PRE
+></TD
+></TR
+></TABLE
+><P
+>This indicates that the test has run successfully.</P
+><P
+>See <A
+HREF="config-tool-test-execution.html"
+>Chapter 22</A
+> for
+further details.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="using-ecosconfig-on-linux.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="using-commandline-testcase.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Ecosconfig on Windows and Linux Quick Start</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="user-guide-programming.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Using the command line</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

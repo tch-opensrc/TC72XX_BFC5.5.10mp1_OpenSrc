@@ -1,0 +1,288 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>script</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="requires"
+HREF="ref.requires.html"><LINK
+REL="NEXT"
+TITLE="Templates, Targets and Other Topics"
+HREF="advanced.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.requires.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="advanced.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.SCRIPT"><SPAN
+CLASS="PROPERTY"
+>script</SPAN
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4954"
+></A
+><H2
+>Name</H2
+>Property <SPAN
+CLASS="PROPERTY"
+>script</SPAN
+>&nbsp;--&nbsp;Include additional configuration information from another
+CDL script.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4958"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_component &lt;name&gt; {
+    script &lt;filename&gt;
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4960"
+></A
+><H2
+>Description</H2
+><P
+>It is possible to define all the configuration options and
+sub-components for a given package in a single CDL script, either by
+nesting them in the appropriate command bodies, by extensive use of
+the <SPAN
+CLASS="PROPERTY"
+>parent</SPAN
+> property, or by some combination of these two. However
+for large packages this is inconvenient and it is better to split the
+raw configuration data over several different files. The <SPAN
+CLASS="PROPERTY"
+>script</SPAN
+>
+property can be used to achieve this. It takes a single filename as
+argument. If the package follows the <A
+HREF="package.html#PACKAGE.HIERARCHY"
+>directory layout conventions</A
+> then
+the configuration tools will look for the specified file in the
+<TT
+CLASS="FILENAME"
+>cdl</TT
+> sub-directory of the
+package, otherwise it will look for the file relative to the package's
+top-level directory.</P
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>script</SPAN
+> property can only occur in the body of a <TT
+CLASS="LITERAL"
+>cdl_component</TT
+>command, and only one <SPAN
+CLASS="PROPERTY"
+>script</SPAN
+> property per body is allowed.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4971"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_component CYGPKG_UITRON_TASKS {
+    display      "Tasks"
+    flavor        none
+    description   "
+        uITRON Tasks are the basic blocks of multi-tasking
+        in the uITRON world; they are threads or lightweight
+        processes, sharing the address space and the CPU.
+        They communicate using the primitives outlined above.
+        Each has a stack, an entry point (a C or C++ function),
+        and (where appropriate) a scheduling priority."
+
+    script        tasks.cdl
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4974"
+></A
+><H2
+>See Also</H2
+><P
+>Command  <A
+HREF="ref.cdl-component.html"
+><TT
+CLASS="LITERAL"
+>cdl_component</TT
+></A
+>,
+and property <A
+HREF="ref.parent.html"
+><SPAN
+CLASS="PROPERTY"
+>parent</SPAN
+></A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.requires.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="advanced.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Templates, Targets and Other Topics</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

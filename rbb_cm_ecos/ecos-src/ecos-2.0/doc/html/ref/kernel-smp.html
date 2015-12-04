@@ -1,0 +1,413 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>SMP Support</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Kernel"
+HREF="kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="Kernel Overview"
+HREF="kernel-overview.html"><LINK
+REL="NEXT"
+TITLE="Thread creation"
+HREF="kernel-thread-create.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="kernel-overview.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="kernel-thread-create.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="KERNEL-SMP">SMP Support</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN206"
+></A
+><H2
+>Name</H2
+>SMP&nbsp;--&nbsp;Support Symmetric Multiprocessing Systems</DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-SMP-DESCRIPTION"
+></A
+><H2
+>Description</H2
+><P
+>eCos contains support for limited Symmetric Multi-Processing (SMP).
+This is only available on selected architectures and platforms.
+The implementation has a number of restrictions on the kind of
+hardware supported. These are described in <A
+HREF="hal-smp-support.html"
+>the Section called <I
+>SMP Support</I
+> in Chapter 9</A
+>.
+    </P
+><P
+>The following sections describe the changes that have been made to the
+eCos kernel to support SMP operation.
+    </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-SMP-STARTUP"
+></A
+><H2
+>System Startup</H2
+><P
+>The system startup sequence needs to be somewhat different on an SMP
+system, although this is largely transparent to application code. The
+main startup takes place on only one CPU, called the primary CPU. All
+other CPUs, the secondary CPUs, are either placed in suspended state
+at reset, or are captured by the HAL and put into a spin as they start
+up. The primary CPU is responsible for copying the DATA segment and
+zeroing the BSS (if required), calling HAL variant and platform
+initialization routines and invoking constructors. It then calls
+<TT
+CLASS="FUNCTION"
+>cyg_start</TT
+> to enter the application. The
+application may then create extra threads and other objects.
+      </P
+><P
+>It is only when the application calls
+<TT
+CLASS="FUNCTION"
+>cyg_scheduler_start</TT
+> that the secondary CPUs are
+initialized. This routine scans the list of available secondary CPUs
+and invokes <TT
+CLASS="FUNCTION"
+>HAL_SMP_CPU_START</TT
+> to start each
+CPU. Finally it calls an internal function
+<TT
+CLASS="FUNCTION"
+>Cyg_Scheduler::start_cpu</TT
+> to enter the scheduler
+for the primary CPU.
+      </P
+><P
+>Each secondary CPU starts in the HAL, where it completes any per-CPU
+initialization before calling into the kernel at
+<TT
+CLASS="FUNCTION"
+>cyg_kernel_cpu_startup</TT
+>. Here it claims the
+scheduler lock and calls
+<TT
+CLASS="FUNCTION"
+>Cyg_Scheduler::start_cpu</TT
+>.
+      </P
+><P
+><TT
+CLASS="FUNCTION"
+>Cyg_Scheduler::start_cpu</TT
+> is common to both the
+primary and secondary CPUs. The first thing this code does is to
+install an interrupt object for this CPU's inter-CPU interrupt. From
+this point on the code is the same as for the single CPU case: an
+initial thread is chosen and entered.
+      </P
+><P
+>From this point on the CPUs are all equal, eCos makes no further
+distinction between the primary and secondary CPUs. However, the
+hardware may still distinguish between them as far as interrupt
+delivery is concerned.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-SMP-SCHEDULING"
+></A
+><H2
+>Scheduling</H2
+><P
+>To function correctly an operating system kernel must protect its
+vital data structures, such as the run queues, from concurrent
+access. In a single CPU system the only concurrent activities to worry
+about are asynchronous interrupts. The kernel can easily guard its
+data structures against these by disabling interrupts. However, in a
+multi-CPU system, this is inadequate since it does not block access by
+other CPUs.
+      </P
+><P
+>The eCos kernel protects its vital data structures using the scheduler
+lock. In single CPU systems this is a simple counter that is
+atomically incremented to acquire the lock and decremented to release
+it. If the lock is decremented to zero then the scheduler may be
+invoked to choose a different thread to run. Because interrupts may
+continue to be serviced while the scheduler lock is claimed, ISRs are
+not allowed to access kernel data structures, or call kernel routines
+that can. Instead all such operations are deferred to an associated
+DSR routine that is run during the lock release operation, when the
+data structures are in a consistent state.
+      </P
+><P
+>By choosing a kernel locking mechanism that does not rely on interrupt
+manipulation to protect data structures, it is easier to convert eCos
+to SMP than would otherwise be the case. The principal change needed to
+make eCos SMP-safe is to convert the scheduler lock into a nestable
+spin lock. This is done by adding a spinlock and a CPU id to the
+original counter.
+      </P
+><P
+>The algorithm for acquiring the scheduler lock is very simple. If the
+scheduler lock's CPU id matches the current CPU then it can just increment
+the counter and continue. If it does not match, the CPU must spin on
+the spinlock, after which it may increment the counter and store its
+own identity in the CPU id.
+      </P
+><P
+>To release the lock, the counter is decremented. If it goes to zero
+the CPU id value must be set to NONE and the spinlock cleared.
+      </P
+><P
+>To protect these sequences against interrupts, they must be performed
+with interrupts disabled. However, since these are very short code
+sequences, they will not have an adverse effect on the interrupt
+latency.
+      </P
+><P
+>Beyond converting the scheduler lock, further preparing the kernel for
+SMP is a relatively minor matter. The main changes are to convert
+various scalar housekeeping variables into arrays indexed by CPU
+id. These include the current thread pointer, the need_reschedule
+flag and the timeslice counter.
+      </P
+><P
+>At present only the Multi-Level Queue (MLQ) scheduler is capable of
+supporting SMP configurations. The main change made to this scheduler
+is to cope with having several threads in execution at the same
+time. Running threads are marked with the CPU that they are executing on.
+When scheduling a thread, the scheduler skips past any running threads
+until it finds a thread that is pending. While not a constant-time
+algorithm, as in the single CPU case, this is still deterministic,
+since the worst case time is bounded by the number of CPUs in the
+system.
+      </P
+><P
+>A second change to the scheduler is in the code used to decide when
+the scheduler should be called to choose a new thread. The scheduler
+attempts to keep the <SPAN
+CLASS="PROPERTY"
+>n</SPAN
+> CPUs running the
+<SPAN
+CLASS="PROPERTY"
+>n</SPAN
+> highest priority threads. Since an event or
+interrupt on one CPU may require a reschedule on another CPU, there
+must be a mechanism for deciding this. The algorithm currently
+implemented is very simple. Given a thread that has just been awakened
+(or had its priority changed), the scheduler scans the CPUs, starting
+with the one it is currently running on, for a current thread that is
+of lower priority than the new one. If one is found then a reschedule
+interrupt is sent to that CPU and the scan continues, but now using
+the current thread of the rescheduled CPU as the candidate thread. In
+this way the new thread gets to run as quickly as possible, hopefully
+on the current CPU, and the remaining CPUs will pick up the remaining
+highest priority threads as a consequence of processing the reschedule
+interrupt.
+      </P
+><P
+>The final change to the scheduler is in the handling of
+timeslicing. Only one CPU receives timer interrupts, although all CPUs
+must handle timeslicing. To make this work, the CPU that receives the
+timer interrupt decrements the timeslice counter for all CPUs, not
+just its own. If the counter for a CPU reaches zero, then it sends a
+timeslice interrupt to that CPU. On receiving the interrupt the
+destination CPU enters the scheduler and looks for another thread at
+the same priority to run. This is somewhat more efficient than
+distributing clock ticks to all CPUs, since the interrupt is only
+needed when a timeslice occurs.
+      </P
+><P
+>All existing synchronization mechanisms work as before in an SMP
+system. Additional synchronization mechanisms have been added to
+provide explicit synchronization for SMP, in the form of
+<A
+HREF="kernel-spinlocks.html"
+>spinlocks</A
+>.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-SMP-INTERRUPTS"
+></A
+><H2
+>SMP Interrupt Handling</H2
+><P
+>The main area where the SMP nature of a system requires special
+attention is in device drivers and especially interrupt handling. It
+is quite possible for the ISR, DSR and thread components of a device
+driver to execute on different CPUs. For this reason it is much more
+important that SMP-capable device drivers use the interrupt-related
+functions correctly. Typically a device driver would use the driver
+API rather than call the kernel directly, but it is unlikely that
+anybody would attempt to use a multiprocessor system without the
+kernel package.
+      </P
+><P
+>Two new functions have been added to the Kernel API
+to do <A
+HREF="kernel-interrupts.html#KERNEL-INTERRUPTS-SMP"
+>interrupt
+routing</A
+>: <TT
+CLASS="FUNCTION"
+>cyg_interrupt_set_cpu</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_interrupt_get_cpu</TT
+>. Although not currently
+supported, special values for the cpu argument may be used in future
+to indicate that the interrupt is being routed dynamically or is
+CPU-local. Once a vector has been routed to a new CPU, all other
+interrupt masking and configuration operations are relative to that
+CPU, where relevant.
+      </P
+><P
+>There are more details of how interrupts should be handled in SMP
+systems in <A
+HREF="devapi-smp-support.html"
+>the Section called <I
+>SMP Support</I
+> in Chapter 18</A
+>.
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="kernel-overview.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="kernel-thread-create.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Kernel Overview</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Thread creation</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

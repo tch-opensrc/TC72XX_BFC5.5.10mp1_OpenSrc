@@ -1,0 +1,306 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>SPARClite Hardware Setup</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Target Setup"
+HREF="appendix-target-setup.html"><LINK
+REL="PREVIOUS"
+TITLE="PowerPC Architectural Simulator Setup"
+HREF="setup-ppc-sim.html"><LINK
+REL="NEXT"
+TITLE="SPARClite Architectural Simulator Setup"
+HREF="setup-sparclite-sim.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="setup-ppc-sim.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Target Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="setup-sparclite-sim.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SETUP-SPARCLITE-SLEB">SPARClite Hardware Setup</H1
+><P
+>The eCos Developer&#8217;s Kit package comes with a ROM
+which provides GDB support for the Fujitsu SPARClite Evaluation
+Board by way of CygMon<SPAN
+CLASS="PRODUCTNAME"
+>. </SPAN
+></P
+><P
+>An image of this ROM is also provided at
+	  <TT
+CLASS="FILENAME"
+>BASE_DIR/loaders/sparclite-sleb/cygmon.bin.</TT
+> The
+ROM is installed in socket IC9 on the evaluation board. Attention
+should be paid to the correct orientation of the ROM during installation.</P
+><P
+>The GDB stub allows communication with GDB using a TCP channel
+via the ethernet port at connector J5.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3509">Ethernet Setup</H2
+><P
+>The ethernet setup is described in the board&#8217;s manual,
+but here is a recapitulation.</P
+><P
+>Set the board&#8217;s ethernet address using SW1 on the
+motherboard:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>	    SW1-4 SW1-3 SW1-2 SW1-1    Ethernet Address
+	    ----- ----- ----- -----    ----------------
+	    OFF   OFF   OFF   OFF     No ethernet, use serial
+	    OFF   OFF   OFF    ON     00:00:0E:31:00:01
+	    OFF   OFF    ON   OFF     00:00:0E:31:00:02
+	    OFF   OFF    ON    ON     00:00:0E:31:00:03
+	    OFF    ON   OFF   OFF     00:00:0E:31:00:04
+	    OFF    ON   OFF    ON     00:00:0E:31:00:05
+	    OFF    ON    ON   OFF     00:00:0E:31:00:06
+	    OFF    ON    ON    ON     00:00:0E:31:00:07
+	    ON    OFF   OFF   OFF     00:00:0E:31:00:08
+	    ON    OFF   OFF    ON     00:00:0E:31:00:09
+	    ON    OFF    ON   OFF     00:00:0E:31:00:0A
+	    ON    OFF    ON    ON     00:00:0E:31:00:0B
+	    ON     ON   OFF   OFF     00:00:0E:31:00:0C
+	    ON     ON   OFF    ON     00:00:0E:31:00:0D
+	    ON     ON    ON   OFF     00:00:0E:31:00:0E
+	    ON     ON    ON    ON     00:00:0E:31:00:0F</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN3514">BOOTP/DHCP service on Linux</H3
+><P
+>Configure the BOOTP or DHCP server on the network to recognize
+the evaluation board&#8217;s ethernet address so it can assign
+the board an IP address. Below is a sample DHCP server configuration
+from a Linux system (<TT
+CLASS="FILENAME"
+>/etc/dhcpd.conf</TT
+>).
+It shows a setup for three evaluation boards.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#
+# DHCP server configuration.
+#
+allow bootp;
+
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  host mb831evb {
+    hardware ethernet 00:00:0e:31:00:01;
+    fixed-address mb831evb;
+  }
+  host mb832evb {
+    hardware ethernet 00:00:0e:31:00:02;
+    fixed-address mb832evb;
+  }
+  host mb833evb {
+    hardware ethernet 00:00:0e:31:00:03;
+    fixed-address mb833evb;
+  }
+} </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN3519">BOOTP/DHCP boot process</H3
+><P
+>Even when configured to use a TCP channel, CygMon will still
+print a boot message to the serial channel. If the BOOTP process
+was successful and an IP address was found, a message &#8220;BOOTP
+found xxx.xxx.xxx.xxx&#8221; will be printed where xxx.xxx.xxx.xxx
+is the IP address assigned by the BOOTP or DHCP server. If the BOOTP
+process fails, a message indicating failure will be printed and
+the serial port will be used as the debug channel.</P
+><P
+>Once the board finds an IP address it will respond to ICMP
+echo request packets (ping). This gives a simple means to test the
+health of the board.</P
+><P
+>As described in &#8220;Ethernet Setup&#8221; on&nbsp;page&nbsp;72,
+it should now be possible to connect to the SPARClite board from
+within GDB by using the command:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>(gdb) target remote &lt;host&#62;:1000</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3525">Serial Setup</H2
+><P
+>The CygMon stubs also allow communication with GDB by way
+of the serial port at connector CON1. The communication parameters
+are fixed at 19200 baud, 8 data bits, no parity bit and 1 stop bit
+(8-N-1). No flow control is employed. Connection to the host computer
+should be made using a null modem cable. A gender changer may also
+be required.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="setup-ppc-sim.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="setup-sparclite-sim.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>PowerPC Architectural Simulator Setup</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="appendix-target-setup.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SPARClite Architectural Simulator Setup</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

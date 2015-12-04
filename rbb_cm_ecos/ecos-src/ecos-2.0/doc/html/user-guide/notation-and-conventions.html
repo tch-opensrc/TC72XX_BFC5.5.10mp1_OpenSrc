@@ -1,0 +1,259 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Notation and Conventions</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Introduction"
+HREF="user-guide-introduction.html"><LINK
+REL="PREVIOUS"
+TITLE="Previous License"
+HREF="ecos-licensing-previous.html"><LINK
+REL="NEXT"
+TITLE="Directory and File System Conventions"
+HREF="directory-and-file-system-conventions.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ecos-licensing-previous.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="directory-and-file-system-conventions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="NOTATION-AND-CONVENTIONS">Chapter 4. Notation and Conventions</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="notation-and-conventions.html#GDB-AND-GCC-COMMAND-NOTATION"
+>GDB and GCC Command Notation</A
+></DT
+><DT
+><A
+HREF="directory-and-file-system-conventions.html"
+>Directory and File System Conventions</A
+></DT
+><DT
+><A
+HREF="version-conventions.html"
+>Version Conventions</A
+></DT
+></DL
+></DIV
+><P
+>Since there are many supported target architectures, notation
+conventions are used in this manual to avoid repeating instructions
+that are very similar.</P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="GDB-AND-GCC-COMMAND-NOTATION">GDB and GCC Command Notation</H1
+><P
+>Cross-development commands like <B
+CLASS="COMMAND"
+>gcc</B
+> and
+<B
+CLASS="COMMAND"
+>gdb</B
+> will be shown with a
+<TT
+CLASS="REPLACEABLE"
+><I
+>TARGET-</I
+></TT
+> prefix. You need to replace
+<TT
+CLASS="REPLACEABLE"
+><I
+>TARGET-</I
+></TT
+> with the correct prefix before
+using the command. Just using <B
+CLASS="COMMAND"
+>gcc</B
+> or
+<B
+CLASS="COMMAND"
+>gdb</B
+> will use the tools for the host, which is not
+(usually) what you want.</P
+><P
+>For example use <B
+CLASS="COMMAND"
+>arm-elf-gcc</B
+> and
+<B
+CLASS="COMMAND"
+>arm-elf-gdb</B
+> for ARM, Thumb, and StrongARM targets.
+Use <B
+CLASS="COMMAND"
+>xscale-elf-gcc</B
+> and
+<B
+CLASS="COMMAND"
+>xscale-elf-gdb</B
+> for Intel Xscale targets.
+Use <B
+CLASS="COMMAND"
+>i386-elf-gcc</B
+> and
+<B
+CLASS="COMMAND"
+>i386-elf-gdb</B
+> for IA32 targets. And so on, the exact
+prefix to use is shown in the documentation for each target.</P
+><P
+>Note that some versions of the GCC cross compiler generate
+executable files with the <TT
+CLASS="FILENAME"
+>.exe</TT
+> suffix on Windows,
+but not on Linux. The suffix <TT
+CLASS="FILENAME"
+>.exe</TT
+> will be omitted
+from executable file names, so you will see <TT
+CLASS="FILENAME"
+>hello</TT
+>
+instead of <TT
+CLASS="FILENAME"
+>hello.exe</TT
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ecos-licensing-previous.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="directory-and-file-system-conventions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Previous License</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="user-guide-introduction.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Directory and File System Conventions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,421 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>The Component Repository and Working Directories</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="eCos Programming Concepts and Techniques"
+HREF="ecos-programming-concepts-and-techniques.html"><LINK
+REL="PREVIOUS"
+TITLE="Templates"
+HREF="cdl-templates.html"><LINK
+REL="NEXT"
+TITLE="Build Tree"
+HREF="build-tree.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="cdl-templates.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="build-tree.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="COMPONENT-REPO-AND-WORKING-DIRS">Chapter 25. The Component Repository and Working Directories</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="component-repo-and-working-dirs.html#COMPONENT-REPO"
+>Component Repository</A
+></DT
+><DT
+><A
+HREF="build-tree.html"
+>Build Tree</A
+></DT
+><DT
+><A
+HREF="install-tree.html"
+>Install Tree</A
+></DT
+><DT
+><A
+HREF="repository-app-build-tree.html"
+>Application Build Tree</A
+></DT
+></DL
+></DIV
+><P
+>Each of the file trees involved in <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> development has a
+	different role. </P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="COMPONENT-REPO">Component Repository</H1
+><P
+>The <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <I
+CLASS="FIRSTTERM"
+>component repository</I
+>
+	  contains directories for all the packages that are shipped
+	  with <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> or provided by third parties.</P
+><P
+>The component repository should not be modified as part of
+application development. </P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN2022"><P
+><B
+>Figure 25-1. Component repository</B
+></P
+><P
+><IMG
+SRC="pix/comprepos.png"></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2025">Purpose</H2
+><P
+>The component repository is the master copy of source code
+for all system and third party components. It also contains some
+files needed to administer and build the system, such as <B
+CLASS="COMMAND"
+>ecosadmin.tcl</B
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2029">How is it modified?</H2
+><P
+>You modify it by importing new versions of packages from a
+distribution or removing existing packages. These activities are
+undertaken using the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Package Administration Tool</SPAN
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2034">When is it edited manually?</H2
+><P
+>Files in the component repository should only be edited manually
+as determined by the component maintainer.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2037">User Applications</H2
+><P
+>User application source code should <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> go
+into the component repository.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2041">Examples of files in this hierarchy:</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="FILENAME"
+><TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/doc/ref/ecos-ref.html</TT
+></DT
+><DD
+><P
+>The top level HTML file for the
+		  <I
+CLASS="CITETITLE"
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Reference
+		    Manual</I
+>. </P
+></DD
+><DT
+><TT
+CLASS="FILENAME"
+><TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/prebuilt/pid/tests/kernel/<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+>/tests/thread_gdb.exe</TT
+></DT
+><DD
+><P
+></P
+></DD
+><DT
+><TT
+CLASS="FILENAME"
+><TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/prebuilt/linux/tests/kernel/<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+>/tests/thread_gdb.exe</TT
+></DT
+><DD
+><P
+>Pre-built tests for the supported platforms, and
+		  the synthetic Linux target.</P
+></DD
+><DT
+><TT
+CLASS="FILENAME"
+><TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/examples/twothreads.c</TT
+></DT
+><DD
+><P
+>One of the example programs.</P
+></DD
+><DT
+><TT
+CLASS="FILENAME"
+><TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/ecosadmin.tcl</TT
+></DT
+><DD
+><P
+>The Tcl program which is used to  import new versions of packages
+from a distribution or remove existing packages.</P
+></DD
+><DT
+><TT
+CLASS="FILENAME"
+><TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/packages/language/c/libm/<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+>/src/double/portable-api/s_tanh.c</TT
+></DT
+><DD
+><P
+>Implementation of the hyperbolic tangent function in the standard
+math library.</P
+></DD
+><DT
+><TT
+CLASS="FILENAME"
+><TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/pkgconf/rules.mak</TT
+></DT
+><DD
+><P
+>A file with <B
+CLASS="COMMAND"
+>make</B
+> rules, used
+by the <TT
+CLASS="FILENAME"
+>makefile</TT
+>.</P
+></DD
+></DL
+></DIV
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="cdl-templates.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="build-tree.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Templates</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-programming-concepts-and-techniques.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Build Tree</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

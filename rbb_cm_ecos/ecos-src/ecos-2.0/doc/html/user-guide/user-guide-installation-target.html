@@ -1,0 +1,264 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Target Setup</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Installing eCos"
+HREF="user-guide-installation.html"><LINK
+REL="PREVIOUS"
+TITLE="Installation on Windows"
+HREF="user-guide-installation-windows.html"><LINK
+REL="NEXT"
+TITLE="Connecting Via Ethernet"
+HREF="connecting-target-ethernet.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="user-guide-installation-windows.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="connecting-target-ethernet.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="USER-GUIDE-INSTALLATION-TARGET">Chapter 9. Target Setup</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="user-guide-installation-target.html#CONNECTING-TARGET-SERIAL"
+>Connecting Via Serial Line</A
+></DT
+><DT
+><A
+HREF="connecting-target-ethernet.html"
+>Connecting Via Ethernet</A
+></DT
+><DT
+><A
+HREF="connecting-target-sim.html"
+>Using A Simulator Target</A
+></DT
+><DT
+><A
+HREF="connecting-target-synth.html"
+>Using A Synthetic Target</A
+></DT
+></DL
+></DIV
+><P
+>While <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> supports a variety of
+targets, communication with all the targets happens in one of four
+ways. These are described in general below. Any details or variations
+from these descriptions will be found in the
+<SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> documentation for a specific target,
+in the appendix.</P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CONNECTING-TARGET-SERIAL">Connecting Via Serial Line</H1
+><P
+>Most targets will have RedBoot or GDB Stubs installed.
+These normally waits for GDB to connect at 38400 baud, using 8 data
+bit, no parity bit and 1 stop-bit and no hardware flow control. Check
+the documentation for your target to ensure it uses this speed. If not,
+adjust the following instructions accordingly.</P
+><P
+>The following instructions depend on your having selected
+the appropriate serial port on the host. That is, the serial port
+which connects to the target's (primary) serial port. On
+Linux this could be <TT
+CLASS="FILENAME"
+>/dev/ttyS0</TT
+>,
+while the same port on Windows would be named COM1.
+Substitute the proper serial port name in the below.</P
+><P
+>Connect to the target by issuing the following commands in
+GDB console mode:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>(gdb) set remotebaud 38400    
+(gdb) target remote /dev/ttyS0</PRE
+></TD
+></TR
+></TABLE
+><P
+>In Insight, connect by opening the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>File-&#62;Target
+Settings</I
+></SPAN
+> window and enter:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Target: Remote/Serial     
+Baud Rate: 38400     
+Port: /dev/ttyS0</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set other options according to preference, close the window
+and select 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Run-&#62;Connect to target</I
+></SPAN
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="user-guide-installation-windows.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="connecting-target-ethernet.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Installation on Windows</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="user-guide-installation.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Connecting Via Ethernet</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

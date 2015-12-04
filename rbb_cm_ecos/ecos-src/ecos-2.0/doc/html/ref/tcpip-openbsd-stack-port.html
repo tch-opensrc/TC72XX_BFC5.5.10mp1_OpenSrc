@@ -1,0 +1,198 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>OpenBSD TCP/IP stack port</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="OpenBSD TCP/IP Stack port for eCos"
+HREF="tcpip-openbsd.html"><LINK
+REL="PREVIOUS"
+TITLE="Networking Stack Features"
+HREF="tcpip-openbsd-networking-stack-features.html"><LINK
+REL="NEXT"
+TITLE="Building the Network Stack"
+HREF="tcpip-openbsd-building-the-network-stack.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="tcpip-openbsd-networking-stack-features.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="tcpip-openbsd-building-the-network-stack.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="TCPIP-OPENBSD-STACK-PORT">Chapter 43. OpenBSD TCP/IP stack port</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="tcpip-openbsd-stack-port.html#TCPIP-OPENBSD-TCPIP-TARGETS"
+>Targets</A
+></DT
+><DT
+><A
+HREF="tcpip-openbsd-building-the-network-stack.html"
+>Building the Network Stack</A
+></DT
+></DL
+></DIV
+><P
+>This document describes how to get started with the OpenBSD
+TCP/IP network stack. </P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="TCPIP-OPENBSD-TCPIP-TARGETS">Targets</H1
+><P
+>A number of ethernet devices may be supported. The default configuration
+supports two instances of the interface by default,
+and you will need to write your own driver instantiation code,
+and supplemental startup and initialization code,
+if you should add additional ones.</P
+><P
+>The target for your board will normally be supplied with an
+ethernet driver, in which case including the network stack and
+generic ethernet driver package to your build will automatically
+enable usage of the ethernet device driver.
+If your target is not supplied with an ethernet
+driver, you will need to use loopback (see
+<A
+HREF="net-common-tests-and-demonstrations.html#NET-COMMON-LOOPBACK-TESTS"
+>the Section called <I
+>Loopback tests</I
+> in Chapter 36</A
+>).</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="tcpip-openbsd-networking-stack-features.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="tcpip-openbsd-building-the-network-stack.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Networking Stack Features</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-openbsd.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Building the Network Stack</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

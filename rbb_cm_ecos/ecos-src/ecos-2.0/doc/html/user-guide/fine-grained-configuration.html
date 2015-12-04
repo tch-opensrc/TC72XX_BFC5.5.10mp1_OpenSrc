@@ -1,0 +1,249 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Fine-grained Configuration</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Manual Configuration"
+HREF="manual-configuration.html"><LINK
+REL="PREVIOUS"
+TITLE="Coarse-grained Configuration"
+HREF="coarse-grained-configuration.html"><LINK
+REL="NEXT"
+TITLE="Editing an eCos Savefile"
+HREF="editing-an-ecos-savefile.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="coarse-grained-configuration.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 28. Manual Configuration</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="editing-an-ecos-savefile.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="FINE-GRAINED-CONFIGURATION">Fine-grained Configuration</H1
+><P
+><B
+CLASS="COMMAND"
+>ecosconfig</B
+> only provides
+	  coarse-grained control over the configuration: the hardware,
+	  the template and the packages that should be built. Unlike
+	  the Configuration Tool,
+	  <B
+CLASS="COMMAND"
+>ecosconfig</B
+> does not provide
+	  any facilities for manipulating finer-grained configuration options such as how many
+	  priority levels the scheduler should support. There are
+	  hundreds of these options, and manipulating them by means of
+	  command line arguments would not be sensible. </P
+><P
+>In the current system fine-grained configuration options may
+be manipulated by manual editing of the configuration file. When
+a file has been edited in this way, the <B
+CLASS="COMMAND"
+>ecosconfig</B
+> tool
+should be used to check the configuration for any conflicts which
+may have been introduced:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ ecosconfig check</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <B
+CLASS="COMMAND"
+>check</B
+> command will list
+all conflicts and will also rewrite the configuration file, propagating
+any changes which affect other options. The user may choose to resolve
+the conflicts either by re-editing the configuration file manually
+or by invoking the inference engine using the <B
+CLASS="COMMAND"
+>resolve</B
+> command:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ ecosconfig resolve</PRE
+></TD
+></TR
+></TABLE
+><P
+>The  <B
+CLASS="COMMAND"
+>resolve</B
+> command will
+list all conflicts which can be resolved and save the resulting changes
+to the configuration.</P
+><P
+>It is necessary to regenerate the build tree and header files
+following any changes to the configuration before rebuilding <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ ecosconfig tree</PRE
+></TD
+></TR
+></TABLE
+><P
+>All the configuration options and their descriptions are listed
+in the <I
+CLASS="CITETITLE"
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Reference Manual</I
+>. </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="coarse-grained-configuration.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="editing-an-ecos-savefile.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Coarse-grained Configuration</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="manual-configuration.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Editing an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Savefile</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

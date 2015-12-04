@@ -1,0 +1,368 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Package Organization</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="PREVIOUS"
+TITLE="Warnings"
+HREF="overview.warning.html"><LINK
+REL="NEXT"
+TITLE="Package Versioning"
+HREF="package.versions.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="overview.warning.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="package.versions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="PACKAGE">Chapter 2. Package Organization</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="package.html#PACKAGE.HIERARCHY"
+>Packages and the Component Repository</A
+></DT
+><DT
+><A
+HREF="package.versions.html"
+>Package Versioning</A
+></DT
+><DT
+><A
+HREF="package.contents.html"
+>Package Contents and Layout</A
+></DT
+><DT
+><A
+HREF="package.distrib.html"
+>Making a Package Distribution</A
+></DT
+></DL
+></DIV
+><P
+>For a package to be usable in the <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> component framework it must
+conform to certain rules imposed by that framework. Packages must be
+distributed in a form that is understood by the component repository
+administration tool. There must be a top-level <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> script which
+describes the package to the component framework. There are certain
+limitations related to how a package gets built, so that the package
+can still be used in a variety of host environments. In addition to
+these rules, the component framework provides a number of guidelines.
+Packages do not have to conform to the guidelines, but sticking to
+them can simplify certain operations.</P
+><P
+>This chapter deals with the general organization of a package, for
+example how to distinguish between private and exported header files.
+<A
+HREF="language.html"
+>Chapter 3</A
+> describes the <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> language.
+<A
+HREF="build.html"
+>Chapter 4</A
+> details the build process.</P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="PACKAGE.HIERARCHY">Packages and the Component Repository</H1
+><P
+>All <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> installations include a component repository. This is a
+directory structure for all installed packages. The component
+framework comes with an administration tool that allows new packages
+or new versions of a package to be installed, old packages to be
+removed, and so on. The component repository includes a simple
+database, maintained by the administration tool, which contains
+details of the various packages.</P
+><DIV
+CLASS="INFORMALFIGURE"
+><A
+NAME="AEN187"><P
+></P
+><DIV
+CLASS="MEDIAOBJECT"
+><P
+><IMG
+SRC="repo.png"
+ALIGN="CENTER"></P
+></DIV
+><P
+></P
+></DIV
+><P
+>Each package has its own little directory hierarchy within the
+component repository. Keeping several packages in a single directory
+is illegal. The error, infra and kernel packages all live at the
+top-level of the repository. For other types of packages there are
+some pre-defined directories: <TT
+CLASS="FILENAME"
+>compat</TT
+> is used for compatibility
+packages, which implement other interfaces such as &micro;ITRON or POSIX
+using native <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> calls; <TT
+CLASS="FILENAME"
+>hal</TT
+>
+is used for packages that port <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> to different architectures or
+platforms, and this directory is further organized on a
+per-architecture basis; <TT
+CLASS="FILENAME"
+>io</TT
+> is
+intended for device drivers; <TT
+CLASS="FILENAME"
+>language</TT
+> is used for language support
+libraries, for example the C library. There are no strict rules
+defining where new packages should get installed. Obviously if an
+existing top-level directory such as <TT
+CLASS="FILENAME"
+>compat</TT
+> is applicable then the new package
+should go in there. If a new category is desirable then it is possible
+to create a new sub-directory in the component repository. For
+example, an organization planning to release a number of <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+>
+packages may want them all to appear below a sub-directory
+corresponding to the organization's name&nbsp;&#8212; in the hope that
+the name will not change too often. It is possible to add new packages
+directly to the top-level of the component repository, but this should
+be avoided.</P
+><P
+>The <SPAN
+CLASS="DATABASE"
+>ecos.db</SPAN
+> file holds the component repository
+database and is managed by the administration tool. The various
+configuration tools read in this file when they start-up to obtain
+information about the various packages that have been installed. When
+developing a new package it is necessary to add some information to
+the file, as described in <A
+HREF="language.database.html"
+>the Section called <I
+>Updating the <SPAN
+CLASS="DATABASE"
+>ecos.db</SPAN
+> database</I
+> in Chapter 3</A
+>. The
+<TT
+CLASS="FILENAME"
+>templates</TT
+> directory holds
+various configuration templates.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Earlier releases of <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> came with two separate files,
+<TT
+CLASS="FILENAME"
+>targets</TT
+> and <TT
+CLASS="FILENAME"
+>packages</TT
+>. The
+<SPAN
+CLASS="DATABASE"
+>ecos.db</SPAN
+> database replaces both of these.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="CAUTION"
+><P
+></P
+><TABLE
+CLASS="CAUTION"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Caution</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>The current <SPAN
+CLASS="DATABASE"
+>ecos.db</SPAN
+> database does not yet provide
+all of the information needed by the component framework. Its format
+is subject to change in future releases, and the file may be replaced
+completely if necessary. There are a number of other likely future
+developments related to the component repository and the database. The
+way targets are described is subject to change. Sometimes it is
+desirable for component writers to do their initial development in a
+directory outside the component repository, but there is no specific
+support in the framework for that yet.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="overview.warning.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="package.versions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Warnings</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Package Versioning</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

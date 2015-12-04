@@ -1,0 +1,583 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Cache Control</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="HAL Interfaces"
+HREF="hal-interfaces.html"><LINK
+REL="PREVIOUS"
+TITLE="HAL I/O"
+HREF="hal-input-and-output.html"><LINK
+REL="NEXT"
+TITLE="Linker Scripts"
+HREF="hal-linker-scripts.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="hal-input-and-output.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. HAL Interfaces</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="hal-linker-scripts.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="HAL-CACHE-CONTROL">Cache Control</H1
+><P
+>This section contains definitions for supporting control
+of the caches on the CPU.</P
+><P
+>These definitions are usually found in the header file
+<TT
+CLASS="FILENAME"
+>cyg/hal/hal_cache.h</TT
+>.  This file may be defined in
+the architecture, variant or platform HAL, depending on where the
+caches are implemented for the target. Often there will be a generic
+implementation of the cache control macros in the architecture HAL
+with the ability to override or undefine them in the variant or
+platform HAL. Even when the implementation of the cache macros is in
+the architecture HAL, the cache dimensions will be defined in the
+variant or platform HAL. As with other files, the variant or platform
+specific definitions are usually found in
+<TT
+CLASS="FILENAME"
+>cyg/hal/var_cache.h</TT
+> and
+<TT
+CLASS="FILENAME"
+>cyg/hal/plf_cache.h</TT
+> respectively.  These files
+are include automatically by this header, so need not be included
+explicitly.</P
+><P
+>There are versions of the macros defined here for both the Data and
+Instruction caches. these are distinguished by the use of either
+<TT
+CLASS="LITERAL"
+>DCACHE</TT
+> or <TT
+CLASS="LITERAL"
+>ICACHE</TT
+> in the macro
+names. Some architectures have a unified cache, where both data and
+instruction share the same cache. In these cases the control macros
+use <TT
+CLASS="LITERAL"
+>UCACHE</TT
+> and the <TT
+CLASS="LITERAL"
+>DCACHE</TT
+> and
+<TT
+CLASS="LITERAL"
+>ICACHE</TT
+> macros will just be calls to the
+<TT
+CLASS="LITERAL"
+>UCACHE</TT
+> version. In the following descriptions,
+<TT
+CLASS="LITERAL"
+>XCACHE</TT
+> is used to stand for any of these. Where
+there are issues specific to a particular cache, this will be
+explained in the text.</P
+><P
+>There might be target specific restrictions on the use of some of the
+macros which it is the user's responsibility to comply with. Such
+restrictions are documented in the header file with the macro
+definition.</P
+><P
+>Note that destructive cache macros should be used with caution.
+Preceding a cache invalidation with a cache synchronization is not
+safe in itself since an interrupt may happen after the synchronization
+but before the invalidation. This might cause the state of dirty data
+lines created during the interrupt to be lost.</P
+><P
+>Depending on the architecture's capabilities, it may be possible to
+temporarily disable the cache while doing the synchronization and
+invalidation which solves the problem (no new data would be cached
+during an interrupt). Otherwise it is necessary to disable interrupts
+while manipulating the cache which may take a long time.</P
+><P
+>Some platform HALs now support a pair of cache state query
+macros: <TT
+CLASS="FUNCTION"
+>HAL_ICACHE_IS_ENABLED( x )</TT
+> and
+<TT
+CLASS="FUNCTION"
+>HAL_DCACHE_IS_ENABLED( x )</TT
+> which set the argument
+to true if the instruction or data cache is enabled,
+respectively. Like most cache control macros, these are optional,
+because the capabilities of different targets and boards can vary
+considerably. Code which uses them, if it is to be considered
+portable, should test for their existence first by means of
+<TT
+CLASS="LITERAL"
+>#ifdef</TT
+>.  Be sure to include
+<TT
+CLASS="FILENAME"
+>&lt;cyg/hal/hal_cache.h&gt;</TT
+> in order to do this
+test and (maybe) use the macros.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN8115">Cache Dimensions</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>HAL_XCACHE_SIZE
+HAL_XCACHE_LINE_SIZE
+HAL_XCACHE_WAYS
+HAL_XCACHE_SETS</PRE
+></TD
+></TR
+></TABLE
+><P
+>These macros define the size and dimensions of the Instruction
+and Data caches.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>HAL_XCACHE_SIZE</DT
+><DD
+><P
+>Defines the total size of the cache in bytes.</P
+></DD
+><DT
+>HAL_XCACHE_LINE_SIZE</DT
+><DD
+><P
+>Defines the cache line size in bytes.</P
+></DD
+><DT
+>HAL_XCACHE_WAYS</DT
+><DD
+><P
+>      Defines the number of ways in each set and defines its level
+      of associativity. This would be 1 for a direct mapped
+      cache, 2 for a 2-way cache, 4 for 4-way and so on.
+      </P
+></DD
+><DT
+>HAL_XCACHE_SETS</DT
+><DD
+><P
+>      Defines the number of sets in the cache, and is calculated from
+      the previous values.
+      </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN8136">Global Cache Control</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>HAL_XCACHE_ENABLE()
+HAL_XCACHE_DISABLE()
+HAL_XCACHE_INVALIDATE_ALL()
+HAL_XCACHE_SYNC()
+HAL_XCACHE_BURST_SIZE( size )
+HAL_DCACHE_WRITE_MODE( mode )
+HAL_XCACHE_LOCK( base, size )
+HAL_XCACHE_UNLOCK( base, size )
+HAL_XCACHE_UNLOCK_ALL()</PRE
+></TD
+></TR
+></TABLE
+><P
+>These macros affect the state of the entire cache, or a large part of
+it.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>HAL_XCACHE_ENABLE() and HAL_XCACHE_DISABLE()</DT
+><DD
+><P
+>Enable and disable the cache.</P
+></DD
+><DT
+>HAL_XCACHE_INVALIDATE_ALL()</DT
+><DD
+><P
+>      Causes the entire contents of the cache to be invalidated.
+      Depending on the hardware, this may require the cache to be disabled
+      during the invalidation process. If so, the implementation must
+      use <TT
+CLASS="FUNCTION"
+>HAL_XCACHE_IS_ENABLED()</TT
+> to save and
+      restore the previous state.
+      </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>	If this macro is called after
+	<TT
+CLASS="FUNCTION"
+>HAL_XCACHE_SYNC()</TT
+> with the intention of clearing
+	the cache (invalidating the cache after writing dirty data back to
+	memory), you must prevent interrupts from happening between the two
+	calls:
+	</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+> ...
+ HAL_DISABLE_INTERRUPTS(old);
+ HAL_XCACHE_SYNC();
+ HAL_XCACHE_INVALIDATE_ALL();
+ HAL_RESTORE_INTERRUPTS(old);
+ ...</PRE
+></TD
+></TR
+></TABLE
+><P
+>	Since the operation may take a very long time, real-time
+	responsiveness could be affected, so only do this when it is
+	absolutely required and you know the delay will not interfere
+	with the operation of drivers or the application.
+	</P
+></BLOCKQUOTE
+></DIV
+></DD
+><DT
+>HAL_XCACHE_SYNC()</DT
+><DD
+><P
+>      Causes the contents of the cache to be brought into synchronization
+      with the contents of memory. In some implementations this may be
+      equivalent to <TT
+CLASS="FUNCTION"
+>HAL_XCACHE_INVALIDATE_ALL()</TT
+>.
+      </P
+></DD
+><DT
+>HAL_XCACHE_BURST_SIZE()</DT
+><DD
+><P
+>      Allows the size of cache to/from memory bursts to
+      be controlled. This macro will only be defined if this functionality
+      is available.
+      </P
+></DD
+><DT
+>HAL_DCACHE_WRITE_MODE()</DT
+><DD
+><P
+>      Controls the way in which data cache lines are written back to
+      memory. There will be definitions for the possible
+      modes. Typical definitions are
+      <TT
+CLASS="LITERAL"
+>HAL_DCACHE_WRITEBACK_MODE</TT
+> and
+      <TT
+CLASS="LITERAL"
+>HAL_DCACHE_WRITETHRU_MODE</TT
+>. This macro will
+      only be defined if this functionality is available.
+      </P
+></DD
+><DT
+>HAL_XCACHE_LOCK()</DT
+><DD
+><P
+>      Causes data to be locked into the cache. The base and size
+      arguments define the memory region that will be locked into the
+      cache. It is architecture dependent whether more than one locked
+      region is allowed at any one time, and whether this operation
+      causes the cache to cease acting as a cache for addresses
+      outside the region during the duration of the lock. This macro
+      will only be defined if this functionality is available.
+      </P
+></DD
+><DT
+>HAL_XCACHE_UNLOCK()</DT
+><DD
+><P
+>      Cancels the locking of the memory region given. This should
+      normally correspond to a region supplied in a matching lock
+      call.  This macro will only be defined if this functionality is
+      available.
+      </P
+></DD
+><DT
+>HAL_XCACHE_UNLOCK_ALL()</DT
+><DD
+><P
+>      Cancels all existing locked memory regions. This may be required
+      as part of the cache initialization on some architectures. This
+      macro will only be defined if this functionality is available.
+      </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN8182">Cache Line Control</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>HAL_DCACHE_ALLOCATE( base , size )
+HAL_DCACHE_FLUSH( base , size )
+HAL_XCACHE_INVALIDATE( base , size )
+HAL_DCACHE_STORE( base , size )
+HAL_DCACHE_READ_HINT( base , size )
+HAL_DCACHE_WRITE_HINT( base , size )
+HAL_DCACHE_ZERO( base , size )</PRE
+></TD
+></TR
+></TABLE
+><P
+>All of these macros apply a cache operation to all cache lines that
+match the memory address region defined by the base and size
+arguments. These macros will only be defined if the described
+functionality is available. Also, it is not guaranteed that the cache
+function will only be applied to just the described regions, in some
+architectures it may be applied to the whole cache.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>HAL_DCACHE_ALLOCATE()</DT
+><DD
+><P
+>      Allocates lines in the cache for the given region without
+      reading their contents from memory, hence the contents of the lines
+      is undefined. This is useful for preallocating lines which are to
+      be completely overwritten, for example in a block copy
+      operation.
+      </P
+></DD
+><DT
+>HAL_DCACHE_FLUSH()</DT
+><DD
+><P
+>      Invalidates all cache lines in the region after writing any
+      dirty lines to memory.
+      </P
+></DD
+><DT
+>HAL_XCACHE_INVALIDATE()</DT
+><DD
+><P
+>      Invalidates all cache lines in the region. Any dirty lines
+      are invalidated without being written to memory.
+      </P
+></DD
+><DT
+>HAL_DCACHE_STORE()</DT
+><DD
+><P
+>      Writes all dirty lines in the region to memory, but does not
+      invalidate any lines.
+      </P
+></DD
+><DT
+>HAL_DCACHE_READ_HINT()</DT
+><DD
+><P
+>      Hints to the cache that the region is going to be read from
+      in the near future. This may cause the region to be speculatively
+      read into the cache.
+      </P
+></DD
+><DT
+>HAL_DCACHE_WRITE_HINT()</DT
+><DD
+><P
+>      Hints to the cache that the region is going to be written
+      to in the near future. This may have the identical behavior to
+      HAL_DCACHE_READ_HINT().
+      </P
+></DD
+><DT
+>HAL_DCACHE_ZERO()</DT
+><DD
+><P
+>      Allocates and zeroes lines in the cache for the given
+      region without reading memory. This is useful if a large area of
+      memory is to be cleared.
+      </P
+></DD
+></DL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="hal-input-and-output.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="hal-linker-scripts.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>HAL I/O</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="hal-interfaces.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Linker Scripts</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

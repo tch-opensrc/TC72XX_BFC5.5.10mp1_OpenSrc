@@ -1,0 +1,398 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>define_format</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="define"
+HREF="ref.define.html"><LINK
+REL="NEXT"
+TITLE="define_header"
+HREF="ref.define-header.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.define.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.define-header.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.DEFINE-FORMAT"><SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4073"
+></A
+><H2
+>Name</H2
+>Property <SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+>&nbsp;--&nbsp;Control how an option's value will appear in the
+configuration header file.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4077"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_option &lt;name&gt; {
+    define_format &lt;format string&gt;
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4079"
+></A
+><H2
+>Description</H2
+><P
+>For active options with the <TT
+CLASS="LITERAL"
+>data</TT
+> flavor, and for
+active and enabled options with the <TT
+CLASS="LITERAL"
+>booldata</TT
+>
+flavor, the configuration tools will normally generate two
+<TT
+CLASS="LITERAL"
+>#define's</TT
+> in the package's configuration header
+file. These take the following forms:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define &lt;name&gt; &lt;value&gt;
+#define &lt;name&gt;_&lt;value&gt;</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+> property can be used to control exactly what
+appears as the value for the first of these
+<TT
+CLASS="LITERAL"
+>#define's</TT
+>. For example, the following can be used
+to output some configuration data as a C string:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option &lt;name&gt; {
+    &#8230;
+    define -format="\\\"%s\\\"" &lt;symbol&gt;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The implementation of <SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+> involves concatenating the Tcl
+command <TT
+CLASS="LITERAL"
+>format</TT
+>, the format string, and the string
+representation of the option's value, and evaluating this in a Tcl
+interpreter. Therefore the format string will be processed twice by a
+Tcl parser, and appropriate care has to be taken with quoting.</P
+><P
+>The second <TT
+CLASS="LITERAL"
+>#define</TT
+> will be generated only if is a
+valid C preprocessor macro symbol, and is not affected by the
+<SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+> property. Also, the property is only relevant for
+options with the <TT
+CLASS="LITERAL"
+>data</TT
+> or
+<TT
+CLASS="LITERAL"
+>booldata</TT
+> flavor, and cannot be used in
+conjunction with the <SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+> property since it makes no sense to
+specify the format if no <TT
+CLASS="LITERAL"
+>#define</TT
+> is generated.</P
+><DIV
+CLASS="CAUTION"
+><P
+></P
+><TABLE
+CLASS="CAUTION"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Caution</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>Because the Tcl interpreter's <TT
+CLASS="LITERAL"
+>format</TT
+> command is
+used, this property is subject to any problems with the implementation
+of this in the Tcl library. Generally there should be no problems with
+string data or with integers up to 32 bits, but there may well be
+problems if 64-bit data is involved. This issue may be addressed in a
+future release.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4103"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYGNUM_UITRON_VER_ID     {
+    display       "OS identification"
+    flavor        data
+    legal_values  0 to 0xFFFF
+    default_value 0
+    define_format "0x%04x"
+    description   "
+        This value is returned in the 'id'
+        field of the T_VER structure in
+        response to a get_ver() system call."
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4106"
+></A
+><H2
+>See Also</H2
+><P
+>Properties <A
+HREF="ref.define.html"
+><SPAN
+CLASS="PROPERTY"
+>define</SPAN
+></A
+>,
+<A
+HREF="ref.define-header.html"
+><SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+></A
+>,
+<A
+HREF="ref.define-proc.html"
+><SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+></A
+>,
+<A
+HREF="ref.if-define.html"
+><SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+></A
+> and
+<A
+HREF="ref.no-define.html"
+><SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+></A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.define.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.define-header.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>define</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,376 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Interactive Tests</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Tests and Demonstrations"
+HREF="net-common-tests-and-demonstrations.html"><LINK
+REL="PREVIOUS"
+TITLE="Performance Test"
+HREF="net-common-performance-test.html"><LINK
+REL="NEXT"
+TITLE="Maintenance Tools "
+HREF="net-common-maintenance-tools.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-performance-test.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 36. Tests and Demonstrations</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-maintenance-tools.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-INTERACTIVE-TESTS">Interactive Tests</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>server_test</I
+></SPAN
+> - a very simple server example</PRE
+></TD
+></TR
+></TABLE
+><P
+>This test simply awaits a connection on port 7734 and after
+accepting a connection, gets a packet (with a timeout of a few seconds)
+and prints it. </P
+><P
+>The connection is then closed. We then loop to await the next
+connection, and so on. To use it, telnet to the target on port 7734
+then type something (quickly!)</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>% telnet 172.16.19.171 7734 
+Hello target board</PRE
+></TD
+></TR
+></TABLE
+><P
+>and the test program will print something like:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>connection from 172.16.19.13:3369 
+buf = "Hello target board"</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ga_server_test</I
+></SPAN
+> - another very simple server example</PRE
+></TD
+></TR
+></TABLE
+><P
+>This is a variation on the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ga_server_test</I
+></SPAN
+> test
+with the difference being that it uses the <TT
+CLASS="FUNCTION"
+>getaddrinfo</TT
+>
+function to set up its addresses.  On a system with IPv6 enabled, it will
+listen on port 7734 for a TCP connection via either IPv4 or IPv6.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tftp_client_test</I
+></SPAN
+> - performs a tftp get and put from/to &#8220;server&#8221;</PRE
+></TD
+></TR
+></TABLE
+><P
+>This is only partially interactive.  You need to set things
+up on the &#8220;server&#8221; in order for this to work,
+and you will need to look at the server afterwards to confirm that all
+was well.</P
+><P
+>For each interface in turn, this test attempts to read by
+tftp from the server, a file called
+<TT
+CLASS="FILENAME"
+>tftp_get</TT
+>
+and
+prints the status and contents it read (if any).  It then writes
+the same data to a file called
+<TT
+CLASS="FILENAME"
+>tftp_put</TT
+>
+on
+the same server.</P
+><P
+>In order for this to succeed, both files must already exist.
+ The TFTP protocol does not require that a WRQ request _create_ a
+file, just that it can write it.  The TFTP server on Linux certainly
+will only allow writes to an existing file, given the appropriate
+permission.  Thus, you need to have these files in place, with proper permission,
+before running the test.</P
+><P
+>The conventional place for the tftp server to operate in LINUX
+is /tftpboot/; you will likely need root privileges
+to create files there. The data contents of
+<TT
+CLASS="FILENAME"
+>tftp_get</TT
+>
+can
+be anything you like, but anything very large will waste lots of
+time printing it on the test&#8217;s stdout, and anything above
+32kB will cause a buffer overflow and unpredictable failure.</P
+><P
+>Creating an empty tftp_put file (eg. by copying /dev/null
+to it) is neatest.  So before the test you should have something
+like:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>-rw-rw-rw- 1 root        1076 May  1 11:39 tftp_get
+-rw-rw-rw- 1 root        0 May  1 15:52 tftp_put </PRE
+></TD
+></TR
+></TABLE
+><P
+>note that both files have public permissions wide open.  After
+running the test,
+<TT
+CLASS="FILENAME"
+>tftp_put</TT
+>
+should
+be a copy of
+<TT
+CLASS="FILENAME"
+>tftp_get</TT
+>.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>-rw-rw-rw-  1 root       1076 May  1 11:39 tftp_get
+-rw-rw-rw-  1 root       1076 May  1 15:52 tftp_put&#13;</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tftp_server_test</I
+></SPAN
+> - runs a tftp server for a short while</PRE
+></TD
+></TR
+></TABLE
+><P
+>This test is truly interactive, in that you can use a standard
+tftp application to get and put files from the server, during the
+5 minutes that it runs.  The dummy filesystem which underlies the
+server initially contains one file, called &#8220;uu&#8221; which contains
+part of a familiar text and some padding.  It also accommodates
+creation of 3 further files of up to 1Mb in size and names of up
+to 256 bytes.  Exceeding these limits will cause a buffer overflow
+and unpredictable failure.</P
+><P
+>The dummy filesystem is an implementation of the generic API
+which allows a true filesystem to be attached to the tftp server
+in the network stack.</P
+><P
+>We have been testing the tftp server by running the test on
+the target board, then using two different host computers connecting
+to the different target interfaces, putting a file from each, getting
+the &#8220;uu&#8221; file, and getting the file from the other computer.
+ This verifies that data is preserved during the transfer as well
+as interworking with standard tftp applications.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-performance-test.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-maintenance-tools.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Performance Test</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-common-tests-and-demonstrations.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Maintenance Tools</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

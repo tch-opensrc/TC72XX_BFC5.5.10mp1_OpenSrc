@@ -1,0 +1,1432 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Virtual Vectors (eCos/ROM Monitor Calling Interface)</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="	Porting Guide"
+HREF="hal-porting-guide.html"><LINK
+REL="PREVIOUS"
+TITLE="HAL Structure"
+HREF="hal-porting-structure.html"><LINK
+REL="NEXT"
+TITLE="HAL Coding Conventions"
+HREF="hal-porting-coding-conventions.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="hal-porting-structure.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 11. Porting Guide</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="hal-porting-coding-conventions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="HAL-CALLING-IF">Virtual Vectors (eCos/ROM Monitor Calling Interface)</H1
+><P
+>Some eCos platforms have supported full debugging capabilities via
+CygMon since day one. Platforms of the architectures PowerPC, ARM, and
+SH do not provide those features unless a GDB stub is included in the
+application.</P
+><P
+>This is going to change. All platforms will (eventually) support
+all the debugging features by relying on a ROM/RAM calling interface
+(also referred to as virtual vector table) provided by the ROM
+monitor. This calling interface is based on the tables used by libbsp
+and is thus backwards compatible with the existing CygMon supported
+platforms.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="HAL-PORTING-VIRTUAL-VECTORS">Virtual Vectors</H2
+><P
+>What are virtual vectors, what do they do, and why are they
+needed?</P
+><P
+>"Virtual vectors" is the name of a table located at a static
+location in the target address space. This table contains 64 vectors
+that point to <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>service</I
+></SPAN
+> functions or data.</P
+><P
+>The fact that the vectors are always placed at the same location in
+the address space means that both ROM and RAM startup configurations
+can access these and thus the services pointed to.</P
+><P
+>The primary goal is to allow services to be provided by ROM
+configurations (ROM monitors such as RedBoot in particular) with
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>clients</I
+></SPAN
+> in RAM configurations being able to use these
+services.</P
+><P
+>Without the table of pointers this would be impossible since the
+ROM and RAM applications would be linked separately - in effect having
+separate name spaces - preventing direct references from one to the
+other.</P
+><P
+>This decoupling of service from client is needed by RedBoot,
+allowing among other things debugging of applications which do not
+contain debugging client code (stubs).</P
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN8971">Initialization (or Mechanism vs. Policy)</H3
+><P
+>Virtual vectors are a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mechanism</I
+></SPAN
+> for decoupling services
+from clients in the address space.</P
+><P
+>The mechanism allows services to be implemented by a ROM
+monitor, a RAM application, to be switched out at run-time, to be
+disabled by installing pointers to dummy functions, etc.</P
+><P
+>The appropriate use of the mechanism is specified loosely by a
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>policy</I
+></SPAN
+>. The general policy dictates that the vectors are
+initialized in whole by ROM monitors (built for ROM or RAM), or by
+stand-alone applications.</P
+><P
+>For configurations relying on a ROM monitor environment, the policy
+is to allow initialization on a service by service basis. The default
+is to initialize all services, except COMMS services since these are
+presumed to already be carrying a communication session to the
+debugger / console which was used for launching the application.  This
+means that the bulk of the code gets tested in normal builds, and not
+just once in a blue moon when building new stubs or a ROM
+configuration.</P
+><P
+>The configuration options are written to comply with this policy by
+default, but can be overridden by the user if desired. Defaults
+are:</P
+><P
+></P
+><UL
+><LI
+><P
+>For application development: the ROM monitor provides
+debugging and diagnostic IO services, the RAM application relies
+on these by default.</P
+></LI
+><LI
+><P
+>For production systems: the application contains all the
+necessary services.</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN8985">Pros and Cons of Virtual Vectors</H3
+><P
+>There are pros and cons associated with the use of virtual
+vectors. We do believe that the pros generally outweigh the cons by a
+great margin, but there may be situations where the opposite is
+true.</P
+><P
+>The use of the services are implemented by way of macros, meaning
+that it is possible to circumvent the virtual vectors if
+desired. There is (as yet) no implementation for doing this, but it is
+possible.</P
+><P
+>Here is a list of pros and cons:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Pro: Allows debugging without including stubs</DT
+><DD
+><P
+>This is the primary reason for using virtual vectors. It
+          allows the ROM monitor to provide most of the debugging
+          infrastructure, requiring only the application to provide
+          hooks for asynchronous debugger interrupts and for accessing
+          kernel thread information.</P
+></DD
+><DT
+>Pro: Allows debugging to be initiated from arbitrary
+       channel</DT
+><DD
+><P
+> While this is only true where the application does not
+           actively override the debugging channel setup, it is a very
+           nice feature during development. In particular it makes it
+           possible to launch (and/or debug) applications via Ethernet
+           even though the application configuration does not contain
+           networking support.</P
+></DD
+><DT
+>Pro: Image smaller due to services being provided by ROM
+       monitor</DT
+><DD
+><P
+>All service functions except HAL IO are included in the
+           default configuration. But if these are all disabled the
+           image for download will be a little smaller. Probably
+           doesn't matter much for regular development, but it is a
+           worthwhile saving for the 20000 daily tests run in the Red
+           Hat eCos test farm.</P
+></DD
+><DT
+>Con: The vectors add a layer of indirection, increasing application
+       size and reducing performance.</DT
+><DD
+><P
+>The size increase is a fraction of what is required to
+           implement the services. So for RAM configurations there is
+           a net saving, while for ROM configurations there is a small
+           overhead.</P
+><P
+>The performance loss means little for most of the
+           services (of which the most commonly used is diagnostic IO
+           which happens via polled routines
+           anyway).</P
+></DD
+><DT
+>Con: The layer of indirection is another point of
+       failure.</DT
+><DD
+><P
+> The concern primarily being that of vectors being
+           trashed by rogue writes from bad code, causing a complete
+           loss of the service and possibly a crash.  But this does
+           not differ much from a rogue write to anywhere else in the
+           address space which could cause the same amount of
+           mayhem. But it is arguably an additional point of failure
+           for the service in question.</P
+></DD
+><DT
+>Con: All the indirection stuff makes it harder to bring a HAL
+       up</DT
+><DD
+><P
+> This is a valid concern. However, seeing as most of the
+           code in question is shared between all HALs and should
+           remain unchanged over time, the risk of it being broken
+           when a new HAL is being worked on should be
+           minimal.</P
+><P
+> When starting a new port, be sure to implement the HAL
+           IO drivers according to the scheme used in other drivers,
+           and there should be no problem.</P
+><P
+> However, it is still possible to circumvent the vectors
+           if they are suspect of causing problems: simply change the
+           HAL_DIAG_INIT and HAL_DIAG_WRITE_CHAR macros to use the raw
+           IO functions.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9018">Available services</H3
+><P
+>The <TT
+CLASS="FILENAME"
+>hal_if.h</TT
+> file in the common HAL defines the
+complete list of available services. A few worth mentioning in
+particular:</P
+><P
+></P
+><UL
+><LI
+><P
+>COMMS services. All HAL IO happens via the communication
+        channels.</P
+></LI
+><LI
+><P
+>uS delay. Fine granularity (busy wait) delay function.</P
+></LI
+><LI
+><P
+>Reset. Allows a software initiated reset of the board.</P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN9029">The COMMS channels</H2
+><P
+>As all HAL IO happens via the COMMS channels these deserve to be
+described in a little more detail. In particular the controls of where
+diagnostic output is routed and how it is treated to allow for display
+in debuggers.</P
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9032">Console and Debugging Channels</H3
+><P
+>There are two COMMS channels - one for console IO and one for
+debugging IO. They can be individually configured to use any of the
+actual IO ports (serial or Ethernet) available on the platform.</P
+><P
+>The console channel is used for any IO initiated by calling the
+<TT
+CLASS="FUNCTION"
+>diag_*()</TT
+> functions. Note that these should only be used during
+development for debugging, assertion and possibly tracing
+messages. All proper IO should happen via proper devices. This means
+it should be possible to remove the HAL device drivers from production
+configurations where assertions are disabled.</P
+><P
+>The debugging channel is used for communication between the
+debugger and the stub which remotely controls the target for the
+debugger (the stub runs on the target). This usually happens via some
+protocol, encoding commands and replies in some suitable form.</P
+><P
+>Having two separate channels allows, e.g., for simple logging
+without conflicts with the debugger or interactive IO which some
+debuggers do not allow.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9039">Mangling</H3
+><P
+>As debuggers usually have a protocol using specialized commands
+when communicating with the stub on the target, sending out text as
+raw ASCII from the target on the same channel will either result in
+protocol errors (with loss of control over the target) or the text may
+just be ignored as junk by the debugger.</P
+><P
+>To get around this, some debuggers have a special command for text
+output. Mangling is the process of encoding diagnostic ASCII text
+output in the form specified by the debugger protocol.</P
+><P
+>When it is necessary to use mangling, i.e. when writing console
+output to the same port used for debugging, a mangler function is
+installed on the console channel which mangles the text and passes it
+on to the debugger channel.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9044">Controlling the Console Channel</H3
+><P
+>Console output configuration is either inherited from the ROM
+monitor launching the application, or it is specified by the
+application. This is controlled by the new option
+<TT
+CLASS="LITERAL"
+>CYGSEM_HAL_VIRTUAL_VECTOR_INHERIT_CONSOLE</TT
+> which
+defaults to enabled when the configuration is set to use a ROM
+monitor.</P
+><P
+>If the user wants to specify the console configuration in the
+application image, there are two new options that are used for
+this.</P
+><P
+>Defaults are to direct diagnostic output via a mangler to the
+debugging channel (<TT
+CLASS="LITERAL"
+>CYGDBG_HAL_DIAG_TO_DEBUG_CHAN</TT
+>
+enabled). The mangler type is controlled by the option
+<TT
+CLASS="LITERAL"
+>CYGSEM_HAL_DIAG_MANGLER</TT
+>. At present there are only
+two mangler types:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><SPAN
+CLASS="ACRONYM"
+>GDB</SPAN
+></DT
+><DD
+><P
+> This causes a mangler appropriate for debugging with GDB to be
+       installed on the console channel.</P
+></DD
+><DT
+>None</DT
+><DD
+><P
+> This causes a NULL mangler to be installed on the console
+        channel.  It will redirect the IO to/from the debug channel
+        without mangling of the data. This option differs from setting
+        the console channel to the same IO port as the debugging
+        channel in that it will keep redirecting data to the debugging
+        channel even if that is changed to some other port.</P
+></DD
+></DL
+></DIV
+><P
+>Finally, by disabling <TT
+CLASS="LITERAL"
+>CYGDBG_HAL_DIAG_TO_DEBUG_CHAN</TT
+>, the diagnostic
+output is directed in raw form to the specified console IO port.</P
+><P
+>In summary this results in the following common configuration
+scenarios for RAM startup configurations:</P
+><P
+></P
+><UL
+><LI
+><P
+> For regular debugging with diagnostic output appearing in the
+     debugger, mangling is enabled and stubs disabled.</P
+><P
+>Diagnostic output appears via the debugging channel as
+     initiated by the ROM monitor, allowing for correct behavior
+     whether the application was launched via serial or Ethernet, from
+     the RedBoot command line or from a debugger.</P
+></LI
+><LI
+><P
+> For debugging with raw diagnostic output, mangling is
+     disabled.</P
+><P
+> Debugging session continues as initiated by the ROM monitor,
+     whether the application was launched via serial or
+     Ethernet. Diagnostic output is directed at the IO port configured
+     in the application configuration.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note:: </B
+> There is one caveat to be aware of. If the
+       application uses proper devices (be it serial or Ethernet) on
+       the same ports as those used by the ROM monitor, the
+       connections initiated by the ROM monitor will be
+       terminated.</P
+></BLOCKQUOTE
+></DIV
+></LI
+></UL
+><P
+>And for ROM startup configurations:</P
+><P
+></P
+><UL
+><LI
+><P
+> Production configuration with raw output and no debugging
+     features (configured for RAM or ROM), mangling is disabled, no
+     stubs are included.</P
+><P
+>Diagnostic output appears (in unmangled form) on the specified
+     IO port.</P
+></LI
+><LI
+><P
+> RedBoot configuration, includes debugging features and necessary
+     mangling.</P
+><P
+>Diagnostic and debugging output port is auto-selected by the
+     first connection to any of the supported IO ports. Can change
+     from interactive mode to debugging mode when a debugger is
+     detected - when this happens a mangler will be installed as
+     required.</P
+></LI
+><LI
+><P
+> GDB stubs configuration (obsoleted by RedBoot configuration),
+     includes debugging features, mangling is hardwired to GDB
+     protocol.</P
+><P
+>Diagnostic and debugging output is hardwired to configured IO
+     ports, mangling is hardwired.</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9086">Footnote: Design Reasoning for Control of Console Channel</H3
+><P
+>The current code for controlling the console channel is a
+replacement for an older implementation which had some shortcomings
+which addressed by the new implementation.</P
+><P
+>This is what the old implementation did: on initialization it would
+check if the CDL configured console channel differed from the active
+debug channel - and if so, set the console channel, thereby disabling
+mangling.</P
+><P
+>The idea was that whatever channel was configured to be used for
+console (i.e., diagnostic output) in the application was what should
+be used. Also, it meant that if debug and console channels were
+normally the same, a changed console channel would imply a request for
+unmangled output.</P
+><P
+>But this prevented at least two things:</P
+><P
+></P
+><UL
+><LI
+><P
+> It was impossible to inherit the existing connection by which
+     the application was launched (either by RedBoot commands via
+     telnet, or by via a debugger).</P
+><P
+>This was mostly a problem on targets supporting Ethernet
+     access since the diagnostic output would not be returned via the
+     Ethernet connection, but on the configured serial port.</P
+><P
+>The problem also occurred on any targets with multiple serial
+     ports where the ROM monitor was configured to use a different
+     port than the CDL defaults.</P
+></LI
+><LI
+><P
+> Proper control of when to mangle or just write out raw ASCII
+        text.</P
+><P
+>Sometimes it's desirable to disable mangling, even if the
+     channel specified is the same as that used for debugging. This
+     usually happens if GDB is used to download the application, but
+     direct interaction with the application on the same channel is
+     desired (GDB protocol only allows output from the target, no
+     input).</P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN9100">The calling Interface API</H2
+><P
+>The calling interface API is defined by hal_if.h and hal_if.c in
+hal/common.</P
+><P
+>The API provides a set of services. Different platforms, or
+different versions of the ROM monitor for a single platform, may
+implement fewer or extra service. The table has room for growth, and
+any entries which are not supported map to a NOP-service (when called
+it returns 0 (<TT
+CLASS="LITERAL"
+>false</TT
+>)).</P
+><P
+>A client of a service should either be selected by configuration,
+or have suitable fall back alternatives in case the feature is not
+implemented by the ROM monitor.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note:: </B
+>Checking for unimplemented service when this may be a data
+field/pointer instead of a function: suggest reserving the last entry
+in the table as the NOP-service pointer. Then clients can compare a
+service entry with this pointer to determine whether it's initialized
+or not.</P
+></BLOCKQUOTE
+></DIV
+><P
+>The header file <TT
+CLASS="FILENAME"
+>cyg/hal/hal_if.h</TT
+> defines
+ the table layout and accessor macros (allowing primitive type
+ checking and alternative implementations should it become necessary).</P
+><P
+>The source file <TT
+CLASS="FILENAME"
+>hal_if.c</TT
+> defines the table
+ initialization function. All HALs should call this during platform
+ initialization - the table will get initialized according to
+ configuration.  Also defined here are wrapper functions which map
+ between the calling interface API and the API of the used eCos
+ functions.</P
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9113">Implemented Services</H3
+><P
+>This is a brief description of the services, some of which are
+described in further detail below.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>VERSION</TT
+></DT
+><DD
+><P
+>Version of table. Serves as a way to check for how many
+        features are available in the table. This is the index of the
+        last service in the table.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>KILL_VECTOR</TT
+></DT
+><DD
+><P
+>[Presently unused by the stub code, but initialized] This
+        vector defines a function to execute when the system receives
+        a kill signal from the debugger. It is initialized with the
+        reset function (see below), but the application (or eCos) can
+        override it if necessary.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CONSOLE_PROCS</TT
+></DT
+><DD
+><P
+>The communication procedure table used for console IO
+        (see <A
+HREF="hal-calling-if.html#HAL-PORTING-IO-CHANNELS"
+>the Section called <I
+>IO channels</I
+></A
+>.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>DEBUG_PROCS</TT
+></DT
+><DD
+><P
+>The communication procedure table used for debugger IO
+        (see <A
+HREF="hal-calling-if.html#HAL-PORTING-IO-CHANNELS"
+>the Section called <I
+>IO channels</I
+></A
+>).</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>FLUSH_DCACHE</TT
+></DT
+><DD
+><P
+>Flushes the data cache for the specified
+        region. Some implementations may flush the entire data cache.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>FLUSH_ICACHE</TT
+></DT
+><DD
+><P
+>Flushes (invalidates) the instruction cache
+        for the specified region. Some implementations may flush the
+        entire instruction cache.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>SET_DEBUG_COMM</TT
+></DT
+><DD
+><P
+>Change debugging communication channel.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>SET_CONSOLE_COMM</TT
+></DT
+><DD
+><P
+>Change console communication channel.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>DBG_SYSCALL</TT
+></DT
+><DD
+><P
+>Vector used to communication between debugger functions in
+        ROM and in RAM. RAM eCos configurations may install a function
+        pointer here which the ROM monitor uses to get thread
+        information from the kernel running in RAM.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>RESET</TT
+></DT
+><DD
+><P
+>Resets the board on call. If it is not possible to reset
+        the board from software, it will jump to the ROM entry point
+        which will perform a "software" reset of the board.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CONSOLE_INTERRUPT_FLAG</TT
+></DT
+><DD
+><P
+>Set if a debugger interrupt request was detected while
+        processing console IO. Allows the actual breakpoint action to
+        be handled after return to RAM, ensuring proper backtraces
+        etc.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>DELAY_US</TT
+></DT
+><DD
+><P
+>Will delay the specified number of microseconds. The
+        precision is platform dependent to some extend - a small value
+        (&#60;100us) is likely to cause bigger delays than requested.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>FLASH_CFG_OP</TT
+></DT
+><DD
+><P
+>For accessing configuration settings kept in flash memory.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>INSTALL_BPT_FN</TT
+></DT
+><DD
+><P
+>Installs a breakpoint at the specified address. This is
+        used by the asynchronous breakpoint support
+	(see ).</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9189">Compatibility</H3
+><P
+>When a platform is changed to support the calling interface,
+applications will use it if so configured. That means that if an
+application is run on a platform with an older ROM monitor, the
+service is almost guaranteed to fail.</P
+><P
+>For this reason, applications should only use Console Comm for HAL
+diagnostics output if explicitly configured to do so
+(<TT
+CLASS="LITERAL"
+>CYGSEM_HAL_VIRTUAL_VECTOR_DIAG</TT
+>).</P
+><P
+>As for asynchronous GDB interrupts, the service will always be
+used. This is likely to cause a crash under older ROM monitors, but
+this crash may be caught by the debugger. The old workaround still
+applies: if you need asynchronous breakpoints or thread debugging
+under older ROM monitors, you may have to include the debugging
+support when configuring eCos.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9195">Implementation details</H3
+><P
+>During the startup of a ROM monitor, the calling table will be
+initialized. This also happens if eCos is configured <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> to rely on
+a ROM monitor.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note:: </B
+> There is reserved space (256 bytes) for the vector
+table whether it gets used or not. This may be something that we want
+to change if we ever have to shave off every last byte for a given
+target.</P
+></BLOCKQUOTE
+></DIV
+><P
+>If thread debugging features are enabled, the function for accessing
+the thread information gets registered in the table during startup of
+a RAM startup configuration.</P
+><P
+>Further implementation details are described where the service itself
+is described.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9204">New Platform Ports</H3
+><P
+>The <TT
+CLASS="FUNCTION"
+>hal_platform_init()</TT
+> function must call
+<TT
+CLASS="FUNCTION"
+>hal_if_init()</TT
+>.</P
+><P
+>The HAL serial driver must, when called via
+<TT
+CLASS="FUNCTION"
+>cyg_hal_plf_comms_init()</TT
+> must initialize the
+communication channels.</P
+><P
+>The <TT
+CLASS="FUNCTION"
+>reset()</TT
+> function defined in
+<TT
+CLASS="FILENAME"
+>hal_if.c</TT
+> will attempt to do a hardware reset, but
+if this fails it will fall back to simply jumping to the reset
+entry-point. On most platforms the startup initialization will go a
+long way to reset the target to a sane state (there will be
+exceptions, of course). For this reason, make sure to define
+<TT
+CLASS="LITERAL"
+>HAL_STUB_PLATFORM_RESET_ENTRY</TT
+> in plf_stub.h.</P
+><P
+>All debugging features must be in place in order for the debugging
+services to be functional. See general platform porting notes.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9216">New architecture ports</H3
+><P
+>There are no specific requirements for a new architecture port in
+order to support the calling interface, but the basic debugging
+features must be in place. See general architecture porting notes.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="HAL-PORTING-IO-CHANNELS">IO channels</H2
+><P
+>The calling interface provides procedure tables for all IO channels on
+the platform. These are used for console (diagnostic) and debugger IO,
+allowing a ROM monitor to provided all the needed IO routines. At
+the same time, this makes it easy to switch console/debugger channels
+at run-time (the old implementation had hardwired drivers for console
+and debugger IO, preventing these to change at run-time).</P
+><P
+>The hal_if provides wrappers which interface these services to the
+eCos infrastructure diagnostics routines. This is done in a way which
+ensures proper string mangling of the diagnostics output when required
+(e.g. O-packetization when using a GDB compatible ROM monitor).</P
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9223">Available Procedures</H3
+><P
+>This is a brief description of the procedures</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>CH_DATA</TT
+></DT
+><DD
+><P
+>Pointer to the controller IO base (or a pointer to a per-device
+    structure if more data than the IO base is required). All the
+    procedures below are called with this data item as the first
+    argument.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>WRITE</TT
+></DT
+><DD
+><P
+>Writes the buffer to the device.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>READ</TT
+></DT
+><DD
+><P
+>Fills a buffer from the device.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>PUTC</TT
+></DT
+><DD
+><P
+>Write a character to the device.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>GETC</TT
+></DT
+><DD
+><P
+>Read a character from the device.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CONTROL</TT
+></DT
+><DD
+><P
+>Device feature control. Second argument specifies function:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>SETBAUD</TT
+></DT
+><DD
+><P
+>Changes baud rate.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>GETBAUD</TT
+></DT
+><DD
+><P
+>Returns the current baud rate.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>INSTALL_DBG_ISR</TT
+></DT
+><DD
+><P
+>[Unused]</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>REMOVE_DBG_ISR</TT
+></DT
+><DD
+><P
+>[Unused]</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>IRQ_DISABLE</TT
+></DT
+><DD
+><P
+>Disable debugging receive interrupts on the device.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>IRQ_ENABLE</TT
+></DT
+><DD
+><P
+>Enable debugging receive interrupts on the device.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>DBG_ISR_VECTOR</TT
+></DT
+><DD
+><P
+>Returns the ISR vector used by the device for debugging
+        receive interrupts.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>SET_TIMEOUT</TT
+></DT
+><DD
+><P
+>Set GETC timeout in milliseconds.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>FLUSH_OUTPUT</TT
+></DT
+><DD
+><P
+>Forces driver to flush data in its buffers. Note
+            that this may not affect hardware buffers
+        (e.g. FIFOs).</P
+></DD
+></DL
+></DIV
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>DBG_ISR</TT
+></DT
+><DD
+><P
+>ISR used to handle receive interrupts from the
+	device (see ).</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>GETC_TIMEOUT</TT
+></DT
+><DD
+><P
+>Read a character from the device with timeout.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9313">Usage</H3
+><P
+>The standard eCos diagnostics IO functions use the channel
+procedure table when <TT
+CLASS="LITERAL"
+>CYGSEM_HAL_VIRTUAL_VECTOR_DIAG</TT
+> is enabled. That
+means that when you use diag_printf (or the libc printf function) the
+stream goes through the selected console procedure table. If you use
+the virtual vector function SET_CONSOLE_COMM you can change the device
+which the diagnostics output goes to at run-time.</P
+><P
+>You can also use the table functions directly if desired
+(regardless of the <TT
+CLASS="LITERAL"
+>CYGSEM_HAL_VIRTUAL_VECTOR_DIAG</TT
+> setting - assuming
+the ROM monitor provides the services). Here is a small example which
+changes the console to use channel 2, fetches the comm procs pointer
+and calls the write function from that table, then restores the
+console to the original channel:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define T "Hello World!\n"
+
+int
+main(void)
+{
+    hal_virtual_comm_table_t* comm;
+    int cur = CYGACC_CALL_IF_SET_CONSOLE_COMM(CYGNUM_CALL_IF_SET_COMM_ID_QUERY_CURRENT);
+
+    CYGACC_CALL_IF_SET_CONSOLE_COMM(2);
+
+    comm = CYGACC_CALL_IF_CONSOLE_PROCS();
+    CYGACC_COMM_IF_WRITE(*comm, T, strlen(T));
+
+    CYGACC_CALL_IF_SET_CONSOLE_COMM(cur);
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>Beware that if doing something like the above, you should only do
+it to a channel which does not have GDB at the other end: GDB ignores
+raw data, so you would not see the output.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9321">Compatibility</H3
+><P
+>The use of this service is controlled by the option
+<TT
+CLASS="LITERAL"
+>CYGSEM_HAL_VIRTUAL_VECTOR_DIAG</TT
+> which is disabled per default on most
+older platforms (thus preserving backwards compatibility with older
+stubs). On newer ports, this option should always be set.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9325">Implementation Details</H3
+><P
+>There is an array of procedure tables (raw comm channels) for each
+IO device of the platform which get initialized by the ROM monitor, or
+optionally by a RAM startup configuration (allowing the RAM
+configuration to take full control of the target).  In addition to
+this, there's a special table which is used to hold mangler
+procedures.</P
+><P
+>The vector table defines which of these channels are selected for
+console and debugging IO respectively: console entry can be empty,
+point to mangler channel, or point to a raw channel. The debugger
+entry should always point to a raw channel.</P
+><P
+>During normal console output (i.e., diagnostic output) the console
+table will be used to handle IO if defined. If not defined, the debug
+table will be used.</P
+><P
+>This means that debuggers (such as GDB) which require text streams
+to be mangled (O-packetized in the case of GDB), can rely on the ROM
+monitor install mangling IO routines in the special mangler table and
+select this for console output. The mangler will pass the mangled data
+on to the selected debugging channel.</P
+><P
+>If the eCos configuration specifies a different console channel
+from that used by the debugger, the console entry will point to the
+selected raw channel, thus overriding any mangler provided by the ROM
+monitor.</P
+><P
+>See hal_if_diag_* routines in hal_if.c for more details of the stream
+path of diagnostic output. See <TT
+CLASS="FUNCTION"
+>cyg_hal_gdb_diag_*()</TT
+> routines in
+<TT
+CLASS="FILENAME"
+>hal_stub.c</TT
+> for the mangler used for GDB communication.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN9335">New Platform Ports</H3
+><P
+>Define CDL options <TT
+CLASS="LITERAL"
+>CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS</TT
+>,
+<TT
+CLASS="LITERAL"
+>CYGNUM_HAL_VIRTUAL_VECTOR_DEBUG_CHANNEL</TT
+>, and
+<TT
+CLASS="LITERAL"
+>CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL</TT
+>.</P
+><P
+>If <TT
+CLASS="LITERAL"
+>CYGSEM_HAL_VIRTUAL_VECTOR_DIAG</TT
+> is set, make sure the infra diag
+code uses the hal_if diag functions:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+> #define HAL_DIAG_INIT() hal_if_diag_init()
+ #define HAL_DIAG_WRITE_CHAR(_c_) hal_if_diag_write_char(_c_)
+ #define HAL_DIAG_READ_CHAR(_c_) hal_if_diag_read_char(&#38;_c_)</PRE
+></TD
+></TR
+></TABLE
+><P
+>In addition to the above functions, the platform HAL must also
+provide a function cyg_hal_plf_comms_init which initializes the
+drivers and the channel procedure tables.</P
+><P
+>Most of the other functionality in the table is more or less
+possible to copy unchanged from existing ports. Some care is necessary
+though to ensure the proper handling of interrupt vectors and timeouts
+for various devices handled by the same driver. See PowerPC/Cogent
+platform HAL for an example implementation.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note:: </B
+> When vector table console code is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> used,
+the platform HAL must map the HAL_DIAG_INIT, HAL_DIAG_WRITE_CHAR and
+HAL_DIAG_READ_CHAR macros directly to the low-level IO functions,
+hardwired to use a compile-time configured channel.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note:: </B
+> On old ports the hardwired <TT
+CLASS="LITERAL"
+>HAL_DIAG_INIT</TT
+>,
+<TT
+CLASS="LITERAL"
+>HAL_DIAG_WRITE_CHAR</TT
+> and
+<TT
+CLASS="LITERAL"
+>HAL_DIAG_READ_CHAR</TT
+> implementations will also
+contain code to O-packetize the output for GDB. This should
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> be adopted for new ports! On new ports the
+ROM monitor is guaranteed to provide the necessary mangling via the
+vector table. The hardwired configuration should be reserved for ROM
+startups where achieving minimal image size is crucial.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="hal-porting-structure.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="hal-porting-coding-conventions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>HAL Structure</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="hal-porting-guide.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>HAL Coding Conventions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,279 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Thread priorities</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Kernel"
+HREF="kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="Thread termination"
+HREF="kernel-thread-termination.html"><LINK
+REL="NEXT"
+TITLE="Per-thread data"
+HREF="kernel-thread-data.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="kernel-thread-termination.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="kernel-thread-data.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="KERNEL-THREAD-PRIORITIES">Thread priorities</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN616"
+></A
+><H2
+>Name</H2
+>cyg_thread_get_priority, cyg_thread_get_current_priority, cyg_thread_set_priority&nbsp;--&nbsp;Examine and manipulate thread priorities</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN621"><H2
+>Synopsis</H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><A
+NAME="AEN622"><P
+></P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &lt;cyg/kernel/kapi.h&gt;
+        </PRE
+></TD
+></TR
+></TABLE
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_priority_t cyg_thread_get_priority</CODE
+>(cyg_handle_t thread);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_priority_t cyg_thread_get_current_priority</CODE
+>(cyg_handle_t thread);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_thread_set_priority</CODE
+>(cyg_handle_t thread, cyg_priority_t priority);</CODE
+></P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN641"
+></A
+><H2
+>Description</H2
+><P
+>Typical schedulers use the concept of a thread priority to determine
+which thread should run next. Exactly what this priority consists of
+will depend on the scheduler, but a typical implementation would be a
+small integer in the range 0 to 31, with 0 being the highest priority.
+Usually only the idle thread will run at the lowest priority. The
+exact number of priority levels available depends on the
+configuration, typically the option
+<TT
+CLASS="VARNAME"
+>CYGNUM_KERNEL_SCHED_PRIORITIES</TT
+>.
+      </P
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_thread_get_priority</TT
+> can be used to determine
+the priority of a thread, or more correctly the value last used in a
+<TT
+CLASS="FUNCTION"
+>cyg_thread_set_priority</TT
+> call or when the thread
+was first created. In some circumstances it is possible that the
+thread is actually running at a higher priority. For example, if it
+owns a mutex and priority ceilings or inheritance is being used to
+prevent priority inversion problems, then the thread's priority may
+have been boosted temporarily.
+<TT
+CLASS="FUNCTION"
+>cyg_thread_get_current_priority</TT
+> returns the real
+current priority.
+      </P
+><P
+>In many applications appropriate thread priorities can be determined
+and allocated statically. However, if it is necessary for a thread's
+priority to change at run-time then the
+<TT
+CLASS="FUNCTION"
+>cyg_thread_set_priority</TT
+> function provides this
+functionality. 
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-THREAD-PRIORITIES-CONTEXT"
+></A
+><H2
+>Valid contexts</H2
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_thread_get_priority</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_thread_get_current_priority</TT
+> can be called
+from thread or DSR context, although the latter is rarely useful.
+<TT
+CLASS="FUNCTION"
+>cyg_thread_set_priority</TT
+> should also only be
+called from thread context.
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="kernel-thread-termination.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="kernel-thread-data.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Thread termination</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Per-thread data</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

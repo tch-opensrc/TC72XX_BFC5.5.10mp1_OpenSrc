@@ -1,0 +1,355 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>MIB Compiler </TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="SNMP for eCos"
+HREF="net-snmp-ecos-port.html"><LINK
+REL="PREVIOUS"
+TITLE="Unimplemented features"
+HREF="net-snmp-unimplemented-features.html"><LINK
+REL="NEXT"
+TITLE="snmpd.conf"
+HREF="net-snmp-agent-manpages-snmpd.conf.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-snmp-unimplemented-features.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 47. SNMP for <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-snmp-agent-manpages-snmpd.conf.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-SNMP-MIB-COMPILER">MIB Compiler</H1
+><P
+>In the directory
+	  <TT
+CLASS="FILENAME"
+>/snmp/agent/VERSION/utils/mib2c</TT
+>,
+there are the following files:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>README-eCos             notes about running with a nonstandard 
+                        perl path.
+README.mib2c            the README from UCD; full instructions on
+                        using mib2c   
+mib2c                   the perl program
+mib2c.conf              a configuration file altered to include the
+                        eCos/UCD   
+mib2c.conf-ORIG         copyright and better #include paths; and
+                        the ORIGinal.   
+mib2c.storage.conf      other config files, not modified.   
+mib2c.vartypes.conf</PRE
+></TD
+></TR
+></TABLE
+><P
+>mib2c is provided BUT it requires the SNMP perl package SNMP-3.1.0,
+and that in turn requires perl nsPerl5.005_03 (part of
+Red Hat Linux from 6.0, April 1999).</P
+><P
+>These are available from the CPAN (&#8220;the Comprehensive
+Perl Archive Network&#8221;) as usual;
+<A
+HREF="http://www.cpan.org/"
+TARGET="_top"
+>http://www.cpan.org/</A
+>
+and links from there. Specifically:</P
+><P
+></P
+><UL
+><LI
+><P
+>PERL itself:
+<A
+HREF="http://people.netscape.com/kristian/nsPerl/"
+TARGET="_top"
+>http://people.netscape.com/kristian/nsPerl/</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="http://people.netscape.com/richm/nsPerl/nsPerl5.005_03-11-i686-linux.tar.gz"
+TARGET="_top"
+>http://people.netscape.com/richm/nsPerl/nsPerl5.005_03-11-i686-linux.tar.gz</A
+></P
+></LI
+><LI
+><P
+>SNMP.pl
+<A
+HREF="http://www.cpan.org/modules/01modules.index.html"
+TARGET="_top"
+>http://www.cpan.org/modules/01modules.index.html</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="http://cpan.valueclick.com/modules/by-category/05_Networking_Devices_IPC/SNMP/"
+TARGET="_top"
+>http://cpan.valueclick.com/modules/by-category/05_Networking_Devices_IPC/SNMP/</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="http://www.cpan.org/authors/id/G/GS/GSM/SNMP.tar.gz"
+TARGET="_top"
+>http://www.cpan.org/authors/id/G/GS/GSM/SNMP.tar.gz</A
+></P
+></LI
+></UL
+><P
+>(note that the .tar.gz files are not browsable)</P
+><P
+>For documentation on the files produced, see the documentation
+available at
+<A
+HREF="http://ucd-snmp.ucdavis.edu/"
+TARGET="_top"
+>http://ucd-snmp.ucdavis.edu/</A
+>
+in general, and file <TT
+CLASS="FILENAME"
+>AGENT.txt</TT
+> in particular.</P
+><P
+>It is likely that the output of mib2c will be further customized
+depending on eCos customer needs; it&#8217;s easy to do this
+by editing the mib2c.conf file to add or remove whatever you need
+with the resulting C sources.</P
+><P
+>The UCD autoconf-style configuration does not apply to eCos.
+ So if you add a completely new MIB to the agent, and support it
+using mib2c so that the my_new_mib.c file contains
+a init_my_new_mib() routine to register
+the MIB handler, you will also need to edit a couple of control
+files; these claim to be auto-generated, but in the eCos release,
+they&#8217;re not, don&#8217;t worry.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>PACKAGES/net/snmp/agent/VERSION/include/mib_module_includes.h</PRE
+></TD
+></TR
+></TABLE
+><P
+>contains a number of lines like</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#include &#8220;mibgroup/mibII/interfaces.h&#8221;</PRE
+></TD
+></TR
+></TABLE
+><P
+>so add your new MIB thus:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#include &#8220;mibgroup/mibII/my_new_mib.h&#8221;</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>PACKAGES/net/snmp/agent/VERSION/include/mib_module_inits.h </PRE
+></TD
+></TR
+></TABLE
+><P
+>contains a number of lines like</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>init_interfaces();         
+init_dot3(); </PRE
+></TD
+></TR
+></TABLE
+><P
+>and so on; add your new MIB as follows:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>init_my_new_mib(); </PRE
+></TD
+></TR
+></TABLE
+><P
+>and this should work correctly.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-snmp-unimplemented-features.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-snmp-agent-manpages-snmpd.conf.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Unimplemented features</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-snmp-ecos-port.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>snmpd.conf</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

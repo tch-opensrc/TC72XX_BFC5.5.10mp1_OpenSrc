@@ -1,0 +1,327 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Building the Network Tests</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Tests and Demonstrations"
+HREF="net-common-tests-and-demonstrations.html"><LINK
+REL="PREVIOUS"
+TITLE="Tests and Demonstrations"
+HREF="net-common-tests-and-demonstrations.html"><LINK
+REL="NEXT"
+TITLE="Standalone Tests"
+HREF="net-common-standalone-tests.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tests-and-demonstrations.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 36. Tests and Demonstrations</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-standalone-tests.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-BUILDING-THE-NETWORK-TESTS">Building the Network Tests</H1
+><P
+>To build further network tests, ensure that the configuration
+option CYGPKG_NET_BUILD_TESTS is set in your build
+and then make the tests in the usual way.  Alternatively
+(with that option set) use
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>make -C net/common/<TT
+CLASS="REPLACEABLE"
+><I
+>VERSION</I
+></TT
+>/ tests </PRE
+></TD
+></TR
+></TABLE
+>
+after building the eCos library, if you wish to build
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>only</I
+></SPAN
+>
+the network tests.</P
+><P
+>This should give test executables in
+<TT
+CLASS="FILENAME"
+>install/tests/net/common/<TT
+CLASS="REPLACEABLE"
+><I
+>VERSION</I
+></TT
+>/tests</TT
+>
+including
+the following:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>socket_test</I
+></SPAN
+> - trivial test of socket creation API 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mbuf_test</I
+></SPAN
+> - trivial test of mbuf allocation API 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ftp_test</I
+></SPAN
+> - simple FTP test, connects to &#8220;server&#8221; 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ping_test</I
+></SPAN
+> - pings &#8220;server&#8221; and non-existent host to test timeout 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>dhcp_test</I
+></SPAN
+> - ping test, but also relinquishes and
+            reacquires DHCP leases periodically 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>flood</I
+></SPAN
+> - a flood ping test; use with care 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tcp_echo</I
+></SPAN
+> - data forwarding program for performance test
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>nc_test_master </I
+></SPAN
+>- network characterization master
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>nc_test_slave </I
+></SPAN
+>- network characterization slave
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>server_test</I
+></SPAN
+> - a very simple server example
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tftp_client_test</I
+></SPAN
+> - performs a tftp get and put from/to &#8220;server&#8221; 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tftp_server_test</I
+></SPAN
+> - runs a tftp server for a short while 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>set_mac_address </I
+></SPAN
+>- set MAC address(es) of interfaces in NVRAM
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>bridge</I
+></SPAN
+> - contributed network bridge code
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>nc6_test_master </I
+></SPAN
+>- IPv4/IPv6 network characterization master
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>nc6_test_slave </I
+></SPAN
+>- IPv4/IPv6 network characterization slave
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ga_server_test</I
+></SPAN
+> - a very simple IPv4/IPv6 server example</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tests-and-demonstrations.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-standalone-tests.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Tests and Demonstrations</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-common-tests-and-demonstrations.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Standalone Tests</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

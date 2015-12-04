@@ -1,0 +1,782 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Architecture Characterization</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="HAL Interfaces"
+HREF="hal-interfaces.html"><LINK
+REL="PREVIOUS"
+TITLE="HAL Interfaces"
+HREF="hal-interfaces.html"><LINK
+REL="NEXT"
+TITLE="Interrupt Handling"
+HREF="hal-interrupt-handling.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="hal-interfaces.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. HAL Interfaces</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="hal-interrupt-handling.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="HAL-ARCHITECTURE-CHARACTERIZATION">Architecture Characterization</H1
+><P
+>These are definition that are related to the basic architecture of the
+CPU. These include the CPU context save format, context switching, bit
+twiddling, breakpoints, stack sizes and address translation.</P
+><P
+>Most of these definition are found in
+<TT
+CLASS="FILENAME"
+>cyg/hal/hal_arch.h</TT
+>.  This file is supplied by the
+architecture HAL. If there are variant or platform specific
+definitions then these will be found in
+<TT
+CLASS="FILENAME"
+>cyg/hal/var_arch.h</TT
+> or
+<TT
+CLASS="FILENAME"
+>cyg/hal/plf_arch.h</TT
+>. These files are include
+automatically by this header, so need not be included explicitly.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN7787">Register Save Format</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct HAL_SavedRegisters
+{
+    /* architecture-dependent list of registers to be saved */ 
+} HAL_SavedRegisters;</PRE
+></TD
+></TR
+></TABLE
+><P
+>This structure describes the layout of a saved machine state on the
+stack. Such states are saved during thread context switches,
+interrupts and exceptions. Different quantities of state may be saved
+during each of these, but usually a thread context state is a subset
+of the interrupt state which is itself a subset of an exception state.
+For debugging purposes, the same structure is used for all three
+purposes, but where these states are significantly different, this
+structure may contain a union of the three states.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN7791">Thread Context Initialization</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>HAL_THREAD_INIT_CONTEXT( sp, arg, entry, id )</PRE
+></TD
+></TR
+></TABLE
+><P
+>This macro initializes a thread's context so that
+it may be switched to by <TT
+CLASS="FUNCTION"
+>HAL_THREAD_SWITCH_CONTEXT()</TT
+>.
+The arguments are:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>sp</DT
+><DD
+><P
+>      A location containing the current value of the thread's stack
+      pointer. This should be a variable or a structure field. The SP
+      value will be read out of here and an adjusted value written
+      back.
+      </P
+></DD
+><DT
+>arg</DT
+><DD
+><P
+>      A value that is passed as the first argument to the entry
+      point function.
+      </P
+></DD
+><DT
+>entry</DT
+><DD
+><P
+>      The address of an entry point function. This will be called
+      according the C calling conventions, and the value of
+      <TT
+CLASS="PARAMETER"
+><I
+>arg</I
+></TT
+> will be passed as the first
+      argument. This function should have the following type signature
+      <TT
+CLASS="FUNCTION"
+>void entry(CYG_ADDRWORD arg)</TT
+>.
+      </P
+></DD
+><DT
+>id</DT
+><DD
+><P
+>      A thread id value. This is only used for debugging purposes,
+      it is ORed into the initialization pattern for unused registers
+      and may be used to help identify the thread from its register dump.
+      The least significant 16 bits of this value should be zero to allow
+      space for a register identifier.
+      </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="HAL-CONTEXT-SWITCH">Thread Context Switching</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>HAL_THREAD_LOAD_CONTEXT( to )
+HAL_THREAD_SWITCH_CONTEXT( from, to )</PRE
+></TD
+></TR
+></TABLE
+><P
+>These macros implement the thread switch code. The arguments are:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>from</DT
+><DD
+><P
+>      A pointer to a location where the stack pointer of the current
+      thread will be stored.
+      </P
+></DD
+><DT
+>to</DT
+><DD
+><P
+>      A pointer to a location from where the stack pointer of the next
+      thread will be read.
+      </P
+></DD
+></DL
+></DIV
+><P
+>For <TT
+CLASS="FUNCTION"
+>HAL_THREAD_LOAD_CONTEXT()</TT
+> the current CPU
+state is discarded and the state of the destination thread is
+loaded. This is only used once, to load the first thread when the
+scheduler is started.</P
+><P
+>For <TT
+CLASS="FUNCTION"
+>HAL_THREAD_SWITCH_CONTEXT()</TT
+> the state of the
+current thread is saved onto its stack, using the current value of the
+stack pointer, and the address of the saved state placed in
+<TT
+CLASS="PARAMETER"
+><I
+>*from</I
+></TT
+>.  The value in
+<TT
+CLASS="PARAMETER"
+><I
+>*to</I
+></TT
+> is then read and the state of the new
+thread is loaded from it.</P
+><P
+>While these two operations may be implemented with inline assembler,
+they are normally implemented as calls to assembly code functions in
+the HAL. There are two advantages to doing it this way. First, the
+return link of the call provides a convenient PC value to be used in
+the saved context. Second, the calling conventions mean that the
+compiler will have already saved the caller-saved registers before the
+call, so the HAL need only save the callee-saved registers.</P
+><P
+>The implementation of <TT
+CLASS="FUNCTION"
+>HAL_THREAD_SWITCH_CONTEXT()</TT
+>
+saves the current CPU state on the stack, including the current
+interrupt state (or at least the register that contains it). For
+debugging purposes it is useful to save the entire register set, but
+for performance only the ABI-defined callee-saved registers need be
+saved. If it is implemented, the option
+<TT
+CLASS="LITERAL"
+>CYGDBG_HAL_COMMON_CONTEXT_SAVE_MINIMUM</TT
+> controls
+how many registers are saved.</P
+><P
+>The implementation of <TT
+CLASS="FUNCTION"
+>HAL_THREAD_LOAD_CONTEXT()</TT
+>
+loads a thread context, destroying the current context. With a little
+care this can be implemented by sharing code with
+<TT
+CLASS="FUNCTION"
+>HAL_THREAD_SWITCH_CONTEXT()</TT
+>. To load a thread
+context simply requires the saved registers to be restored from the
+stack and a jump or return made back to the saved PC.</P
+><P
+>Note that interrupts are not disabled during this process, any
+interrupts that occur will be delivered onto the stack to which the
+current CPU stack pointer points. Hence the stack pointer
+should never be invalid, or loaded with a value that might cause the
+saved state to become corrupted by an interrupt. However, the current
+interrupt state is saved and restored as part of the thread
+context. If a thread disables interrupts and does something to cause a
+context switch, interrupts may be re-enabled on switching to another
+thread. Interrupts will be disabled again when the original thread
+regains control.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN7842">Bit indexing</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>HAL_LSBIT_INDEX( index, mask )
+HAL_MSBIT_INDEX( index, mask )</PRE
+></TD
+></TR
+></TABLE
+><P
+>These macros place in <TT
+CLASS="PARAMETER"
+><I
+>index</I
+></TT
+> the bit index of
+the least significant bit in <TT
+CLASS="PARAMETER"
+><I
+>mask</I
+></TT
+>. Some
+architectures have instruction level support for one or other of these
+operations. If no architectural support is available, then these
+macros may call C functions to do the job.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN7848">Idle thread activity</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>HAL_IDLE_THREAD_ACTION( count )</PRE
+></TD
+></TR
+></TABLE
+><P
+>It may be necessary under some circumstances for the HAL to execute
+code in the kernel idle thread's loop. An example might be to execute
+a processor halt instruction. This macro provides a portable way of
+doing this. The argument is a copy of the idle thread's loop counter,
+and may be used to trigger actions at longer intervals than every
+loop.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN7852">Reorder barrier</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>HAL_REORDER_BARRIER()</PRE
+></TD
+></TR
+></TABLE
+><P
+>When optimizing the compiler can reorder code. In some parts of
+multi-threaded systems, where the order of actions is vital, this can
+sometimes cause problems. This macro may be inserted into places where
+reordering should not happen and prevents code being migrated across
+it by the compiler optimizer. It should be placed between statements
+that must be executed in the order written in the code.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN7856">Breakpoint support</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>HAL_BREAKPOINT( label )
+HAL_BREAKINST
+HAL_BREAKINST_SIZE</PRE
+></TD
+></TR
+></TABLE
+><P
+>These macros provide support for breakpoints.</P
+><P
+><TT
+CLASS="FUNCTION"
+>HAL_BREAKPOINT()</TT
+> executes a breakpoint
+instruction. The label is defined at the breakpoint instruction so
+that exception code can detect which breakpoint was executed.</P
+><P
+><TT
+CLASS="LITERAL"
+>HAL_BREAKINST</TT
+> contains the breakpoint instruction
+code as an integer value. <TT
+CLASS="LITERAL"
+>HAL_BREAKINST_SIZE</TT
+> is
+the size of that breakpoint instruction in bytes. Together these
+may be used to place a breakpoint in any code.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN7865">GDB support</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>HAL_THREAD_GET_SAVED_REGISTERS( sp, regs )
+HAL_GET_GDB_REGISTERS( regval, regs )
+HAL_SET_GDB_REGISTERS( regs, regval )</PRE
+></TD
+></TR
+></TABLE
+><P
+>These macros provide support for interfacing GDB to the HAL.</P
+><P
+><TT
+CLASS="FUNCTION"
+>HAL_THREAD_GET_SAVED_REGISTERS()</TT
+> extracts a
+pointer to a <SPAN
+CLASS="STRUCTNAME"
+>HAL_SavedRegisters</SPAN
+> structure
+from a stack pointer value. The stack pointer passed in should be the
+value saved by the thread context macros. The macro will assign a
+pointer to the <SPAN
+CLASS="STRUCTNAME"
+>HAL_SavedRegisters</SPAN
+> structure
+to the variable passed as the second argument.</P
+><P
+><TT
+CLASS="FUNCTION"
+>HAL_GET_GDB_REGISTERS()</TT
+> translates a register
+state as saved by the HAL and into a register dump in the format
+expected by GDB. It takes a pointer to a
+<SPAN
+CLASS="STRUCTNAME"
+>HAL_SavedRegisters</SPAN
+> structure in the
+<TT
+CLASS="PARAMETER"
+><I
+>regs</I
+></TT
+> argument and a pointer to the memory to
+contain the GDB register dump in the <TT
+CLASS="PARAMETER"
+><I
+>regval</I
+></TT
+>
+argument.</P
+><P
+><TT
+CLASS="FUNCTION"
+>HAL_SET_GDB_REGISTERS()</TT
+> translates a GDB format
+register dump into a the format expected by the HAL.  It takes a
+pointer to the memory containing the GDB register dump in the
+<TT
+CLASS="PARAMETER"
+><I
+>regval</I
+></TT
+> argument and a pointer to a
+<SPAN
+CLASS="STRUCTNAME"
+>HAL_SavedRegisters</SPAN
+> structure
+in the <TT
+CLASS="PARAMETER"
+><I
+>regs</I
+></TT
+> argument.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN7883">Setjmp and longjmp support</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>CYGARC_JMP_BUF_SIZE
+hal_jmp_buf[CYGARC_JMP_BUF_SIZE]
+hal_setjmp( hal_jmp_buf env )
+hal_longjmp( hal_jmp_buf env, int val )</PRE
+></TD
+></TR
+></TABLE
+><P
+>These functions provide support for the C
+<TT
+CLASS="FUNCTION"
+>setjmp()</TT
+> and <TT
+CLASS="FUNCTION"
+>longjmp()</TT
+>
+functions.  Refer to the C library for further information.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN7889">Stack Sizes</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>CYGNUM_HAL_STACK_SIZE_MINIMUM
+CYGNUM_HAL_STACK_SIZE_TYPICAL</PRE
+></TD
+></TR
+></TABLE
+><P
+>The values of these macros define the minimum and typical sizes of
+thread stacks.</P
+><P
+><TT
+CLASS="LITERAL"
+>CYGNUM_HAL_STACK_SIZE_MINIMUM</TT
+> defines the minimum
+size of a thread stack. This is enough for the thread to function
+correctly within eCos and allows it to take interrupts and context
+switches. There should also be enough space for a simple thread entry
+function to execute and call basic kernel operations on objects like
+mutexes and semaphores. However there will not be enough room for much
+more than this. When creating stacks for their own threads,
+applications should determine the stack usage needed for application
+purposes and then add
+<TT
+CLASS="LITERAL"
+>CYGNUM_HAL_STACK_SIZE_MINIMUM</TT
+>.</P
+><P
+><TT
+CLASS="LITERAL"
+>CYGNUM_HAL_STACK_SIZE_TYPICAL</TT
+> is a reasonable increment over
+<TT
+CLASS="LITERAL"
+>CYGNUM_HAL_STACK_SIZE_MINIMUM</TT
+>, usually about 1kB. This should be
+adequate for most modest thread needs. Only threads that need to
+define significant amounts of local data, or have very deep call trees
+should need to use a larger stack size.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN7899">Address Translation</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>CYGARC_CACHED_ADDRESS(addr)
+CYGARC_UNCACHED_ADDRESS(addr)
+CYGARC_PHYSICAL_ADDRESS(addr)</PRE
+></TD
+></TR
+></TABLE
+><P
+>These macros provide address translation between different views of
+memory. In many architectures a given memory location may be visible
+at different addresses in both cached and uncached forms. It is also
+possible that the MMU or some other address translation unit in the
+CPU presents memory to the program at a different virtual address to
+its physical address on the bus.</P
+><P
+><TT
+CLASS="FUNCTION"
+>CYGARC_CACHED_ADDRESS()</TT
+> translates the given
+address to its location in cached memory. This is typically where the
+application will access the memory.</P
+><P
+><TT
+CLASS="FUNCTION"
+>CYGARC_UNCACHED_ADDRESS()</TT
+> translates the given
+address to its location in uncached memory. This is typically where
+device drivers will access the memory to avoid cache problems. It may
+additionally be necessary for the cache to be flushed before the
+contents of this location is fully valid.</P
+><P
+><TT
+CLASS="FUNCTION"
+>CYGARC_PHYSICAL_ADDRESS()</TT
+> translates the given
+address to its location in the physical address space. This is
+typically the address that needs to be passed to device hardware such
+as a DMA engine, ethernet device or PCI bus bridge. The physical
+address may not be directly accessible to the program, it may be
+re-mapped by address translation.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN7909">Global Pointer</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>CYGARC_HAL_SAVE_GP()
+CYGARC_HAL_RESTORE_GP()</PRE
+></TD
+></TR
+></TABLE
+><P
+>These macros insert code to save and restore any global data pointer
+that the ABI uses. These are necessary when switching context between
+two eCos instances - for example between an eCos application and
+RedBoot.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="hal-interfaces.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="hal-interrupt-handling.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>HAL Interfaces</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="hal-interfaces.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Interrupt Handling</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,1215 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>HAL Structure</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="	Porting Guide"
+HREF="hal-porting-guide.html"><LINK
+REL="PREVIOUS"
+TITLE="	Porting Guide"
+HREF="hal-porting-guide.html"><LINK
+REL="NEXT"
+TITLE="Virtual Vectors (eCos/ROM Monitor Calling Interface)"
+HREF="hal-calling-if.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="hal-porting-guide.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 11. Porting Guide</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="hal-calling-if.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="HAL-PORTING-STRUCTURE">HAL Structure</H1
+><P
+>In order to write an eCos HAL it's a good idea to have at least a
+passing understanding of how the HAL interacts with the rest of the
+system.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN8659">HAL Classes</H2
+><P
+>The eCos HAL consists of four HAL sub-classes. This table gives a
+brief description of each class and partly reiterates the description
+in <A
+HREF="hal-architecture-variant-and-platform.html"
+>Chapter 7</A
+>. The links
+refer to the on-line CVS tree (specifically to the sub-HALs used by
+the PowerPC MBX target).</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN8663"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>HAL type</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Functionality Overview</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Common HAL <A
+HREF="http://sourceware.cygnus.com/cgi-bin/cvsweb.cgi/ecos/packages/hal/common/current?cvsroot=ecos"
+TARGET="_top"
+>(hal/common)</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Configuration options and functionality shared by all HALs.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Generic debugging functionality, driver API, eCos/ROM monitor
+      calling interface, and tests.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Architecture HAL <A
+HREF="http://sourceware.cygnus.com/cgi-bin/cvsweb.cgi/ecos/packages/hal/powerpc/arch/current?cvsroot=ecos"
+TARGET="_top"
+>(hal/&lt;architecture&gt;/arch)</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Functionality specific to the given architecture. Also default
+  implementations of some functionality which can be overridden by
+  variant or platform HALs.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Architecture specific debugger functionality (handles single
+     stepping, exception-to-signal conversion, etc.),
+     exception/interrupt vector definitions and handlers, cache
+     definition and control macros, context switching code, assembler
+     functions for early system initialization, configuration options,
+     and possibly tests. </TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Variant HAL <A
+HREF="http://sourceware.cygnus.com/cgi-bin/cvsweb.cgi/ecos/packages/hal/powerpc/mpc8xx/current?cvsroot=ecos"
+TARGET="_top"
+>(hal/&lt;architecture&gt;/&lt;variant&gt;)</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Some CPU architectures consist of a number variants, for example
+     MIPS CPUs come in both 32 and 64 bit versions, and some variants
+     have embedded features additional to the CPU core.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Variant extensions to the architecture code (cache,
+     exception/interrupt), configuration options, possibly drivers for
+     variant on-core devices, and possibly tests.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Platform HAL <A
+HREF="http://sourceware.cygnus.com/cgi-bin/cvsweb.cgi/ecos/packages/hal/powerpc/mbx/current?cvsroot=ecos"
+TARGET="_top"
+>(hal/&lt;architecture&gt;/&lt;platform&gt;)</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Contains functionality and configuration options specific to the
+      platform.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Early platform initialization code, platform memory layout
+     specification, configuration options (processor speed, compiler
+     options), diagnostic IO functions, debugger IO functions,
+     platform specific extensions to architecture or variant code
+     (off-core interrupt controller), and possibly tests.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Auxiliary HAL <A
+HREF="http://sourceware.cygnus.com/cgi-bin/cvsweb.cgi/ecos/packages/hal/powerpc/quicc/current?cvsroot=ecos"
+TARGET="_top"
+>(hal/&lt;architecture&gt;/&lt;module&gt;)</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Some variants share common modules on the core. Motorola's PowerPC
+      QUICC is an example of such a module.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Module specific functionality (interrupt controller, simple
+      device drivers), possibly tests.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN8696">File Descriptions</H2
+><P
+>Listed below are the files found in various HALs, with a short
+description of what each file contains. When looking in existing HALs
+beware that they do not necessarily follow this naming scheme.
+If you are writing a new HAL, please try to follow it as
+closely as possible. Still, no two targets are the same, so sometimes
+it makes sense to use additional files.</P
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN8699">Common HAL</H3
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN8701"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/dbg-thread-syscall.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Defines the thread debugging syscall function. This is used by
+  the ROM monitor to access the thread debugging API in the RAM
+  application.  .</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/dbg-threads-api.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Defines the thread debugging API. .</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/drv_api.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Defines the driver API.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/generic-stub.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Defines the generic stub features.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/hal_if.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Defines the ROM/RAM calling interface API.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/hal_misc.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Defines miscellaneous helper functions shared by all HALs.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/hal_stub.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Defines eCos mappings of GDB stub features.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/dbg-threads-syscall.c</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Thread debugging implementation.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/drv_api.c</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Driver API implementation. Depending on configuration this
+  provides either wrappers for the kernel API, or a minimal
+  implementation of these features. This allows drivers to be written
+  relying only on HAL features.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/dummy.c</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Empty dummy file ensuring creation of libtarget.a.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/generic-stub.c</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Generic GDB stub implementation. This provides the
+  communication protocol used to communicate with GDB over a serial
+  device or via the network.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/hal_if.c</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>ROM/RAM calling interface implementation. Provides wrappers from
+  the calling interface API to the eCos features used for the
+  implementation.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/hal_misc.c</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Various helper functions shared by all platforms and
+  architectures.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/hal_stub.c</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Wrappers from eCos HAL features to the features required by the
+  generic GDB stub.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/stubrom/stubrom.c</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>The file used to build eCos GDB stub images. Basically a
+  cyg_start function with a hard coded breakpoint.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/thread-packets.c</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>More thread debugging related functions.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/thread-pkts.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Defines more thread debugging related function.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN8776">Architecture HAL</H3
+><P
+>Some architecture HALs may add extra files for architecture
+specific serial drivers, or for handling interrupts and exceptions if it
+makes sense.</P
+><P
+>Note that many of the definitions in these files are only
+conditionally defined - if the equivalent variant or platform headers
+provide the definitions, those override the generic architecture
+definitions.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN8780"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/arch.inc</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Various assembly macros used during system initialization.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/basetype.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Endian, label, alignment, and type size definitions. These
+  override common defaults in CYGPKG_INFRA.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/hal_arch.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Saved register frame format, various thread, register and stack
+  related macros.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/hal_cache.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Cache definitions and cache control macros.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/hal_intr.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Exception and interrupt definitions. Macros for configuring and
+  controlling interrupts. eCos real-time clock control macros.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/hal_io.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Macros for accessing IO devices.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/&lt;arch&gt;_regs.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Architecture register definitions.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/&lt;arch&gt;_stub.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Architecture stub definitions. In particular the register frame
+  layout used by GDB. This may differ from the one used by eCos.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/&lt;arch&gt;.inc</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Architecture convenience assembly macros.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/&lt;arch&gt;.ld</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Linker macros.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/context.S</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Functions handling context switching and setjmp/longjmp.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/hal_misc.c</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Exception and interrupt handlers in C. Various other utility
+  functions.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/hal_mk_defs.c</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Used to export definitions from C header files to assembler
+  header files.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/hal_intr.c</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Any necessary interrupt handling functions.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/&lt;arch&gt;stub.c</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Architecture stub code. Contains functions for translating eCos
+  exceptions to UNIX signals and functions for single-stepping.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/vectors.S</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Exception, interrupt and early initialization code.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN8851">Variant HAL</H3
+><P
+>Some variant HALs may add extra files for variant specific serial
+drivers, or for handling interrupts/exceptions if it makes sense.</P
+><P
+>Note that these files may be mostly empty if the CPU variant can be
+controlled by the generic architecture macros. The definitions present
+are only conditionally defined - if the equivalent platform headers
+provide the definitions, those override the variant definitions.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN8855"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/var_arch.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Saved register frame format, various thread, register and stack
+  related macros.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/var_cache.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Cache related macros.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/var_intr.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Interrupt related macros.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/var_regs.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Extra register definitions for the CPU variant.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/variant.inc</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Various assembly macros used during system initialization.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/var_intr.c</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Interrupt functions if necessary.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/var_misc.c</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>hal_variant_init function and any necessary extra functions.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/variant.S</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Interrupt handler table definition.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/&lt;arch&gt;_&lt;variant&gt;.ld</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Linker macros.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN8898">Platform HAL</H3
+><P
+>Extras files may be added for platform specific serial
+drivers. Extra files for handling interrupts and exceptions will be
+present if it makes sense.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN8901"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/hal_diag.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Defines functions used for HAL diagnostics output. This would
+  normally be the ROM calling interface wrappers, but may also be the
+  low-level IO functions themselves, saving a little overhead.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/platform.inc</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Platform initialization code. This includes memory controller,
+  vectors, and monitor initialization. Depending on the architecture,
+  other things may need defining here as well: interrupt decoding,
+  status register initialization value, etc.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/plf_cache.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Platform specific cache handling.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/plf_intr.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Platform specific interrupt handling.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/plf_io.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>PCI IO definitions and macros. May also be used to override
+  generic HAL IO macros if the platform endianness differs from that of
+  the CPU.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>include/plf_stub.h</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Defines stub initializer and board reset details.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/hal_diag.c</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>May contain the low-level device drivers. But these may also
+  reside in plf_stub.c</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/platform.S</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Memory controller setup macro, and if necessary interrupt
+  springboard code.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/plf_misc.c</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Platform initialization code.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/plf_mk_defs.c</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Used to export definitions from C header files to assembler
+  header files.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>src/plf_stub.c</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Platform specific stub initialization and possibly the low-level
+  device driver.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+><P
+>The platform HAL also contains files specifying the platform's
+memory layout. These files are located in
+<TT
+CLASS="FILENAME"
+>include/pkgconf</TT
+>.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN8954">Auxiliary HAL</H3
+><P
+>Auxiliary HALs contain whatever files are necessary to provide the
+required functionality. There are no predefined set of files required
+in an auxiliary HAL.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="hal-porting-guide.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="hal-calling-if.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Porting Guide</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="hal-porting-guide.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Virtual Vectors (eCos/ROM Monitor Calling Interface)</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

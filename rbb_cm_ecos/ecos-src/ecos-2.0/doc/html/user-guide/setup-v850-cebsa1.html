@@ -1,0 +1,773 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>NEC CEB-V850/SA1 Hardware Setup</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Target Setup"
+HREF="appendix-target-setup.html"><LINK
+REL="PREVIOUS"
+TITLE="SH4/SE7751 Hardware Setup"
+HREF="setup-sh-se7751.html"><LINK
+REL="NEXT"
+TITLE="NEC CEB-V850/SB1 Hardware Setup"
+HREF="setup-v850-cebsb1.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="setup-sh-se7751.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Target Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="setup-v850-cebsb1.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SETUP-V850-CEBSA1">NEC CEB-V850/SA1 Hardware Setup</H1
+><P
+>The CEB-V850 board is fitted with a socketed EPROM. The internal
+Flash of the V850 supplied with the CEB-V850 boards defaults to
+vectoring into this EPROM. A  GDB stub image should be programmed
+into an EPROM fitted to this board, and a pre-built image is provided
+at <TT
+CLASS="FILENAME"
+>loaders/v850-ceb_v850/v850sa1/gdb_module.bin </TT
+>under
+the root of your eCos installation.</P
+><P
+>The EPROM is installed to the socket labelled U7 on the board.
+Attention should be paid to the correct orientation of the EPROM
+during installation. </P
+><P
+>When programming an EPROM using the binary image, be careful
+to get the byte order correct. It needs to be little-endian. If
+the EPROM burner software has a hex-editor, check that the first
+few bytes of the image look similar to: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>00000000: 0018 8007 5e02 0000 0000 0000 0000 0000</PRE
+></TD
+></TR
+></TABLE
+><P
+>If the byte order is wrong you will see 1800 instead of 0018
+etc. Use the EPROM burner software to make a byte-swap before you
+burn to image to the EPROM. </P
+><P
+>If the GDB stub EPROM you burn does not work, try reversing
+the byte-order, even if you think you have it the right way around.
+At least one DOS-based EPROM burner program is known to have the
+byte-order upside down.</P
+><P
+>The GDB stub in the EPROM allows communication with GDB using
+the serial port. The communication parameters are fixed at 38400
+baud, 8 data bits, no parity bit and 1 stop bit (8-N-1). No flow
+control is employed. Connection to the host computer should be made
+using a dedicated serial cable as specified in the CEB-V850/SA1
+manual.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4279">Installing the Stubs into ROM</H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4281">Preparing the Binaries</H3
+><P
+>These two binary preparation steps are not strictly necessary
+as the eCos distribution ships with pre-compiled binaries in the
+directory loaders/v850-ceb_v850 relative to the
+installation root.</P
+><DIV
+CLASS="SECT4"
+><H4
+CLASS="SECT4"
+><A
+NAME="AEN4284">Building the ROM images with the eCos Configuration Tool</H4
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Start with a new document - selecting the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>File-&#62;New</I
+></SPAN
+>
+ menu item if necessary to do this.</P
+></LI
+><LI
+><P
+>Choose the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build-&#62;Templates</I
+></SPAN
+>
+ menu item, and then select the NEC CEB-V850/SA1 hardware.</P
+></LI
+><LI
+><P
+>While still displaying the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build-&#62;Templates</I
+></SPAN
+>
+ dialog box, select the &#8220;stubs&#8221; package template
+to build a GDB stub. Click 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>OK</I
+></SPAN
+>.</P
+></LI
+><LI
+><P
+>Build eCos using 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build-&#62;Library</I
+></SPAN
+>. </P
+></LI
+><LI
+><P
+>When the build completes, the image files can be found
+in the bin/ subdirectory of the install tree. GDB stub
+ROM images have the  prefix &#8220;gdb_module&#8221;.</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT4"
+><H4
+CLASS="SECT4"
+><A
+NAME="AEN4302">Building the ROM images with ecosconfig</H4
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Make an empty directory to contain the build tree,
+and cd into it. </P
+></LI
+><LI
+><P
+>To build a GDB stub ROM image, enter the command:
+
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig new ceb-v850 stubs </PRE
+></TD
+></TR
+></TABLE
+></P
+></LI
+><LI
+><P
+>Enter the commands: 
+
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig tree
+$ make</PRE
+></TD
+></TR
+></TABLE
+>
+ </P
+></LI
+><LI
+><P
+>When the build completes, the image files can be found
+in the bin/ subdirectory of the install tree. GDB stub
+ROM images have the prefix &#8220;gdb_module&#8221;.</P
+></LI
+></OL
+></DIV
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4315">Installing the Stubs into ROM or FLASH</H3
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+> Program the binary image file gdb_module.bin
+into ROM or FLASH referring to the instructions of your ROM
+		  programmer. </P
+></LI
+><LI
+><P
+> Plug the ROM/FLASH into the socket as described
+at the beginning of this section.</P
+></LI
+></OL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4322">Debugging with the NEC V850 I.C.E.</H2
+><P
+>eCos applications may be debugged using the NEC V850 In Circuit
+Emulator (I.C.E.) A PC running Microsoft Windows is required in
+order to run the NEC ICE software and drivers. In addition Red Hat
+have developed a &#8220;libremote&#8221; server application
+named v850ice.exe which is used on the PC connected to the I.C.E.
+in order to allow connections from GDB.</P
+><P
+>The I.C.E. must be physically connected to a Windows NT system
+through NEC&quot;s PCI or PC Card interface.  A driver, DLLs,
+and application are provided by NEC to control the I.C.E.</P
+><P
+>v850ice is a Cygwin based server that runs on the NT system
+and provides an interface between the gdb client and the I.C.E.
+software. v850-elf-gdb may be run on the Windows NT system or on
+a remote system. v850-elf-gdb communicates with the libremote server
+using the gdb remote protocol over a TCP/IP socket.  v850ice
+communicates with the I.C.E. by calling functions in the NECMSG.DLL provided
+by NEC.</P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4327">INITIAL SETUP</H3
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Configure the hardware including the I.C.E., SA1 or
+SB1 Option Module, and target board.  Install the interface card
+in the Windows NT system. Reference NEC&quot;s documentation
+for interface installation, jumper settings, etc.</P
+></LI
+><LI
+><P
+>Install the Windows NT device driver provided by NEC.</P
+></LI
+><LI
+><P
+>Copy the NEC DLLs, MDI application, and other support
+files to a directory on the Windows NT system. The standard location
+is C:\NecTools32. This directory will be referred to as
+the "libremote server directory" in this document. v850ice.exe must
+also be copied to this directory after being built. The required
+files are:  cpu.cfg, Nec.cfg, MDI.EXE, NECMSG.DLL, EX85032.DLL,
+V850E.DLL, IE850.MON, IE850E.MON, and D3037A.800.</P
+></LI
+><LI
+><P
+>Make certain the file cpu.cfg contains the line:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>CpuOption=SA1</PRE
+></TD
+></TR
+></TABLE
+><P
+>if using a V850/SA1 module, or:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>CpuOption=SB1</PRE
+></TD
+></TR
+></TABLE
+><P
+>if using a V850/SB1 module.</P
+></LI
+><LI
+><P
+>Set the environment variable IEPATH to point to the libremote
+server</P
+><P
+>directory.</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4345">BUILD PROCEDURES</H3
+><P
+>A pre-built v850ice.exe executable is supplied in the loaders/v850-ceb_v850 directory
+relative to the root of the eCos installation. However the following process
+will allow the rebuilding of this executable if required:</P
+><P
+>For this example assume the v850ice libremote tree has been
+copied to a directory named "server".  The directory structure will
+be similar to the following diagram:</P
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>                server
+                   |
+                 devo
+                 /  \
+           config    libremote
+                      /     \
+                   lib       v850ice</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>Build the v850ice source as follows.  Be sure to use the native
+Cygwin compiler tools that were supplied alongside eCos.</P
+><P
+>cd server
+mkdir build
+cd build
+../devo/configure --target=v850-elf --host=i686-pc-cygwin
+make</P
+><P
+>The resultant libremote server image (v850ice.exe) can be
+found in build/libremote/v850ice.  Copy v850ice.exe
+to the lib remote server directory.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4354">V850ICE.EXE EXECUTION</H3
+><P
+>The v850ice command line syntax is:</P
+><P
+>v850ice [-d] [-t addr] [port number]</P
+><P
+>The optional -d option enables debug output.  The -t option
+is associated with thread debugging - see the "eCos thread debugging"
+section below for details. By default v850ice listens on port 2345
+for an attach request from a gdb client.  A different port number
+may be specified on the command line.</P
+><P
+>To run the libremote server:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Power on the I.C.E. and target board.</P
+></LI
+><LI
+><P
+>Open a Cygwin window.</P
+></LI
+><LI
+><P
+>Run v850ice.</P
+></LI
+><LI
+><P
+>You will see the MDI interface window appear.  In this
+window you should see the "Connected to In-Circuit Emulator" message.
+ In the Cygwin window, the libremote server will indicate it is
+ready to accept a gdb client connection with the message "v850ice:
+ listening on port 2345."</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4369">V850-ELF-GDB EXECUTION</H3
+><P
+>Run the v850-elf-gdb client to debug the V850 target.  It
+is necessary to issue certain configuration commands to the I.C.E.
+software.  These commands may be issued directly in the MDI window
+or they may be issued from the gdb client through the "monitor"
+command.</P
+><P
+>On the Cosmo CEB-V850 board, on-chip Flash is mapped at address
+0x0, the on-board EPROM at 0x100000 and the on-board RAM at 0xfc0000.
+Since a stand alone V850 will start executing from address 0x0 on
+reset, it is normal to load either an application or a bootstrap
+loader for Flash at this address. eCos programs may be built to
+boot from Flash or the on-board EPROM. If building for the on-board
+EPROM, it would be expected that the Flash will contain the default
+CEB-V850 flash contents. An ELF format version of the default contents
+may be found in the eCos distribution with the name v850flash.img.</P
+><P
+>In stand alone operation, normally the code in this flash image
+would have been programmed into the V850 on the Cosmo board, and
+this would cause it to vector into the on-board EPROM to run the
+application located there. In the case of eCos, this application
+may be a GDB stub ROM application, allowing the further download
+to RAM over serial of actual applications to debug.</P
+><P
+>As an example, we shall demonstrate how to use the I.C.E.
+to download the v850flash.img and GDB stub EPROM image using I.C.E.
+emulator memory only, and not requiring any actual programming of
+devices.</P
+><P
+>v850-elf-gdb -nw
+(gdb) file v850flash.img
+(gdb) target remote localhost:2345
+(gdb) monitor reset
+(gdb) monitor cpu r=256 a=16
+(gdb) monitor map r=0x100000-L 0x80000
+(gdb) monitor map u=0xfc0000-L 0x40000
+(gdb) monitor pinmask k
+(gdb) monitor step
+(gdb) monitor step
+(gdb) monitor step
+(gdb) monitor step
+(gdb) load
+(gdb) detach
+(gdb) file gdb_module.img
+(gdb) target remote localhost:2345
+(gdb) load
+(gdb) continue</P
+><P
+>NOTE: The four "monitor step" commands are only required the
+first time the board is connected to the I.C.E., otherwise the program
+will fail.</P
+><P
+>This is because of a limitation of the I.C.E. hardware that
+means that the first time it is used, the "map" commands are not
+acted on and the addresses "0x100000" and "0xfc0000" are not mapped.
+This can be observed using the command "td e-20" in the MDI application&quot;s
+console to display the trace buffer, which will show that the contents
+of address 0x100000 are not valid. Subsequent runs do not require
+the "monitor step" commands.</P
+><P
+>It is unusual to load two executable images to a target through
+gdb.  From the example above notice that this is accomplished by
+attaching to the libremote server, loading the flash image, detaching,
+reattaching, and loading the ROM/RAM image. It is more
+normal to build an executable image that can be executed directly.
+In eCos this is achieved by selecting either the ROM or ROMRAM startup
+type, and optionally enable building for the internal FLASH. The
+I.C.E. emulator memory can emulate both the internal FLASH and the
+EPROM, so real hardware programming is not required.</P
+><P
+>Upon running this example you will notice that the libremote
+server does not exit upon detecting a detach request, but simply
+begins listening for the next attach request.  To cause v850ice
+to terminate, issue the "monitor quit" or "monitor exit" command
+from the gdb client.  v850ice will then terminate with the next
+detach request.  (You can also enter control-c in the Cygwin/DOS
+window where v850ice is running.)</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4380">MDI INTERFACE VS. GDB INTERFACE</H3
+><P
+>If a filename is referenced in an MDI command, whether the
+command is entered in the MDI window or issued from the gdb client
+with the monitor command, the file must reside on the Windows NT
+libremote server system.  When specifying a filename when entering
+a command in the MDI window it is obvious that a server local file
+is being referenced.  When issuing an MDI command from the gdb client, the
+user must remember that the command line is simply passed to the
+I.C.E. software on the server system.  The command is executed by
+the I.C.E. software as though it were entered locally.</P
+><P
+>Executable images may be loaded into the V850 target by entering
+the "load" command in the MDI window or with the gdb "load" command.
+ If the MDI load command is used, the executable image must be located
+on the server system and must be in S Record format.  If the gdb
+load command is used, the executable image must be located on the
+client system and must be in ELF format.</P
+><P
+>Be aware that the gdb client is not aware of debugger commands
+issued from the MDI window.  It is possible to cause the gdb client
+and the I.C.E. software to get out of sync by issuing commands from
+both interfaces during the same debugging session.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4385">eCos THREAD DEBUGGING</H3
+><P
+>eCos and the V850 I.C.E. libremote server have been written
+to work together to allow debugging of eCos threads. This is an
+optional feature, disabled by default because of the overheads trying
+to detect a threaded program involves.</P
+><P
+>Obviously thread debugging is not possible for programs with
+"RAM" startup type, as they are expected to operate underneath a
+separate ROM monitor (such as a GDB stub ROM), that itself would
+provide its own thread debugging capabilities over the serial line.
+Thread debugging is relevant only for programs built for Flash, ROM,
+or ROMRAM startup.</P
+><P
+>To configure the libremote server to support thread debugging,
+use the command:</P
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>(gdb) monitor syscallinfo ADDRESS</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>at the GDB console prompt, where ADDRESS is the address of
+the syscall information structure included in the applications.
+In eCos this has been designed to be located at a consistent address
+for each CPU model (V850/SA1 or V850/SB1). It
+may be determined from an eCos executable using the following command
+at a cygwin bash prompt:</P
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>v850-elf-nm EXECUTABLE | grep hal_v85x_ice_syscall_info</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>At the current time, this address is 0xfc0400 for a Cosmo
+board fitted with a V850/SA1, or 0xfc0540 for a Cosmo board
+fitted with a V850/SB1.</P
+><P
+>So for example, the GDB command for the SB1 would be:</P
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>(gdb) monitor syscallinfo 0xfc0540</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>Given that the syscallinfo address is fixed over all eCos
+executables for a given target, it is possible to define it on the
+libremote command line as well using the "-t" option, for example:</P
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>bash$ v850ice -t 0xfc0400
+v850ice: listening on port 2345</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="setup-sh-se7751.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="setup-v850-cebsb1.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SH4/SE7751 Hardware Setup</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="appendix-target-setup.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>NEC CEB-V850/SB1 Hardware Setup</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,340 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>doc</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="display"
+HREF="ref.display.html"><LINK
+REL="NEXT"
+TITLE="flavor"
+HREF="ref.flavor.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.display.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.flavor.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.DOC"><SPAN
+CLASS="PROPERTY"
+>doc</SPAN
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4278"
+></A
+><H2
+>Name</H2
+>Property <SPAN
+CLASS="PROPERTY"
+>doc</SPAN
+>&nbsp;--&nbsp;The location of online-documentation for a configuration option.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4282"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_option &lt;name&gt; {
+    doc &lt;URL;&gt;
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4284"
+></A
+><H2
+>Description</H2
+><P
+>Users can only be expected to manipulate configuration options
+sensibly if they are given sufficient information about these options.
+There are three properties which serve to explain an option in plain
+text: the <SPAN
+CLASS="PROPERTY"
+>display</SPAN
+> property gives a textual alias for an option,
+which is usually more comprehensible than something like
+<TT
+CLASS="LITERAL"
+>CYGPKG_LIBC_TIME_ZONES</TT
+>; the <SPAN
+CLASS="PROPERTY"
+>description</SPAN
+> property
+gives a longer description, typically a paragraph or so; the <SPAN
+CLASS="PROPERTY"
+>doc</SPAN
+>
+property specifies the location of additional on-line documentation
+related to a configuration option. In the context of a graphical tool
+the <SPAN
+CLASS="PROPERTY"
+>display</SPAN
+> string will be the primary way for users to identify
+configuration options; the <SPAN
+CLASS="PROPERTY"
+>description</SPAN
+> paragraph will be visible
+whenever the option is selected; the on-line documentation will only
+be accessed when the user explicitly requests it.</P
+><P
+>The documentation may be an absolute URL, but more generally the
+on-line documentation will be shipped with the package and can be
+accessed via a relative URL. If the package follows the <A
+HREF="package.html#PACKAGE.HIERARCHY"
+>directory layout conventions</A
+> then
+the configuration tools will search for the specified html file
+first in the <TT
+CLASS="FILENAME"
+>doc</TT
+> subdirectory
+of the package, then relative to the package directory itself. The URL
+may contain a <TT
+CLASS="LITERAL"
+>#</TT
+> character to specify an anchor
+within a page.</P
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>At the time of writing the <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> packages in the standard
+distribution do not conform to the directory layout conventions when
+it comes to the documentation. Instead of organizing the documentation
+on a per-package basis and placing it in the corresponding
+<TT
+CLASS="FILENAME"
+>doc</TT
+> sub-directories, all the
+documentation is kept in a central location. This should get addressed
+in a future release of the system. Third party component writers
+should follow the layout conventions.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4301"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_KERNEL {
+    display       "eCos kernel"
+    doc           ref/ecos-ref.4.html
+    include_dir   cyg/kernel
+    description   "
+        This package contains the core functionality of the eCos
+        kernel. It relies on functionality provided by various HAL
+        packages and by the eCos infrastructure. In turn the eCos
+        kernel provides support for other packages such as the device
+        drivers and the uITRON compatibility layer."
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4304"
+></A
+><H2
+>See Also</H2
+><P
+>Properties <A
+HREF="ref.description.html"
+><SPAN
+CLASS="PROPERTY"
+>description</SPAN
+></A
+> and
+<A
+HREF="ref.display.html"
+><SPAN
+CLASS="PROPERTY"
+>display</SPAN
+></A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.display.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.flavor.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>display</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>flavor</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

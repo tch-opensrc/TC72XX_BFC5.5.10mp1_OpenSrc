@@ -1,0 +1,193 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>TX39 Hardware Setup</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Target Setup"
+HREF="appendix-target-setup.html"><LINK
+REL="PREVIOUS"
+TITLE="AM33 STB Hardware Setup"
+HREF="setup-am33-stb.html"><LINK
+REL="NEXT"
+TITLE="TX39 Architectural Simulator Setup"
+HREF="setup-tx39-sim.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="setup-am33-stb.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Target Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="setup-tx39-sim.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SETUP-TX39-JMR3904">TX39 Hardware Setup</H1
+><P
+>The eCos Developer&#8217;s Kit package comes with a pair
+of ROMs that provide GDB support for
+the Toshiba JMR-TX3904 RISC processor reference board by way of CygMon. </P
+><P
+>Images of these ROMs are also provided at <TT
+CLASS="FILENAME"
+>BASE_DIR/loaders/tx39-jmr3904/cygmon50.bin</TT
+> and <TT
+CLASS="FILENAME"
+>BASE_DIR/loaders/tx39-jmr3904/cygmon66.bin</TT
+> for
+50 MHz and 66 MHz boards respectively. The ROMs are installed to
+sockets IC6 and IC7 on the memory daughterboard according to their
+labels. Attention should be paid to the correct orientation of these
+ROMs during installation.</P
+><P
+>The GDB stub allows communication with GDB using the serial
+port (channel C) at connector PJ1. The communication parameters
+are fixed at 38400 baud, 8 data bits, no parity bit, and 1 stop
+bit (8-N-1). No handshaking is employed. Connection to the host
+computer should be made using an RS232C null modem cable.</P
+><P
+>CygMon and eCos currently provide support for a 16Mbyte 60ns
+72pin DRAM SIMM fitted to the PJ21 connector. Different size DRAMs
+may require changes in the value stored in the DCCR0 register. This
+value may be found near line 211 in <TT
+CLASS="FILENAME"
+>hal/mips/arch/<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+>/src/vectors.S</TT
+>
+in eCos, and near line 99 in
+	  <TT
+CLASS="FILENAME"
+>libstub/mips/tx39jmr/tx39jmr-power.S</TT
+> in
+CygMon. eCos does not currently use the DRAM for any purpose itself,
+so it is entirely available for application use.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="setup-am33-stb.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="setup-tx39-sim.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>AM33 STB Hardware Setup</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="appendix-target-setup.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>TX39 Architectural Simulator Setup</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

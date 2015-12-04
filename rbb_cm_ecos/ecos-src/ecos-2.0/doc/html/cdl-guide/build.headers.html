@@ -1,0 +1,1452 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Configuration Header File Generation</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="The Build Process"
+HREF="build.html"><LINK
+REL="PREVIOUS"
+TITLE="The Build Process"
+HREF="build.html"><LINK
+REL="NEXT"
+TITLE="Building eCos"
+HREF="build.make.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="build.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. The Build Process</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="build.make.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="BUILD.HEADERS">Configuration Header File Generation</H1
+><P
+>Configuration options can affect a build in two main ways. First,
+enabling a configuration option or other <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> entity can result in
+various files being built and added to a library, thus providing
+functionality to the application code. However this mechanism can only
+operate at a rather coarse grain, at the level of entire source files.
+Hence the component framework also generates configuration header
+files containing mainly C preprocessor <TT
+CLASS="LITERAL"
+>#define</TT
+>
+directives. Package source code can then <TT
+CLASS="LITERAL"
+>#include</TT
+>
+the appropriate header files and use <TT
+CLASS="LITERAL"
+>#if</TT
+>,
+<TT
+CLASS="LITERAL"
+>#ifdef</TT
+> and <TT
+CLASS="LITERAL"
+>#ifndef</TT
+> directives to
+adapt accordingly. In this way configuration options can be used to
+enable or disable entire functions within a source file or just a
+single line, whichever is appropriate.</P
+><P
+>The configuration header files end up in the <TT
+CLASS="FILENAME"
+>include/pkgconf</TT
+> subdirectory of the
+install tree. There will be one header file for the system as a whole,
+<TT
+CLASS="FILENAME"
+>pkgconf/system.h</TT
+>, and there will
+be additional header files for each package, for example
+<TT
+CLASS="FILENAME"
+>pkgconf/kernel.h</TT
+>. The header files
+are generated when creating or updating the build and install trees,
+which needs to happen after every change to the configuration.</P
+><P
+>The component framework processes each package in the configuration
+one at a time. The exact order in which the packages are processed is
+not defined, so the order in which <TT
+CLASS="LITERAL"
+>#define's</TT
+> will
+end up in the global <TT
+CLASS="FILENAME"
+>pkgconf/system.h</TT
+> header may vary. However
+for any given configuration the order should remain consistent until
+packages are added to or removed from the system. This avoids
+unnecessary changes to the global header file and hence unnecessary
+rebuilds of the packages and of application code because of header
+file dependency handling.</P
+><P
+>Within a given package the various components, options and interfaces
+will be processed in the order in which they were defined in the
+corresponding <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> scripts. Typically the data in the configuration
+headers consists only of a sequence of <TT
+CLASS="LITERAL"
+>#define's</TT
+> so
+the order in which these are generated is irrelevant, but some
+properties such as <SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+> can be used to add arbitrary data to
+a configuration header and hence there may be dependencies on the
+order. It should be noted that re-parenting an option below some other
+package has no effect on which header file will contain the
+corresponding <TT
+CLASS="LITERAL"
+>#define</TT
+>: the preprocessor directives
+will always end up in the header file for the package that defines the
+option, or in the global configuration header.</P
+><P
+>There are six properties which affect the process of generating header
+files:
+<A
+HREF="ref.define-header.html"
+><SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+></A
+>,
+<A
+HREF="ref.no-define.html"
+><SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+></A
+>,
+<A
+HREF="ref.define-format.html"
+><SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+></A
+>,
+<A
+HREF="ref.define.html"
+><SPAN
+CLASS="PROPERTY"
+>define</SPAN
+></A
+>,
+<A
+HREF="ref.if-define.html"
+><SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+></A
+>, and
+<A
+HREF="ref.define-proc.html"
+><SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+></A
+>.</P
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+> property can only occur in the body of a
+<TT
+CLASS="LITERAL"
+>cdl_package</TT
+> command and specifies the name of the header file which
+should contain the package's configuration data, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package &lt;some_package&gt; {
+    &#8230;
+    define_header xyzzy.h
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>Given such a <SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+> property the component framework will
+use the file <TT
+CLASS="FILENAME"
+>pkgconf/xyzzy.h</TT
+> for
+the package's configuration data. If a package does not have
+a <SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+> property then a suitable file name is constructed
+from the package's name. This involves:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>All characters in the package name up to and including the first
+underscore are removed. For example <TT
+CLASS="VARNAME"
+>CYGPKG_KERNEL</TT
+>
+is converted to <TT
+CLASS="LITERAL"
+>KERNEL</TT
+>, and
+<TT
+CLASS="VARNAME"
+>CYGPKG_HAL_ARM</TT
+> is converted to
+<TT
+CLASS="LITERAL"
+>HAL_ARM</TT
+>.</P
+></LI
+><LI
+><P
+>Any upper case letters in the resulting string will be converted to
+lower case, yielding e.g. <TT
+CLASS="LITERAL"
+>kernel</TT
+> and
+<TT
+CLASS="LITERAL"
+>hal_arm</TT
+>.</P
+></LI
+><LI
+><P
+>A <TT
+CLASS="LITERAL"
+>.h</TT
+> suffix is appended, yielding e.g.
+<TT
+CLASS="LITERAL"
+>kernel.h</TT
+> and <TT
+CLASS="LITERAL"
+>hal_arm.h</TT
+>.</P
+></LI
+></OL
+><P
+>Because of the naming restrictions on configuration options, this
+should result in a valid filename. There is a small possibility of a
+file name class, for example <TT
+CLASS="VARNAME"
+>CYGPKG_PLUGH</TT
+> and
+<TT
+CLASS="VARNAME"
+>CYGPKG_plugh</TT
+> would both end up trying to use the
+same header file <TT
+CLASS="FILENAME"
+>pkgconf/plugh.h</TT
+>,
+but the use of lower case letters for package names violates the
+naming conventions. It is not legal to use the <SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+>
+property to put the configuration data for several packages in a
+single header file. The resulting behaviour is undefined.</P
+><P
+>Once the name of the package's header file has been determined and the
+file has been opened, the various components, options and interfaces
+in the package will be processed starting with the package itself. The
+following steps are involved:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>If the current option or other <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> entity is inactive or disabled,
+the option is ignored for the purposes of header file generation.
+<TT
+CLASS="LITERAL"
+>#define's</TT
+> are only generated for options that are
+both active and enabled.</P
+></LI
+><LI
+><P
+>The next step is to generate a default <TT
+CLASS="LITERAL"
+>#define</TT
+> for
+the current option. If this option has a <SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+> property then the
+default <TT
+CLASS="LITERAL"
+>#define</TT
+> is suppressed, and processing
+continues for <SPAN
+CLASS="PROPERTY"
+>define</SPAN
+>, <SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+> and <SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+> properties.</P
+><P
+></P
+><OL
+TYPE="a"
+><LI
+><P
+>The header file appropriate for the default <TT
+CLASS="LITERAL"
+>#define</TT
+>
+is determined. For a <TT
+CLASS="LITERAL"
+>cdl_package</TT
+> this will be <TT
+CLASS="FILENAME"
+>pkgconf/system.h</TT
+>, for any other option this
+will be the package's own header file. The intention here is that
+packages and application code can always determine which packages are
+in the configuration by <TT
+CLASS="LITERAL"
+>#include'ing</TT
+> <TT
+CLASS="FILENAME"
+>pkgconf/system.h</TT
+>. The C preprocessor lacks
+any facilities for including a header file only if it exists, and
+taking appropriate action otherwise.</P
+></LI
+><LI
+><P
+>For options with the flavors <TT
+CLASS="LITERAL"
+>bool</TT
+> or
+<TT
+CLASS="LITERAL"
+>none</TT
+>, a single <TT
+CLASS="LITERAL"
+>#define</TT
+> will be
+generated. This takes the form:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define &lt;option&gt; 1</PRE
+></TD
+></TR
+></TABLE
+><P
+>For example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYGFUN_LIBC_TIME_POSIX 1</PRE
+></TD
+></TR
+></TABLE
+><P
+>Package source code can check whether or not an option is active and
+enabled by using the <TT
+CLASS="LITERAL"
+>#ifdef</TT
+>,
+<TT
+CLASS="LITERAL"
+>#ifndef</TT
+> or <TT
+CLASS="LITERAL"
+>#if
+defined(&#8230;)</TT
+>directives.</P
+></LI
+><LI
+><P
+>For options with the flavors <TT
+CLASS="LITERAL"
+>data</TT
+> or
+<TT
+CLASS="LITERAL"
+>booldata</TT
+>, either one or two
+<TT
+CLASS="LITERAL"
+>#define's</TT
+> will be generated. The first of these may
+be affected by a <SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+> property. If this property is not
+defined then the first <TT
+CLASS="LITERAL"
+>#define</TT
+> will take the form:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define &lt;option&gt; &lt;value&gt;</PRE
+></TD
+></TR
+></TABLE
+><P
+>For example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYGNUM_LIBC_ATEXIT_HANDLERS 32</PRE
+></TD
+></TR
+></TABLE
+><P
+>Package source code can examine this value using the
+<TT
+CLASS="LITERAL"
+>#if</TT
+> directive, or by using the symbol in
+code such as:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    for (i = 0; i &#60; CYGNUM_LIBC_ATEXIT_HANDLERS; i++) {
+        &#8230;
+    }</PRE
+></TD
+></TR
+></TABLE
+><P
+>It must be noted that the <TT
+CLASS="LITERAL"
+>#define</TT
+> will be generated
+only if the corresponding option is both active and enabled. Options
+with the <TT
+CLASS="LITERAL"
+>data</TT
+> flavor are always enabled but may not
+be active. Code like the above should be written only if it is known
+that the symbol will always be defined, for example if the
+corresponding source file will only get built if the containing
+component is active and enabled. Otherwise the use of additional
+<TT
+CLASS="LITERAL"
+>#ifdef</TT
+> or similar directives will be necessary.</P
+></LI
+><LI
+><P
+>If there is a <SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+> property then this controls how the
+option's value will appear in the header file. Given a format string
+such as <TT
+CLASS="LITERAL"
+>%08x</TT
+> and a value 42, the component
+framework will execute the <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> command
+<TT
+CLASS="LITERAL"
+>format&nbsp;%08x&nbsp;42</TT
+> and the result will be
+used for the <TT
+CLASS="LITERAL"
+>#define's</TT
+> value. It is the
+responsibility of the component writer to make sure that this <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+>
+command will be valid given the format string and the legal values for
+the option.</P
+></LI
+><LI
+><P
+>In addition a second <TT
+CLASS="LITERAL"
+>#define</TT
+> may or may not be
+generated. This will take the form:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define &lt;option&gt;_&lt;value&gt;</PRE
+></TD
+></TR
+></TABLE
+><P
+>For example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYGNUM_LIBC_ATEXIT_HANDLERS_32</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <TT
+CLASS="LITERAL"
+>#define</TT
+> will be generated only if it would
+result in a valid C preprocessor symbol. If the value is a string such
+as <TT
+CLASS="LITERAL"
+>"/dev/ser0"</TT
+> then the <TT
+CLASS="LITERAL"
+>#define</TT
+>
+would be suppressed. This second <TT
+CLASS="LITERAL"
+>#define</TT
+> is not
+particularly useful for numerical data, but can be valuable in other
+circumstances. For example if the legal values for an option
+<TT
+CLASS="LITERAL"
+>XXX_COLOR</TT
+> are <TT
+CLASS="LITERAL"
+>red</TT
+>,
+<TT
+CLASS="LITERAL"
+>green</TT
+> and <TT
+CLASS="LITERAL"
+>blue</TT
+> then code like
+the following can be used:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#ifdef XXX_COLOR_red
+    &#8230;
+#endif
+#ifdef XXX_COLOR_green
+    &#8230;
+#endif
+#ifdef XXX_COLOR_blue
+    &#8230;
+#endif</PRE
+></TD
+></TR
+></TABLE
+><P
+>The expression syntax provided by the C preprocessor is limited to
+numerical data and cannot perform string comparisons. By generating
+two <TT
+CLASS="LITERAL"
+>#define's</TT
+> in this way it is possible to work
+around this limitation of the C preprocessor. However some care has to
+be taken: if a component writer also defined a configuration option
+<TT
+CLASS="LITERAL"
+>XXX_COLOR_green</TT
+> then there will be confusion. Since
+such a configuration option violates the naming conventions, the
+problem is unlikely to arise in practice.</P
+></LI
+></OL
+></LI
+><LI
+><P
+>For some options it may be useful to generate one or more additional
+<TT
+CLASS="LITERAL"
+>#define's</TT
+> or, in conjunction with the <SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+>
+property, to define a symbol with a name different from the option's
+name. This can be achieved with the <SPAN
+CLASS="PROPERTY"
+>define</SPAN
+> property, which takes the
+following form:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    define [-file=&lt;filename&gt;] [-format=&lt;format&gt;] &lt;symbol&gt;</PRE
+></TD
+></TR
+></TABLE
+><P
+>For example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    define FOPEN_MAX</PRE
+></TD
+></TR
+></TABLE
+><P
+>This will result in something like:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define FOPEN_MAX 8
+#define FOPEN_MAX_8</PRE
+></TD
+></TR
+></TABLE
+><P
+>The specified symbol must be a valid C preprocessor symbol. Normally
+the <TT
+CLASS="LITERAL"
+>#define</TT
+> will end up in the same header file as
+the default one, in other words <TT
+CLASS="FILENAME"
+>pkgconf/system.h</TT
+> in the case of a
+<TT
+CLASS="LITERAL"
+>cdl_package</TT
+>, or the package's own header file for any other option.
+The <TT
+CLASS="LITERAL"
+>-file</TT
+> option can be used to change this. At
+present the only legal value is <TT
+CLASS="LITERAL"
+>system.h</TT
+>, for
+example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    define -file=system.h &lt;symbol&gt;</PRE
+></TD
+></TR
+></TABLE
+><P
+>This will cause the <TT
+CLASS="LITERAL"
+>#define</TT
+> to end up in the global
+configuration header rather than in the package's own header. Use of
+this facility should be avoided since it is very rarely necessary to
+make options globally visible.</P
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>define</SPAN
+> property takes another option,
+<TT
+CLASS="LITERAL"
+>-format</TT
+>, to provide a format string.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    define -format=%08x &lt;symbol&gt;</PRE
+></TD
+></TR
+></TABLE
+><P
+>This should only be used for options with the <TT
+CLASS="LITERAL"
+>data</TT
+>
+or <TT
+CLASS="LITERAL"
+>booldata</TT
+> flavor, and has the same effect as the
+<SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+> property has on the default
+<TT
+CLASS="LITERAL"
+>#define</TT
+>.</P
+><P
+><SPAN
+CLASS="PROPERTY"
+>define</SPAN
+> properties are processed in the same way the default
+<TT
+CLASS="LITERAL"
+>#define</TT
+>. For options with the
+<TT
+CLASS="LITERAL"
+>bool</TT
+> or <TT
+CLASS="LITERAL"
+>none</TT
+> flavors a single
+<TT
+CLASS="LITERAL"
+>#define</TT
+> will be generated using the value
+<TT
+CLASS="LITERAL"
+>1</TT
+>. For options with the <TT
+CLASS="LITERAL"
+>data</TT
+> or
+<TT
+CLASS="LITERAL"
+>booldata</TT
+> flavors either one or two
+<TT
+CLASS="LITERAL"
+>#define's</TT
+> will be generated.</P
+></LI
+><LI
+><P
+>After processing all <SPAN
+CLASS="PROPERTY"
+>define</SPAN
+> properties, the component framework will
+look for any <SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+> properties. These take the following form:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    if_define [-file=&lt;filename&gt;] &lt;symbol1&gt; &lt;symbol2&gt;</PRE
+></TD
+></TR
+></TABLE
+><P
+>For example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    if_define CYGSRC_KERNEL CYGDBG_USE_ASSERTS</PRE
+></TD
+></TR
+></TABLE
+><P
+>The following will be generated in the configuration header file:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#ifdef CYGSRC_KERNEL
+# define CYGDBG_USE_ASSERTS
+#endif</PRE
+></TD
+></TR
+></TABLE
+><P
+>Typical kernel source code would begin with the following construct:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYGSRC_KERNEL 1
+#include &lt;pkgconf/kernel.h&gt;
+#include &lt;cyg/infra/cyg_ass.h&gt;</PRE
+></TD
+></TR
+></TABLE
+><P
+>The infrastructure header file <TT
+CLASS="FILENAME"
+>cyg/infra/cyg_ass.h</TT
+> only checks for symbols
+such as <TT
+CLASS="LITERAL"
+>CYGDBG_USE_ASSERTS</TT
+>, and has no special
+knowledge of the kernel or any other package. The <SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+> property
+will only affect code that defines the symbol
+<TT
+CLASS="LITERAL"
+>CYGSRC_KERNEL</TT
+>, so typically only kernel source
+code. If the option is enabled then assertion support will be enabled
+for the kernel source code only. If the option is inactive or disabled
+then kernel assertions will be disabled. Assertions in other packages
+are not affected. Thus the <SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+> property allows control over
+assertions, tracing, and similar facilities at the level of individual
+packages, or at finer levels such as components or even single source
+files if desired.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Current <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> packages do not yet make use of this facility. Instead
+there is a single global configuration option
+<TT
+CLASS="VARNAME"
+>CYGDBG_USE_ASSERTS</TT
+> which is used to enable or
+disable assertions for all packages. This issue should be addressed in
+a future release of the system.</P
+></BLOCKQUOTE
+></DIV
+><P
+>As with the <SPAN
+CLASS="PROPERTY"
+>define</SPAN
+> property, the <SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+> property takes an
+option <TT
+CLASS="LITERAL"
+>-file</TT
+> with a single legal value
+<TT
+CLASS="LITERAL"
+>system.h</TT
+>. This allows the output to be redirected
+to <TT
+CLASS="FILENAME"
+>pkgconf/system.h</TT
+> if and when
+necessary. </P
+></LI
+><LI
+><P
+>The final property that is relevant to configuration header file
+generation is <SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+>. This takes a single argument, a <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+>
+fragment that can add arbitrary data to the global header <TT
+CLASS="FILENAME"
+>pkgconf/system.h</TT
+> and to the package's own
+header. When the <SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+> script is invoked two variables will be
+set up to allow access to these headers: <TT
+CLASS="LITERAL"
+>cdl_header</TT
+>
+will be a channel to the package's own header file, for example
+<TT
+CLASS="FILENAME"
+>pkgconf/kernel.h</TT
+>;
+<TT
+CLASS="LITERAL"
+>cdl_system_header</TT
+> will be a channel to <TT
+CLASS="FILENAME"
+>pkgconf/system.h</TT
+>. A typical <SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+>
+script will use the <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> <TT
+CLASS="LITERAL"
+>puts</TT
+> command to output
+data to one of these channels, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option &lt;name&gt; {
+    &#8230;
+    define_proc {
+        puts $::cdl_header "#define XXX 1"
+    }
+}</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>In the current implementation the use of <SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+> is limited
+because the <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> script cannot access any of the configuration data.
+Therefore the script is limited to writing constant data to the
+configuration headers. This is a major limitation which will be
+addressed in a future release of the component framework.</P
+></BLOCKQUOTE
+></DIV
+></LI
+></OL
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Generating C header files with <TT
+CLASS="LITERAL"
+>#define's</TT
+> for the
+configuration data suffices for existing packages written in some
+combination of C, C++ and assembler. It can also be used in
+conjunction with some other languages, for example by first passing
+the source code through the C preprocessor and feeding the result into
+the appropriate compiler. In future versions of the component
+framework additional programming languages such as Java may be
+supported, and the configuration data may also be written to files in
+some format other than C preprocessor directives. </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>At present there is no way for application or package source code to
+get hold of all the configuration details related to the current
+hardware. Instead that information is spread over various different
+configuration headers for the HAL and device driver packages, with
+some of the information going into <TT
+CLASS="FILENAME"
+>pkgconf/system.h</TT
+>. It is possible that in
+some future release of the system there will be another global
+configuration header file <TT
+CLASS="FILENAME"
+>pkgconf/hardware.h</TT
+> which either contains the
+configuration details for the various hardware-specific packages or
+which <TT
+CLASS="LITERAL"
+>#include's</TT
+> all the hardware-specific
+configuration headers. The desirability and feasibility of such a
+scheme are still to be determined. To avoid future incompatibility
+problems as a result of any such changes, it is recommended that all
+hardware packages (in other packages containing the <SPAN
+CLASS="PROPERTY"
+>hardware</SPAN
+>
+property) use the <SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+> property to specify explicitly which
+configuration header should be generated.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="BUILD.HEADERS.SYSTEM.H">The <TT
+CLASS="FILENAME"
+>system.h</TT
+> Header</H2
+><P
+>Typically configuration header files are <TT
+CLASS="LITERAL"
+>#include'd</TT
+>
+only by the package's source code at build time, or by a package's
+exported header files if the interface provided by the package may be
+affected by a configuration option. There should be no need for
+application code to know the details of individual configuration
+options, instead the configuration should specifically meet the needs
+of the application.</P
+><P
+>There are always exceptions. Application code may want to adapt to
+configuration options, for example to do different things for ROM and
+RAM booting systems, or when it is necessary to support several
+different target boards. This is especially true if the code in question
+is really re-usable library code which has not been converted to an
+eCos package, and hence cannot use any CDL facilities.</P
+><P
+>A major problem here is determining which packages are in the
+configuration: attempting to <TT
+CLASS="LITERAL"
+>#include</TT
+> a header file
+such as <TT
+CLASS="FILENAME"
+>pkgconf/net.h</TT
+>
+when it is not known for certain that that particular package is part
+of the configuration will result in compilation errors. The global
+header file <TT
+CLASS="FILENAME"
+>pkgconf/system.h</TT
+>
+serves to provide such information, so application code can use
+techniques like the following:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#include &lt;pkgconf/system.h&gt;
+#ifdef CYGPKG_NET
+# include &lt;pkgconf/net.h&gt;
+#endif</PRE
+></TD
+></TR
+></TABLE
+><P
+>This will compile correctly irrespective of the eCos configuration,
+and subsequent code can use <TT
+CLASS="LITERAL"
+>#ifdef</TT
+> or similar
+directives on <TT
+CLASS="LITERAL"
+>CYGPKG_NET</TT
+> or any of the
+configuration options in that package. </P
+><P
+>In addition to determining whether or not a package is present, the
+global configuration header file can also be used to find out the
+specific version of a package that is being used. This can be useful
+if a more recent version exports additional functionality. It may also
+be necessary to adapt to incompatible changes in the exported
+interface or to changes in behaviour. For each package the
+configuration system will typically <TT
+CLASS="LITERAL"
+>#define</TT
+> three
+symbols, for example for a V1.3.1 release:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYGNUM_NET_VERSION_MAJOR 1
+#define CYGNUM_NET_VERSION_MINOR 3
+#define CYGNUM_NET_VERSION_RELEASE 1</PRE
+></TD
+></TR
+></TABLE
+><P
+>There are a number of problems associated with such version
+<TT
+CLASS="LITERAL"
+>#define's</TT
+>. The first restriction is that the
+package must follow the standard naming conventions, so the package
+name must be of the form <TT
+CLASS="LITERAL"
+>xxxPKG_yyy</TT
+>. The three
+characters immediately preceding the first underscore must be
+<TT
+CLASS="LITERAL"
+>PKG</TT
+>, and will be replaced with
+<TT
+CLASS="LITERAL"
+>NUM</TT
+> when generating the version
+<TT
+CLASS="LITERAL"
+>#define's</TT
+>. If a package does not follow the naming
+convention then no version <TT
+CLASS="LITERAL"
+>#define's</TT
+> will be
+generated. </P
+><P
+>Assuming the package does follow the naming conventions, the
+configuration tools will always generate three version
+<TT
+CLASS="LITERAL"
+>#define's</TT
+> for the major, minor, and release
+numbers. The symbol names are obtained from the package name by
+replacing <TT
+CLASS="LITERAL"
+>PKG</TT
+> with <TT
+CLASS="LITERAL"
+>NUM</TT
+> and
+appending <TT
+CLASS="LITERAL"
+>_VERSION_MAJOR</TT
+>,
+<TT
+CLASS="LITERAL"
+>_VERSION_MINOR</TT
+> and
+<TT
+CLASS="LITERAL"
+>_VERSION_RELEASE</TT
+>. It is assumed that the resulting
+symbols will not clash with any configuration option names. The values
+for the <TT
+CLASS="LITERAL"
+>#define's</TT
+> are determined by searching the
+version string for sequences of digits, optionally preceded by a minus
+sign. It is possible that some or all of the numbers are absent in any
+given version string, in which case <TT
+CLASS="LITERAL"
+>-1</TT
+> will be used
+in the <TT
+CLASS="LITERAL"
+>#define</TT
+>. For example, given a version string
+of <TT
+CLASS="LITERAL"
+>V1.12beta</TT
+>, the major version number is
+<TT
+CLASS="LITERAL"
+>1</TT
+>, the minor number is <TT
+CLASS="LITERAL"
+>12</TT
+>, and
+the release number is <TT
+CLASS="LITERAL"
+>-1</TT
+>. Given a version string of
+<TT
+CLASS="LITERAL"
+>beta</TT
+> all three numbers would be set to
+<TT
+CLASS="LITERAL"
+>-1</TT
+>.</P
+><P
+>There is special case code for the version <TT
+CLASS="LITERAL"
+>current</TT
+>,
+which typically corresponds to a development version obtained via
+anonymous CVS or similar means. The configuration system has special
+built-in knowledge of this version, and will assume it is more recent
+than any specific release number. The global configuration header
+defines a special symbol <TT
+CLASS="LITERAL"
+>CYGNUM_VERSION_CURRENT</TT
+>,
+and this will be used as the major version number when version
+<TT
+CLASS="LITERAL"
+>current</TT
+> of a package is used:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYGNUM_VERSION_CURRENT 0x7fffff00
+...
+#define CYGNUM_INFRA_VERSION_MAJOR CYGNUM_VERSION_CURRENT
+#define CYGNUM_INFRA_VERSION_MINOR -1
+#define CYGNUM_INFRA_VERSION_RELEASE -1</PRE
+></TD
+></TR
+></TABLE
+><P
+>The large number used for <TT
+CLASS="LITERAL"
+>CYGNUM_VERSION_CURRENT</TT
+>
+should ensure that major version comparisons work as expected, while
+still allowing for a small amount of arithmetic in case that proves
+useful. </P
+><P
+>It should be noted that this implementation of version
+<TT
+CLASS="LITERAL"
+>#define's</TT
+> will not cope with all version number
+schemes. However for many cases it should suffice.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="build.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="build.make.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>The Build Process</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="build.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Building eCos</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,362 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>ARM/StrongARM(SA1100) Intel SA1100 Multimedia Board </TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Installation and Testing"
+HREF="installation-and-testing.html"><LINK
+REL="PREVIOUS"
+TITLE="ARM/StrongARM(SA1100) Intel Brutus"
+HREF="brutus.html"><LINK
+REL="NEXT"
+TITLE="ARM/StrongARM(SA1110) Intel SA1110 (Assabet) "
+HREF="assabet.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="brutus.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Installation and Testing</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="assabet.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SA1100MM">ARM/StrongARM(SA1100) Intel SA1100 Multimedia Board</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5695">Overview</H2
+><P
+>RedBoot supports both board serial ports. The default serial port
+settings are 38400,8,N,1. flash management is also supported.</P
+><P
+>The following RedBoot configurations are supported:
+
+      <DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5705"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Configuration</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Mode</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>ROM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from the board's flash boot
+	      sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_ROM.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RAM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[RAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM with RedBoot in the
+	      flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_RAM.ecm</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5724">Initial Installation Method</H2
+><P
+>A device programmer is used to program socketed flash parts.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5727">Special RedBoot Commands</H2
+><P
+>None.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5730">Memory Maps</H2
+><P
+>The first level page table is located at physical address 0xc0004000.
+No second level tables are used.<DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>NOTE: </B
+>The virtual memory maps in this section use a C and B column to indicate
+whether or not the region is cached (C) or buffered (B).</P
+></BLOCKQUOTE
+></DIV
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Physical Address Range     Description
+-----------------------    ----------------------------------
+0x00000000 - 0x000fffff    Boot flash
+0x08000000 - 0x083fffff    Application flash
+0x10000000 - 0x107fffff    SA-1101 Board Registers
+0x18000000 - 0x180fffff    Ct8020 DSP
+0x18400000 - 0x184fffff    XBusReg
+0x18800000 - 0x188fffff    SysRegA
+0x18c00000 - 0x18cfffff    SysRegB
+0x19000000 - 0x193fffff    Spare CPLD A
+0x19400000 - 0x197fffff    Spare CPLD B
+0x20000000 - 0x3fffffff    PCMCIA
+0x80000000 - 0xbfffffff    SA1100 Internal Registers
+0xc0000000 - 0xc07fffff    DRAM Bank 0
+0xe0000000 - 0xe7ffffff    Cache Clean
+Virtual Address Range    C B  Description
+
+
+-----------------------  - -  ----------------------------------
+0x00000000 - 0x007fffff  Y Y  DRAM Bank 0
+0x08000000 - 0x083fffff  Y Y  Application flash
+0x10000000 - 0x100fffff  N N  SA-1101 Registers
+0x18000000 - 0x180fffff  N N  Ct8020 DSP
+0x18400000 - 0x184fffff  N N  XBusReg
+0x18800000 - 0x188fffff  N N  SysRegA
+0x18c00000 - 0x18cfffff  N N  SysRegB
+0x19000000 - 0x193fffff  N N  Spare CPLD A
+0x19400000 - 0x197fffff  N N  Spare CPLD B
+0x20000000 - 0x3fffffff  N N  PCMCIA
+0x50000000 - 0x500fffff  Y Y  Boot flash
+0x80000000 - 0xbfffffff  N N  SA1100 Internal Registers
+0xc0000000 - 0xc07fffff  N Y  DRAM Bank 0
+0xe0000000 - 0xe7ffffff  Y Y  Cache Clean</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5737">Platform Resource Usage</H2
+><P
+> The SA11x0 OS timer is used as a polled timer to provide timeout support
+for XModem file transfers.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5740">Rebuilding RedBoot</H2
+><P
+>These shell variables provide the platform-specific information
+needed for building RedBoot according to the procedure described in
+<A
+HREF="rebuilding-redboot.html"
+>Chapter 3</A
+>:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>export TARGET=sa1100mm
+export ARCH_DIR=arm
+export PLATFORM_DIR=sa11x0/sa1100mm</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The names of configuration files are listed above with the
+description of the associated modes.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="brutus.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="assabet.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>ARM/StrongARM(SA1100) Intel Brutus</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="installation-and-testing.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>ARM/StrongARM(SA1110) Intel SA1110 (Assabet)</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

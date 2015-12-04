@@ -1,0 +1,237 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>ethers</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="byteorder"
+HREF="net-common-tcpip-manpages-byteorder.html"><LINK
+REL="NEXT"
+TITLE="getaddrinfo"
+HREF="net-common-tcpip-manpages-getaddrinfo.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-byteorder.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-getaddrinfo.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-ETHERS">ethers</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>ETHERS(3)               System Library Functions Manual              ETHERS(3)
+
+NAME
+     ether_aton, ether_ntoa, ether_addr, ether_ntohost, ether_hostton,
+     ether_line - get ethers entry
+
+SYNOPSIS
+     #include &lt;netinet/if_ether.h&#62;
+
+     char *
+     ether_ntoa(struct ether_addr *e);
+
+     struct ether_addr *
+     ether_aton(char *s);
+
+     int
+     ether_ntohost(char *hostname, struct ether_addr *e);
+
+     int
+     ether_hostton(char *hostname, struct ether_addr *e);
+
+     int
+     ether_line(char *l, struct ether_addr *e, char *hostname);
+
+DESCRIPTION
+     Ethernet addresses are represented by the following structure:
+
+           struct ether_addr {
+                   u_int8_t  ether_addr_octet[6];
+           };
+
+     The ether_ntoa() function converts this structure into an ASCII string of
+     the form ``xx:xx:xx:xx:xx:xx'', consisting of 6 hexadecimal numbers sepa-
+     rated by colons.  It returns a pointer to a static buffer that is reused
+     for each call.  The ether_aton() converts an ASCII string of the same
+     form and to a structure containing the 6 octets of the address.  It
+     returns a pointer to a static structure that is reused for each call.
+
+     The ether_ntohost() and ether_hostton() functions interrogate the
+     database mapping host names to Ethernet addresses, /etc/ethers.  The
+     ether_ntohost() function looks up the given Ethernet address and writes
+     the associated host name into the character buffer passed.  This buffer
+     should be MAXHOSTNAMELEN characters in size.  The ether_hostton() func-
+     tion looks up the given host name and writes the associated Ethernet
+     address into the structure passed.  Both functions return zero if they
+     find the requested host name or address, and -1 if not.
+
+     Each call reads /etc/ethers from the beginning; if a `+' appears alone on
+     a line in the file, then ether_hostton() will consult the ethers.byname
+     YP map, and ether_ntohost() will consult the ethers.byaddr YP map.
+
+     The ether_line() function parses a line from the /etc/ethers file and
+     fills in the passed struct ether_addr and character buffer with the Eth-
+     ernet address and host name on the line.  It returns zero if the line was
+     successfully parsed and -1 if not.  The character buffer should be
+     MAXHOSTNAMELEN characters in size.
+
+FILES
+     /etc/ethers
+
+SEE ALSO
+     ethers(5)
+
+HISTORY
+     The ether_ntoa(), ether_aton(), ether_ntohost(), ether_hostton(), and
+     ether_line() functions were adopted from SunOS and appeared in NetBSD 0.9
+     b.
+
+BUGS
+     The data space used by these functions is static; if future use requires
+     the data, it should be copied before any subsequent calls to these func-
+     tions overwrite it.
+
+BSD                            December 16, 1993                           BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-byteorder.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-getaddrinfo.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>byteorder</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>getaddrinfo</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

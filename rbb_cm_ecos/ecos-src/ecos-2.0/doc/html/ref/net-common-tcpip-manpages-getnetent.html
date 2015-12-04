@@ -1,0 +1,247 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>getnetent</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="getnameinfo"
+HREF="net-common-tcpip-manpages-getnameinfo.html"><LINK
+REL="NEXT"
+TITLE="getprotoent"
+HREF="net-common-tcpip-manpages-getprotoent.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-getnameinfo.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-getprotoent.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-GETNETENT">getnetent</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>GETNETENT(3)            System Library Functions Manual           GETNETENT(3)
+
+NAME
+     getnetent, getnetbyaddr, getnetbyname, setnetent, endnetent - get network
+     entry
+
+SYNOPSIS
+     #include &lt;netdb.h&#62;
+
+     struct netent *
+     getnetent(void);
+
+     struct netent *
+     getnetbyname(char *name);
+
+     struct netent *
+     getnetbyaddr(in_addr_t net, int type);
+
+     void
+     setnetent(int stayopen);
+
+     void
+     endnetent(void);
+
+DESCRIPTION
+     The getnetent(), getnetbyname(), and getnetbyaddr() functions each return
+     a pointer to an object with the following structure containing the bro-
+     ken-out fields of a line in the network database, /etc/networks.
+
+           struct  netent {
+                   char            *n_name;        /* official name of net */
+                   char            **n_aliases;    /* alias list */
+                   int             n_addrtype;     /* net number type */
+                   in_addr_t       n_net;          /* net number */
+           };
+
+     The members of this structure are:
+
+     n_name      The official name of the network.
+
+     n_aliases   A zero-terminated list of alternate names for the network.
+
+     n_addrtype  The type of the network number returned; currently only
+                 AF_INET.
+
+     n_net       The network number.  Network numbers are returned in machine
+                 byte order.
+
+     The getnetent() function reads the next line of the file, opening the
+     file if necessary.
+
+     The setnetent() function opens and rewinds the file.  If the stayopen
+     flag is non-zero, the net database will not be closed after each call to
+     getnetbyname() or getnetbyaddr().
+
+     The endnetent() function closes the file.
+
+     The getnetbyname() and getnetbyaddr() functions search the domain name
+     server if the system is configured to use one.  If the search fails, or
+     no name server is configured, they sequentially search from the beginning
+     of the file until a matching net name or net address and type is found,
+     or until EOF is encountered.  Network numbers are supplied in host order.
+
+FILES
+     /etc/networks
+
+DIAGNOSTICS
+     Null pointer (0) returned on EOF or error.
+
+SEE ALSO
+     resolver(3), networks(5)
+
+HISTORY
+     The getnetent(), getnetbyaddr(), getnetbyname(), setnetent(), and
+     endnetent() functions appeared in 4.2BSD.
+
+BUGS
+     The data space used by these functions is static; if future use requires
+     the data, it should be copied before any subsequent calls to these func-
+     tions overwrite it.  Only Internet network numbers are currently under-
+     stood.  Expecting network numbers to fit in no more than 32 bits is
+     naive.
+
+BSD                             March 13, 1997                             BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-getnameinfo.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-getprotoent.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>getnameinfo</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>getprotoent</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

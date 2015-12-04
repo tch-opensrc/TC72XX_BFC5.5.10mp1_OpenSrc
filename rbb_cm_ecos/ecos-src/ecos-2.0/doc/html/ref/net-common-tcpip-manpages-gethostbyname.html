@@ -1,0 +1,314 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>gethostbyname</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="getaddrinfo"
+HREF="net-common-tcpip-manpages-getaddrinfo.html"><LINK
+REL="NEXT"
+TITLE="getifaddrs"
+HREF="net-common-tcpip-manpages-getifaddrs.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-getaddrinfo.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-getifaddrs.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-GETHOSTBYNAME">gethostbyname</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>GETHOSTBYNAME(3)        System Library Functions Manual       GETHOSTBYNAME(3)
+
+NAME
+     gethostbyname, gethostbyname2, gethostbyaddr, gethostent, sethostent,
+     endhostent, hstrerror, herror - get network host entry
+
+SYNOPSIS
+     #include &lt;netdb.h&#62;
+     extern int h_errno;
+
+     struct hostent *
+     gethostbyname(const char *name);
+
+     struct hostent *
+     gethostbyname2(const char *name, int af);
+
+     struct hostent *
+     gethostbyaddr(const char *addr, int len, int af);
+
+     struct hostent *
+     gethostent(void);
+
+     void
+     sethostent(int stayopen);
+
+     void
+     endhostent(void);
+
+     void
+     herror(const char *string);
+
+     const char *
+     hstrerror(int err);
+
+DESCRIPTION
+     The gethostbyname() and gethostbyaddr() functions each return a pointer
+     to an object with the following structure describing an internet host
+     referenced by name or by address, respectively.  This structure contains
+     either information obtained from the name server (i.e., resolver(3) and
+     named(8)), broken-out fields from a line in /etc/hosts, or database
+     entries supplied by the yp(8) system.  resolv.conf(5) describes how the
+     particular database is chosen.
+
+     struct  hostent {
+             char    *h_name;        /* official name of host */
+             char    **h_aliases;    /* alias list */
+             int     h_addrtype;     /* host address type */
+             int     h_length;       /* length of address */
+             char    **h_addr_list;  /* list of addresses from name server */
+     };
+     #define h_addr  h_addr_list[0]  /* address, for backward compatibility */
+
+     The members of this structure are:
+
+     h_name       Official name of the host.
+
+     h_aliases    A zero-terminated array of alternate names for the host.
+
+     h_addrtype   The type of address being returned.
+
+     h_length     The length, in bytes, of the address.
+
+     h_addr_list  A zero-terminated array of network addresses for the host.
+                  Host addresses are returned in network byte order.
+
+     h_addr       The first address in h_addr_list; this is for backward com-
+                  patibility.
+
+     The function gethostbyname() will search for the named host in the cur-
+     rent domain and its parents using the search lookup semantics detailed in
+     resolv.conf(5) and hostname(7).
+
+     gethostbyname2() is an advanced form of gethostbyname() which allows
+     lookups in address families other than AF_INET, for example AF_INET6.
+
+     The gethostbyaddr() function will search for the specified address of
+     length len in the address family af.  The only address family currently
+     supported is AF_INET.
+
+     The sethostent() function may be used to request the use of a connected
+     TCP socket for queries.  If the stayopen flag is non-zero, this sets the
+     option to send all queries to the name server using TCP and to retain the
+     connection after each call to gethostbyname() or gethostbyaddr().  Other-
+     wise, queries are performed using UDP datagrams.
+
+     The endhostent() function closes the TCP connection.
+
+     The herror() function prints an error message describing the failure.  If
+     its argument string is non-null, it is prepended to the message string
+     and separated from it by a colon (`:') and a space.  The error message is
+     printed with a trailing newline.  The contents of the error message is
+     the same as that returned by hstrerror() with argument h_errno.
+
+FILES
+     /etc/hosts
+     /etc/resolv.conf
+
+DIAGNOSTICS
+     Error return status from gethostbyname(), gethostbyname2(), and
+     gethostbyaddr() is indicated by return of a null pointer.  The external
+     integer h_errno may then be checked to see whether this is a temporary
+     failure or an invalid or unknown host.
+
+     The variable h_errno can have the following values:
+
+     HOST_NOT_FOUND  No such host is known.
+
+     TRY_AGAIN       This is usually a temporary error and means that the
+                     local server did not receive a response from an authori-
+                     tative server.  A retry at some later time may succeed.
+
+     NO_RECOVERY     Some unexpected server failure was encountered.  This is
+                     a non-recoverable error.
+
+     NO_DATA         The requested name is valid but does not have an IP
+                     address; this is not a temporary error.  This means that
+                     the name is known to the name server but there is no
+                     address associated with this name.  Another type of
+                     request to the name server using this domain name will
+                     result in an answer; for example, a mail-forwarder may be
+                     registered for this domain.
+
+SEE ALSO
+     resolver(3), getaddrinfo(3), getnameinfo(3), hosts(5), resolv.conf(5),
+     hostname(7), named(8)
+
+CAVEAT
+     If the search routines in resolv.conf(5) decide to read the /etc/hosts
+     file, gethostent() and other functions will read the next line of the
+     file, re-opening the file if necessary.
+
+     The sethostent() function opens and/or rewinds the file /etc/hosts.  If
+     the stayopen argument is non-zero, the file will not be closed after each
+     call to gethostbyname(), gethostbyname2(), or gethostbyaddr().
+
+     The endhostent() function closes the file.
+
+HISTORY
+     The herror() function appeared in 4.3BSD.  The endhostent(),
+     gethostbyaddr(), gethostbyname(), gethostent(), and sethostent() func-
+     tions appeared in 4.2BSD.
+
+BUGS
+     These functions use static data storage; if the data is needed for future
+     use, it should be copied before any subsequent calls overwrite it.  Only
+     the Internet address formats are currently understood.
+
+     YP does not support any address families other than AF_INET and uses the
+     traditional database format.
+
+BSD                             March 13, 1997                             BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-getaddrinfo.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-getifaddrs.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>getaddrinfo</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>getifaddrs</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

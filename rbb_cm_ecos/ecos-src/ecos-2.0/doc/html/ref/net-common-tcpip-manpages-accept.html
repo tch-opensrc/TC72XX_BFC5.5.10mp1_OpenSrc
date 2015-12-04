@@ -1,0 +1,248 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>accept</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="resolver"
+HREF="net-common-tcpip-manpages-resolver.html"><LINK
+REL="NEXT"
+TITLE="bind"
+HREF="net-common-tcpip-manpages-bind.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-resolver.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-bind.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-ACCEPT">accept</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>ACCEPT(2)                     System Calls Manual                    ACCEPT(2)
+
+NAME
+     accept - accept a connection on a socket
+
+SYNOPSIS
+     #include &lt;sys/types.h&#62;
+     #include &lt;sys/socket.h&#62;
+
+     int
+     accept(int s, struct sockaddr *addr, socklen_t *addrlen);
+
+DESCRIPTION
+     The argument s is a socket that has been created with socket(2), bound to
+     an address with bind(2), and is listening for connections after a
+     listen(2).  The accept() argument extracts the first connection request
+     on the queue of pending connections, creates a new socket with the same
+     properties of s, and allocates a new file descriptor for the socket.  If
+     no pending connections are present on the queue, and the socket is not
+     marked as non-blocking, accept() blocks the caller until a connection is
+     present.  If the socket is marked non-blocking and no pending connections
+     are present on the queue, accept() returns an error as described below.
+     The accepted socket may not be used to accept more connections.  The
+     original socket s remains open.
+
+     The argument addr is a result parameter that is filled in with the
+     address of the connecting entity as known to the communications layer.
+     The exact format of the addr parameter is determined by the domain in
+     which the communication is occurring.  The addrlen is a value-result
+     parameter; it should initially contain the amount of space pointed to by
+     addr; on return it will contain the actual length (in bytes) of the
+     address returned.  This call is used with connection-based socket types,
+     currently with SOCK_STREAM.
+
+     It is possible to select(2) or poll(2) a socket for the purposes of doing
+     an accept() by selecting it for read.
+
+     For certain protocols which require an explicit confirmation, such as ISO
+     or DATAKIT, accept() can be thought of as merely dequeuing the next con-
+     nection request and not implying confirmation.  Confirmation can be
+     implied by a normal read or write on the new file descriptor, and rejec-
+     tion can be implied by closing the new socket.
+
+     One can obtain user connection request data without confirming the con-
+     nection by issuing a recvmsg(2) call with an msg_iovlen of 0 and a non-
+     zero msg_controllen, or by issuing a getsockopt(2) request.  Similarly,
+     one can provide user connection rejection information by issuing a
+     sendmsg(2) call with providing only the control information, or by call-
+     ing setsockopt(2).
+
+RETURN VALUES
+     The call returns -1 on error.  If it succeeds, it returns a non-negative
+     integer that is a descriptor for the accepted socket.
+
+ERRORS
+     The accept() will fail if:
+
+     [EBADF]            The descriptor is invalid.
+
+     [ENOTSOCK]         The descriptor references a file, not a socket.
+
+     [EOPNOTSUPP]       The referenced socket is not of type SOCK_STREAM.
+
+     [EINVAL]           The referenced socket is not listening for connections
+                        (that is, listen(2) has not yet been called).
+
+     [EFAULT]           The addr parameter is not in a writable part of the
+                        user address space.
+
+     [EWOULDBLOCK]      The socket is marked non-blocking and no connections
+                        are present to be accepted.
+
+     [EMFILE]           The per-process descriptor table is full.
+
+     [ENFILE]           The system file table is full.
+
+     [ECONNABORTED]     A connection has been aborted.
+
+SEE ALSO
+     bind(2), connect(2), listen(2), poll(2), select(2), poll(2), socket(2)
+
+HISTORY
+     The accept() function appeared in 4.2BSD.
+
+BSD                            February 15, 1999                           BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-resolver.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-bind.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>resolver</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>bind</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,183 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>General principles</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Hardware Abstraction Layer (HAL)"
+HREF="the-ecos-hardware-abstraction-layer.html"><LINK
+REL="PREVIOUS"
+TITLE="Architecture, Variant and Platform"
+HREF="hal-architecture-variant-and-platform.html"><LINK
+REL="NEXT"
+TITLE="HAL Interfaces"
+HREF="hal-interfaces.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="hal-architecture-variant-and-platform.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="hal-interfaces.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="HAL-GENERAL-PRINCIPLES">Chapter 8. General principles</H1
+><P
+>The HAL has been implemented according to the following general
+principles:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>	      The HAL is implemented in C and assembler, although the
+	      eCos kernel is largely implemented in C&#0043;&#0043;.
+	      This is to permit the HAL the widest possible
+	      applicability.</P
+></LI
+><LI
+><P
+>All interfaces to the HAL are implemented by
+	      CPP macros. This allows them to be implemented as inline
+	      C code, inline assembler or function calls to external C
+	      or assembler code. This allows the most efficient
+	      implementation to be selected without affecting the
+	      interface. It also allows them to be redefined if the
+	      platform or variant HAL needs to replace or enhance a definition
+	      from the architecture HAL.</P
+></LI
+><LI
+><P
+>The HAL provides simple, portable mechanisms for dealing
+with the hardware of a wide range of architectures and platforms.
+It is always possible to bypass the HAL and program the hardware
+directly, but this may lead to a loss of portability. </P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="hal-architecture-variant-and-platform.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="hal-interfaces.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Architecture, Variant and Platform</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="the-ecos-hardware-abstraction-layer.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>HAL Interfaces</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

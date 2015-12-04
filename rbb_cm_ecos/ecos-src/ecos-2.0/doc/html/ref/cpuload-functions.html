@@ -1,0 +1,389 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>CPU Load Measurements</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="CPU load measurements"
+HREF="services-cpuload.html"><LINK
+REL="PREVIOUS"
+TITLE="CPU load measurements"
+HREF="services-cpuload.html"><LINK
+REL="NEXT"
+TITLE="Application profiling"
+HREF="services-profile-gprof.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="services-cpuload.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="services-profile-gprof.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="CPULOAD-FUNCTIONS">Chapter 51. CPU Load Measurements</H1
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SERVICES-CPULOAD-API">CPU Load API</H1
+><P
+>The package allows the CPU load to be estimated. The measurement code
+must first be calibrated to the target it is running on. Once this
+has been performed the measurement process can be started. This is a
+continuous process, so always providing the most up to data
+measurements. The process can be stopped at any time if required. Once
+the process is active, the results can be retrieved.</P
+><P
+>Note that if the target/processor performs any power saving actions,
+such as reducing the clock speed, or halting until the next interrupt
+etc, these will interfere with the CPU load measurement. Under these
+conditions the measurement results are undefined. The synthetic target
+is one such system. See the implementation details at the foot of this
+page for further information.  </P
+><P
+>SMP systems are not supported, only uniprocessor system.</P
+><P
+> The API for load measuring functions can be
+found in the file <TT
+CLASS="FILENAME"
+>cyg/cpuload/cpuload.h</TT
+>.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="SERVICES-CPULOAD-API-CYG-CPULOAD-CALIBRATE">cyg_cpuload_calibrate</H2
+><P
+>This function is used to calibrate the cpu load measurement code. It
+makes a measurement to determine the CPU properties while idle.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_cpuload_calibrate(cyg_uint32  *calibration);</PRE
+></TD
+></TR
+></TABLE
+><P
+>The function returns the calibration value at the location pointed to
+by <TT
+CLASS="PARAMETER"
+><I
+>calibration</I
+></TT
+>.</P
+><P
+>This function is quite unusual. For it to work correctly a few
+conditions must be met. The function makes use of the two highest
+thread priorities. No other threads must be using these priorities
+while the function is being used. The kernel scheduler must be started
+and not disabled. The function takes 100ms to complete during which
+time no other threads will be run.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="SERVICES-CPULOAD-API-CYG-CPULOAD-CREATE">cyg_cpuload_create</H2
+><P
+>This function starts the CPU load measurments.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_cpuload_create(cyg_cpuload_t *cpuload, 
+                        cyg_uint32 calibrate,
+                        cyg_handle_t *handle);</PRE
+></TD
+></TR
+></TABLE
+><P
+>The measurement process is started and a handle to it is returned in
+<TT
+CLASS="PARAMETER"
+><I
+>*handle</I
+></TT
+>. This handle is used to access the
+results and the stop the measurement process. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="SERVICES-CPULOAD-API-CYG-CPULOAD-DELETE">cyg_cpuload_delete</H2
+><P
+>This function stops the measurement process. </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_cpuload_delete(cyg_handle_t handle);</PRE
+></TD
+></TR
+></TABLE
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>handle</I
+></TT
+> should be the value returned by the create function.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="SERVICES-CPULOAD-API-CYG-CPULOAD-GET">cyg_cpuload_get</H2
+><P
+>This function returns the latest measurements.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_cpuload_get(cyg_handle_t handle,
+		 cyg_uint32 *average_point1s, 	    
+		 cyg_uint32 *average_1s, 	    
+		 cyg_uint32 *average_10s);</PRE
+></TD
+></TR
+></TABLE
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>handle</I
+></TT
+> should be the value returned by the
+create function. The load measurements for the last 100ms, 1s and 10s
+are returned in
+<TT
+CLASS="PARAMETER"
+><I
+>*average_point1s</I
+></TT
+>,<TT
+CLASS="PARAMETER"
+><I
+>*average_1s</I
+></TT
+>
+and <TT
+CLASS="PARAMETER"
+><I
+>*average_10s</I
+></TT
+> respectively.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="SERVICES-CPULOAD-API-IMPLEMENTATION">Implementation details</H2
+><P
+>This section gives a few details of how the measurements are
+made. This should help to understand what the results mean.</P
+><P
+>When there are no other threads runnable, eCos will execute the idle
+thread. This thread is always runnable and uses the lowest thread
+priority. The idle thread does little. It is an endless loop which
+increments the variable, <TT
+CLASS="LITERAL"
+>idle_thread_loops</TT
+> and
+executes the macro <TT
+CLASS="LITERAL"
+>HAL_IDLE_THREAD_ACTION</TT
+>. The cpu
+load measurement code makes use of the variable. It periodically
+examines the value of the variable and sees how much it has
+changed. The idler the system, the more it will have incremented. From
+this it is simple to determine the load of the system.</P
+><P
+>The function <TT
+CLASS="LITERAL"
+>cyg_cpuload_calibrate</TT
+> executes the
+idle thread for 100ms to determine how much
+<TT
+CLASS="LITERAL"
+>idle_thread_loops</TT
+> is incremented on a system idle
+for 100ms. <TT
+CLASS="LITERAL"
+>cyg_cpuload_create</TT
+> starts an alarm which
+every 100ms calls an alarm function. This function looks at the
+difference in <TT
+CLASS="LITERAL"
+>idle_thread_loops</TT
+> since the last
+invocation of the alarm function and so calculated how idle or busy
+the system has been. The structure <TT
+CLASS="LITERAL"
+>cyg_cpuload</TT
+> is
+updated during the alarm functions with the new results.  The 100ms
+result is simply the result from the last measurement period. A simple
+filter is used to average the load over a period of time, namely 1s
+and 10s. Due to rounding errors, the 1s and 10s value will probably
+never reach 100% on a fully loaded system, but 99% is often seen.</P
+><P
+>As stated above, clever power management code will interfere with
+these measurements. The basic assumption is that the idle thread will
+be executed un-hindered and under the same conditions as when the
+calibration function was executed. If the CPU clock rate is reduced,
+the idle thread counter will be incremented less and so the CPU load
+measurements will give values too high. If the CPU is halted entirely,
+100% cpu load will be measured.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="services-cpuload.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="services-profile-gprof.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>CPU load measurements</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="services-cpuload.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Application profiling</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

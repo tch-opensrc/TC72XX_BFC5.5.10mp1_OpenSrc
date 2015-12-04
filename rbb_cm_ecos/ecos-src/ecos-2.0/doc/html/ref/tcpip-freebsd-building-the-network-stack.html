@@ -1,0 +1,209 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Building the Network Stack</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Freebsd TCP/IP stack port"
+HREF="tcpip-freebsd-stack-port.html"><LINK
+REL="PREVIOUS"
+TITLE="Freebsd TCP/IP stack port"
+HREF="tcpip-freebsd-stack-port.html"><LINK
+REL="NEXT"
+TITLE="APIs"
+HREF="tcpip-freebsd-tcpip-apis.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="tcpip-freebsd-stack-port.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 40. Freebsd TCP/IP stack port</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="tcpip-freebsd-tcpip-apis.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="TCPIP-FREEBSD-BUILDING-THE-NETWORK-STACK">Building the Network Stack</H1
+><P
+>Using the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build-&gt;Packages</I
+></SPAN
+> dialog,
+add the packages &#8220;Networking&#8221;,
+&#8220;Freebsd TCP/IP Stack&#8221;
+and &#8220;Common Ethernet Support&#8221;
+to your configuration.  Their package names
+are CYGPKG_NET, CYGPKG_NET_FREEBSD_STACK and CYGPKG_NET_ETH_DRIVERS
+respectively.</P
+><P
+>A short-cut way to do this is by
+using the &#8220;net&#8221; <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>template</I
+></SPAN
+>
+if it is available for your platform.</P
+><P
+>The platform-specific ethernet device driver for your platform
+will be added as part of the target selection (in the
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build-&gt;Templates</I
+></SPAN
+> &#8220;Hardware&#8221; item),
+along with the 
+PCI I/O subsystem (if relevent) and the appropriate serial device driver.</P
+><P
+>For example, the PowerPC MBX target selection adds the package
+PKG_NET_QUICC_ETH_DRIVERS,
+and the Cirrus Logic EDB7xxx target selection adds the package
+CYGPKG_NET_EDB7XXX_ETH_DRIVERS.
+After this, eCos and its tests can be built exactly as usual.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>By default, most of the network tests are not built.  This
+is because some of them require manual intervention, i.e. they are
+to be run &#8220;by hand&#8221;, and are not suitable for
+automated testing.  To build the full set of network tests, set
+the configuration option CYGPKG_NET_BUILD_TESTS &#8220;Build
+networking tests (demo programs)&#8221; within &#8220;Networking
+support build options&#8221;.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="tcpip-freebsd-stack-port.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="tcpip-freebsd-tcpip-apis.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Freebsd TCP/IP stack port</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-freebsd-stack-port.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>APIs</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,275 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>	Porting Guide</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Hardware Abstraction Layer (HAL)"
+HREF="the-ecos-hardware-abstraction-layer.html"><LINK
+REL="PREVIOUS"
+TITLE="Default Interrupt Handling"
+HREF="hal-default-interrupt-handling.html"><LINK
+REL="NEXT"
+TITLE="HAL Structure"
+HREF="hal-porting-structure.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="hal-default-interrupt-handling.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="hal-porting-structure.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="HAL-PORTING-GUIDE">Chapter 11. 	Porting Guide</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="hal-porting-guide.html#HAL-PORTING-INTRO"
+>Introduction</A
+></DT
+><DT
+><A
+HREF="hal-porting-structure.html"
+>HAL Structure</A
+></DT
+><DT
+><A
+HREF="hal-calling-if.html"
+>Virtual Vectors (eCos/ROM Monitor Calling Interface)</A
+></DT
+><DT
+><A
+HREF="hal-porting-coding-conventions.html"
+>HAL Coding Conventions</A
+></DT
+><DT
+><A
+HREF="hal-porting-platform.html"
+>Platform HAL Porting</A
+></DT
+><DT
+><A
+HREF="hal-porting-variant.html"
+>Variant HAL Porting</A
+></DT
+><DT
+><A
+HREF="hal-porting-architecture.html"
+>Architecture HAL Porting</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="HAL-PORTING-INTRO">Introduction</H1
+><P
+>eCos has been designed to be fairly easy to port to new targets. A
+target is a specific platform (board) using a given architecture (CPU
+type). The porting is facilitated by the hierarchical layering of the
+eCos sources - all architecture and platform specific code is
+implemented in a HAL (hardware abstraction layer).</P
+><P
+>By porting the eCos HAL to a new target the core functionality of eCos
+(infra, kernel, uITRON, etc) will be able to run on the target. It may
+be necessary to add further platform specific code such as serial
+drivers, display drivers, ethernet drivers, etc. to get a fully
+capable system.</P
+><P
+>This document is intended as a help to the HAL porting process. Due to
+the nature of a porting job, it is impossible to give a complete
+description of what has to be done for each and every potential
+target. This should not be considered a clear-cut recipe - you will
+probably need to make some implementation decisions, tweak a few
+things, and just plain have to rely on common sense.</P
+><P
+>However, what is covered here should be a large part of the
+process. If you get stuck, you are advised to read the
+<A
+HREF="http://sourceware.cygnus.com/ml/ecos-discuss/"
+TARGET="_top"
+>ecos-discuss archive</A
+>
+where you may find discussions which apply to the problem at
+hand. You are also invited to ask questions on the
+<A
+HREF="http://sourceware.cygnus.com/ecos/intouch.html"
+TARGET="_top"
+>ecos-discuss mailing list</A
+>
+to help you resolve problems - but as is always the case
+with community lists, do not consider it an oracle for any and all
+questions. Use common sense - if you ask too many questions which
+could have been answered by reading the
+<A
+HREF="http://sourceware.cygnus.com/ecos/docs-latest/"
+TARGET="_top"
+>documentation</A
+>,
+<A
+HREF="http://sourceware.cygnus.com/fom/ecos"
+TARGET="_top"
+>FAQ</A
+> or
+<A
+HREF="http://sourceware.cygnus.com/cgi-bin/cvsweb.cgi/ecos/packages/?cvsroot=ecos"
+TARGET="_top"
+>source code</A
+>, you are likely to be ignored.</P
+><P
+>This document will be continually improved by Red Hat engineers as
+time allows. Feedback and help with improving the document is sought,
+so if you have any comments at all, please do not hesitate to post
+them on
+<A
+HREF="mailto:ecos-discuss@sourceware.cygnus.com?subject=[porting]<subject>"
+TARGET="_top"
+>ecos-discuss</A
+>
+(please prefix the subject with [porting]).</P
+><P
+>At the moment this document is mostly an outline. There are many
+details to fill in before it becomes complete. Many places you'll just
+find a list of keywords / concepts that should be described (please
+post on ecos-discuss if there are areas you think are not covered).</P
+><P
+>All pages or sections where the caption ends in [TBD] contain little
+more than key words and/or random thoughts - there has been no work
+done as such on the content. The word FIXME may appear in the text to
+highlight places where information is missing.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="hal-default-interrupt-handling.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="hal-porting-structure.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Default Interrupt Handling</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="the-ecos-hardware-abstraction-layer.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>HAL Structure</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

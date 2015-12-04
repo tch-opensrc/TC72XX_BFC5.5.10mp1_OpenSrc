@@ -1,0 +1,290 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>CDL Concepts</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="eCos Programming Concepts and Techniques"
+HREF="ecos-programming-concepts-and-techniques.html"><LINK
+REL="PREVIOUS"
+TITLE="eCos Programming Concepts and Techniques"
+HREF="ecos-programming-concepts-and-techniques.html"><LINK
+REL="NEXT"
+TITLE="Component Repository"
+HREF="cdl-component-repository.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ecos-programming-concepts-and-techniques.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="cdl-component-repository.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="CDL-CONCEPTS">Chapter 24. CDL Concepts</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="cdl-concepts.html#CDL-CONCEPTS-ABOUT"
+>About this chapter</A
+></DT
+><DT
+><A
+HREF="cdl-component-repository.html"
+>Component Repository</A
+></DT
+><DT
+><A
+HREF="cdl-component-definition-language.html"
+>Component Definition Language</A
+></DT
+><DT
+><A
+HREF="cdl-packages.html"
+>Packages</A
+></DT
+><DT
+><A
+HREF="cdl-configuration-items.html"
+>Configuration Items</A
+></DT
+><DT
+><A
+HREF="cdl-conflicts.html"
+>Conflicts</A
+></DT
+><DT
+><A
+HREF="cdl-templates.html"
+>Templates</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CDL-CONCEPTS-ABOUT">About this chapter</H1
+><P
+>This chapter serves as a brief introduction to the
+	concepts involved in <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> (Embedded Configurable Operating
+	System).  It describes the configuration architecture and the
+	underlying technology to a level required for the embedded
+	systems developer to configure <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>.  It does not describe in
+	detail aspects such as how to write reusable components for
+	<SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>: this information is given in the <I
+CLASS="CITETITLE"
+>Component
+	  Writer&#8217;s Guide</I
+>.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN1835">Background</H2
+><P
+>Software solutions for the embedded space place
+	  particularly stringent demands on the developer, typically
+	  represented as requirements for small memory footprint, high
+	  performance and robustness.  These demands are addressed in
+	  <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> by providing the ability to perform compile-time
+	  specialization: the developer can tailor the operating
+	  system to suit the needs of the application.  In order to
+	  make this process manageable, <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> is built in the context
+	  of a Configuration Infrastructure: a set of tools including
+	  a <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+> and a formal
+	  description of the process of configuration by means of a
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Component Definition Language</I
+></SPAN
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN1842">Configurations</H2
+><P
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> is tailored at source level (that is, before
+	    compilation or assembly) in order to create an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>configuration</I
+></SPAN
+>. In concrete terms, an
+	    <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> configuration takes the form of a configuration save
+	    file (with extension .ecc) and set of files used to build
+	    user applications (including, when built, a library file
+	    against which the application is linked). </P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ecos-programming-concepts-and-techniques.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="cdl-component-repository.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Programming Concepts and Techniques</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-programming-concepts-and-techniques.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Component Repository</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

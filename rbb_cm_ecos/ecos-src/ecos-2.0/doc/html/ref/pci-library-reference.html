@@ -1,0 +1,1164 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>PCI Library reference</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos PCI Library"
+HREF="ecos-pci-library.html"><LINK
+REL="PREVIOUS"
+TITLE="The eCos PCI Library"
+HREF="ecos-pci-library.html"><LINK
+REL="NEXT"
+TITLE="eCos POSIX compatibility layer"
+HREF="posix-compatibility.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ecos-pci-library.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 30. The eCos PCI Library</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="posix-compatibility.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="PCI-LIBRARY-REFERENCE">PCI Library reference</H1
+><P
+>This document defines the PCI Support Library for eCos.</P
+><P
+>The PCI support library provides a set of routines for accessing
+the PCI bus configuration space in a portable manner. This is provided
+by two APIs. The high level API is used by device drivers, or other
+code, to access the PCI configuration space portably. The low level
+API is used by the PCI library itself to access the hardware in
+a platform-specific manner, and may also be used by device drivers
+to access the PCI configuration space directly.</P
+><P
+>Underlying the low-level API is HAL support for the basic
+configuration space operations. These should not generally be used
+by any code other than the PCI library, and are present in the HAL
+to allow low level initialization of the PCI bus and devices to
+take place if necessary.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN12801">PCI Library API</H2
+><P
+>The PCI library provides the following routines and types
+for accessing the PCI configuration space.</P
+><P
+>The API for the PCI library is found in the header file
+<TT
+CLASS="FILENAME"
+>&lt;cyg/io/pci.h&gt;</TT
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN12806">Definitions</H2
+><P
+>The header file contains definitions for the common configuration
+structure offsets and specimen values for device, vendor and class
+code.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN12809">Types and data structures</H2
+><P
+>The following types are defined:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef CYG_WORD32 cyg_pci_device_id;</PRE
+></TD
+></TR
+></TABLE
+><P
+>This is comprised of the bus number, device number and functional
+unit numbers packed into a single word. The macro <TT
+CLASS="FUNCTION"
+>CYG_PCI_DEV_MAKE_ID()</TT
+>, in conjunction with the <TT
+CLASS="FUNCTION"
+>CYG_PCI_DEV_MAKE_DEVFN()</TT
+>
+macro, may be used to construct a device id from the bus, device and functional
+unit numbers. Similarly the macros <TT
+CLASS="FUNCTION"
+>CYG_PCI_DEV_GET_BUS()</TT
+>,
+<TT
+CLASS="FUNCTION"
+>CYG_PCI_DEV_GET_DEVFN()</TT
+>,
+<TT
+CLASS="FUNCTION"
+>CYG_PCI_DEV_GET_DEV()</TT
+>, and
+<TT
+CLASS="FUNCTION"
+>CYG_PCI_DEV_GET_FN()</TT
+> may be used to extract the
+constituent parts of a device id. It should not be necessary to use these
+macros under normal circumstances. The following code fragment demonstrates
+how these macros may be used:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  // Create a packed representation of device 1, function 0
+  cyg_uint8 devfn = CYG_PCI_DEV_MAKE_DEVFN(1,0);
+
+  // Create a packed devid for that device on bus 2
+  cyg_pci_device_id devid = CYG_PCI_DEV_MAKE_ID(2, devfn);
+
+  diag_printf("bus %d, dev %d, func %d\n",
+              CYG_PCI_DEV_GET_BUS(devid),
+              CYG_PCI_DEV_GET_DEV(CYG_PCI_DEV_GET_DEVFN(devid)),
+              CYG_PCI_DEV_GET_FN(CYG_PCI_DEV_GET_DEVFN(devid));</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct cyg_pci_device;</PRE
+></TD
+></TR
+></TABLE
+><P
+>This structure is used to contain data read from a PCI device's
+configuration header by <TT
+CLASS="FUNCTION"
+>cyg_pci_get_device_info()</TT
+>.
+It is also used to record the resource allocations made to the device.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef CYG_WORD64 CYG_PCI_ADDRESS64;
+typedef CYG_WORD32 CYG_PCI_ADDRESS32;</PRE
+></TD
+></TR
+></TABLE
+><P
+>Pointers in the PCI address space are 32 bit (IO space) or
+32/64 bit (memory space). In most platform and device configurations
+all of PCI memory will be linearly addressable using only 32 bit
+pointers as read from <TT
+CLASS="VARNAME"
+>base_map[]</TT
+>.</P
+><P
+>The 64 bit type is used to allow handling 64 bit devices in
+the future, should it be necessary, without changing the library's
+API.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN12828">Functions</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_pci_init(void);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Initialize the PCI library and establish contact with the
+hardware. This function is idempotent and can be called either by
+all drivers in the system, or just from an application initialization
+function.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_bool cyg_pci_find_device( cyg_uint16 vendor,
+			      cyg_uint16 device,
+			      cyg_pci_device_id *devid );</PRE
+></TD
+></TR
+></TABLE
+><P
+>Searches the PCI bus configuration space for a device with
+the given <TT
+CLASS="PARAMETER"
+><I
+>vendor</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>device</I
+></TT
+>
+ids. The search starts at the device pointed to by <TT
+CLASS="PARAMETER"
+><I
+>devid</I
+></TT
+>,
+or at the first slot if it contains <TT
+CLASS="LITERAL"
+>CYG_PCI_NULL_DEVID</TT
+>.
+<TT
+CLASS="PARAMETER"
+><I
+>*devid</I
+></TT
+> will be updated with the ID of the next device
+found. Returns <TT
+CLASS="CONSTANT"
+>true</TT
+> if one is found and <TT
+CLASS="CONSTANT"
+>false</TT
+> if not.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_bool cyg_pci_find_class( cyg_uint32 dev_class,
+			     cyg_pci_device_id *devid );</PRE
+></TD
+></TR
+></TABLE
+><P
+>Searches the PCI bus configuration space for a device with
+the given <TT
+CLASS="PARAMETER"
+><I
+>dev_class</I
+></TT
+> class code.  The search starts at the
+device pointed to by <TT
+CLASS="PARAMETER"
+><I
+>devid</I
+></TT
+>, or at the first slot if it
+contains <TT
+CLASS="LITERAL"
+>CYG_PCI_NULL_DEVID</TT
+>.</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>*devid</I
+></TT
+> will be updated with the ID of the next
+device found. Returns <TT
+CLASS="CONSTANT"
+>true</TT
+> if one is found and
+<TT
+CLASS="CONSTANT"
+>false</TT
+> if not.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_bool cyg_pci_find_next( cyg_pci_device_id cur_devid,
+			    cyg_pci_device_id *next_devid );</PRE
+></TD
+></TR
+></TABLE
+><P
+>Searches the PCI configuration space for the next valid device
+after <TT
+CLASS="PARAMETER"
+><I
+>cur_devid</I
+></TT
+>. If <TT
+CLASS="PARAMETER"
+><I
+>cur_devid</I
+></TT
+>
+is given the value <TT
+CLASS="LITERAL"
+>CYG_PCI_NULL_DEVID</TT
+>, then the search starts
+at the first slot. It is permitted for <TT
+CLASS="PARAMETER"
+><I
+>next_devid</I
+></TT
+> to
+point to <TT
+CLASS="PARAMETER"
+><I
+>cur_devid</I
+></TT
+>.  Returns <TT
+CLASS="CONSTANT"
+>true</TT
+>
+if another device is found and <TT
+CLASS="CONSTANT"
+>false</TT
+> if not.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_bool cyg_pci_find_matching( cyg_pci_match_func *matchp,
+                                void * match_callback_data,
+			        cyg_pci_device_id *devid );</PRE
+></TD
+></TR
+></TABLE
+><P
+>Searches the PCI bus configuration space for a device whose properties
+match those required by the caller supplied <TT
+CLASS="PARAMETER"
+><I
+>cyg_pci_match_func</I
+></TT
+>.
+The search starts at the device pointed to by <TT
+CLASS="PARAMETER"
+><I
+>devid</I
+></TT
+>, or
+at the first slot if it contains <TT
+CLASS="CONSTANT"
+>CYG_PCI_NULL_DEVID</TT
+>. The
+<TT
+CLASS="PARAMETER"
+><I
+>devid</I
+></TT
+> will be updated with the ID of the next device found.
+This function returns <TT
+CLASS="CONSTANT"
+>true</TT
+> if a matching device is found
+and <TT
+CLASS="CONSTANT"
+>false</TT
+> if not.</P
+><P
+>The match_func has a type declared as:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef cyg_bool (cyg_pci_match_func)( cyg_uint16 vendor,
+                                       cyg_uint16 device,
+                                       cyg_uint32 class,
+                                       void *     user_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <TT
+CLASS="PARAMETER"
+><I
+>vendor</I
+></TT
+>, <TT
+CLASS="PARAMETER"
+><I
+>device</I
+></TT
+>, and
+<TT
+CLASS="PARAMETER"
+><I
+>class</I
+></TT
+> are from the device configuration space. The
+<TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+> is the callback data passed to <TT
+CLASS="FUNCTION"
+>cyg_pci_find_matching</TT
+>.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_pci_get_device_info ( cyg_pci_device_id devid,
+			       cyg_pci_device *dev_info );</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function gets the PCI configuration information for the
+device indicated in <TT
+CLASS="PARAMETER"
+><I
+>devid</I
+></TT
+>. The common fields of the
+<SPAN
+CLASS="STRUCTNAME"
+>cyg_pci_device</SPAN
+> structure, and the appropriate fields
+of the relevant header union member are filled in from the device's
+configuration space.
+If the device has not been enabled, then this function will also fetch
+the size and type information from the base address registers and
+place it in the <TT
+CLASS="VARNAME"
+>base_size[]</TT
+> array.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_pci_set_device_info ( cyg_pci_device_id devid,
+			       cyg_pci_device *dev_info );</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function sets the PCI configuration information for the
+device indicated in <TT
+CLASS="PARAMETER"
+><I
+>devid</I
+></TT
+>. Only the configuration space
+registers that are writable are actually written. Once all the fields have
+been written, the device info will be read back into <TT
+CLASS="PARAMETER"
+><I
+>*dev_info</I
+></TT
+>, so that it reflects the true state of the hardware.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_pci_read_config_uint8(  cyg_pci_device_id devid,
+				 cyg_uint8 offset, cyg_uint8 *val );
+void cyg_pci_read_config_uint16( cyg_pci_device_id devid,
+				 cyg_uint8 offset, cyg_uint16 *val );
+void cyg_pci_read_config_uint32( cyg_pci_device_id devid,
+				 cyg_uint8 offset, cyg_uint32 *val );</PRE
+></TD
+></TR
+></TABLE
+><P
+>These functions read registers of the appropriate size from
+the configuration space of the given device. They should mainly
+be used to access registers that are device specific. General PCI
+registers are best accessed through <TT
+CLASS="FUNCTION"
+>cyg_pci_get_device_info()</TT
+>.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_pci_write_config_uint8(  cyg_pci_device_id devid,
+				  cyg_uint8 offset, cyg_uint8 val );
+void cyg_pci_write_config_uint16( cyg_pci_device_id devid,
+				  cyg_uint8 offset, cyg_uint16 val );
+void cyg_pci_write_config_uint32( cyg_pci_device_id devid,
+				  cyg_uint8 offset, cyg_uint32 val );</PRE
+></TD
+></TR
+></TABLE
+><P
+>These functions write registers of the appropriate size to
+the configuration space of the given device. They should mainly
+be used to access registers that are device specific. General PCI
+registers are best accessed through <TT
+CLASS="FUNCTION"
+>cyg_pci_get_device_info()</TT
+>. Writing the general registers this way may render the contents of
+a <SPAN
+CLASS="STRUCTNAME"
+>cyg_pci_device</SPAN
+> structure invalid.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN12891">Resource allocation</H2
+><P
+>These routines allocate memory and I/O space to PCI devices.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_bool cyg_pci_configure_device( cyg_pci_device *dev_info )</PRE
+></TD
+></TR
+></TABLE
+><P
+>Allocate memory and IO space to all base address registers
+using the current memory and IO base addresses in the library. The
+allocated base addresses, translated into directly usable values,
+will be put into the matching <TT
+CLASS="VARNAME"
+>base_map[]</TT
+> entries
+in <TT
+CLASS="PARAMETER"
+><I
+>*dev_info</I
+></TT
+>. If <TT
+CLASS="PARAMETER"
+><I
+>*dev_info</I
+></TT
+> does
+not contain valid <TT
+CLASS="VARNAME"
+>base_size[]</TT
+> entries, then the result is
+<TT
+CLASS="CONSTANT"
+>false</TT
+>. This function will also call <TT
+CLASS="FUNCTION"
+>cyg_pci_translate_interrupt()</TT
+> to put the interrupt vector into the
+HAL vector entry.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_bool cyg_pci_configure_bus( cyg_uint8 bus, cyg_uint8 *next_bus )</PRE
+></TD
+></TR
+></TABLE
+><P
+>Allocate memory and IO space to all base address registers on all devices
+on the given bus and all subordinate busses. If a PCI-PCI bridge is found on
+<TT
+CLASS="PARAMETER"
+><I
+>bus</I
+></TT
+>, this function will call itself recursively in order
+to configure the bus on the other side of the bridge. Because of the nature of
+bridge devices, all devices on the secondary side of a bridge must be allocated
+memory and IO space before the memory and IO windows on the bridge device can be
+properly configured. The <TT
+CLASS="PARAMETER"
+><I
+>next_bus</I
+></TT
+> argument points to the
+bus number to assign to the next subordinate bus found. The number will be
+incremented as new busses are discovered. If successful, <TT
+CLASS="CONSTANT"
+>true</TT
+>
+is returned. Otherwise, <TT
+CLASS="CONSTANT"
+>false</TT
+> is returned.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_bool cyg_pci_translate_interrupt( cyg_pci_device *dev_info,
+				      CYG_ADDRWORD *vec );</PRE
+></TD
+></TR
+></TABLE
+><P
+>Translate the device's PCI interrupt (INTA#-INTD#)
+to the associated HAL vector. This may also depend on which slot
+the device occupies. If the device may generate interrupts, the
+translated vector number will be stored in <TT
+CLASS="PARAMETER"
+><I
+>vec</I
+></TT
+> and the
+result is <TT
+CLASS="CONSTANT"
+>true</TT
+>. Otherwise the result is <TT
+CLASS="CONSTANT"
+>false</TT
+>.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_bool cyg_pci_allocate_memory( cyg_pci_device *dev_info,
+                                  cyg_uint32 bar, 
+                                  CYG_PCI_ADDRESS64 *base );
+cyg_bool cyg_pci_allocate_io( cyg_pci_device *dev_info,
+                              cyg_uint32 bar, 
+                              CYG_PCI_ADDRESS32 *base );</PRE
+></TD
+></TR
+></TABLE
+><P
+>These routines allocate memory or I/O space to the base address
+register indicated by <TT
+CLASS="PARAMETER"
+><I
+>bar</I
+></TT
+>. The base address in
+<TT
+CLASS="PARAMETER"
+><I
+>*base</I
+></TT
+> will be correctly aligned and the address of the
+next free location will be written back into it if the allocation succeeds. If
+the base address register is of the wrong type for this allocation, or
+<TT
+CLASS="PARAMETER"
+><I
+>dev_info</I
+></TT
+> does not contain valid <TT
+CLASS="VARNAME"
+>base_size[]</TT
+> entries, the result is <TT
+CLASS="CONSTANT"
+>false</TT
+>. These functions
+allow a device driver to set up its own mappings if it wants. Most devices
+should probably use <TT
+CLASS="FUNCTION"
+>cyg_pci_configure_device()</TT
+>.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_pci_set_memory_base( CYG_PCI_ADDRESS64 base );
+void cyg_pci_set_io_base( CYG_PCI_ADDRESS32 base );</PRE
+></TD
+></TR
+></TABLE
+><P
+>These routines set the base addresses for memory and I/O mappings
+to be used by the memory allocation routines. Normally these base
+addresses will be set to default values based on the platform. These
+routines allow these to be changed by application code if necessary.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN12923">PCI Library Hardware API</H2
+><P
+>This API is used by the PCI library to access the PCI bus
+configuration space. Although it should not normally be necessary,
+this API may also be used by device driver or application code to
+perform PCI bus operations not supported by the PCI library.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_pcihw_init(void);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Initialize the PCI hardware so that the configuration space
+may be accessed.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_pcihw_read_config_uint8(  cyg_uint8 bus,
+               cyg_uint8 devfn, cyg_uint8 offset, cyg_uint8 *val);
+void cyg_pcihw_read_config_uint16( cyg_uint8 bus,
+               cyg_uint8 devfn, cyg_uint8 offset, cyg_uint16 *val);
+void cyg_pcihw_read_config_uint32( cyg_uint8 bus,
+               cyg_uint8 devfn, cyg_uint8 offset, cyg_uint32 *val);</PRE
+></TD
+></TR
+></TABLE
+><P
+>These functions read a register of the appropriate size from
+the PCI configuration space at an address composed from the <TT
+CLASS="PARAMETER"
+><I
+>bus</I
+></TT
+>, <TT
+CLASS="PARAMETER"
+><I
+>devfn</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+>
+arguments.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_pcihw_write_config_uint8(  cyg_uint8 bus,
+                cyg_uint8 devfn, cyg_uint8 offset, cyg_uint8 val);
+void cyg_pcihw_write_config_uint16( cyg_uint8 bus,
+                cyg_uint8 devfn, cyg_uint8 offset, cyg_uint16 val);
+void cyg_pcihw_write_config_uint32( cyg_uint8 bus,
+                cyg_uint8 devfn, cyg_uint8 offset, cyg_uint32 val);</PRE
+></TD
+></TR
+></TABLE
+><P
+>These functions write a register of the appropriate size to
+the PCI configuration space at an address composed from the
+<TT
+CLASS="PARAMETER"
+><I
+>bus</I
+></TT
+>, <TT
+CLASS="PARAMETER"
+><I
+>devfn</I
+></TT
+> and
+<TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+> arguments.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_bool cyg_pcihw_translate_interrupt( cyg_uint8 bus,
+					cyg_uint8 devfn,
+					CYG_ADDRWORD *vec);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function interrogates the device and determines which
+HAL interrupt vector it is connected to.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN12940">HAL PCI support</H2
+><P
+>HAL support consists of a set of C macros that provide the
+implementation of the low level PCI API.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>HAL_PCI_INIT()</PRE
+></TD
+></TR
+></TABLE
+><P
+>Initialize the PCI bus.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>HAL_PCI_READ_UINT8( bus, devfn, offset, val )
+HAL_PCI_READ_UINT16( bus, devfn, offset, val )
+HAL_PCI_READ_UINT32( bus, devfn, offset, val )</PRE
+></TD
+></TR
+></TABLE
+><P
+>Read a value from the PCI configuration space of the appropriate
+size at an address composed from the <TT
+CLASS="PARAMETER"
+><I
+>bus</I
+></TT
+>, <TT
+CLASS="PARAMETER"
+><I
+>devfn</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+>.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>HAL_PCI_WRITE_UINT8( bus, devfn, offset, val )
+HAL_PCI_WRITE_UINT16( bus, devfn, offset, val )
+HAL_PCI_WRITE_UINT32( bus, devfn, offset, val )</PRE
+></TD
+></TR
+></TABLE
+><P
+>Write a value to the PCI configuration space of the appropriate
+size at an address composed from the <TT
+CLASS="PARAMETER"
+><I
+>bus</I
+></TT
+>, <TT
+CLASS="PARAMETER"
+><I
+>devfn</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+>.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>HAL_PCI_TRANSLATE_INTERRUPT( bus, devfn, *vec, valid )</PRE
+></TD
+></TR
+></TABLE
+><P
+>Translate the device's interrupt line into a HAL
+interrupt vector.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>HAL_PCI_ALLOC_BASE_MEMORY
+HAL_PCI_ALLOC_BASE_IO</PRE
+></TD
+></TR
+></TABLE
+><P
+>These macros define the default base addresses used to initialize
+the memory and I/O allocation pointers.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>HAL_PCI_PHYSICAL_MEMORY_BASE
+HAL_PCI_PHYSICAL_IO_BASE</PRE
+></TD
+></TR
+></TABLE
+><P
+>PCI memory and IO range do not always correspond directly
+to physical memory or IO addresses. Frequently the PCI address spaces
+are windowed into the processor's address range at some
+offset. These macros define offsets to be added to the PCI base
+addresses to translate PCI bus addresses into physical memory addresses
+that can be used to access the allocated memory or IO space.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>The chunk of PCI memory space directly addressable though
+the window by the CPU may be smaller than the amount of PCI memory
+actually provided. In that case drivers will have to access PCI
+memory space in segments. Doing this will be platform specific and
+is currently beyond the scope of the HAL.</P
+></BLOCKQUOTE
+></DIV
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>HAL_PCI_IGNORE_DEVICE( bus, dev, fn )</PRE
+></TD
+></TR
+></TABLE
+><P
+>This macro, if defined, may be used to limit the devices which are
+found by the bus scanning functions. This is sometimes necessary for
+devices which need special handling. If this macro evaluates to <TT
+CLASS="CONSTANT"
+>true</TT
+>, the given device will not be found by <TT
+CLASS="FUNCTION"
+>cyg_pci_find_next</TT
+> or other bus scanning functions.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ecos-pci-library.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="posix-compatibility.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>The eCos PCI Library</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-pci-library.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>eCos POSIX compatibility layer</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

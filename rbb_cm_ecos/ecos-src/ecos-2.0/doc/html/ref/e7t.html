@@ -1,0 +1,467 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>ARM/ARM7 ARM Evaluator7T</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Installation and Testing"
+HREF="installation-and-testing.html"><LINK
+REL="PREVIOUS"
+TITLE="Installation and Testing"
+HREF="installation-and-testing.html"><LINK
+REL="NEXT"
+TITLE="ARM/ARM7+ARM9 ARM Integrator"
+HREF="integrator.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="installation-and-testing.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Installation and Testing</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="integrator.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="E7T">ARM/ARM7 ARM Evaluator7T</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5055">Overview</H2
+><P
+>RedBoot supports
+both serial ports for communication and downloads. The default serial port
+settings are 38400,8,N,1.</P
+><P
+>The following RedBoot configurations are supported:
+
+      <DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5065"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Configuration</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Mode</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>ROM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from flash address 0x20000, with
+	      ARM Boot Monitor in flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_ROMA.ecm</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5079">Initial Installation</H2
+><P
+>RedBoot is installed using the on-board boot environment. See the user
+manual for full details.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5082">Quick download instructions</H2
+><P
+>Here are quick start instructions for downloading the prebuilt Redboot
+image:</P
+><P
+></P
+><UL
+><LI
+><P
+>Boot the board and press ENTER:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>&#13;      ARM Evaluator7T Boot Monitor PreRelease 1.00
+      Press ENTER within 2 seconds to stop autoboot
+      Boot: </PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>Erase the part of the flash where RedBoot will get programmed:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>      Boot: <TT
+CLASS="USERINPUT"
+><B
+>flasherase 01820000 10000</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>Prepare to download the UU-encoded version of the RedBoot
+image:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>      Boot: <TT
+CLASS="USERINPUT"
+><B
+>download 10000</B
+></TT
+>
+      Ready to download. Use 'transmit' option on terminal emulator to download file.</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>Either use ASCII transmit option in the terminal emulator,
+or on Linux, simply cat the file to the serial port:<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>      $ <TT
+CLASS="USERINPUT"
+><B
+>cat redboot.UU &#62; /dev/ttyS0</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+>When complete, you should
+see:<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>      Loaded file redboot.bin at address 000100000, size = 41960
+      Boot:</PRE
+></TD
+></TR
+></TABLE
+></P
+></LI
+><LI
+><P
+>Program the flash:<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>      Boot: <TT
+CLASS="USERINPUT"
+><B
+>flashwrite 01820000 10000 10000</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+></P
+></LI
+><LI
+><P
+>And verify that the module is available:<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>      Boot: <TT
+CLASS="USERINPUT"
+><B
+>rommodules</B
+></TT
+>
+      Header   Base     Limit
+      018057c8 01800000 018059e7 BootStrapLoader v1.0 Apr 27 2000 10:33:58
+      01828f24 01820000 0182a3e8 RedBoot              Apr  5 2001</PRE
+></TD
+></TR
+></TABLE
+></P
+></LI
+><LI
+><P
+>Reboot the board and you should see the RedBoot banner.</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5112">Special RedBoot Commands</H2
+><P
+>None.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5115">Memory Maps</H2
+><P
+>RedBoot sets up the following memory map on the E7T board. <DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>NOTE: </B
+>The virtual memory maps in this section use a C and B column to indicate
+whether or not the region is cached (C) or buffered (B).</P
+></BLOCKQUOTE
+></DIV
+>  <TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Physical Address Range  C B  Description
+----------------------- - -  -----------
+0x00000000 - 0x0007ffff Y N  SDRAM
+0x03ff0000 - 0x03ffffff N N  Microcontroller registers
+0x01820000 - 0x0187ffff N N  System flash (mirrored)</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5122">Rebuilding RedBoot</H2
+><P
+>These shell variables provide the platform-specific information
+needed for building RedBoot according to the procedure described in
+<A
+HREF="rebuilding-redboot.html"
+>Chapter 3</A
+>:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>export TARGET=e7t
+export ARCH_DIR=arm
+export PLATFORM_DIR=e7t</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The names of configuration files are listed above with the
+description of the associated modes.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="installation-and-testing.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="integrator.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Installation and Testing</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="installation-and-testing.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>ARM/ARM7+ARM9 ARM Integrator</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

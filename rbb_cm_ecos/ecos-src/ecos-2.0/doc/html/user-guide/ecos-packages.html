@@ -1,0 +1,201 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Packages</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Manual Configuration"
+HREF="manual-configuration.html"><LINK
+REL="PREVIOUS"
+TITLE="Building the System"
+HREF="building-the-system.html"><LINK
+REL="NEXT"
+TITLE="Coarse-grained Configuration"
+HREF="coarse-grained-configuration.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="building-the-system.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 28. Manual Configuration</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="coarse-grained-configuration.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="ECOS-PACKAGES">Packages</H1
+><P
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> is a component architecture. The system comes as a
+	  number of packages which can be
+	  enabled or disabled as required, and new packages can be
+	  added as they become available. Unfortunately, the packages
+	  are not completely independent: for example the &micro;ITRON
+	  compatibility package relies almost entirely on
+	  functionality provided by the kernel package, and it would
+	  not make sense to try to build &micro;ITRON if the kernel
+	  was disabled. The C library has fewer dependencies: some
+	  parts of the C library rely on kernel functionality, but it
+	  is possible to disable these parts and thus build a system
+	  that has the C library but no kernel. The
+	<B
+CLASS="COMMAND"
+>ecosconfig</B
+> tool has the capability of
+	    checking that all the dependencies are satisfied, but it
+	    may still be possible to produce configurations that will
+	    not build or (conceivably) that will build but not run.
+	    Developers should be aware of this and take appropriate
+	    care.</P
+><P
+>By default, <B
+CLASS="COMMAND"
+>ecosconfig</B
+> will
+include all packages that are appropriate for the specified hardware
+in the configuration. The common HAL package and
+the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> infrastructure must be present in every configuration. In
+addition, it is always necessary to have one architectural HAL package
+and one platform HAL package. Other packages are optional, and can
+be added or removed from a configuration as required.</P
+><P
+>The application may not require all of the packages; for example,
+it might not need the &micro;ITRON compatibility
+package, or the floating point support provided by the math library.
+There is a slight overhead when <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> is built because the packages
+will get compiled, and there is also a small disk space penalty.
+However, any unused facilities will get stripped out at link-time,
+so having redundant packages will not affect the final executable. </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="building-the-system.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="coarse-grained-configuration.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Building the System</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="manual-configuration.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Coarse-grained Configuration</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

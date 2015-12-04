@@ -1,0 +1,215 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>ioctl</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="getsockopt"
+HREF="net-common-tcpip-manpages-getsockopt.html"><LINK
+REL="NEXT"
+TITLE="poll"
+HREF="net-common-tcpip-manpages-poll.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-getsockopt.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-poll.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-IOCTL">ioctl</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>IOCTL(2)                      System Calls Manual                     IOCTL(2)
+
+NAME
+     ioctl - control device
+
+SYNOPSIS
+     #include &lt;sys/ioctl.h&#62;
+
+     int
+     ioctl(int d, unsigned long request, ...);
+
+DESCRIPTION
+     The ioctl() function manipulates the underlying device parameters of spe-
+     cial files.  In particular, many operating characteristics of character
+     special files (e.g., terminals) may be controlled with ioctl() requests.
+
+     The argument d must be an open file descriptor. The third argument is
+     called arg and contains additional information needed by this device to
+     perform the requested function.  arg is either an int or a pointer to a
+     device-specific data structure, depending upon the given request.
+
+     An ioctl request has encoded in it whether the argument is an ``in''
+     parameter or ``out'' parameter, and the size of the third argument (arg)
+     in bytes.  Macros and defines used in specifying an ioctl request are
+     located in the file &lt;sys/ioctl.h&#62;.
+
+RETURN VALUES
+     If an error has occurred, a value of -1 is returned and errno is set to
+     indicate the error.
+
+ERRORS
+     ioctl() will fail if:
+
+     [EBADF]            d is not a valid descriptor.
+
+     [ENOTTY]           d is not associated with a character special device.
+
+     [ENOTTY]           The specified request does not apply to the kind of
+                        object that the descriptor d references.
+
+     [EINVAL]           request or arg is not valid.
+
+     [EFAULT]           arg points outside the process's allocated address
+                        space.
+
+SEE ALSO
+     cdio(1), chio(1), mt(1), execve(2), fcntl(2), intro(4), tty(4)
+
+HISTORY
+     An ioctl() function call appeared in Version 7 AT&amp;T UNIX.
+
+BSD                            December 11, 1993                           BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-getsockopt.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-poll.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>getsockopt</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>poll</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

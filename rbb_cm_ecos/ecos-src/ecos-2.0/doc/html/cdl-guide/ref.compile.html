@@ -1,0 +1,460 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>compile</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="calculated"
+HREF="ref.calculated.html"><LINK
+REL="NEXT"
+TITLE="default_value"
+HREF="ref.default-value.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.calculated.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.default-value.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.COMPILE"><SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN3815"
+></A
+><H2
+>Name</H2
+>Property <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+>&nbsp;--&nbsp;List the source files that should be built if this option
+is active and enabled.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN3819"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_option &lt;name&gt; {
+    compile [-library=libxxx.a] &lt;list of files&gt;
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3821"
+></A
+><H2
+>Description</H2
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> property allows component developers to specify source
+files which should be compiled and added to one of the target
+libraries. Usually each source file will end up the library
+<TT
+CLASS="FILENAME"
+>libtarget.a</TT
+>. It is possible for component writers
+to specify an alternative library for an entire package using the
+<A
+HREF="ref.library.html"
+><SPAN
+CLASS="PROPERTY"
+>library</SPAN
+></A
+> property. Alternatively
+the desired library can be specified on the <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> line itself. For
+example, to add a particular source file to the
+<TT
+CLASS="FILENAME"
+>libextras.a</TT
+> library the following could be used:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_IO_SERIAL {
+    &#8230;
+    compile -library=libextras.a common/tty.c
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>Details of the build process including such issues as compiler flags
+and the order in which things happen can be found in
+<A
+HREF="build.html"
+>Chapter 4</A
+>. </P
+><P
+><SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> properties can occur in any of <TT
+CLASS="LITERAL"
+>cdl_option</TT
+>,
+<TT
+CLASS="LITERAL"
+>cdl_component</TT
+>, <TT
+CLASS="LITERAL"
+>cdl_package</TT
+> or <TT
+CLASS="LITERAL"
+>cdl_interface</TT
+>. A <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+>
+property has effect if and only if the entity that contains it is
+active and enabled. Typically the body of a <TT
+CLASS="LITERAL"
+>cdl_package</TT
+> will define
+any source files that need to be built irrespective of individual
+options, and each <TT
+CLASS="LITERAL"
+>cdl_component</TT
+>, <TT
+CLASS="LITERAL"
+>cdl_option</TT
+>, and <TT
+CLASS="LITERAL"
+>cdl_interface</TT
+>
+will define source files that are more specific. A single <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+>
+property can list any number of source files, all destined for the
+same library. A <TT
+CLASS="LITERAL"
+>cdl_option</TT
+> or other entity can contain multiple
+<SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> properties, each of which can specify a different library.
+It is possible for a given source file to be specified in <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+>
+properties for several different options, in which case the source
+file will get built if any of these options are active and enabled.</P
+><P
+>If the package follows the <A
+HREF="package.html#PACKAGE.HIERARCHY"
+>directory
+layout conventions</A
+> then the configuration tools will search for
+the specified source files first in the
+<TT
+CLASS="FILENAME"
+>src</TT
+> subdirectory of the
+package, then relative to the package directory itself. </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>A shortcoming of the current specification of <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> properties is
+that there is no easy way to specify source files that should be built
+unless an option is enabled. It would sometimes be useful to be able
+to say: &#8220;if option <TT
+CLASS="LITERAL"
+>A</TT
+> is enabled then compile
+file <TT
+CLASS="FILENAME"
+>x.c</TT
+>, otherwise compile file
+<TT
+CLASS="FILENAME"
+>y.c</TT
+>. There are two simple ways of achieving this: </P
+><P
+></P
+><UL
+><LI
+><P
+>Always compile <TT
+CLASS="FILENAME"
+>y.c</TT
+>, typically by listing it in
+the body of the <TT
+CLASS="LITERAL"
+>cdl_package</TT
+>, but use
+<TT
+CLASS="LITERAL"
+>#ifndef&nbsp;A</TT
+> to produce an empty object file if
+option <TT
+CLASS="LITERAL"
+>A</TT
+> is not enabled. This has the big
+disadvantage that the file always gets compiled and hence for some
+configurations builds will take longer than necessary.</P
+></LI
+><LI
+><P
+>Use a <SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+> option whose value is <TT
+CLASS="LITERAL"
+>!A</TT
+>, and
+have a <TT
+CLASS="LITERAL"
+>compile&nbsp;y.c</TT
+> property in its body. This
+has the big disadvantage of adding another calculated option to the
+configuration.</P
+></LI
+></UL
+><P
+>It is likely that this will be resolved in the future, possibly by
+using some sort of expression as the argument to a <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> property.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Currently it is not possible to control the priority of a <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+>
+property, in other words the order in which a file gets compiled
+relative to other build steps. This functionality might prove useful
+for complicated packages and should be added.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3874"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_INFRA {
+    display       "Infrastructure"
+    include_dir   cyg/infra
+    description   "
+        Common types and useful macros.
+        Tracing and assertion facilities.
+        Package startup options." 
+
+    compile startup.cxx prestart.cxx pkgstart.cxx userstart.cxx \
+            dummyxxmain.cxx memcpy.c memset.c delete.cxx \
+            diag.cxx tcdiag.cxx
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3877"
+></A
+><H2
+>See Also</H2
+><P
+>Properties <A
+HREF="ref.make.html"
+>make</A
+>,
+<A
+HREF="ref.make-object.html"
+>make_object</A
+> and
+<A
+HREF="ref.library.html"
+>library</A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.calculated.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.default-value.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,706 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>cdl_package</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="cdl_component"
+HREF="ref.cdl-component.html"><LINK
+REL="NEXT"
+TITLE="cdl_interface"
+HREF="ref.cdl-interface.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.cdl-component.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.cdl-interface.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.CDL-PACKAGE"><TT
+CLASS="LITERAL"
+>cdl_package</TT
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN3272"
+></A
+><H2
+>Name</H2
+>Command <TT
+CLASS="LITERAL"
+>cdl_package</TT
+>&nbsp;--&nbsp;Define a package, a component that can be distributed</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN3276"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_package &lt;name&gt; {
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3278"
+></A
+><H2
+>Description</H2
+><P
+>A package is a unit of distribution. It is also a configuration option
+in that users can choose whether or not a particular package is loaded
+into the configuration, and which version of that package should be
+loaded. It is also a component in that it can contain additional
+components and options in a hierarchy.</P
+><P
+>The top-level <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> script for a package should begin with a <TT
+CLASS="LITERAL"
+>cdl_package</TT
+>
+command. This can contain most of the properties that can be used in a
+<TT
+CLASS="LITERAL"
+>cdl_option</TT
+> command, and a number of additional ones which apply to a
+package as a whole. It is also possible to include <TT
+CLASS="LITERAL"
+>cdl_component</TT
+>,
+<TT
+CLASS="LITERAL"
+>cdl_interface</TT
+> and <TT
+CLASS="LITERAL"
+>cdl_option</TT
+> commands in the body of a package.
+However all configuration entities that occur at the top level of the
+script containing the <TT
+CLASS="LITERAL"
+>cdl_package</TT
+> command are automatically placed
+below that package in the configuration hierarchy, so putting them
+inside the body has no effect.</P
+><P
+>The following properties cannot be used in the body of a <TT
+CLASS="LITERAL"
+>cdl_package</TT
+>
+command:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><SPAN
+CLASS="PROPERTY"
+>flavor</SPAN
+></DT
+><DD
+><P
+>Packages always have the flavor <TT
+CLASS="LITERAL"
+>booldata</TT
+>.</P
+></DD
+><DT
+><SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+></DT
+><DD
+><P
+>The value of a package is its version number. This is specified at the
+time the package is loaded into the configuration, and cannot be
+calculated afterwards. Typically the most recent version of the
+package will be loaded.</P
+></DD
+><DT
+><SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+></DT
+><DD
+><P
+>The legal values list for a given package is determined by which
+versions of that package are installed in the component repository,
+and cannot be further constrained in the CDL scripts.</P
+></DD
+><DT
+><SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+></DT
+><DD
+><P
+>The value of a package is always selected at the time that it is
+loaded into the configuration, and cannot be re-calculated afterwards.</P
+></DD
+><DT
+><SPAN
+CLASS="PROPERTY"
+>script</SPAN
+></DT
+><DD
+><P
+>This would be redundant since the CDL script containing the
+<TT
+CLASS="LITERAL"
+>cdl_package</TT
+> command acts as that package's script.</P
+></DD
+></DL
+></DIV
+><P
+><TT
+CLASS="LITERAL"
+>cdl_package</TT
+> is implemented as a Tcl command that takes two
+arguments, a name and a body. The name must be a valid C preprocessor
+identifier: a sequence of upper or lower case letters, digits or
+underscores, starting with a non-digit character; identifiers
+beginning with an underscore should normally be avoided because they
+may clash with system packages or with identifiers reserved for use by
+the compiler. Packages should always have unique names within a given
+component repository. For a recommended naming convention see <A
+HREF="package.contents.html"
+>the Section called <I
+>Package Contents and Layout</I
+> in Chapter 2</A
+>.</P
+><P
+>The second argument to <TT
+CLASS="LITERAL"
+>cdl_package</TT
+> is a body of properties and other
+commands, typically surrounded by braces so that the Tcl interpreter
+treats it as a single argument. This body will be processed by a
+recursive invocation of the Tcl interpreter, extended with additional
+commands for the various properties that are allowed inside a
+<TT
+CLASS="LITERAL"
+>cdl_package</TT
+>. The valid commands are:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><A
+HREF="ref.active-if.html"
+><SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+></A
+></DT
+><DD
+><P
+>Allow additional control over the active state of this package.</P
+></DD
+><DT
+><A
+HREF="ref.cdl-component.html"
+><TT
+CLASS="LITERAL"
+>cdl_component</TT
+></A
+></DT
+><DD
+><P
+>Define a component which should appear immediately below this package
+in the configuration hierarchy.</P
+></DD
+><DT
+><A
+HREF="ref.cdl-interface.html"
+><TT
+CLASS="LITERAL"
+>cdl_interface</TT
+></A
+></DT
+><DD
+><P
+>Define an interface which should appear immediately below this
+package in the configuration hierarchy.</P
+></DD
+><DT
+><A
+HREF="ref.cdl-option.html"
+><TT
+CLASS="LITERAL"
+>cdl_option</TT
+></A
+></DT
+><DD
+><P
+>Define an option which should appear immediately below
+this package in the configuration hierarchy.</P
+></DD
+><DT
+><A
+HREF="ref.compile.html"
+><SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+></A
+></DT
+><DD
+><P
+>List the source files that should be built for this package.</P
+></DD
+><DT
+><A
+HREF="ref.define.html"
+><SPAN
+CLASS="PROPERTY"
+>define</SPAN
+></A
+></DT
+><DD
+><P
+>Specify additional <TT
+CLASS="LITERAL"
+>#define</TT
+> symbols that should go
+into the package's configuration header file.</P
+></DD
+><DT
+><A
+HREF="ref.define-format.html"
+><SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+></A
+></DT
+><DD
+><P
+>Control how the package's value will appear in the global
+configuration header file <TT
+CLASS="FILENAME"
+>pkgconf/system.h</TT
+></P
+></DD
+><DT
+><A
+HREF="ref.define-header.html"
+><SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+></A
+></DT
+><DD
+><P
+>Specify the configuration header file that will be generated for this package.</P
+></DD
+><DT
+><A
+HREF="ref.define-proc.html"
+><SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+></A
+></DT
+><DD
+><P
+>Use a fragment of Tcl code to output additional data to
+configuration header files.</P
+></DD
+><DT
+><A
+HREF="ref.description.html"
+><SPAN
+CLASS="PROPERTY"
+>description</SPAN
+></A
+></DT
+><DD
+><P
+>Provide a textual description for this component.</P
+></DD
+><DT
+><A
+HREF="ref.display.html"
+><SPAN
+CLASS="PROPERTY"
+>display</SPAN
+></A
+></DT
+><DD
+><P
+>Provide a short string describing this component.</P
+></DD
+><DT
+><A
+HREF="ref.doc.html"
+><SPAN
+CLASS="PROPERTY"
+>doc</SPAN
+></A
+></DT
+><DD
+><P
+>The location of on-line documentation for this component.</P
+></DD
+><DT
+><A
+HREF="ref.hardware.html"
+><SPAN
+CLASS="PROPERTY"
+>hardware</SPAN
+></A
+></DT
+><DD
+><P
+>This package is tied to specific hardware.</P
+></DD
+><DT
+><A
+HREF="ref.if-define.html"
+><SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+></A
+></DT
+><DD
+><P
+>Output a common preprocessor construct to a configuration header file. </P
+></DD
+><DT
+><A
+HREF="ref.implements.html"
+><SPAN
+CLASS="PROPERTY"
+>implements</SPAN
+></A
+></DT
+><DD
+><P
+>Enabling this component provides one instance of a more general
+interface. </P
+></DD
+><DT
+><A
+HREF="ref.include-dir.html"
+><SPAN
+CLASS="PROPERTY"
+>include_dir</SPAN
+></A
+></DT
+><DD
+><P
+>Specify the desired location of this package's exported header files in
+the install tree.</P
+></DD
+><DT
+><A
+HREF="ref.include-files.html"
+><SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+></A
+></DT
+><DD
+><P
+>List the header files that are exported by this package.</P
+></DD
+><DT
+><A
+HREF="ref.library.html"
+><SPAN
+CLASS="PROPERTY"
+>library</SPAN
+></A
+></DT
+><DD
+><P
+>Specify which library should contain the object files
+generated by building this package.</P
+></DD
+><DT
+><A
+HREF="ref.make.html"
+><SPAN
+CLASS="PROPERTY"
+>make</SPAN
+></A
+></DT
+><DD
+><P
+>An additional custom build step associated with this component, resulting
+in a target that should not go directly into a library.</P
+></DD
+><DT
+><A
+HREF="ref.make-object.html"
+><SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+></A
+></DT
+><DD
+><P
+>An additional custom build step associated with this component, resulting
+in an object file that should go into a library.</P
+></DD
+><DT
+><A
+HREF="ref.no-define.html"
+><SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+></A
+></DT
+><DD
+><P
+>Suppress the normal generation of the package's
+<TT
+CLASS="LITERAL"
+>#define</TT
+> in the global configuration header file
+<TT
+CLASS="FILENAME"
+>pkgconf/system.h</TT
+>.</P
+></DD
+><DT
+><A
+HREF="ref.parent.html"
+><SPAN
+CLASS="PROPERTY"
+>parent</SPAN
+></A
+></DT
+><DD
+><P
+>Control the location of this package in the configuration hierarchy. </P
+></DD
+><DT
+><A
+HREF="ref.requires.html"
+><SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+></A
+></DT
+><DD
+><P
+>List constraints that the configuration should satisfy if this package is
+active.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3468"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_INFRA {
+    display       "Infrastructure"
+    include_dir   cyg/infra
+    description   "
+        Common types and useful macros.
+        Tracing and assertion facilities.
+        Package startup options." 
+
+    compile startup.cxx prestart.cxx pkgstart.cxx userstart.cxx      \
+            dummyxxmain.cxx null.cxx simple.cxx fancy.cxx buffer.cxx \
+            diag.cxx tcdiag.cxx memcpy.c memset.c delete.cxx
+}&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3471"
+></A
+><H2
+>See Also</H2
+><P
+>Command <A
+HREF="ref.cdl-option.html"
+><TT
+CLASS="LITERAL"
+>cdl_option</TT
+></A
+>,
+command <A
+HREF="ref.cdl-component.html"
+><TT
+CLASS="LITERAL"
+>cdl_component</TT
+></A
+>,
+command <A
+HREF="ref.cdl-interface.html"
+><TT
+CLASS="LITERAL"
+>cdl_interface</TT
+></A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.cdl-component.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.cdl-interface.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><TT
+CLASS="LITERAL"
+>cdl_component</TT
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><TT
+CLASS="LITERAL"
+>cdl_interface</TT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

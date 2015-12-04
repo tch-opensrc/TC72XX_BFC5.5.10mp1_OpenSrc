@@ -1,0 +1,263 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Conflicts</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="CDL Concepts"
+HREF="cdl-concepts.html"><LINK
+REL="PREVIOUS"
+TITLE="Configuration Items"
+HREF="cdl-configuration-items.html"><LINK
+REL="NEXT"
+TITLE="Templates"
+HREF="cdl-templates.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="cdl-configuration-items.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 24. CDL Concepts</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="cdl-templates.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CDL-CONFLICTS">Conflicts</H1
+><P
+>Not all settings of configuration items will lead to a
+	  coherent configuration; for example, the use of a timeout
+	  facility might require the existence of timer support, so if
+	  the one is required the other cannot be removed.  Coherence
+	  is policed by means of consistency rules (in particular, the
+	  goal expressions that appear as CDL items
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>requires</I
+></SPAN
+> and
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>active_if</I
+></SPAN
+> attributes [see
+	  above]).  A violation of consistency rules creates a
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>conflict</I
+></SPAN
+>, which must be resolved in
+	  order to ensure a consistent configuration. Conflict
+	  resolution can be performed manually or with the assistance
+	  of the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> tools.  Conflicts come in the following
+	  flavors:</P
+><P
+></P
+><UL
+><LI
+><P
+>An <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>unresolved</I
+></SPAN
+> conflict means that
+there is a reference to an entity that is not yet in the current
+configuration </P
+></LI
+><LI
+><P
+>An <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>illegal value</I
+></SPAN
+> conflict is caused
+when a configuration item is set to a value that is not permitted
+(that is, a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>legal_values</I
+></SPAN
+> goal expression
+is failing) </P
+></LI
+><LI
+><P
+>An <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>evaluation exception</I
+></SPAN
+> conflict
+is caused when the evaluation of an expression would fail (for example,
+because of a division by zero) </P
+></LI
+><LI
+><P
+>An <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>unsatisfied goal</I
+></SPAN
+> conflict is caused
+by a failing <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>requires</I
+></SPAN
+> goal expression </P
+></LI
+><LI
+><P
+>A <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>bad data</I
+></SPAN
+> conflict arises only rarely,
+and corresponds to badly constructed CDL.  Such a conflict can only
+be resolved by reference to the CDL writer.</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="cdl-configuration-items.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="cdl-templates.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Configuration Items</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-concepts.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Templates</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

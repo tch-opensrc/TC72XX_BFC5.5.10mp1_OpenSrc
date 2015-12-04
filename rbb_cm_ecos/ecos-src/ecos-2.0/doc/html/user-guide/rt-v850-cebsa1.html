@@ -1,0 +1,284 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Board: NEC V850 Cosmo Evaluation Board</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Real-time characterization"
+HREF="real-time-characterization.html"><LINK
+REL="PREVIOUS"
+TITLE="Board: PC"
+HREF="rt-i386-pc.html"><LINK
+REL="NEXT"
+TITLE="Board: NEC V850 Cosmo Evaluation Board"
+HREF="rt-v850-cebsb1.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="rt-i386-pc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix B. Real-time characterization</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="rt-v850-cebsb1.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RT-V850-CEBSA1">Board: NEC V850 Cosmo Evaluation Board</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="LITERALLAYOUT"
+>Board: NEC V850 Cosmo Evaluation Board
+
+CPU: NEC CEB-V850/SA1 17MHz
+
+Startup, main stack  : stack used   552 size  2936
+Startup              : Interrupt stack used   120 size  4096
+Startup              : Idlethread stack used   206 size  2048
+
+eCos Kernel Timings
+Notes: all times are in microseconds (.000001) unless otherwise stated
+
+Reading the hardware clock takes 27 `ticks' overhead
+... this value will be factored out of all other measurements
+Clock interrupt took  280.04 microseconds (1190 raw clock ticks)
+
+Testing parameters:
+   Clock samples:            32
+   Threads:                   7
+   Thread switches:         128
+   Mutexes:                  32
+   Mailboxes:                32
+   Semaphores:               32
+   Scheduler operations:    128
+   Counters:                 32
+   Alarms:                   32
+
+
+                                 Confidence
+     Ave     Min     Max     Var  Ave  Min  Function
+  ======  ======  ======  ====== ========== ========
+  288.71  280.24  297.18    4.84   42%  28% Create thread
+   70.76   70.59   70.82    0.10   71%  28% Yield thread [all suspended]
+   59.06   59.06   59.06    0.00  100% 100% Suspend [suspended] thread
+   60.00   60.00   60.00    0.00  100% 100% Resume thread
+   77.38   77.18   77.41    0.06   85%  14% Set priority
+    3.13    3.06    3.29    0.10   71%  71% Get priority
+  187.46  187.29  187.53    0.10   71%  28% Kill [suspended] thread
+   70.76   70.59   70.82    0.10   71%  28% Yield [no other] thread
+  104.40  103.29  104.71    0.32   85%  14% Resume [suspended low prio] thread
+   59.06   59.06   59.06    0.00  100% 100% Resume [runnable low prio] thread
+   97.11   91.06   98.12    1.73   85%  14% Suspend [runnable] thread
+   70.76   70.59   70.82    0.10   71%  28% Yield [only low prio] thread
+   59.06   59.06   59.06    0.00  100% 100% Suspend [runnable-&#62;not runnable]
+  187.46  187.29  187.53    0.10   71%  28% Kill [runnable] thread
+   95.63   95.29   97.18    0.44   85%  85% Destroy [dead] thread
+  241.28  236.94  242.12    1.24   85%  14% Destroy [runnable] thread
+  378.55  370.35  427.06   13.86   85%  85% Resume [high priority] thread
+  198.77  183.76  452.94   18.77   96%  96% Thread switch
+
+    2.59    2.59    2.59    0.00  100% 100% Scheduler lock
+   41.29   41.18   41.41    0.12  100%  50% Scheduler unlock [0 threads]
+   40.82   40.71   40.94    0.12  100%  50% Scheduler unlock [1 suspended]
+   41.29   41.18   41.41    0.12  100%  50% Scheduler unlock [many suspended]
+   41.29   41.18   41.41    0.12  100%  50% Scheduler unlock [many low prio]
+
+   17.94   17.88   18.12    0.09   75%  75% Init mutex
+   68.71   68.71   68.71    0.00  100% 100% Lock [unlocked] mutex
+   72.10   72.00   73.41    0.15   96%  71% Unlock [locked] mutex
+   57.88   57.88   57.88    0.00  100% 100% Trylock [unlocked] mutex
+   52.24   52.24   52.24    0.00  100% 100% Trylock [locked] mutex
+   12.41   12.24   12.47    0.09   75%  25% Destroy mutex
+  427.06  427.06  427.06    0.00  100% 100% Unlock/Lock mutex
+
+
+   34.94   34.82   35.06    0.12  100%  50% Create mbox
+    0.76    0.71    0.94    0.09   75%  75% Peek [empty] mbox
+   75.29   75.29   75.29    0.00  100% 100% Put [first] mbox
+    1.24    1.18    1.41    0.09   75%  75% Peek [1 msg] mbox
+   75.76   75.76   75.76    0.00  100% 100% Put [second] mbox
+    0.76    0.71    0.94    0.09   75%  75% Peek [2 msgs] mbox
+   80.12   80.00   80.24    0.12  100%  50% Get [first] mbox
+   79.65   79.53   79.76    0.12  100%  50% Get [second] mbox
+   70.12   70.12   70.12    0.00  100% 100% Tryput [first] mbox
+   65.76   65.65   65.88    0.12  100%  50% Peek item [non-empty] mbox
+   78.00   77.88   78.12    0.12  100%  50% Tryget [non-empty] mbox
+   63.12   63.06   63.29    0.09   75%  75% Peek item [empty] mbox
+   67.82   67.76   68.00    0.09   75%  75% Tryget [empty] mbox
+    1.94    1.88    2.12    0.09   75%  75% Waiting to get mbox
+    1.47    1.41    1.65    0.09   75%  75% Waiting to put mbox
+   75.59   75.53   75.76    0.09   75%  75% Delete mbox
+  252.76  252.71  252.94    0.09   75%  75% Put/Get mbox
+
+   20.24   20.24   20.24    0.00  100% 100% Init semaphore
+   54.35   54.35   54.35    0.00  100% 100% Post [0] semaphore
+   66.59   66.59   66.59    0.00  100% 100% Wait [1] semaphore
+   52.24   52.24   52.24    0.00  100% 100% Trywait [0] semaphore
+   53.41   53.41   53.41    0.00  100% 100% Trywait [1] semaphore
+   10.65   10.59   10.82    0.09   75%  75% Peek semaphore
+   12.65   12.47   12.71    0.09   75%  25% Destroy semaphore
+  276.94  276.94  276.94    0.00  100% 100% Post/Wait semaphore
+
+   14.94   14.82   15.06    0.12  100%  50% Create counter
+    2.18    2.12    2.35    0.09   75%  75% Get counter value
+    3.06    3.06    3.06    0.00  100% 100% Set counter value
+   78.12   78.12   78.12    0.00  100% 100% Tick counter
+   13.82   13.65   13.88    0.09   75%  25% Delete counter
+
+   26.94   26.82   27.06    0.12  100%  50% Create alarm
+  104.18  104.00  104.24    0.09   75%  25% Initialize alarm
+    7.65    7.53    7.76    0.12  100%  50% Disable alarm
+  104.94  104.94  104.94    0.00  100% 100% Enable alarm
+   19.47   19.29   19.53    0.09   75%  25% Delete alarm
+   88.53   88.47   88.71    0.09   75%  75% Tick counter [1 alarm]
+  418.61  411.29  645.41   14.17   96%  96% Tick counter [many alarms]
+  139.59  139.53  139.76    0.09   75%  75% Tick &#38; fire counter [1 alarm]
+ 2150.21 2096.71 2367.53   83.59   78%  78% Tick &#38; fire counters [&#62;1 together]
+  478.15  462.35  733.41   29.61   93%  93% Tick &#38; fire counters [&#62;1 separately]
+  219.89  218.59  369.88    2.34   99%  99% Alarm latency [0 threads]
+  292.11  218.59  371.53   37.85   50%  25% Alarm latency [2 threads]
+  292.96  218.59  370.59   38.12   49%  25% Alarm latency [many threads]
+  540.90  495.76 1677.41   17.76   98%   0% Alarm -&#62; thread resume latency
+
+   79.01   78.59  104.71    0.00            Clock/interrupt latency
+
+  123.41   85.88 1982.82    0.00            Clock DSR latency
+
+  522     516     536  (main stack:  1124)  Thread stack used (1912 total)
+All done, main stack : stack used  1124 size  2936
+All done             :  Interrupt stack used   288 size  4096
+All done             : Idlethread stack used   488 size  2048
+
+Timing complete - 32540 ms total&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="rt-i386-pc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="rt-v850-cebsb1.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Board: PC</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="real-time-characterization.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Board: NEC V850 Cosmo Evaluation Board</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

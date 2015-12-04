@@ -1,0 +1,277 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Editing the Sources</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Manual Configuration"
+HREF="manual-configuration.html"><LINK
+REL="PREVIOUS"
+TITLE="Editing an eCos Savefile"
+HREF="editing-an-ecos-savefile.html"><LINK
+REL="NEXT"
+TITLE="Modifying the Memory Layout"
+HREF="modifying-the-memory-layout.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="editing-an-ecos-savefile.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 28. Manual Configuration</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="modifying-the-memory-layout.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="EDITING-THE-SOURCES">Editing the Sources</H1
+><P
+>For many users, controlling the packages and
+	  manipulating the available configuration options will be
+	  sufficient to create an embedded operating system that meets
+	  the application's requirements. However, since <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> is
+	  shipped entirely in source form, it is possible to go
+	  further when necessary: you can edit the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> sources themselves. This requires some
+	  understanding of the way the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> build system works.
+	</P
+><P
+>The most obvious place to edit the source code is directly
+in the component repository. For example, you could
+edit the file <TT
+CLASS="FILENAME"
+>kernel/<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+>/src/sync/mutex.cxx</TT
+>
+to change the way kernel mutexes work, or possibly just to add some
+extra diagnostics or assertions. Once the file has been edited,
+it is possible to invoke <B
+CLASS="COMMAND"
+>make</B
+> at
+the top level of the build tree and the target library will be rebuilt
+as required. A small optimization is possible: the build tree is
+largely a mirror of the component repository, so it too will contain
+a subdirectory <TT
+CLASS="FILENAME"
+>kernel/<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+></TT
+>;
+if make is invoked in this directory
+then it will only check for changes to the kernel sources, which
+is a bit more efficient than checking for changes throughout the component
+repository. </P
+><P
+>Editing a file in the component repository is fine if this
+tree is used for only one <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> configuration. If the repository
+is used for several different configurations, however, and especially
+if it is shared by multiple users, then making what may be experimental
+changes to the master sources would be a bad idea. The build system provides
+an alternative. It is possible to make a copy of the file in the
+build tree, in other words copy <TT
+CLASS="FILENAME"
+>mutex.cxx</TT
+> from
+the <TT
+CLASS="FILENAME"
+>kernel/<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+>/src/sync</TT
+> directory
+in the component repository to <TT
+CLASS="FILENAME"
+>kernel/<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+>/src/sync</TT
+> in
+the build tree, and edit the file in the build tree. When <B
+CLASS="COMMAND"
+>make</B
+> is
+invoked it will pick up local copies of any of the sources in preference
+to the master versions in the component repository. Once you have
+finished modifying the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> sources you can install the final version
+back in the component repository. If the changes were temporary
+in nature and only served to aid the debugging process, then you
+can discard the modified version of the sources. </P
+><P
+>The situation is slightly more complicated for the header
+files that a package may export, such as the C library&#8217;s <TT
+CLASS="FILENAME"
+>stdio.h</TT
+> header
+file, which can be found in the directory <TT
+CLASS="FILENAME"
+>language/c/libc/<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+>/include</TT
+>.
+If such a header file is changed, either directly in the component
+repository or after copying it to the build tree, then <B
+CLASS="COMMAND"
+>make</B
+> must
+be invoked at the top level of the build tree. In cases like this
+it is not safe to rebuild just the C library because other packages
+may depend on the contents of <TT
+CLASS="FILENAME"
+>stdio.h</TT
+>. </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="editing-an-ecos-savefile.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="modifying-the-memory-layout.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Editing an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Savefile</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="manual-configuration.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Modifying the Memory Layout</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

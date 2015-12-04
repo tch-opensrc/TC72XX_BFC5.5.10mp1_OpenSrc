@@ -1,0 +1,221 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>i386/Linux Synthetic Target Setup</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Target Setup"
+HREF="appendix-target-setup.html"><LINK
+REL="PREVIOUS"
+TITLE="i386 PC Hardware Setup"
+HREF="setup-i386-pc.html"><LINK
+REL="NEXT"
+TITLE="Real-time characterization"
+HREF="real-time-characterization.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="setup-i386-pc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Target Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="real-time-characterization.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SETUP-SYNTH-I386LINUX">i386/Linux Synthetic Target Setup</H1
+><P
+>When building for the synthetic Linux target, the resulting
+binaries are native Linux applications with the HAL providing suitable
+bindings between the eCos kernel and the Linux kernel.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Please be aware that the current implementation of the Linux
+synthetic target does not allow thread-aware debugging.</P
+></BLOCKQUOTE
+></DIV
+><P
+>These Linux applications cannot be run on a Windows system.
+However, it is possible to write a similar HAL emulation for the
+Windows kernel if such a testing target is desired.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4471">Tools</H2
+><P
+>For the synthetic target, eCos relies on features not available
+in native compilers earlier than gcc-2.95.1. It also requires version
+2.9.5 or later of the GNU linker. If you have gcc-2.95.1 or later
+and ld version 2.9.5 or later, then you do not need to build new
+tools. eCos does not support earlier versions. You can check the compiler
+version using <B
+CLASS="COMMAND"
+>gcc -v</B
+> 
+and the linker version using <B
+CLASS="COMMAND"
+>ld
+-v</B
+>.</P
+><P
+>If you have native tools that are sufficiently recent for
+use with eCos, you should be aware that by default eCos assumes
+that the tools <B
+CLASS="COMMAND"
+>i686-pc-linux-gnu-gcc</B
+>, <B
+CLASS="COMMAND"
+>i686-pc-linux-gnu-ar</B
+>,
+ <B
+CLASS="COMMAND"
+>i686-pc-linux-gnu-ld</B
+>, and <B
+CLASS="COMMAND"
+>i686-pc-linux-gnu-objcopy</B
+> are
+on your system and are the correct versions for use with eCos. But
+instead, you can tell eCos to use your native tools by editing the
+configuration value "Global command prefix" (CYGBLD_GLOBAL_COMMAND_PREFIX)
+in your eCos configuration. If left empty (i.e. set to the empty
+string) eCos will use your native tools when building.</P
+><P
+>If you have any difficulties, it is almost certainly easiest
+overall to rebuild the tools as described on: <A
+HREF="http://sources.redhat.com/ecos/getstart.html"
+TARGET="_top"
+>http://sources.redhat.com/ecos/getstart.html</A
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="setup-i386-pc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="real-time-characterization.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>i386 PC Hardware Setup</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="appendix-target-setup.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Real-time characterization</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

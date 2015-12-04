@@ -1,0 +1,243 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>inet_net</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="inet6_rthdr_space"
+HREF="net-common-tcpip-manpages-inet6-rthdr-space.html"><LINK
+REL="NEXT"
+TITLE="ipx"
+HREF="net-common-tcpip-manpages-ipx.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-inet6-rthdr-space.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-ipx.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-INET-NET">inet_net</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>INET_NET(3)             System Library Functions Manual            INET_NET(3)
+
+NAME
+     inet_net_ntop, inet_net_pton - Internet network number manipulation rou-
+     tines
+
+SYNOPSIS
+     #include &lt;sys/socket.h&#62;
+     #include &lt;netinet/in.h&#62;
+     #include &lt;arpa/inet.h&#62;
+
+     char *
+     inet_net_ntop(int af, const void *src, int bits, char *dst, size_t size);
+
+     int
+     inet_net_pton(int af, const char *src, void *dst, size_t size);
+
+DESCRIPTION
+     The inet_net_ntop() function converts an Internet network number from
+     network format (usually a struct in_addr or some other binary form, in
+     network byte order) to CIDR presentation format (suitable for external
+     display purposes).  bits is the number of bits in src that are the net-
+     work number.  It returns NULL if a system error occurs (in which case,
+     errno will have been set), or it returns a pointer to the destination
+     string.
+
+     The inet_net_pton() function converts a presentation format Internet net-
+     work number (that is, printable form as held in a character string) to
+     network format (usually a struct in_addr or some other internal binary
+     representation, in network byte order).  It returns the number of bits
+     (either computed based on the class, or specified with /CIDR), or -1 if a
+     failure occurred (in which case errno will have been set.  It will be set
+     to ENOENT if the Internet network number was not valid).
+
+     The only value for af currently supported is AF_INET.  size is the size
+     of the result buffer dst.
+
+NETWORK NUMBERS (IP VERSION 4)
+     Internet network numbers may be specified in one of the following forms:
+
+           a.b.c.d/bits
+           a.b.c.d
+           a.b.c
+           a.b
+           a
+
+     When four parts are specified, each is interpreted as a byte of data and
+     assigned, from left to right, to the four bytes of an Internet network
+     number.  Note that when an Internet network number is viewed as a 32-bit
+     integer quantity on a system that uses little-endian byte order (such as
+     the Intel 386, 486, and Pentium processors) the bytes referred to above
+     appear as ``d.c.b.a''.  That is, little-endian bytes are ordered from
+     right to left.
+
+     When a three part number is specified, the last part is interpreted as a
+     16-bit quantity and placed in the rightmost two bytes of the Internet
+     network number.  This makes the three part number format convenient for
+     specifying Class B network numbers as ``128.net.host''.
+
+     When a two part number is supplied, the last part is interpreted as a
+     24-bit quantity and placed in the rightmost three bytes of the Internet
+     network number.  This makes the two part number format convenient for
+     specifying Class A network numbers as ``net.host''.
+
+     When only one part is given, the value is stored directly in the Internet
+     network number without any byte rearrangement.
+
+     All numbers supplied as ``parts'' in a `.' notation may be decimal,
+     octal, or hexadecimal, as specified in the C language (i.e., a leading 0x
+     or 0X implies hexadecimal; otherwise, a leading 0 implies octal; other-
+     wise, the number is interpreted as decimal).
+
+SEE ALSO
+     byteorder(3), inet(3), networks(5)
+
+HISTORY
+     The inet_net_ntop and inet_net_pton functions first appeared in BIND
+     4.9.4.
+
+BSD                              June 18, 1997                             BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-inet6-rthdr-space.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-ipx.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>inet6_rthdr_space</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>ipx</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

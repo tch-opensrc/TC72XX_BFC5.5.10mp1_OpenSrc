@@ -1,0 +1,272 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>poll</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="ioctl"
+HREF="net-common-tcpip-manpages-ioctl.html"><LINK
+REL="NEXT"
+TITLE="select"
+HREF="net-common-tcpip-manpages-select.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-ioctl.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-select.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-POLL">poll</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>POLL(2)                       System Calls Manual                      POLL(2)
+
+NAME
+     poll - synchronous I/O multiplexing
+
+SYNOPSIS
+     #include &lt;poll.h&#62;
+
+     int
+     poll(struct pollfd *fds, int nfds, int timeout);
+
+DESCRIPTION
+     poll() provides a mechanism for reporting I/O conditions across a set of
+     file descriptors.
+
+     The arguments are as follows:
+
+     fds      Points to an array of pollfd structures, which are defined as:
+
+                    struct pollfd {
+                            int fd;
+                            short events;
+                            short revents;
+                    };
+
+              The fd member is an open file descriptor.  The events and
+              revents members are bitmasks of conditions to monitor and condi-
+              tions found, respectively.
+
+     nfds     The number of pollfd structures in the array.
+
+     timeout  Maximum interval to wait for the poll to complete, in millisec-
+              onds.  If this value is 0, then poll() will return immediately.
+              If this value is INFTIM (-1), poll() will block indefinitely
+              until a condition is found.
+
+     The calling process sets the events bitmask and poll() sets the revents
+     bitmask.  Each call to poll() resets the revents bitmask for accuracy.
+     The condition flags in the bitmasks are defined as:
+
+     POLLIN      Data is available on the file descriptor for reading.
+
+     POLLNORM    Same as POLLIN.
+
+     POLLPRI     Same as POLLIN.
+
+     POLLOUT     Data can be written to the file descriptor without blocking.
+
+     POLLERR     This flag is not used in this implementation and is provided
+                 only for source code compatibility.
+
+     POLLHUP     The file descriptor was valid before the polling process and
+                 invalid after.  Presumably, this means that the file descrip-
+                 tor was closed sometime during the poll.
+
+     POLLNVAL    The corresponding file descriptor is invalid.
+
+     POLLRDNORM  Same as POLLIN.
+
+     POLLRDBAND  Same as POLLIN.
+
+     POLLWRNORM  Same as POLLOUT.
+
+     POLLWRBAND  Same as POLLOUT.
+
+     POLLMSG     This flag is not used in this implementation and is provided
+                 only for source code compatibility.
+
+     All flags except POLLIN, POLLOUT, and their synonyms are for use only in
+     the revents member of the pollfd structure.  An attempt to set any of
+     these flags in the events member will generate an error condition.
+
+     In addition to I/O multiplexing, poll() can be used to generate simple
+     timeouts.  This functionality may be achieved by passing a null pointer
+     for fds.
+
+WARNINGS
+     The POLLHUP flag is only a close approximation and may not always be
+     accurate.
+
+RETURN VALUES
+     Upon error, poll() returns a -1 and sets the global variable errno to
+     indicate the error.  If the timeout interval was reached before any
+     events occurred, a 0 is returned.  Otherwise, poll() returns the number
+     of file descriptors for which revents is non-zero.
+
+ERRORS
+     poll() will fail if:
+
+     [EINVAL]   nfds was either a negative number or greater than the number
+                of available file descriptors.
+
+     [EINVAL]   An invalid flags was set in the events member of the pollfd
+                structure.
+
+     [EINVAL]   The timeout passed to poll() was too large.
+
+     [EAGAIN]   Resource allocation failed inside of poll().  Subsequent calls
+                to poll() may succeed.
+
+     [EINTR]    poll() caught a signal during the polling process.
+
+SEE ALSO
+     poll(2), select(2), sysconf(3)
+
+HISTORY
+     A poll() system call appeared in AT&amp;T System V UNIX.
+
+BSD                            December 13, 1994                           BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-ioctl.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-select.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>ioctl</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>select</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

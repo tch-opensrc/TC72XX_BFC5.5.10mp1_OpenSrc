@@ -1,0 +1,417 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>PowerPC/MPC8XX Motorola MBX</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Installation and Testing"
+HREF="installation-and-testing.html"><LINK
+REL="PREVIOUS"
+TITLE="PowerPC/MPC860T Analogue & Micro PowerPC 860T"
+HREF="viper.html"><LINK
+REL="NEXT"
+TITLE="SuperH/SH3(SH7708) Hitachi EDK7708"
+HREF="edk7708.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="viper.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Installation and Testing</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="edk7708.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MBX">PowerPC/MPC8XX Motorola MBX</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7128">Overview</H2
+><P
+>RedBoot uses
+the SMC1/COM1 serial port. The default serial port settings are 38400,8,N,1.
+Ethernet is also supported using the 10-base T connector. </P
+><P
+>Management of onboard flash is also supported.</P
+><P
+>The following RedBoot configurations are supported:
+
+      <DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7139"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Configuration</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Mode</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>ROM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from the board's flash boot
+	      sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_ROM.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RAM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[RAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM with RedBoot in the
+	      flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_RAM.ecm</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7158">Initial Installation Method</H2
+><P
+>Device programmer is used to program the XU1 socketed flash part  (AM29F040B)
+with the ROM mode image of RedBoot. Use the on-board EPPC-Bug monitor to update
+RedBoot. </P
+><P
+>This assumes that you have EPPC-Bug in the on-board flash. This can
+be determined by setting up the board according to the following instructions
+and powering up the board. </P
+><P
+>The EPPC-Bug prompt should appear on the SMC1 connector at 9600 baud,
+8N1. </P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Set jumper 3 to 2-3 [allow XU1 flash to be programmed]  </P
+></LI
+><LI
+><P
+>Set jumper 4 to 2-3 [boot EPPC-Bug] </P
+></LI
+></OL
+><P
+>If it is available, program the flash by following these steps: </P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Prepare EPPC-Bug for download: <TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>EPPC-Bug&#62;<TT
+CLASS="USERINPUT"
+><B
+>lo 0</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+>At this point the monitor is ready for input. It will not
+return the prompt until the file has been downloaded.  </P
+></LI
+><LI
+><P
+>Use the terminal emulator's ASCII download feature (or a simple
+clipboard copy/paste operation) to download the
+<TT
+CLASS="FILENAME"
+>redboot.ppcbug</TT
+> file.</P
+><P
+>Note that on Linux, <SPAN
+CLASS="APPLICATION"
+>Minicom</SPAN
+>'s ASCII
+download feature seems to be broken. A workaround is to load the file
+into <SPAN
+CLASS="APPLICATION"
+>emacs</SPAN
+> (or another editor) and copy the
+full contents to the clipboard. Then press the mouse paste-button (usually
+the middle one) over the <SPAN
+CLASS="APPLICATION"
+>Minicom</SPAN
+> window.  </P
+></LI
+><LI
+><P
+>Program the flash with the downloaded data: <TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>EPPC-Bug&#62;<TT
+CLASS="USERINPUT"
+><B
+>pflash 40000 60000 fc000000</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+></P
+></LI
+><LI
+><P
+>Switch off the power, and change jumper 4 to 1-2. Turn on
+the power again. The board should now boot using the newly programmed RedBoot.</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7187">Special RedBoot Commands</H2
+><P
+>None.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7190">Memory Maps</H2
+><P
+>Memory Maps RedBoot sets up the following memory map on the MBX board.<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Physical Address Range Description
+----------------------- -----------
+0x00000000 - 0x003fffff DRAM
+0xfa100000 - 0xfa100003 LEDs
+0xfe000000 - 0xfe07ffff flash (AMD29F040B)
+0xff000000 - 0xff0fffff MPC registers</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7194">Rebuilding RedBoot</H2
+><P
+>These shell variables provide the platform-specific information
+needed for building RedBoot according to the procedure described in
+<A
+HREF="rebuilding-redboot.html"
+>Chapter 3</A
+>:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>export TARGET=mbx
+export ARCH_DIR=powerpc
+export PLATFORM_DIR=mbx</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The names of configuration files are listed above with the
+description of the associated modes.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="viper.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="edk7708.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>PowerPC/MPC860T Analogue &#38; Micro PowerPC 860T</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="installation-and-testing.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SuperH/SH3(SH7708) Hitachi EDK7708</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

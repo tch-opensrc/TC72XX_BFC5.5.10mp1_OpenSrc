@@ -1,0 +1,214 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Thread-Specific Data [POSIX Section 17]</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="POSIX Standard Support"
+HREF="posix-standard-support.html"><LINK
+REL="PREVIOUS"
+TITLE="Thread Management [POSIX Section 16]"
+HREF="posix-thread-management.html"><LINK
+REL="NEXT"
+TITLE="Thread Cancellation [POSIX Section 18]"
+HREF="posix-thread-cancellation.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="posix-thread-management.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 31. POSIX Standard Support</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="posix-thread-cancellation.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="POSIX-THREAD-SPECIFIC-DATA">Thread-Specific Data &#0091;POSIX Section 17&#0093;</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13287">Functions Implemented</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>int pthread&#0095;key&#0095;create(pthread&#0095;key&#0095;t &#0042;key,
+	               void (&#0042;destructor)(void &#0042;)); 
+int pthread&#0095;setspecific(pthread&#0095;key&#0095;t key, const void &#0042;pointer); 
+void &#0042;pthread&#0095;getspecific(pthread&#0095;key&#0095;t key); 
+int pthread&#0095;key&#0095;delete(pthread&#0095;key&#0095;t key);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13290">Functions Omitted</H2
+><P
+>&lt;none&gt;</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13293">Notes</H2
+><P
+></P
+><UL
+><LI
+><P
+>    The value of PTHREAD&#0095;DESTRUCTOR&#0095;ITERATIONS is
+    provided by the
+    CYGNUM&#0095;POSIX&#0095;PTHREAD&#0095;DESTRUCTOR&#0095;ITERATIONS
+    option. This controls the number of times that a key destructor
+    will be called while the data item remains non-NULL.
+    </P
+></LI
+><LI
+><P
+>    The value of PTHREAD&#0095;KEYS&#0095;MAX is provided
+    by the CYGNUM&#0095;POSIX&#0095;PTHREAD&#0095;KEYS&#0095;MAX
+    option. This defines the maximum number of per-thread data items
+    supported. The POSIX standard calls for this to be a minimum of
+    128, which is rather large for an embedded system. The default
+    value for this option is set to 128 for compatibility but it
+    should be reduced to a more usable value.
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="posix-thread-management.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="posix-thread-cancellation.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Thread Management &#0091;POSIX Section 16&#0093;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="posix-standard-support.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Thread Cancellation &#0091;POSIX Section 18&#0093;</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

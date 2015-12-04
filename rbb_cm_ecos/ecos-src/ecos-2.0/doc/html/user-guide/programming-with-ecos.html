@@ -1,0 +1,370 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Programming With eCos</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Programming With eCos"
+HREF="user-guide-programming.html"><LINK
+REL="PREVIOUS"
+TITLE="Programming With eCos"
+HREF="user-guide-programming.html"><LINK
+REL="NEXT"
+TITLE="Configuring and Building eCos from Source"
+HREF="configuring-and-building-ecos-from-source.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="user-guide-programming.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="configuring-and-building-ecos-from-source.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="PROGRAMMING-WITH-ECOS">Chapter 10. Programming With <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+></H1
+><P
+>The following chapters of this manual comprise a simple tutorial
+for configuring and building <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>, building and running <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> tests,
+and finally building three stand-alone example programs which use
+the  <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> API to perform some simple tasks.</P
+><P
+>You will need a properly installed <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> system, with the correct
+versions of the GNU toolchain. On Windows
+you will be using the bash command line interpreter that comes with
+Cygwin, with the environment variables set as described in the
+toolchain documentation.</P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="DEVELOPMENT-PROCESS">The Development Process</H1
+><P
+>Most development projects using <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> would contain some (or
+most) of  the following:</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN471"><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Configuration</H2
+><P
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> is configured to provide the desired API (the inclusion
+of libc, uitron, and the disabling of certain undesired funtions,
+etc.), and semantics (selecting scheduler, mutex behavior, etc.).
+See <A
+HREF="configuring-and-building-ecos-from-source.html"
+>Chapter 11</A
+>.</P
+><P
+>It would normally make sense to enable <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> assertion checking
+at this time as well, to catch as many programming errors during
+the development phase as possible.</P
+><P
+>Note that it should not be necessary to spend much time on
+<SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> configuration initially. It may be important to perform fine
+tuning to reduce the memory footprint and to improve performance
+later when the product reaches a testable state.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN481">Integrity check of the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> configuration</H2
+><P
+>While we strive to thoroughly test <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>, the vast number
+of configuration permutations mean that the particular configuration
+parameters used for your project may not have been tested. Therefore,
+we advise running the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> tests after the project's
+<SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> configuration has been determined. See <A
+HREF="running-an-ecos-test-case.html"
+>Chapter 12</A
+>.</P
+><P
+>Obviously, this should be repeated if the configuration changes
+later on in the development process.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN490">Application Development - Target Neutral Part</H2
+><P
+>While your project is probably targeting a specific architecture
+and platform, possibly custom hardware, it may be possible to perform
+part of the application development using simulated or synthetic
+targets.</P
+><P
+>There are three good reasons for doing this:</P
+><P
+></P
+><UL
+><LI
+><P
+>It may be possible by this means to perform application
+development in parallel with the design/implementation
+of the target hardware, thus providing more time for developing
+and testing functionality, and reducing time-to-market.</P
+></LI
+><LI
+><P
+>The build-run-debug-cycle may be faster when the application
+does not have to be downloaded to a target via a serial interface.
+Debugging is also likely to be more responsive when you do not have to
+to communicate with the remote GDB stubs in RedBoot via serial. It
+also removes the need for manually or automatically resetting the
+target hardware.</P
+></LI
+><LI
+><P
+>New hardware can often be buggy. Comparing the behaviour of the
+program on the hardware and in the simulator or synthetic target may
+allow you to identify where the problems lie.</P
+></LI
+></UL
+><P
+>This approach is possible because all targets (including
+simulators and synthetic ones) provide the same basic API: that
+is, kernel, libc, libm, uitron, infra, and to some extent, HAL and
+IO.</P
+><P
+>Synthetic targets are especially suitable as they allow you
+to construct simulations of elaborate devices by interaction with
+the host system, where an IO device API can hide the details from
+the application. When switching to hardware later in the development
+cycle, the IO driver is properly implemented.</P
+><P
+>Simulators can also do this, but it all depends on the
+design and capabilities of the simulator you use. Some, like
+<A
+HREF="http://sources.redhat.com/sid"
+TARGET="_top"
+>SID</A
+> or
+<A
+HREF="http://bochs.sourceforge.net/"
+TARGET="_top"
+>Bochs</A
+> provide
+complete hardware emulation, while others just support enough of the
+instruction set to run compiled code.</P
+><P
+>Therefore, select a simulator or synthetic target and use
+it for as long as possible for application development. That is,
+configure for the selected target, build <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>, build the application
+and link with <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>, run and debug. Repeat the latter two steps until
+you are happy with it.</P
+><P
+>Obviously, at some time you will have to switch to the intended
+target hardware, for example when adding target specific feature
+support, for memory footprint/performance characterization,
+and for final tuning of <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> and the application.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN511">Application Development - Target Specific Part</H2
+><P
+>Repeat the build-run-debug-cycle while performing final tuning
+and debugging of application. Remember to disable <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> assertion
+checking if you are testing any performance-related aspects, it can
+make a big difference.</P
+><P
+>It may be useful to switch between this and the previous step
+repeatedly through the development process; use the simulator/synthetic
+target for actual development, and use the target hardware to continually
+check memory footprint and performance. There should be little cost
+in switching between the two targets when using two separate build
+trees. </P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="user-guide-programming.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="configuring-and-building-ecos-from-source.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Programming With <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="user-guide-programming.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Configuring and Building <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> from Source</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

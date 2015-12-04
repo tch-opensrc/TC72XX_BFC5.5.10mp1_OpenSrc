@@ -1,0 +1,300 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Approaches to Configurability</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="Overview"
+HREF="overview.html"><LINK
+REL="PREVIOUS"
+TITLE="Why Configurability?"
+HREF="overview.configurability.html"><LINK
+REL="NEXT"
+TITLE="Degrees of Configurability"
+HREF="overview.degress.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="overview.configurability.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Overview</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="overview.degress.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="OVERVIEW.APPROACHES">Approaches to Configurability</H1
+><P
+>The purpose of configurability is to control the behavior of
+components. A scheduler component may or may not support time slicing;
+it may or may not support multiple priorities; it may or may not
+perform error checking on arguments passed to the scheduler routines.
+In the context of a desktop application a button widget may contain
+some text or it may contain a picture; the text may be displayed in a
+variety of fonts; the foreground and background color may vary. When
+an application uses a component there must be some way of specifying
+the desired behavior. The component writer has no way of knowing in
+advance exactly how a particular component will end up being used.</P
+><P
+>One way to control the behavior is at run time. The application
+creates an instance of a button object, and then instructs this object
+to display either text or a picture. No special effort by the
+application developer is required, since a button can always support
+all desired behavior. There is of course a major disadvantage in
+terms of the size of the final application image: the code that gets
+linked with the application has to provide support for all possible
+behavior, even if the application does not require it.</P
+><P
+>Another approach is to control the behavior at link-time, typically
+by using inheritance in an object-oriented language. The button
+library provides an abstract base class <TT
+CLASS="CLASSNAME"
+>Button</TT
+>
+and derived classes <TT
+CLASS="CLASSNAME"
+>TextButton</TT
+> and
+<TT
+CLASS="CLASSNAME"
+>PictureButton</TT
+>. If an application only uses text
+buttons then it will only create objects of type
+<TT
+CLASS="CLASSNAME"
+>TextButton</TT
+>, and the code for the
+<TT
+CLASS="CLASSNAME"
+>PictureButton</TT
+> class does not get used. In
+many cases this approach works rather well and reduces the final image
+size, but there are limitations. The main one is that you can only
+have so many derived classes before the system gets unmanageable: a
+derived class
+<TT
+CLASS="CLASSNAME"
+>TextButtonUsingABorderWidthOfOnePlusAWhiteBackgroundAndBlackForegroundAndATwelvePointTimesFontAndNoErrorCheckingOrAssertions</TT
+>
+is not particularly sensible as far as most application developers are
+concerned.</P
+><P
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> component framework allows the behavior of components to
+be controlled at an even earlier time: when the component source code
+gets compiled and turned into a library. The button component could
+provide options, for example an option that only text buttons need to
+be supported. The component gets built and becomes part of a library
+intended specifically for the application, and the library will
+contain only the code that is required by this application and nothing
+else. A different application with different requirements would need
+its own version of the library, configured separately.</P
+><P
+>In theory compile-time configurability should give the best possible
+results in terms of code size, because it allows code to be controlled
+at the individual statement level rather than at the function or
+object level. Consider an example more closely related to embedded
+systems, a package to support multi-threading. A standard routine
+within such a package allows applications to kill threads
+asynchronously: the POSIX routine for this is
+<TT
+CLASS="FUNCTION"
+>pthread_cancel</TT
+>; the equivalent routine in &micro;ITRON
+is <TT
+CLASS="FUNCTION"
+>ter_tsk</TT
+>. These routines themselves tend to
+involve a significant amount of code, but that is not the real
+problem: other parts of the system require extra code and data for the
+kill routine to be able to function correctly. For example if a thread
+is blocked while waiting on a mutex and is killed off by another
+thread then the kill operation may have to do two things: remove the
+thread from the mutex's queue of waiting threads; and undo the
+effects, if any, of priority inheritance. The implementation requires
+extra fields in the thread data structure so that the kill routine
+knows about the thread's current state, and extra code in the mutex
+routines to fill in and clear these extra fields correctly.</P
+><P
+>Most embedded applications do not require the ability to kill off a
+thread asynchronously, and hence the kill routine will not get linked
+into the final application image. Without compile-time configurability
+this would still mean that the mutex code and similar parts of the
+system contain code and data that serve no useful purpose in this
+application. The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> approach allows the user to select that the
+thread kill functionality is not required, and all the components can
+adapt to this at compile-time. For example the code in the mutex lock
+routine contains statements to support the killing of threads, but
+these statements will only get compiled in if that functionality is
+required. The overall result is that the final application image
+contains only the code and data that is really needed for the
+application to work, and nothing else.</P
+><P
+>Of course there are complications. To return to the button example,
+the application code might only use text buttons directly, but it
+might also use some higher-level widget such as a file selector and
+this file selector might require buttons with pictures. Therefore the
+button code must still be compiled to support pictures as well as
+text. The configuration tools must be aware of the dependencies
+between components and ensure that the internal constraints are met,
+as well as the external requirements of the application code. An area
+of particular concern is conflicting requirements: a button component
+might be written in such a way that it can only support either text
+buttons or picture buttons, but not both in one application; this
+would represent a weakness in the component itself rather than in the
+component framework as a whole.</P
+><P
+>Compile-time configurability is not intended to replace the other
+approaches but rather to complement them. There will be times when
+run-time selection of behavior is desirable: for example an
+application may need to be able to change the baud rate of a serial
+line, and the system must then provide a way of doing this at
+run-time. There will also be times when link-time selection is
+desirable: for example a C library might provide two different random
+number routines <TT
+CLASS="FUNCTION"
+>rand</TT
+> and
+<TT
+CLASS="FUNCTION"
+>lrand48</TT
+>; these do not affect other code so there
+is no good reason for the C library component not to provide both of
+these, and allow the application code to use none, one, or both of
+them as appropriate; any unused functions will just get eliminated at
+link-time. Compile-time selection of behavior is another option, and
+it can be the most powerful one of the three and the best suited to
+embedded systems development.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="overview.configurability.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="overview.degress.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Why Configurability?</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="overview.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Degrees of Configurability</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

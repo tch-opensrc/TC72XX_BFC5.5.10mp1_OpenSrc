@@ -1,0 +1,275 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Board: Fujitsu SPARClite Evaluation Board</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Real-time characterization"
+HREF="real-time-characterization.html"><LINK
+REL="PREVIOUS"
+TITLE="Board: Matsushita STDEVAL1 Board"
+HREF="rt-mn10300-stdeval1.html"><LINK
+REL="NEXT"
+TITLE="Board: Cogent CMA MPC860 (PowerPC) Evaluation "
+HREF="rt-ppc-cogent.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="rt-mn10300-stdeval1.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix B. Real-time characterization</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="rt-ppc-cogent.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RT-SPARCLITE-SLEB">Board: Fujitsu SPARClite Evaluation Board</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="LITERALLAYOUT"
+>&#13;Board: Fujitsu SPARClite Evaluation Board
+
+CPU  : Fujitsu SPARClite MB8683X 100MHz
+
+
+eCOS Kernel Timings
+Note: all times are in microseconds (.000001) unless otherwise stated
+
+Reading the hardware clock takes 0 'ticks' overhead
+... this value will be factored out of all other measurements
+Clock interrupt took   17.19 microseconds (17 raw clock ticks)
+
+Testing parameters:
+   Clock samples:          32
+   Threads:                24
+   Thread switches:       128
+   Mutexes:                32
+   Mailboxes:              32
+   Semaphores:             32
+   Scheduler operations:  128
+   Counters:               32
+   Alarms:                 32
+
+
+                                 Confidence
+     Ave     Min     Max     Var  Ave  Min  Function
+  ======  ======  ======  ====== ========== ========
+   48.59   47.00   63.01    1.41   66%  70% Create thread
+    2.13    2.00    5.00    0.24   95%  95% Yield thread [all suspended]
+    2.92    2.00   10.00    0.69   58%  37% Suspend [suspended] thread
+    2.13    1.00   10.00    0.66   75%  20% Resume thread
+    2.79    2.00   11.00    0.86   95%  54% Set priority
+    1.00    0.00    5.00    0.33   79%  16% Get priority
+    7.17    5.00   34.00    2.24   95%  95% Kill [suspended] thread
+    2.42    2.00   12.00    0.80   95%  95% Yield [no other] thread
+    3.46    2.00   14.00    1.10   75%  83% Resume [suspended low prio] thread
+    2.00    1.00    9.00    0.58   66%  29% Resume [runnable low prio] thread
+    4.21    3.00   20.00    1.38   95%  91% Suspend [runnable] thread
+    2.33    2.00   10.00    0.64   95%  95% Yield [only low prio] thread
+    2.00    1.00    9.00    0.67   58%  33% Suspend [runnable-&#62;not runnable]
+    5.79    4.00   30.00    2.07   95%  95% Kill [runnable] thread
+   39.34   37.00   75.01    3.36   91%  91% Resume [high priority] thread
+   15.20   15.00   31.00    0.40   97%  97% Thread switch
+
+    1.04    1.00    4.00    0.08   97%  97% Scheduler lock
+    1.42    1.00    5.00    0.51   60%  60% Scheduler unlock [0 threads]
+    1.41    1.00    5.00    0.50   61%  61% Scheduler unlock [1 suspended]
+    1.41    1.00    5.00    0.50   60%  60% Scheduler unlock [many suspended]
+    1.40    1.00    5.00    0.50   62%  62% Scheduler unlock [many low prio]
+
+    1.19    1.00    6.00    0.35   93%  93% Init mutex
+    2.34    2.00   12.00    0.64   93%  93% Lock [unlocked] mutex
+    3.41    3.00   13.00    0.71   96%  87% Unlock [locked] mutex
+    2.16    1.00   10.00    0.49   87%   9% Trylock [unlocked] mutex
+    1.78    1.00    7.00    0.59   59%  37% Trylock [locked] mutex
+    0.72    0.00    2.00    0.45   65%  31% Destroy mutex
+   25.25   24.00   41.00    0.98   71%  25% Unlock/Lock mutex
+
+    1.44    1.00    9.00    0.68   96%  78% Create mbox
+    0.94    0.00    3.00    0.23   84%  12% Peek [empty] mbox
+    3.06    2.00   13.00    0.62   71%  25% Put [first] mbox
+    0.69    0.00    3.00    0.52   59%  37% Peek [1 msg] mbox
+    2.44    2.00   10.00    0.68   96%  78% Put [second] mbox
+    0.78    0.00    3.00    0.44   68%  28% Peek [2 msgs] mbox
+    3.78    3.00   14.00    0.83   96%  53% Get [first] mbox
+    2.97    2.00    9.00    0.61   56%  31% Get [second] mbox
+    2.53    2.00   12.00    0.80   96%  75% Tryput [first] mbox
+    2.72    2.00   12.00    0.81   96%  56% Peek item [non-empty] mbox
+    2.63    2.00   13.00    0.94   90%  75% Tryget [non-empty] mbox
+    1.97    1.00    6.00    0.42   68%  21% Peek item [empty] mbox
+    2.09    1.00    9.00    0.49   78%  15% Tryget [empty] mbox
+    0.84    0.00    4.00    0.42   71%  25% Waiting to get mbox
+    0.81    0.00    4.00    0.46   68%  28% Waiting to put mbox
+    2.38    2.00   11.00    0.66   96%  87% Delete mbox
+   23.41   22.00   47.00    1.47   96%  96% Put/Get mbox
+
+    1.03    0.00    6.00    0.31   84%  12% Init semaphore
+    2.66    2.00    8.00    0.66   96%  50% Post [0] semaphore
+    1.97    1.00   10.00    0.55   68%  28% Wait [1] semaphore
+    1.78    1.00    8.00    0.63   56%  40% Trywait [0] semaphore
+    1.84    1.00    8.00    0.58   62%  34% Trywait [1] semaphore
+    1.00    0.00    5.00    0.25   84%  12% Peek semaphore
+    0.81    0.00    4.00    0.46   68%  28% Destroy semaphore
+   19.03   18.00   41.00    1.37   96%  96% Post/Wait semaphore
+
+    1.38    1.00    6.00    0.56   75%  75% Create counter
+    1.09    1.00    3.00    0.18   93%  93% Get counter value
+    1.00    0.00    5.00    0.31   78%  15% Set counter value
+    3.09    2.00    6.00    0.35   78%   9% Tick counter
+    0.91    0.00    5.00    0.40   75%  21% Delete counter
+
+    2.53    2.00    9.00    0.70   96%  65% Create alarm
+    6.03    5.00   22.00    1.00   50%  46% Initialize alarm
+    0.78    0.00    4.00    0.49   65%  31% Disable alarm
+    2.91    2.00   13.00    0.91   87%  50% Enable alarm
+    0.97    0.00    5.00    0.30   81%  15% Delete alarm
+    2.69    2.00    9.00    0.69   96%  50% Tick counter [1 alarm]
+   12.00   11.00   23.00    0.69   62%  34% Tick counter [many alarms]
+    4.16    3.00   13.00    0.55   84%  12% Tick &#38; fire counter [1 alarm]
+   72.69   72.01   87.01    1.03   96%  96% Tick &#38; fire counters [&#62;1 together]
+   13.66   13.00   23.00    0.82   96%  62% Tick &#38; fire counters [&#62;1 separately]
+   13.26   13.00   42.00    0.51   98%  98% Alarm latency [0 threads]
+   16.75   11.00   53.01    2.78   64%  16% Alarm latency [2 threads]
+   24.06   18.00   58.01    3.55   67%  25% Alarm latency [many threads]
+
+    3.61    2.00   13.00    0.00            Clock/interrupt latency
+
+Timing complete - 23590 ms total
+
+PASS:&lt;Basic timing OK&#62;
+EXIT:&lt;done&#62;
+
+	</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="rt-mn10300-stdeval1.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="rt-ppc-cogent.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Board: Matsushita STDEVAL1 Board</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="real-time-characterization.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Board: Cogent CMA MPC860 (PowerPC) Evaluation</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

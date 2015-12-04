@@ -1,0 +1,697 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>cdl_interface</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="cdl_package"
+HREF="ref.cdl-package.html"><LINK
+REL="NEXT"
+TITLE="active_if"
+HREF="ref.active-if.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.cdl-package.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.active-if.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.CDL-INTERFACE"><TT
+CLASS="LITERAL"
+>cdl_interface</TT
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN3484"
+></A
+><H2
+>Name</H2
+>Command <TT
+CLASS="LITERAL"
+>cdl_interface</TT
+>&nbsp;--&nbsp;Define an interface, functionality that can be provided by
+a number of different implementations.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN3488"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_interface &lt;name&gt; {
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3490"
+></A
+><H2
+>Description</H2
+><P
+>An interface is a special type of calculated configuration option.
+It provides an abstraction mechanism that is often useful in <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+>
+expressions. As an example, suppose that some package relies on the
+presence of code that implements the standard kernel scheduling
+interface. However the requirement is no more stringent than this, so
+the constraint can be satisfied by the mlqueue scheduler, the bitmap
+scheduler, or any additional schedulers that may get implemented in
+future. A first attempt at expressing the dependency might be:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    requires CYGSEM_KERNEL_SCHED_MLQUEUE || CYGSEM_KERNEL_SCHED_BITMAP</PRE
+></TD
+></TR
+></TABLE
+><P
+>This constraint is limited, it may need to be changed if a new
+scheduler were to be added to the system. Interfaces provide a way of
+expressing more general relationships:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    requires CYGINT_KERNEL_SCHEDULER</PRE
+></TD
+></TR
+></TABLE
+><P
+>The interface <TT
+CLASS="LITERAL"
+>CYGINT_KERNEL_SCHEDULER</TT
+> is
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>implemented</I
+></SPAN
+> by both the mlqueue and bitmap
+schedulers, and may be implemented by future schedulers as well. The
+value of an interface is the number of implementors that are active
+and enabled, so in a typical configuration only one scheduler will be
+in use and the value of the interface will be <TT
+CLASS="LITERAL"
+>1</TT
+>. If
+all schedulers are disabled then the interface will have a value
+<TT
+CLASS="LITERAL"
+>0</TT
+> and the <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> constraint will not be
+satisfied.</P
+><P
+>Some component writers may prefer to use the first <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+>
+constraint on the grounds that the code will only have been tested
+with the mlqueue and bitmap schedulers and cannot be guaranteed to
+work with any new schedulers. Other component writers may take a more
+optimistic view and assume that their code will work with any
+scheduler until proven otherwise.</P
+><P
+>Interfaces must be defined in CDL scripts, just like options,
+components and packages. This involves the command <TT
+CLASS="LITERAL"
+>cdl_interface</TT
+>
+which takes two arguments, a name and a body. The name must be a valid
+C preprocessor identifier: a sequence of upper or lower case letters,
+digits or underscores, starting with a non-digit character;
+identifiers beginning with an underscore should normally be avoided
+because they may clash with system packages or with identifiers
+reserved for use by the compiler. Within a single configuration, names
+must be unique. If a configuration contained two packages which
+defined the same entity <TT
+CLASS="LITERAL"
+>CYGIMP_SOME_OPTION</TT
+>, any
+references to that entity in a <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> property or any other
+expression would be ambiguous. It is possible for a given name to be
+used by two different packages if those packages should never be
+loaded into a single configuration. For example, architectural HAL
+packages are allowed to re-use names because a single configuration
+cannot target two different architectures. For a recommended naming
+convention see <A
+HREF="package.contents.html"
+>the Section called <I
+>Package Contents and Layout</I
+> in Chapter 2</A
+>.</P
+><P
+>The second argument to <TT
+CLASS="LITERAL"
+>cdl_interface</TT
+> is a body of properties,
+typically surrounded by braces so that the Tcl interpreter treats it
+as a single argument. This body will be processed by a recursive
+invocation of the Tcl interpreter, extended with additional commands
+for the various properties that are allowed inside a <TT
+CLASS="LITERAL"
+>cdl_interface</TT
+>.
+The valid properties are a subset of those for a <TT
+CLASS="LITERAL"
+>cdl_option</TT
+>.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><A
+HREF="ref.active-if.html"
+><SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+></A
+></DT
+><DD
+><P
+>Allow additional control over the active state of this interface.</P
+></DD
+><DT
+><A
+HREF="ref.compile.html"
+><SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+></A
+></DT
+><DD
+><P
+>List the source files that should be built if this interface is active.</P
+></DD
+><DT
+><A
+HREF="ref.define.html"
+><SPAN
+CLASS="PROPERTY"
+>define</SPAN
+></A
+></DT
+><DD
+><P
+>Specify additional <TT
+CLASS="LITERAL"
+>#define</TT
+> symbols that should go
+into the owning package's configuration header file.</P
+></DD
+><DT
+><A
+HREF="ref.define-format.html"
+><SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+></A
+></DT
+><DD
+><P
+>Control how the interface's value will appear in the configuration header
+file.</P
+></DD
+><DT
+><A
+HREF="ref.define-proc.html"
+><SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+></A
+></DT
+><DD
+><P
+>Use a fragment of Tcl code to output additional data to
+configuration header files.</P
+></DD
+><DT
+><A
+HREF="ref.description.html"
+><SPAN
+CLASS="PROPERTY"
+>description</SPAN
+></A
+></DT
+><DD
+><P
+>Provide a textual description for this interface.</P
+></DD
+><DT
+><A
+HREF="ref.display.html"
+><SPAN
+CLASS="PROPERTY"
+>display</SPAN
+></A
+></DT
+><DD
+><P
+>Provide a short string describing this interface.</P
+></DD
+><DT
+><A
+HREF="ref.doc.html"
+><SPAN
+CLASS="PROPERTY"
+>doc</SPAN
+></A
+></DT
+><DD
+><P
+>The location of on-line documentation for this interface.</P
+></DD
+><DT
+><A
+HREF="ref.flavor.html"
+><SPAN
+CLASS="PROPERTY"
+>flavor</SPAN
+></A
+></DT
+><DD
+><P
+>Interfaces have the <TT
+CLASS="LITERAL"
+>data</TT
+> flavor by default, but
+they can also be given the <TT
+CLASS="LITERAL"
+>bool</TT
+> or
+<TT
+CLASS="LITERAL"
+>booldata</TT
+> flavor when necessary. A
+<TT
+CLASS="LITERAL"
+>bool</TT
+> interface is disabled if there are no active
+and enabled implementors, otherwise it is enabled. A
+<TT
+CLASS="LITERAL"
+>booldata</TT
+> interface is also disabled if there are no
+active and enabled implementors, otherwise it is enabled and the data
+is a number corresponding to the number of these implementors.</P
+></DD
+><DT
+><A
+HREF="ref.if-define.html"
+><SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+></A
+></DT
+><DD
+><P
+>Output a common preprocessor construct to a configuration header file. </P
+></DD
+><DT
+><A
+HREF="ref.implements.html"
+><SPAN
+CLASS="PROPERTY"
+>implements</SPAN
+></A
+></DT
+><DD
+><P
+>If this interface is active it provides one instance of a more general
+interface. </P
+></DD
+><DT
+><A
+HREF="ref.legal-values.html"
+><SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+></A
+></DT
+><DD
+><P
+>Interfaces always have a small numerical value. The <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> can
+be used to apply additional constraints such as an upper limit.</P
+></DD
+><DT
+><A
+HREF="ref.make.html"
+><SPAN
+CLASS="PROPERTY"
+>make</SPAN
+></A
+></DT
+><DD
+><P
+>An additional custom build step associated with this option, resulting
+in a target that should not go directly into a library.</P
+></DD
+><DT
+><A
+HREF="ref.make-object.html"
+><SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+></A
+></DT
+><DD
+><P
+>An additional custom build step associated with this option, resulting
+in an object file that should go into a library.</P
+></DD
+><DT
+><A
+HREF="ref.no-define.html"
+><SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+></A
+></DT
+><DD
+><P
+>Suppress the normal generation of a preprocessor
+<TT
+CLASS="LITERAL"
+>#define</TT
+> symbol in a configuration header file.</P
+></DD
+><DT
+><A
+HREF="ref.parent.html"
+><SPAN
+CLASS="PROPERTY"
+>parent</SPAN
+></A
+></DT
+><DD
+><P
+>Control the location of this option in the configuration hierarchy. </P
+></DD
+><DT
+><A
+HREF="ref.requires.html"
+><SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+></A
+></DT
+><DD
+><P
+>List constraints that the configuration should satisfy if this option is
+active and enabled.</P
+></DD
+></DL
+></DIV
+><P
+>A number of properties are not applicable to interfaces:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><A
+HREF="ref.calculated.html"
+><SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+></A
+></DT
+><DD
+><P
+>Interfaces are always calculated, based on the number of active and
+enabled entities that implement the interface.</P
+></DD
+><DT
+><A
+HREF="ref.default-value.html"
+><SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+></A
+></DT
+><DD
+><P
+>Interface values are calculated so a <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+> property would be
+meaningless.</P
+></DD
+></DL
+></DIV
+><P
+>Interfaces are not containers, so they cannot hold other entities such
+as options or components.</P
+><P
+>A commonly used constraint on interface values takes the form:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    requires CYGINT_KERNEL_SCHEDULER == 1</PRE
+></TD
+></TR
+></TABLE
+><P
+>This constraint specifies that there can be only one scheduler in the
+system. In some circumstances it is possible for the configuration
+tools to detect this pattern and act accordingly, so for example
+enabling the bitmap scheduler would automatically disable the mlqueue
+scheduler.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3644"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_interface CYGINT_KERNEL_SCHEDULER {
+    display  "Number of schedulers in this configuration"
+    requires 1 == CYGINT_KERNEL_SCHEDULER
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3647"
+></A
+><H2
+>See Also</H2
+><P
+>Property <A
+HREF="ref.implements.html"
+><SPAN
+CLASS="PROPERTY"
+>implements</SPAN
+></A
+>,
+command <A
+HREF="ref.cdl-option.html"
+><TT
+CLASS="LITERAL"
+>cdl_option</TT
+></A
+>.
+command <A
+HREF="ref.cdl-component.html"
+><TT
+CLASS="LITERAL"
+>cdl_component</TT
+></A
+>,
+command <A
+HREF="ref.cdl-package.html"
+><TT
+CLASS="LITERAL"
+>cdl_package</TT
+></A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.cdl-package.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.active-if.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><TT
+CLASS="LITERAL"
+>cdl_package</TT
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

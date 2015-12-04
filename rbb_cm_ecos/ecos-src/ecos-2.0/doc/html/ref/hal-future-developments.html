@@ -1,0 +1,229 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Future developments</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Hardware Abstraction Layer (HAL)"
+HREF="the-ecos-hardware-abstraction-layer.html"><LINK
+REL="PREVIOUS"
+TITLE="Architecture HAL Porting"
+HREF="hal-porting-architecture.html"><LINK
+REL="NEXT"
+TITLE="The ISO Standard C and Math Libraries"
+HREF="libc.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="hal-porting-architecture.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="libc.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="HAL-FUTURE-DEVELOPMENTS">Chapter 12. Future developments</H1
+><P
+>The HAL is not complete, and will evolve and increase over
+time. Among the intended developments are:</P
+><P
+></P
+><UL
+><LI
+><P
+>Common macros for interpreting the contents of a saved
+machine context. These would allow portable code, such as debug
+stubs, to extract such values as the program counter and stack pointer
+from a state without having to interpret a <SPAN
+CLASS="STRUCTNAME"
+>HAL_SavedRegisters</SPAN
+> structure
+directly.</P
+></LI
+><LI
+><P
+>Debugging support. Macros to set and clear hardware and
+software breakpoints. Access to other areas of machine state may
+also be supported.</P
+></LI
+><LI
+><P
+>Static initialization support. The current HAL provides a
+dynamic interface to things like thread context initialization and ISR
+attachment. We also need to be able to define the system entirely
+statically so that it is ready to go on restart, without needing to
+run code. This will require extra macros to define these
+initializations.  Such support may have a consequential effect on the
+current HAL specification.</P
+></LI
+><LI
+><P
+>CPU state control. Many CPUs have both kernel and user
+states. Although it is not intended to run any code in user state
+for the foreseeable future, it is possible that this may happen
+eventually. If this is the case, then some minor changes may be needed
+to the current HAL API to accommodate this. These should mostly
+be extensions, but minor changes in semantics may also be required.</P
+></LI
+><LI
+><P
+>Physical memory management. Many embedded systems have
+multiple memory areas with varying properties such as base address,
+size, speed, bus width, cacheability and persistence. An API is
+needed to support the discovery of this information about the machine's
+physical memory map.</P
+></LI
+><LI
+><P
+>Memory management control. Some embedded processors have
+a memory management unit. In some cases this must be enabled to
+allow the cache to be controlled, particularly if different regions
+of memory must have different caching properties. For some purposes,
+in some systems, it will be useful to manipulate the MMU settings
+dynamically.</P
+></LI
+><LI
+><P
+>Power management. Macros to access and control any power
+management mechanisms available on the CPU implementation. These
+would provide a substrate for a more general power management system
+that also involved device drivers and other hardware components.</P
+></LI
+><LI
+><P
+>Generic serial line macros. Most serial line devices operate
+in the same way, the only real differences being exactly which bits
+in which registers perform the standard functions. It should be
+possible to develop a set of HAL macros that provide basic serial
+line services such as baud rate setting, enabling interrupts, polling
+for transmit or receive ready, transmitting and receiving data etc.
+Given these it should be possible to create a generic serial line
+device driver that will allow rapid bootstrapping on any new platform.
+It may be possible to extend this mechanism to other device types.</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="hal-porting-architecture.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="libc.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Architecture HAL Porting</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="the-ecos-hardware-abstraction-layer.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>The ISO Standard C and Math Libraries</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,400 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>IA32/x86 x86-Based PC</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Installation and Testing"
+HREF="installation-and-testing.html"><LINK
+REL="PREVIOUS"
+TITLE="FRV/FRV400 Fujitsu FR-V 400 (MB-93091)"
+HREF="frv400.html"><LINK
+REL="NEXT"
+TITLE="MIPS/MIPS32(CoreLV 4Kc)+MIPS64(CoreLV 5Kc) Atlas Board"
+HREF="atlas.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="frv400.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Installation and Testing</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="atlas.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="X86PC">IA32/x86 x86-Based PC</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6596">Overview</H2
+><P
+>RedBoot supports
+two serial ports and an Intel i82559 based ethernet card (for example an Intel
+EtherExpress Pro 10/100) for communication and downloads. The default serial
+port settings are 38400,8,N,1.</P
+><P
+>The following RedBoot configurations are supported:
+
+      <DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6606"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Configuration</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Mode</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Floppy</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[Floppy]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from a boot floppy disk installed
+	      in the A: drive of the PC.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_ROM.ecm</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6620">Initial Installation</H2
+><P
+>RedBoot takes the form of a self-booting image that must be written
+onto a formatted floppy disk. The process will erase any file system or data
+that already exists on that disk, so proceed with caution.</P
+><P
+>For Red Hat Linux users, this can be done by:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ <TT
+CLASS="USERINPUT"
+><B
+>dd conv=sync if=install/bin/redboot.bin of=/dev/fd0H1440</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+><P
+>For NT Cygwin users, this can be done by first ensuring that the raw
+floppy device is mounted as <TT
+CLASS="FILENAME"
+>/dev/fd0</TT
+>. To check if this
+is the case, type the command <B
+CLASS="COMMAND"
+>mount</B
+> at the Cygwin bash
+prompt. If the floppy drive is already mounted, it will be listed as something
+similar to the following line:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  \\.\a: /dev/fd0 user binmode</PRE
+></TD
+></TR
+></TABLE
+><P
+>If this line is not listed, then mount the floppy drive using the command:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ <TT
+CLASS="USERINPUT"
+><B
+>mount -f -b //./a: /dev/fd0</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+><P
+>To actually install the boot image on the floppy, use the command:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ <TT
+CLASS="USERINPUT"
+><B
+>dd conv=sync if=install/bin/redboot.bin of=/dev/fd0</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+><P
+>Insert this floppy in the A: drive of the PC to be used as a target
+and ensure that the BIOS is configured to boot from A: by default. On reset,
+the PC will boot from the floppy and be ready to be debugged via either serial
+line, or via the ethernet interface if it is installed.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>NOTE: </B
+>Unreliable floppy media may cause the write to silently fail. This
+can be determined if the RedBoot image does not correctly
+boot. In such cases, the floppy should be (unconditionally) reformatted
+using the <B
+CLASS="COMMAND"
+>fdformat</B
+> command on Linux, or
+<B
+CLASS="COMMAND"
+>format a: /u</B
+> on DOS/Windows.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6642">Flash management</H2
+><P
+>PC RedBoot does not support any FLASH commands.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6645">Special RedBoot Commands</H2
+><P
+>None.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6648">Memory Maps</H2
+><P
+>All selectors are initialized to map the entire 32-bit address space
+in the familiar protected mode flat model. Page translation is not used.
+RAM up to 640K is mapped to 0x0 to 0xa0000. RAM above 640K is mapped
+from address 0x100000 upwards. Space is reserved between 0xa0000 and
+0x100000 for option ROMs and the BIOS.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6651">Rebuilding RedBoot</H2
+><P
+>These shell variables provide the platform-specific information
+needed for building RedBoot according to the procedure described in
+<A
+HREF="rebuilding-redboot.html"
+>Chapter 3</A
+>:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>export TARGET=pc
+export ARCH_DIR=i386
+export PLATFORM_DIR=pc</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The names of configuration files are listed above with the
+description of the associated modes.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="frv400.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="atlas.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>FRV/FRV400 Fujitsu FR-V 400 (MB-93091)</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="installation-and-testing.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>MIPS/MIPS32(CoreLV 4Kc)+MIPS64(CoreLV 5Kc) Atlas Board</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

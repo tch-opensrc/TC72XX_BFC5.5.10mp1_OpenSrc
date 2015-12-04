@@ -1,0 +1,320 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Compiling a C++ Application</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Compiler and Linker Options"
+HREF="compiler-and-linker-options.html"><LINK
+REL="PREVIOUS"
+TITLE="Compiler and Linker Options"
+HREF="compiler-and-linker-options.html"><LINK
+REL="NEXT"
+TITLE="Debugging Techniques"
+HREF="debugging-techniques.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="compiler-and-linker-options.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 26. Compiler and Linker Options</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="debugging-techniques.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="COMPILING-CPP-APP">Compiling a C++ Application</H1
+><P
+>The following command lines demonstrate the
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>minimum</I
+></SPAN
+> set of options required to
+	  compile and link an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> program written in C++.
+	</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Remember that when this manual shows
+	    <B
+CLASS="COMMAND"
+><TT
+CLASS="REPLACEABLE"
+><I
+>TARGET-</I
+></TT
+>g++</B
+>
+	    you should use the full name of the cross compiler,
+	    e.g. <B
+CLASS="COMMAND"
+>i386-elf-g++</B
+>,
+	    <B
+CLASS="COMMAND"
+>arm-elf-g++</B
+>, or
+	    <B
+CLASS="COMMAND"
+>sh-elf-g++</B
+>. When compiling for the
+	    synthetic Linux target, use the native
+	    <B
+CLASS="COMMAND"
+>g++</B
+> which must have the features
+	    required by <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>.</P
+></BLOCKQUOTE
+></DIV
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ <TT
+CLASS="REPLACEABLE"
+><I
+>TARGET-</I
+></TT
+>g++ -c  -I<TT
+CLASS="REPLACEABLE"
+><I
+>INSTALL_DIR</I
+></TT
+>/include -fno-rtti -fno-exceptions file.cxx
+$ <TT
+CLASS="REPLACEABLE"
+><I
+>TARGET-</I
+></TT
+>g++ -o program file.o -L<TT
+CLASS="REPLACEABLE"
+><I
+>INSTALL_DIR</I
+></TT
+>/lib -Ttarget.ld -nostdlib</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Certain targets may require extra options,
+	    for example the SPARClite architectures require the option 
+	    <TT
+CLASS="OPTION"
+>-mcpu=sparclite</TT
+>. Examine the
+	    <TT
+CLASS="FILENAME"
+><TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/packages/targets</TT
+>
+	    file or <TT
+CLASS="FILENAME"
+><TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/examples/Makefile</TT
+>
+	    or the &#8220;Global compiler flags&#8221; option
+	    (CYGBLD_GLOBAL_CFLAGS) in your generated
+	    <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> configuration) to see if any extra options are
+	    required, and if so, what they are.</P
+><P
+>The following command lines use some other options
+	    which are recommended because they use the
+	    <I
+CLASS="FIRSTTERM"
+>selective linking</I
+> feature:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ <TT
+CLASS="REPLACEABLE"
+><I
+>TARGET-</I
+></TT
+>g++ -c -I<TT
+CLASS="REPLACEABLE"
+><I
+>INSTALL_DIR</I
+></TT
+>/include -I. -ffunction-sections -fdata-sections -fno-rtti \
+          -fno-exceptions -finit-priority -g -O2 file.cxx
+$ <TT
+CLASS="REPLACEABLE"
+><I
+>TARGET-</I
+></TT
+>g++ -o program file.o -W1,--gc-sections -g -O2 -L<TT
+CLASS="REPLACEABLE"
+><I
+>INSTALL_DIR</I
+></TT
+>/lib -Ttarget.ld  -nostdlib</PRE
+></TD
+></TR
+></TABLE
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="compiler-and-linker-options.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="debugging-techniques.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Compiler and Linker Options</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="compiler-and-linker-options.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Debugging Techniques</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

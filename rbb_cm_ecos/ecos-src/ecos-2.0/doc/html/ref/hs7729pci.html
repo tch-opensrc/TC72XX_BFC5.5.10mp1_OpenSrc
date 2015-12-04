@@ -1,0 +1,523 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>SuperH/SH3(SH7729) Hitachi HS7729PCI</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Installation and Testing"
+HREF="installation-and-testing.html"><LINK
+REL="PREVIOUS"
+TITLE="SuperH/SH3(SH7709) Hitachi Solution Engine 7709"
+HREF="se7709.html"><LINK
+REL="NEXT"
+TITLE="SuperH/SH3(SH77X9) Hitachi Solution Engine 77X9"
+HREF="se77x9.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="se7709.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Installation and Testing</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="se77x9.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="HS7729PCI">SuperH/SH3(SH7729) Hitachi HS7729PCI</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7363">Overview</H2
+><P
+>RedBoot uses
+the COM1 and COM2 serial ports (and the debug port on the
+motherboard).
+The default serial port settings are 38400,8,N,1.
+Ethernet is also supported using a D-Link DFE-530TX PCI plugin
+card. Management of onboard flash is also supported. </P
+><P
+>The following RedBoot configurations are supported:
+
+      <DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7373"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Configuration</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Mode</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>ROM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from the board's flash boot
+	      sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_ROM.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RAM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[RAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM with RedBoot in the
+	      flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_RAM.ecm</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7392">Initial Installation Method</H2
+><P
+>A ROM mode RedBoot image must be programmed
+into the two EPROMs. Two files with a split version of the ROM mode
+image is
+provided: it is also possible to recreate these from the
+<TT
+CLASS="FILENAME"
+>redboot.bin</TT
+>
+file, but requires the <SPAN
+CLASS="APPLICATION"
+>split_word.c</SPAN
+> program in
+<TT
+CLASS="FILENAME"
+>hal/sh/hs7729pci/<TT
+CLASS="REPLACEABLE"
+><I
+>VERSION</I
+></TT
+>/misc</TT
+>
+to be built and executed with the <TT
+CLASS="FILENAME"
+>redboot.bin</TT
+>
+filename as sole argument.</P
+><P
+>After doing this it is advised that another ROM mode image of
+RedBoot is programmed into the on-board flash, and that copy be used
+for booting the board. This allows for software programmed updates of
+RedBoot instead of having to reprogram the EPROMs.</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Program the EPROMs with RedBoot. The .lo image should
+go in socket M1 and the .hi image in socket M2.</P
+></LI
+><LI
+><P
+>Set switch SW1-6 to ON [boot from EPROM]</P
+></LI
+><LI
+><P
+>Follow the instructions under Flash management for
+updating the flash copy of RedBoot, but force the flash destination
+address with
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+><TT
+CLASS="USERINPUT"
+><B
+>-f 0x80400000</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+> due to setting of
+the SW1-6 switch.</P
+></LI
+><LI
+><P
+>Set switch SW1-6 to OFF [boot from flash] and reboot the board. You
+should now see the RedBoot banner. At this time you may want to issue
+the command <B
+CLASS="COMMAND"
+>fis init</B
+> to initialize
+the flash table with the correct addresses.</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7413">Special RedBoot Commands</H2
+><P
+>The <B
+CLASS="COMMAND"
+>exec</B
+> command which allows the loading
+and execution of Linux kernels
+is supported for this board (see <A
+HREF="executing-programs.html"
+>the Section called <I
+>Executing Programs from RedBoot</I
+> in Chapter 2</A
+>). The <B
+CLASS="COMMAND"
+>exec</B
+> parameters used for the HS7729PCI are:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>-b <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;addr&#62;</I
+></TT
+></DT
+><DD
+><P
+>Parameter block address. This is normally the first
+page of the kernel image and defaults to 0x8c101000</P
+></DD
+><DT
+>-i <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;addr&#62;</I
+></TT
+></DT
+><DD
+><P
+>Start address of initrd
+image</P
+></DD
+><DT
+>-j <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;size&#62;</I
+></TT
+></DT
+><DD
+><P
+>Size of initrd image</P
+></DD
+><DT
+>-c <TT
+CLASS="REPLACEABLE"
+><I
+>"args"</I
+></TT
+></DT
+><DD
+><P
+>Kernel arguments string</P
+></DD
+><DT
+>-m <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;flags&#62;</I
+></TT
+></DT
+><DD
+><P
+>Mount rdonly flags. If set to a non-zero value the
+root partition will be mounted read-only.</P
+></DD
+><DT
+>-f <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;flags&#62;</I
+></TT
+></DT
+><DD
+><P
+>RAM disk flags. Should normally be 0x4000</P
+></DD
+><DT
+>-r <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;device number&#62;</I
+></TT
+></DT
+><DD
+><P
+>Root device specification. /dev/ram is 0x0101</P
+></DD
+><DT
+>-l <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;type&#62;</I
+></TT
+></DT
+><DD
+><P
+>Loader type</P
+></DD
+></DL
+></DIV
+><P
+>Finally the kernel entry address can be specified as an optional
+argument. The default is 0x8c102000</P
+><P
+>On the HS7729PCI, Linux expects to be loaded at address 0x8c101000 with
+the entry point at 0x8c102000. This is configurable in the kernel
+using the CONFIG_MEMORY_START option.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7462">Memory Maps</H2
+><P
+>RedBoot sets up the following memory map on the HS7729PCI board.<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Physical Address Range  Description
+----------------------- -----------
+0x80000000 - 0x803fffff Flash (MBM29LV160)
+0x80400000 - 0x807fffff EPROM (M27C800)
+0x82000000 - 0x82ffffff SRAM
+0x89000000 - 0x89ffffff SRAM
+0x8c000000 - 0x8fffffff SDRAM
+0xa8000000 - 0xa800ffff SuperIO (FDC37C935A)
+0xa8400000 - 0xa87fffff USB function (ML60851C)
+0xa8800000 - 0xa8bfffff USB host (SL11HT)
+0xa8c00000 - 0xa8c3ffff Switches
+0xa8c40000 - 0xa8c7ffff LEDs
+0xa8c80000 - 0xa8cfffff Interrupt controller
+0xb0000000 - 0xb3ffffff PCI (SD0001)
+0xb8000000 - 0xbbffffff PCMCIA (MaruBun)</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7466">Rebuilding RedBoot</H2
+><P
+>These shell variables provide the platform-specific information
+needed for building RedBoot according to the procedure described in
+<A
+HREF="rebuilding-redboot.html"
+>Chapter 3</A
+>:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>export TARGET=hs7729pci
+export ARCH_DIR=sh
+export PLATFORM_DIR=hs7729pci</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The names of configuration files are listed above with the
+description of the associated modes.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="se7709.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="se77x9.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SuperH/SH3(SH7709) Hitachi Solution Engine 7709</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="installation-and-testing.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SuperH/SH3(SH77X9) Hitachi Solution Engine 77X9</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

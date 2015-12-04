@@ -1,0 +1,550 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Configuration Items</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="CDL Concepts"
+HREF="cdl-concepts.html"><LINK
+REL="PREVIOUS"
+TITLE="Packages"
+HREF="cdl-packages.html"><LINK
+REL="NEXT"
+TITLE="Conflicts"
+HREF="cdl-conflicts.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="cdl-packages.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 24. CDL Concepts</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="cdl-conflicts.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CDL-CONFIGURATION-ITEMS">Configuration Items</H1
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Configuration items</I
+></SPAN
+> are the
+	  individual entities that form a configuration.  Each item
+	  corresponds to the setting of a C pre-processor macro (for
+	  example,
+	  <TT
+CLASS="LITERAL"
+>CYGHWR_HAL_ARM_PID_GDB_BAUD</TT
+>). 
+	  The code of <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> itself is written to test such pre-processor
+	  macros so as to tailor the code.  User code can do
+	  likewise.</P
+><P
+>Configuration items come in the following flavors:</P
+><P
+></P
+><UL
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>None</I
+></SPAN
+>: such entities serve only as
+place holders in the hierarchy, allowing other entities to be grouped
+more easily.</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Boolean</I
+></SPAN
+> entities are the most common
+flavor; they correspond to units of functionality that can be either
+enabled or disabled.  If the entity is enabled then there will be
+a #define; code will check the setting using, for example, #ifdef</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Data</I
+></SPAN
+> entities encapsulate some arbitrary
+data. Other properties such as a set or range of legal values can
+be used to constrain the actual values, for example to an integer
+or floating point value within a certain range.</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Booldata</I
+></SPAN
+> entities combine the attributes
+of <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Boolean</I
+></SPAN
+> and <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Data</I
+></SPAN
+>: they
+can be enabled or disabled and, if enabled, will hold a data value.</P
+></LI
+></UL
+><P
+>Like packages, configuration items exist in a tree-based hierarchy:
+each configuration item has a parent which may be another configuration
+item or a package.  Under some conditions (such as when packages
+are added or removed from a configuration), items may be &#8220;re-parented&#8221; such
+that their position in the tree changes. </P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN1898">Expressions</H2
+><P
+>Expressions are relationships between CDL items.  There are
+three types of expression in CDL:</P
+><DIV
+CLASS="TABLE"
+><A
+NAME="CDL-EXPRESSIONS"><P
+><B
+>Table 24-1. CDL Expressions</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Expression Type</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Result</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Common Use (see <A
+HREF="cdl-configuration-items.html#TABLE-CONFIGURATION-PROPERTIES"
+>Table 24-2</A
+>)</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Ordinary</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>A single value</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>legal_values property</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>List</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>A range of
+		values (for example &#8220;1 to 10&#8221;)</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>legal_values property </TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Goal</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>True or False</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>requires and active_if properties</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN1923">Properties</H2
+><P
+>Each configuration item has a set of properties.  The following
+table describes the most commonly used:</P
+><DIV
+CLASS="TABLE"
+><A
+NAME="TABLE-CONFIGURATION-PROPERTIES"><P
+><B
+>Table 24-2. Configuration properties</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Property</I
+></SPAN
+></TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Use </I
+></SPAN
+></TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Flavor</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>The &#8220;type&#8221; of the item, as
+		  described above </TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Enabled</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Whether
+		  the item is enabled </TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Current_value</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>The current value of the item </TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Default_value</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>An ordinary expression defining the default value of the
+		    item</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Legal_values</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>A
+		  list expression defining the values the item may hold (for example,
+		  1 to10) </TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Active_if</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>A
+		  goal expression denoting the requirement for this item to be active
+(see below: <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Inactive Items</I
+></SPAN
+>) </TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Requires</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>A goal
+expression denoting requirements this item places on others (see
+below: <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Conflicts</I
+></SPAN
+>) </TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Calculated</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Whether
+the item as non-modifiable </TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Macro</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>The corresponding
+C pre-processor macro </TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>The C header
+file in which the macro is defined </TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>URL</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>The URL of
+a documentation page describing the item </TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Hardware</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Indicates
+that a particular package is related to specific hardware</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>A complete description of properties is contained in the <I
+CLASS="CITETITLE"
+>Component
+Writer&#8217;s Guide</I
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN1976">Inactive Items</H2
+><P
+>Descendants of an item that is disabled are inactive: their
+values may not be changed.  Items may also become <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>inactive</I
+></SPAN
+> if
+an active_if expression is used to make the item dependent
+on an expression involving other items. </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="cdl-packages.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="cdl-conflicts.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Packages</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-concepts.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Conflicts</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

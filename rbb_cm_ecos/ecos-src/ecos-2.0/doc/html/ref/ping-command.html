@@ -1,0 +1,537 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>ping</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Common Commands"
+HREF="common-commands.html"><LINK
+REL="PREVIOUS"
+TITLE="mfill"
+HREF="mfill-command.html"><LINK
+REL="NEXT"
+TITLE="reset"
+HREF="reset-command.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="mfill-command.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="reset-command.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="PING-COMMAND">ping</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN3744"
+></A
+><H2
+>Name</H2
+>ping&nbsp;--&nbsp;Verify network connectivity</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN3747"><H2
+>Synopsis</H2
+><P
+><B
+CLASS="COMMAND"
+>ping</B
+>  [-v ] [-i <TT
+CLASS="REPLACEABLE"
+><I
+> local_IP_address</I
+></TT
+>] [-l <TT
+CLASS="REPLACEABLE"
+><I
+> length</I
+></TT
+>] [-n <TT
+CLASS="REPLACEABLE"
+><I
+> count</I
+></TT
+>] [-t <TT
+CLASS="REPLACEABLE"
+><I
+> timeout</I
+></TT
+>] [-r <TT
+CLASS="REPLACEABLE"
+><I
+> rate</I
+></TT
+>] {-h <TT
+CLASS="REPLACEABLE"
+><I
+> server_IP_address</I
+></TT
+>}</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3763"
+></A
+><H2
+>Arguments</H2
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3765"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Name</TH
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Type</TH
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Default</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-v</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Boolean</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Be verbose, displaying information about each packet sent.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>quiet</I
+></SPAN
+></TD
+></TR
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-n <TT
+CLASS="REPLACEABLE"
+><I
+>local_IP_address</I
+></TT
+></TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Number</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Controls the number of packets to be sent.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>10</TD
+></TR
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-i <TT
+CLASS="REPLACEABLE"
+><I
+>local_IP_address</I
+></TT
+></TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Numeric IP or DNS name</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>The IP address RedBoot should use.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Value set by <B
+CLASS="COMMAND"
+>ip_address</B
+></TD
+></TR
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-h <TT
+CLASS="REPLACEABLE"
+><I
+>server_IP_address</I
+></TT
+></TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Numeric IP or DNS name</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>The IP address of the host to contact.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>none</I
+></SPAN
+></TD
+></TR
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-l <TT
+CLASS="REPLACEABLE"
+><I
+>length</I
+></TT
+></TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Number</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>The length of the ICMP data payload.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>64</TD
+></TR
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-r <TT
+CLASS="REPLACEABLE"
+><I
+>length</I
+></TT
+></TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Number</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>How fast to deliver packets, i.e. time between successive sends.
+A value of 0 sends packets as quickly as possible.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>1000ms (1 second)</TD
+></TR
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-t <TT
+CLASS="REPLACEABLE"
+><I
+>length</I
+></TT
+></TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Number</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>How long to wait for the round-trip to complete, specified in milliseconds.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>1000ms (1 second)</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3822"
+></A
+><H2
+>Description</H2
+><P
+>The <B
+CLASS="COMMAND"
+>ping</B
+> command checks the connectivity of the local network by sending
+special (ICMP) packets to a specific host. These packets should be automatically
+returned by that host. The command will indicate how many of these round-trips
+were successfully completed. 
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3826"
+></A
+><H2
+>Examples</H2
+><P
+>Test connectivity to host 192.168.1.101.
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>ping -h 192.168.1.101</B
+></TT
+>
+Network PING - from 192.168.1.31 to 192.168.1.101
+PING - received 10 of 10 expected</PRE
+></TD
+></TR
+></TABLE
+> </P
+><P
+>Test connectivity to host 192.168.1.101, with verbose reporting.
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>ping -h 192.168.1.101 -v -n 4</B
+></TT
+>
+Network PING - from 192.168.1.31 to 192.168.1.101
+ seq: 1, time: 1 (ticks)
+ seq: 2, time: 1 (ticks)
+ seq: 3, time: 1 (ticks)
+ seq: 4, time: 1 (ticks)
+PING - received 10 of 10 expected</PRE
+></TD
+></TR
+></TABLE
+> </P
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Test connectivity to a non-existent host (192.168.1.109).
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>ping -h 192.168.1.109 -v -n 4</B
+></TT
+>
+PING: Cannot reach server '192.168.1.109' (192.168.1.109)</PRE
+></TD
+></TR
+></TABLE
+> 
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="mfill-command.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="reset-command.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>mfill</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="common-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>reset</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

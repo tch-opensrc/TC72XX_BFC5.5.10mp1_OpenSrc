@@ -1,0 +1,514 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>CDL Commands</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="The CDL Language"
+HREF="language.html"><LINK
+REL="PREVIOUS"
+TITLE="The CDL Language"
+HREF="language.html"><LINK
+REL="NEXT"
+TITLE="CDL Properties"
+HREF="language.properties.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. The CDL Language</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.properties.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="LANGUAGE.COMMANDS">CDL Commands</H1
+><P
+>There are four <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+>-related commands which can occur at the top-level
+of a <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> script: <TT
+CLASS="LITERAL"
+>cdl_package</TT
+>, <TT
+CLASS="LITERAL"
+>cdl_component</TT
+>, <TT
+CLASS="LITERAL"
+>cdl_option</TT
+> and
+<TT
+CLASS="LITERAL"
+>cdl_interface</TT
+>. These correspond to the basic building blocks of the
+language (CDL interfaces are described in <A
+HREF="language.interface.html"
+>the Section called <I
+>Interfaces</I
+></A
+>). All of these take the same basic form:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package &lt;name&gt; {
+    &#8230;
+}
+
+cdl_component &lt;name&gt; {
+    &#8230;
+}
+
+cdl_option &lt;name&gt; {
+    &#8230;
+}
+
+cdl_interface &lt;name&gt; {
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The command is followed by a name and by a body of properties, the
+latter enclosed in braces. Packages and components can contain other
+entities, so the <TT
+CLASS="LITERAL"
+>cdl_package</TT
+> and <TT
+CLASS="LITERAL"
+>cdl_component</TT
+> can also have
+nested commands in their bodies. All names must be unique within a
+given configuration. If say the C library package and a TCP/IP stack
+both defined an option with the same name then it would not be
+possible to load both of them into a single configuration. There is a
+<A
+HREF="language.naming.html"
+>naming convention</A
+> which should
+make accidental name clashes very unlikely.</P
+><P
+>It is possible for two packages to use the same name if there are no
+reasonable circumstances under which both packages could be loaded at
+the same time. One example would be architectural HAL packages: a
+given <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> configuration can be used on only one processor, so the
+architectural HAL packages <TT
+CLASS="VARNAME"
+>CYGPKG_HAL_ARM</TT
+> and
+<TT
+CLASS="VARNAME"
+>CYGPKG_HAL_I386</TT
+> can re-use option names; in fact
+in some cases they are expected to.</P
+><P
+>Each package has one top-level <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> script, which is specified in the
+packages <A
+HREF="language.database.html"
+><SPAN
+CLASS="DATABASE"
+>ecos.db</SPAN
+> database
+entry</A
+>. Typically the name of this top-level script is related to
+the package, so the kernel package uses
+<TT
+CLASS="FILENAME"
+>kernel.cdl</TT
+>, but this is just a convention. The
+first command in the top-level script should be <TT
+CLASS="LITERAL"
+>cdl_package</TT
+>, and the
+name used should be the same as in the <SPAN
+CLASS="DATABASE"
+>ecos.db</SPAN
+>
+database. There should be only one <TT
+CLASS="LITERAL"
+>cdl_package</TT
+> command per package.</P
+><P
+>The various <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> entities live in a hierarchy. For example the kernel
+package contains a scheduling component, a synchronization primitives
+component, and a number of others. The synchronization component
+contains various options such as whether or not mutex priority
+inheritance is enabled. There is no upper bound on how far components
+can be nested, but it is rarely necessary to go more than three or
+four levels deeper than the package level. Since the naming convention
+incorporates bits of the hierarchy, this has the added advantage of
+keeping the names down to a more manageable size.</P
+><P
+>The hierarchy serves two purposes. It allows options to be controlled
+en masse, so disabling a component automatically disables all the
+options below it in the hierarchy. It also permits a much simpler
+representation of the configuration in the graphical configuration
+tool, facilitating navigation and modification.</P
+><P
+>By default a package is placed at the top-level of the hierarchy, but
+it is possible to override this using a <SPAN
+CLASS="PROPERTY"
+>parent</SPAN
+> property. For example
+an architectural HAL package such as <TT
+CLASS="VARNAME"
+>CYGPKG_HAL_SH</TT
+>
+typically re-parents itself below <TT
+CLASS="VARNAME"
+>CYGPKG_HAL</TT
+>, and a
+platform HAL package would then re-parent itself below the
+architectural HAL. This makes it a little bit easier for users to
+navigate around the hierarchy. Components, options and interfaces can
+also be re-parented, but this is less common.</P
+><P
+>All components, options and interfaces that are defined directly in
+the top-level script will be placed below the package in the hierarchy.
+Alternatively they can be nested in the body of the <TT
+CLASS="LITERAL"
+>cdl_package</TT
+>
+command. The following two script fragments are equivalent:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_LIBC {
+    &#8230;
+}
+
+cdl_component CYGPKG_LIBC_STRING {
+    &#8230;
+}
+
+cdl_option CYGPKG_LIBC_CTYPE_INLINES {
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>and:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_LIBC {
+    &#8230;
+
+    cdl_component CYGPKG_LIBC_STRING {
+        &#8230;
+    }
+
+    cdl_option CYGPKG_LIBC_CTYPE_INLINES {
+        &#8230;
+    }
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>If a script defines options both inside and outside the body of the
+<TT
+CLASS="LITERAL"
+>cdl_package</TT
+> then the ones inside will be processed first. Language
+purists may argue that it would have been better if all contained
+options and components had to go into the body, but in practice it is
+often convenient to be able to skip this level of nesting and the
+resulting behavior is still well-defined.</P
+><P
+>Components can also contain options and other <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> entities, in fact
+that is what distinguishes them from options. These can be defined in
+the body of the <TT
+CLASS="LITERAL"
+>cdl_component</TT
+> command:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_component CYGPKG_LIBC_STDIO {
+
+    cdl_component CYGPKG_LIBC_STDIO_FLOATING_POINT {
+        &#8230;
+    }
+
+    cdl_option CYGSEM_LIBC_STDIO_THREAD_SAFE_STREAMS {
+        &#8230;
+    }
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>Nesting options inside the bodies of components like this is fine for
+simple packages with only a limited number of configuration options,
+but it becomes unsatisfactory as the number of options increases.
+Instead it is possible to split the <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> data into multiple <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+>
+scripts, on a per-component basis. The <SPAN
+CLASS="PROPERTY"
+>script</SPAN
+> property should be
+used for this. For example, in the case of the C library all
+stdio-related configuration options could be put into
+<TT
+CLASS="FILENAME"
+>stdio.cdl</TT
+>, and the top-level CDL script
+<TT
+CLASS="FILENAME"
+>libc.cdl</TT
+> would contain the following:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_LIBC {
+    &#8230;
+
+    cdl_component CYGPKG_LIBC_STDIO {
+        &#8230;
+        script stdio.cdl
+    }
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <TT
+CLASS="VARNAME"
+>CYGPKG_LIBC_STDIO_FLOATING_POINT</TT
+> component and
+the <TT
+CLASS="VARNAME"
+>CYGSEM_LIBC_STDIO_THREAD_SAFE_STREAMS</TT
+> option
+can then be placed at the top-level of <TT
+CLASS="FILENAME"
+>stdio.cdl</TT
+>.
+It is possible to have some options nested in the body of a
+<TT
+CLASS="LITERAL"
+>cdl_component</TT
+> command and other options in a separate file accessed
+by the <SPAN
+CLASS="PROPERTY"
+>script</SPAN
+> property. In such a case the nested options would be
+processed first, and then the other script would be read in. A script
+specified by a <SPAN
+CLASS="PROPERTY"
+>script</SPAN
+> property should only define new options,
+components or interfaces: it should not contain any additional
+properties for the current component.</P
+><P
+>It is possible for a component's <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> script to have a sub-component
+which also has a <SPAN
+CLASS="PROPERTY"
+>script</SPAN
+> property, and so on. In practice excessive
+nesting like this is rarely useful. It is also possible to ignore the
+<SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> language support for constructing hierarchies automatically and
+use the <SPAN
+CLASS="PROPERTY"
+>parent</SPAN
+> property explicitly for every single option and
+component. Again this is not generally useful.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>At the time of writing interfaces cannot act as containers. This may
+change in a future version of the component framework. If the change
+is made then interfaces would support the <SPAN
+CLASS="PROPERTY"
+>script</SPAN
+> property, just like
+components.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.properties.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>The CDL Language</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>CDL Properties</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

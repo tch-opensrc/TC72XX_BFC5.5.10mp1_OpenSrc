@@ -1,0 +1,370 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>SH3/EDK7708 Hardware Setup</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Target Setup"
+HREF="appendix-target-setup.html"><LINK
+REL="PREVIOUS"
+TITLE=" Compaq iPAQ PocketPC Hardware Setup"
+HREF="setup-arm-ipaq.html"><LINK
+REL="NEXT"
+TITLE="SH3/CQ7708 Hardware Setup"
+HREF="setup-sh-cq7708.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="setup-arm-ipaq.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Target Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="setup-sh-cq7708.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SETUP-SH-EDK7708">SH3/EDK7708 Hardware Setup</H1
+><P
+>The eCos Developer&#8217;s Kit package comes with a ROM
+which provides GDB support for the Hitachi EDK7708 board (a big-endian
+and a little-endian version). Images of these  ROMs are also provided
+at <TT
+CLASS="FILENAME"
+>loaders/sh-edk7708/gdbload.bin</TT
+> and
+	  <TT
+CLASS="FILENAME"
+>loaders/sh-edk7708le/gdbload.bin</TT
+> under
+the root of your eCos installation.</P
+><P
+>The ROM is installed to socket U6 on the board. When using
+the big-endian ROM, jumper 9 must be set to 2-3. When using the
+little-endian ROM, jumper 9 must be set to 1-2. Attention should
+be paid to the correct orientation of the ROM during installation.
+Only replace the board&quot;s existing ROM using a proper PLCC extraction
+tool, as the socket would otherwise risk being damaged. </P
+><P
+>If you are going to program a new ROM or FLASH using the binary
+image, you may have to experiment to get the right byte-order in
+the device. Depending on the programming software you use, it might
+be necessary to enable byte-swapping.  If the GDB stub ROM/FLASH
+you program does not work, try reversing the byte-order.</P
+><P
+>The GDB stub in the EPROM allows communication with GDB using
+the serial port at connector J1. The communication parameters are
+fixed at 38400 baud, 8 data bits, no parity bit and 1 stop bit (8-N-1).
+No flow control is employed. Connection to the host computer should
+be made using the dedicated serial cable included in the EDK package. </P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4067">Installing the Stubs into FLASH</H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4069">Preparing the Binaries</H3
+><P
+>These two binary preparation steps are not strictly necessary
+as the eCos distribution ships with pre-compiled binaries in the
+directory loaders/sh-edk7708 and loaders/sh-edk7708le
+relative to the installation root.</P
+><DIV
+CLASS="SECT4"
+><H4
+CLASS="SECT4"
+><A
+NAME="AEN4072">Building the ROM images with the eCos Configuration Tool</H4
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Start with a new document - selecting the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>File-&#62;New</I
+></SPAN
+>
+ menu item if necessary to do this.</P
+></LI
+><LI
+><P
+>Choose the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build-&#62;Templates</I
+></SPAN
+>
+ menu item, and then select the SH EDK7708 hardware.</P
+></LI
+><LI
+><P
+>While still displaying the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build-&#62;Templates</I
+></SPAN
+>
+ dialog box, select the &#8220;stubs&#8221; package template
+to build a GDB stub. Click 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>OK</I
+></SPAN
+>.</P
+></LI
+><LI
+><P
+>If building a little-endian image, disable the &#8220;Use
+big-endian mode&#8221; option in the SH EDK7708 HAL (CYGHWR_HAL_SH_BIGENDIAN).</P
+></LI
+><LI
+><P
+>Build eCos using 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build-&#62;Library</I
+></SPAN
+>. </P
+></LI
+><LI
+><P
+>When the build completes, the image files can be found
+in the bin/ subdirectory of the install tree. GDB stub
+ROM images have the prefix &#8220;gdb_module&#8221;.</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT4"
+><H4
+CLASS="SECT4"
+><A
+NAME="AEN4092">Building the ROM images with ecosconfig</H4
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Make an empty directory to contain the build tree,
+and cd into it.</P
+></LI
+><LI
+><P
+>To build a GDB stub ROM image, enter the command: 
+  
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig new edk7708 stubs</PRE
+></TD
+></TR
+></TABLE
+>
+ </P
+></LI
+><LI
+><P
+>If building a little-endian image, uncomment the user
+value in ecos.ecc for CYGHWR_HAL_SH_BIGENDIAN
+and change it to 0.   </P
+></LI
+><LI
+><P
+>Enter the commands:
+    
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig tree      
+$ make </PRE
+></TD
+></TR
+></TABLE
+></P
+></LI
+><LI
+><P
+>When the build completes, the image files can be found
+in the bin/ subdirectory of the install tree. GDB stub
+ROM images have the  prefix &#8220;gdb_module&#8221;.</P
+></LI
+></OL
+></DIV
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4107">Installing the Stubs into ROM or FLASH</H3
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Program the binary image file gdb_module.bin
+into ROM or FLASH referring to the instructions of your ROM programmer.</P
+></LI
+><LI
+><P
+>Plug the ROM/FLASH into socket U6. If the image
+is little-endian set jumper 9 to 1-2. If the image is big-endian
+set jumper 9 to 2-3.</P
+></LI
+></OL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="setup-arm-ipaq.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="setup-sh-cq7708.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Compaq iPAQ PocketPC Hardware Setup</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="appendix-target-setup.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SH3/CQ7708 Hardware Setup</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

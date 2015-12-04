@@ -1,0 +1,315 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Configuring IP Addresses</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Stack Support for eCos"
+HREF="net-common-tcpip.html"><LINK
+REL="PREVIOUS"
+TITLE="Sample Code"
+HREF="net-common-sample-code.html"><LINK
+REL="NEXT"
+TITLE="Tests and Demonstrations"
+HREF="net-common-tests-and-demonstrations.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-sample-code.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tests-and-demonstrations.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="NET-COMMON-CONFIGURING-IP-ADDRESSES">Chapter 35. Configuring IP Addresses</H1
+><P
+>Each interface (&#8220;eth0&#8221; and &#8220;eth1&#8221;)
+has independent configuration of its setup.  Each can be set up
+manually (in which case you must write code to do this), or by using
+<SPAN
+CLASS="ACRONYM"
+>BOOTP/DHCP</SPAN
+>,
+or explicitly, with configured values. If additional
+interfaces are added, these must be configured manually.</P
+><P
+>The configurable values are: </P
+><P
+></P
+><UL
+><LI
+><P
+>IP address</P
+></LI
+><LI
+><P
+>netmask</P
+></LI
+><LI
+><P
+>broadcast address</P
+></LI
+><LI
+><P
+>gateway/router</P
+></LI
+><LI
+><P
+>server address.</P
+></LI
+></UL
+><P
+>Server address is the DHCP server if applicable, but in addition,
+many test cases use it as &#8220;the machine to talk to&#8221; in
+whatever manner the test exercises the protocol stack.</P
+><P
+>The initialization is invoked by calling the C routine   
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void <TT
+CLASS="FUNCTION"
+>init_all_network_interfaces</TT
+>(void);</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>Additionally, if the system is configured to support IPv6 then each
+interface may have an address assigned which is a composite of a 64 bit
+prefix and the 32 bit IPv4 address for that interface.
+The prefix is controlled by the CDL setting 
+CYGHWR_NET_DRIVER_ETH0_IPV6_PREFIX for &#8220;eth0&#8221;, etc.
+This is a CDL booldata type, allowing this address to be suppressed if
+not desired.</P
+><P
+>Refer to the test cases,
+<TT
+CLASS="FILENAME"
+>&#8230;/packages/net/common/<TT
+CLASS="REPLACEABLE"
+><I
+>VERSION</I
+></TT
+>/tests/ftp_test.c</TT
+>
+for example usage, and the source files in
+<TT
+CLASS="FILENAME"
+>&#8230;/packages/net/common/<TT
+CLASS="REPLACEABLE"
+><I
+>VERSION</I
+></TT
+>/src/bootp_support.c</TT
+>
+and
+<TT
+CLASS="FILENAME"
+>network_support.c</TT
+>
+to see what that call does.</P
+><P
+>This assumes that the MAC address (also known as 
+<SPAN
+CLASS="ACRONYM"
+>ESA</SPAN
+> or Ethernet Station Address)
+is already defined in the
+serial EEPROM or however the particular target implements this;
+support for setting the MAC address is hardware dependent.</P
+><P
+>DHCP support is active by default, and there are configuration
+options to control it.  Firstly, in the top level of the
+&#8220;Networking&#8221; configuration
+tree, &#8220;Use full DHCP instead of BOOTP&#8221; enables
+DHCP, and it contains an option to have the system provide a thread
+to renew DHCP leases and manage lease expiry. Secondly, the individual
+interfaces &#8220;eth0&#8221; and &#8220;eth1&#8221; each
+have new options within the &#8220;Use BOOTP/DHCP to
+initialize &#8216;<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ethX</I
+></SPAN
+>&#8217;&#8221; to
+select whether to use DHCP rather than BOOTP.</P
+><P
+>Note that you are completely at liberty to ignore this startup code and its
+configuration in building your application.
+<TT
+CLASS="FUNCTION"
+>init_all_network_interfaces()</TT
+>
+is provided for three main purposes:
+<P
+></P
+><UL
+><LI
+><P
+>For use by Red Hat's own test programs.</P
+></LI
+><LI
+><P
+>As an easy &#8220;get you going&#8221; utility for
+newcomers to <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>.</P
+></LI
+><LI
+><P
+>As readable example code from which further development
+might start.</P
+></LI
+></UL
+></P
+><P
+>If your application has different requirements for bringing up 
+available network interfaces, setting up routes, determining IP addresses
+and the like from the defaults that the example code provides, you can
+write your own initialization code to use whatever sequence of
+<TT
+CLASS="FUNCTION"
+>ioctl()</TT
+> function
+calls carries out the desired setup.  Analogously, in larger systems,
+a sequence of &#8220;ifconfig&#8221; invocations is used; these mostly
+map to <TT
+CLASS="FUNCTION"
+>ioctl()</TT
+> calls to manipulate the state of
+the interface in question.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-sample-code.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tests-and-demonstrations.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Sample Code</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-common-tcpip.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Tests and Demonstrations</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,547 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Ecosconfig on Windows and Linux Quick Start</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Configuring and Building eCos from Source"
+HREF="configuring-and-building-ecos-from-source.html"><LINK
+REL="PREVIOUS"
+TITLE="Configuration Tool on Windows and Linux Quick Start"
+HREF="using-configtool-windows-linux.html"><LINK
+REL="NEXT"
+TITLE="Running an eCos Test Case"
+HREF="running-an-ecos-test-case.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="using-configtool-windows-linux.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 11. Configuring and Building <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> from Source</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="running-an-ecos-test-case.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="USING-ECOSCONFIG-ON-LINUX">Ecosconfig on Windows and Linux Quick Start</H1
+><P
+>As an alternative to using the graphical
+<SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+>, it is still possible to
+configure and build a kernel by editing a configuration file manually
+and using the <B
+CLASS="COMMAND"
+>ecosconfig</B
+> command. </P
+><P
+>Manual configuration and the <B
+CLASS="COMMAND"
+>ecosconfig</B
+> command are
+described in detail in <A
+HREF="manual-configuration.html"
+>Chapter 28</A
+>.</P
+><P
+>To use the <B
+CLASS="COMMAND"
+>ecosconfig</B
+> command you need to start a
+shell. In Windows you need to start a
+<SPAN
+CLASS="PRODUCTNAME"
+>CygWin</SPAN
+> <B
+CLASS="COMMAND"
+>bash</B
+> shell, not a
+DOS command line.</P
+><P
+>The following instructions assume that the
+<TT
+CLASS="LITERAL"
+>PATH</TT
+> and <TT
+CLASS="LITERAL"
+>ECOS_REPOSITORY</TT
+>
+environment variables have been setup correctly as described in <A
+HREF="user-guide-installation-linux.html"
+>Chapter 7</A
+>.  They also assume Linux
+usage but equally well apply to Windows running Cygwin.</P
+><P
+>Before invoking <B
+CLASS="COMMAND"
+>ecosconfig</B
+> you need to
+choose a directory in which to work. For the purposes of this tutorial,
+the default path will be <TT
+CLASS="FILENAME"
+><TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/ecos-work</TT
+>.
+Create this directory and change to it by typing: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ mkdir <TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/ecos-work
+$ cd <TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/ecos-work</PRE
+></TD
+></TR
+></TABLE
+><P
+>To see what options can be used with <B
+CLASS="COMMAND"
+>ecosconfig</B
+>,
+type: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig --help</PRE
+></TD
+></TR
+></TABLE
+><P
+>The available packages, targets and templates may be listed
+as follows:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig list</PRE
+></TD
+></TR
+></TABLE
+><P
+>Here is sample output from <B
+CLASS="COMMAND"
+>ecosconfig</B
+> showing
+the usage message.</P
+><DIV
+CLASS="EXAMPLE"
+><A
+NAME="AEN683"><P
+><B
+>Example 11-1. Getting  help from ecosconfig</B
+></P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig --help
+Usage: ecosconfig [ qualifier ... ] [ command ]
+  commands are:
+    list                                       : list repository contents
+    new TARGET [ TEMPLATE [ VERSION ] ]        : create a configuration
+    target TARGET                              : change the target hardware
+    template TEMPLATE [ VERSION ]              : change the template
+    add PACKAGE [ PACKAGE ... ]                : add package(s)
+    remove PACKAGE [ PACKAGE ... ]             : remove package(s)
+    version VERSION PACKAGE [ PACKAGE ... ]    : change version of package(s)
+    export FILE                                : export minimal config info
+    import FILE                                : import additional config info
+    check                                      : check the configuration
+    resolve                                    : resolve conflicts
+    tree                                       : create a build tree
+  qualifiers are:
+    --config=FILE                              : the configuration file
+    --prefix=DIRECTORY                         : the install prefix
+    --srcdir=DIRECTORY                         : the source repository
+    --no-resolve                               : disable conflict
+resolution
+    --version                                  : show version and copyright
+$</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="EXAMPLE"
+><A
+NAME="AEN686"><P
+><B
+>Example 11-2. ecosconfig output &#8212; 
+list of available packages, targets and templates</B
+></P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig list
+Package CYGPKG_CYGMON (CygMon support via eCos): 
+aliases: cygmon 
+versions: &#60;version&#62; 
+Package CYGPKG_DEVICES_WALLCLOCK_DALLAS_DS1742 (Wallclock driver for Dallas 1742): 
+aliases: devices_wallclock_ds1742 device_wallclock_ds1742 
+versions: &#60;version&#62; 
+Package CYGPKG_DEVICES_WALLCLOCK_SH3 (Wallclock driver for SH3 RTC module): 
+aliases: devices_wallclock_sh3 device_wallclock_sh3 
+versions: &#60;version&#62; 
+Package CYGPKG_DEVICES_WATCHDOG_ARM_AEB (Watchdog driver for ARM/AEB board): 
+aliases: devices_watchdog_aeb device_watchdog_aeb 
+versions: &#60;version&#62; 
+Package CYGPKG_DEVICES_WATCHDOG_ARM_EBSA285 (Watchdog driver for ARM/EBSA285 board): 
+aliases: devices_watchdog_ebsa285 device_watchdog_ebsa285 
+versions: &#60;version&#62; 
+&#8230;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN689">Selecting a  Target</H2
+><P
+>To configure for a listed target, type: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig new &lt;target&#62;</PRE
+></TD
+></TR
+></TABLE
+><P
+>For example, to configure for the ARM PID development board,
+type: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig new pid</PRE
+></TD
+></TR
+></TABLE
+><P
+>You can then edit the generated file,
+<TT
+CLASS="FILENAME"
+>ecos.ecc</TT
+>, setting the options as required for the
+target (endianess, CPU model, Startup type, etc.).  For detailed
+information about how to edit the <TT
+CLASS="FILENAME"
+>ecos.ecc</TT
+> file,
+see the <I
+CLASS="CITETITLE"
+>CDL Writer's Guide</I
+> and <A
+HREF="editing-an-ecos-savefile.html"
+>the Section called <I
+>Editing an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Savefile</I
+> in Chapter 28</A
+>.</P
+><P
+>Create a build tree for the configured target by typing:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig tree</PRE
+></TD
+></TR
+></TABLE
+><P
+>If there are any problem with the configuration,
+<B
+CLASS="COMMAND"
+>ecosconfig</B
+> will tell you. The most likely cause of
+this is mistakes when editing the <TT
+CLASS="FILENAME"
+>ecos.ecc</TT
+> file.
+You can check whether the configuration you have made is correct,
+without building the tree with the following command:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig check</PRE
+></TD
+></TR
+></TABLE
+><P
+>If this reports any conflicts you can get
+<B
+CLASS="COMMAND"
+>ecosconfig</B
+> to try and resolve them itself by typing:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig resolve</PRE
+></TD
+></TR
+></TABLE
+><P
+>See <A
+HREF="conflicts-and-constraints.html"
+>the Section called <I
+>Conflicts and constraints</I
+> in Chapter 28</A
+> for more details.</P
+><P
+>You can now run the command <B
+CLASS="COMMAND"
+>make</B
+> or <B
+CLASS="COMMAND"
+>make
+tests</B
+>, after which you will be at the same point you
+would be after running the <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+>
+&#8212; you can start developing your own applications,
+following the steps in <A
+HREF="building-and-running-sample-appliations.html"
+>Chapter 13</A
+>. </P
+><P
+>The procedure shown above allows you to do very coarse-grained
+configuration of the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> kernel: you can select which packages
+to include in your kernel, and give target and start-up options.
+But you cannot select components within a package, or set the very
+fine-grained options. </P
+><P
+>To select fine-grained configuration options you will need to
+edit the configuration file <TT
+CLASS="FILENAME"
+>ecos.ecc</TT
+> in the
+current directory and regenerate the build tree.</P
+><DIV
+CLASS="CAUTION"
+><P
+></P
+><TABLE
+CLASS="CAUTION"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Caution</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>You should follow the manual configuration process described
+above very carefully, and you should read the comments in each file
+to see when one option depends on other options or packages being
+enabled or disabled. If you do not, you might end up with an inconsistently
+configured kernel which could fail to build or might execute
+incorrectly.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="using-configtool-windows-linux.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="running-an-ecos-test-case.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Configuration Tool on Windows and Linux Quick Start</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="configuring-and-building-ecos-from-source.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Running an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Test Case</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

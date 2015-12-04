@@ -1,0 +1,540 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>default_value</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="compile"
+HREF="ref.compile.html"><LINK
+REL="NEXT"
+TITLE="define"
+HREF="ref.define.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.compile.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.define.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.DEFAULT-VALUE"><SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN3887"
+></A
+><H2
+>Name</H2
+>Property <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+>&nbsp;--&nbsp;Provide a default value for this option using a CDL expression.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN3891"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_option &lt;name&gt; {
+    default_value &lt;expression&gt;
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3893"
+></A
+><H2
+>Description</H2
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+> property allows the initial value of a
+configuration option to depend on other configuration options. The
+arguments to the property should be a <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> expression, see
+<A
+HREF="language.values.html#LANGUAGE.EXPRESSION"
+>the Section called <I
+>Ordinary Expressions</I
+> in Chapter 3</A
+> for the syntactic details.
+In many cases a simple constant value will suffice, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_component CYGPKG_KERNEL_EXCEPTIONS {
+    &#8230;
+    default_value 1
+
+    cdl_option CYGSEM_KERNEL_EXCEPTIONS_DECODE {
+        &#8230;
+        default_value 0
+    }
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>However it is also possible for an option's default value to depend on
+other options. For example the common HAL package provides some
+support functions that are needed by the <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> kernel, but are
+unlikely to be useful if the kernel is not being used. This
+relationship can be expressed using:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYGFUN_HAL_COMMON_KERNEL_SUPPORT {
+    ...
+    default_value CYGPKG_KERNEL
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>If the kernel is loaded then this HAL option is automatically enabled,
+although the user can still disable it explicitly should this prove
+necessary. If the kernel is not loaded then the option is disabled,
+although it can still be enabled by the user if desired.
+<SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+> expressions can be more complicated than this if
+appropriate, and provide a very powerful facility for component
+writers who want their code to &#8220;just do the right thing&#8221;
+in a wide variety of configurations.</P
+><P
+>The <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> configuration system evaluates the <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+>
+expression when the current package is loaded and whenever there is a
+change to any other option referenced in the expression. The result
+depends on the option's flavor:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>flavor none</TT
+></DT
+><DD
+><P
+>Options with this flavor have no value, so the <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+>
+property is not applicable.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>flavor bool</TT
+></DT
+><DD
+><P
+>If the expression evaluates to a non-zero result the option is
+enabled by default, otherwise it is disabled.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>flavor booldata</TT
+></DT
+><DD
+><P
+>If the result of evaluating the expression is zero then the option is
+disabled, otherwise the option is enabled and its value is the result.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>flavor data</TT
+></DT
+><DD
+><P
+>The default value of the option is the result of evaluating the
+expression.</P
+></DD
+></DL
+></DIV
+><P
+>A <TT
+CLASS="LITERAL"
+>cdl_option</TT
+> or other entity can have at most one <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+>
+property, and it is illegal to have both a <SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+> and a
+<SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+> property in one body. If an option does not have
+either a <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+> or a <SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+> property and it does not
+have the flavor <TT
+CLASS="LITERAL"
+>none</TT
+> then the configuration tools
+will assume a default value expression of <TT
+CLASS="LITERAL"
+>0</TT
+>.</P
+><P
+>On occasion it is useful to have a configuration option
+<TT
+CLASS="LITERAL"
+>A</TT
+> which has both a <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> constraint on some
+other option <TT
+CLASS="LITERAL"
+>B</TT
+> and a <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+> expression of
+<TT
+CLASS="LITERAL"
+>B</TT
+>. If option <TT
+CLASS="LITERAL"
+>B</TT
+> is not enabled
+then <TT
+CLASS="LITERAL"
+>A</TT
+> will also be disabled by default and no
+conflict arises. If <TT
+CLASS="LITERAL"
+>B</TT
+> is enabled then
+<TT
+CLASS="LITERAL"
+>A</TT
+> also becomes enabled and again no conflict
+arises. If a user attempts to enable <TT
+CLASS="LITERAL"
+>B</TT
+> but not
+<TT
+CLASS="LITERAL"
+>A</TT
+> then there will be a conflict. Users should be
+able to deduce that the two options are closely interlinked and should
+not be manipulated independently except in very unusual circumstances.</P
+><DIV
+CLASS="TIP"
+><BLOCKQUOTE
+CLASS="TIP"
+><P
+><B
+>Tip: </B
+>If the first entry in a <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+> expression is a negative
+number, for example <TT
+CLASS="LITERAL"
+>default_value&nbsp;-1</TT
+> then this
+can be misinterpreted as an option instead of as part of the
+expression. Currently the <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+> property does not take any
+options, but this may change in future. Option processing halts at the
+sequence <TT
+CLASS="LITERAL"
+>--</TT
+>, so the desired value can be expressed
+safely using
+<TT
+CLASS="LITERAL"
+>default_value&nbsp;--&nbsp;-1</TT
+></P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>In many cases it would be useful to calculate default values using
+some global preferences, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYGIMP_LIBC_STRING_PREFER_SMALL_TO_FAST {
+    &#8230;
+    default_value CYGGLO_CODESIZE &#62; CYGGLO_SPEED
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>Such global preference options do not yet exist, but are likely to be
+added in a future version.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>For options with the booldata flavor the current syntax does not allow
+the default values of the enabled flag and the value to be controlled
+separately. Functionality to permit this may be added in a future
+release.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3964"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYGDBG_HAL_DEBUG_GDB_THREAD_SUPPORT {
+    display       "Include GDB multi-threading debug support"
+    requires      CYGDBG_KERNEL_DEBUG_GDB_THREAD_SUPPORT
+    default_value CYGDBG_KERNEL_DEBUG_GDB_THREAD_SUPPORT
+    description   "
+        This option enables some extra HAL code which is needed
+        to support multi-threaded source level debugging."
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3967"
+></A
+><H2
+>See Also</H2
+><P
+>Properties <A
+HREF="ref.calculated.html"
+><SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+></A
+>,
+<A
+HREF="ref.flavor.html"
+><SPAN
+CLASS="PROPERTY"
+>flavor</SPAN
+></A
+> and
+<A
+HREF="ref.legal-values.html"
+><SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+></A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.compile.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.define.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>define</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

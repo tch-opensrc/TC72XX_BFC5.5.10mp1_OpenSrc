@@ -1,0 +1,673 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Creating the Build Tree</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Manual Configuration"
+HREF="manual-configuration.html"><LINK
+REL="PREVIOUS"
+TITLE="Manual Configuration"
+HREF="manual-configuration.html"><LINK
+REL="NEXT"
+TITLE="Conflicts and constraints"
+HREF="conflicts-and-constraints.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="manual-configuration.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 28. Manual Configuration</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="conflicts-and-constraints.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CREATING-BUILD-TREE">Creating the Build Tree</H1
+><P
+>Generating a build tree is a non-trivial operation and
+	  should not be attempted manually. Instead, <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> is shipped
+	  with a tool called <B
+CLASS="COMMAND"
+>ecosconfig</B
+> that should
+	  be used to create a build tree.</P
+><P
+>Usually <B
+CLASS="COMMAND"
+>ecosconfig</B
+> will be
+run inside the build tree itself. If you are creating a new build
+tree then typically you will create a new empty directory using
+the <B
+CLASS="COMMAND"
+>mkdir</B
+> command, <B
+CLASS="COMMAND"
+>cd</B
+> into
+that directory, and then invoke <B
+CLASS="COMMAND"
+>ecosconfig</B
+> to
+create a configuration. By default, the configuration is stored
+in a file <TT
+CLASS="FILENAME"
+>ecos.ecc</TT
+> in the current
+directory. The configuration may be modified by editing this file directly. <B
+CLASS="COMMAND"
+>ecosconfig</B
+> itself
+deals with a number of coarse-grained configuration options such
+as the target platform and the packages that should be used.</P
+><P
+>The <B
+CLASS="COMMAND"
+>ecosconfig</B
+> tool is also
+used subsequently to generate a build tree for a configuration.
+Once a build tree exists, it is possible to run <B
+CLASS="COMMAND"
+>ecosconfig</B
+> again
+inside the same build tree. This will be necessary if your wish
+to change some of the configuration options.</P
+><P
+><B
+CLASS="COMMAND"
+>ecosconfig</B
+> does not generate
+the top-level directory of the build tree; you must do this
+	yourself. </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ mkdir ecos-work
+$ cd ecos-work</PRE
+></TD
+></TR
+></TABLE
+><P
+>The next step is to run <B
+CLASS="COMMAND"
+>ecosconfig</B
+>: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ ecosconfig &lt;qualifiers&gt; &lt;command&gt;</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2416">ecosconfig qualifiers</H2
+><P
+>The available command line qualifiers for
+	    <B
+CLASS="COMMAND"
+>ecosconfig</B
+> are as follows. Multiple
+	    qualifiers may be used on the command line:
+	  </P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="OPTION"
+>--help</TT
+></DT
+><DD
+><P
+>Provides basic usage guidelines for the
+	      available commands and qualifiers.</P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>--config=&lt;file&gt;</TT
+></DT
+><DD
+><P
+>Specifies an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> configuration save file for
+		  use by the tool. By default, the file
+		  <TT
+CLASS="FILENAME"
+>ecos.ecc</TT
+> in the
+		  current directory is used. Developers may prefer to
+		  use a common location for all their <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>
+		  configurations rather than keep the configuration
+		  information in the base of the build tree.</P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>--prefix=&lt;dir&gt;</TT
+></DT
+><DD
+><P
+>Specifies an alternative location for the
+		  install tree. By default, the install tree resides
+		  inside the <TT
+CLASS="FILENAME"
+>install</TT
+>
+		  directory in the build tree. Developers may prefer
+		  to locate the build tree in a temporary file
+		  hierarchy but keep the install tree in a more
+		  permanent location.</P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>--srcdir=&lt;dir&gt;</TT
+></DT
+><DD
+><P
+>Specifies the location of the component
+		  repository. By default, the tool uses the location
+		  specified in the
+		  <TT
+CLASS="REPLACEABLE"
+><I
+>ECOS_REPOSITORY</I
+></TT
+>
+		  environment variable. Developers may prefer to use
+		  of this qualifier if they are working with more than
+		  one repository.</P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>--no-resolve</TT
+></DT
+><DD
+><P
+>Disables the implicit resolution of conflicts
+		  while manipulating the configuration data.
+		  developers may prefer to resolve conflicts by
+		  editing the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> configuration save file
+		  manually.</P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>--ignore-errors</TT
+>, <TT
+CLASS="OPTION"
+>-i</TT
+></DT
+><DD
+><P
+>By default, ecosconfig will exit with an error code if the current
+configuration contains any conflicts, and it is not possible to
+generate or update a build tree for such configurations. This
+qualifier causes ecosconfig to ignore such problems, and hence it is
+possible to generate a build tree even if there are still
+conflicts. Of course, there are no guarantees that the resulting
+system will actually do anything.</P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>--verbose</TT
+>, <TT
+CLASS="OPTION"
+>-v</TT
+></DT
+><DD
+><P
+>Display more information.</P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>--quiet</TT
+>, <TT
+CLASS="OPTION"
+>-q</TT
+></DT
+><DD
+><P
+>Display less information.</P
+></DD
+></DL
+></DIV
+><P
+>The <TT
+CLASS="OPTION"
+>--config</TT
+>, <TT
+CLASS="OPTION"
+>--prefix</TT
+> and
+<TT
+CLASS="OPTION"
+>--srcdir</TT
+> qualifiers can also be written with two arguments,
+for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>ecosconfig --srcdir <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;dir&gt;</I
+></TT
+> ...</PRE
+></TD
+></TR
+></TABLE
+><P
+>This simplifies filename completion with some shells.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2480">ecosconfig commands</H2
+><P
+>The available commands for
+	    <B
+CLASS="COMMAND"
+>ecosconfig</B
+> are as
+	    follows:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><B
+CLASS="COMMAND"
+>list</B
+></DT
+><DD
+><P
+>Lists the available packages, targets and
+		  templates as installed in the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> repository.
+		  Aliases and package versions are also
+		  reported.</P
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>new &lt;target&gt; [&lt;template&gt; [&lt;version&gt;]]</B
+></DT
+><DD
+><P
+>Creates a new <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> configuration for
+		  the specified target hardware and saves it. A
+		  software template may also be specified. By default,
+		  the template named &#8216;default&#8217; is used. If
+		  the template version is not specified, the latest
+		  version is used.</P
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>target &lt;target&gt;</B
+></DT
+><DD
+><P
+>Changes the target hardware selection
+		  for the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> configuration. This has the effect of
+		  unloading packages supporting the target selected
+		  previously and loading the packages which support
+		  the new hardware. This command will be used
+		  typically when switching between a simulator and
+		  real hardware.</P
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>template &lt;template&gt; [&lt;version&gt;]</B
+></DT
+><DD
+><P
+>Changes the template selection for the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>
+		  configuration. This has the effect of unloading
+		  packages specified by the template selected
+		  previously and loading the packages specified by the
+		  new template. By default, the latest version of the
+		  specified template is used.</P
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>remove &lt;packages&gt;</B
+></DT
+><DD
+><P
+>Removes the specified packages from the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>
+		  configuration. This command will be used typically
+		  when the template on which a configuration is based
+		  contains packages which are not required.</P
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>add &lt;packages&gt;</B
+></DT
+><DD
+><P
+>Adds the specified packages to the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> configuration. This
+command will be used typically when the template on which a
+configuration is based does not contain all the packages which are
+required.For example, add-on packages provided by third parties will
+not be known to the standard templates, so they will have to be added
+explicitly. </P
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>version &lt;version&gt; &lt;packages&gt;</B
+></DT
+><DD
+><P
+>Selects the specified version of a
+		  number of packages in the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> configuration. By
+		  default, the most recent version of each package is
+		  used. This command will be used typically when an
+		  older version of a package is required.</P
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>check</B
+></DT
+><DD
+><P
+>Presents the following information
+		  concerning the current configuration:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>the selected target hardware</P
+></LI
+><LI
+><P
+>the selected template</P
+></LI
+><LI
+><P
+>additional packages</P
+></LI
+><LI
+><P
+>removed packages</P
+></LI
+><LI
+><P
+>the selected version of packages
+		      where this is not the most recent
+		      version</P
+></LI
+><LI
+><P
+>conflicts in the current configuration</P
+></LI
+></OL
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>resolve</B
+></DT
+><DD
+><P
+>Resolves conflicts identified in the
+		  current <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> configuration by invoking an inference
+		  capability. Resolved conflicts are reported, but not
+		  all conflicts may be resolvable. This command will
+		  be used typically following manual editing of the
+		  configuration.</P
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>export &lt;file&gt;</B
+></DT
+><DD
+><P
+>Exports a minimal <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> configuration
+		  save file with the specified name. This file
+		  contains only those options which do not have their
+		  default value. Such files are used typically to
+		  transfer option values from one configuration to
+		  another.</P
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>import &lt;file&gt;</B
+></DT
+><DD
+><P
+>Imports a minimal <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> configuration
+		  save file with the specified name. The values of
+		  those options specified in the file are applied to
+		  the current configuration.</P
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>tree</B
+></DT
+><DD
+><P
+>Generates a build tree based on the current <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>
+		  configuration. This command will be used typically
+		  just before building <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>.Normally a build tree can
+only be generated if if the configuration has no unresolved
+conflicts, but <TT
+CLASS="OPTION"
+>--ignore-errors</TT
+> can be used to override
+this.</P
+></DD
+></DL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="manual-configuration.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="conflicts-and-constraints.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Manual Configuration</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="manual-configuration.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Conflicts and constraints</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

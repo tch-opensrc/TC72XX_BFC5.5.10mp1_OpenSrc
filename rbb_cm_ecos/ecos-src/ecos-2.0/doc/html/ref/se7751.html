@@ -1,0 +1,541 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>SuperH/SH4(SH7751) Hitachi Solution Engine 7751</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Installation and Testing"
+HREF="installation-and-testing.html"><LINK
+REL="PREVIOUS"
+TITLE="SuperH/SH3(SH77X9) Hitachi Solution Engine 77X9"
+HREF="se77x9.html"><LINK
+REL="NEXT"
+TITLE="The eCos Hardware Abstraction Layer (HAL)"
+HREF="the-ecos-hardware-abstraction-layer.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="se77x9.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Installation and Testing</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="the-ecos-hardware-abstraction-layer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SE7751">SuperH/SH4(SH7751) Hitachi Solution Engine 7751</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7589">Overview</H2
+><P
+>RedBoot uses
+the COM1 serial port. The default serial port settings are 38400,8,N,1.
+Ethernet is also supported using the 10-base T connector. Management
+of onboard flash is also supported.</P
+><P
+>The following RedBoot configurations are supported:
+
+      <DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7599"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Configuration</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Mode</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>ROM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from the board's flash boot
+	      sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_ROM.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RAM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[RAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM with RedBoot in the
+	      flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_RAM.ecm</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7618">Initial Installation Method</H2
+><P
+>The Solution Engine ships with the Hitachi boot monitor in EPROM
+which allows for initial programming of RedBoot:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Set switches SW5-3 and SW5-4 to ON [boot from EPROM]</P
+></LI
+><LI
+><P
+>Connect a serial cable to COM1 and power up the board.</P
+></LI
+><LI
+><P
+>After the boot monitor banner, invoke the flash
+download/program command:<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Ready &gt;<TT
+CLASS="USERINPUT"
+><B
+>fl</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+></P
+></LI
+><LI
+><P
+>The monitor should now ask for input:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Flash ROM data copy to RAM
+Please Send A S-format Record</PRE
+></TD
+></TR
+></TABLE
+>At this point copy the
+RedBoot ROM SREC file to the serial port:<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ <TT
+CLASS="USERINPUT"
+><B
+>cat redboot_ROM.eprom.srec &gt; /dev/ttyS0</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+>
+Eventually you
+should see something like<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Start Addrs = A1000000
+End Addrs = A1xxxxxx
+Transfer complete</PRE
+></TD
+></TR
+></TABLE
+> from the monitor.</P
+></LI
+><LI
+><P
+>Set switch SW5-3 to OFF [boot from flash] and reboot the board. You
+should now see the RedBoot banner.</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7638">Special RedBoot Commands</H2
+><P
+>The <B
+CLASS="COMMAND"
+>exec</B
+> command which allows the loading
+and execution of Linux kernels
+is supported for this board (see <A
+HREF="executing-programs.html"
+>the Section called <I
+>Executing Programs from RedBoot</I
+> in Chapter 2</A
+>). The <B
+CLASS="COMMAND"
+>exec</B
+> parameters used for the SE7751 are:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>-b <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;addr&#62;</I
+></TT
+></DT
+><DD
+><P
+>Parameter block address. This is normally the first
+page of the kernel image and defaults to 0x8c101000</P
+></DD
+><DT
+>-i <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;addr&#62;</I
+></TT
+></DT
+><DD
+><P
+>Start address of initrd
+image</P
+></DD
+><DT
+>-j <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;size&#62;</I
+></TT
+></DT
+><DD
+><P
+>Size of initrd image</P
+></DD
+><DT
+>-c <TT
+CLASS="REPLACEABLE"
+><I
+>"args"</I
+></TT
+></DT
+><DD
+><P
+>Kernel arguments string</P
+></DD
+><DT
+>-m <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;flags&#62;</I
+></TT
+></DT
+><DD
+><P
+>Mount rdonly flags. If set to a non-zero value the
+root partition will be mounted read-only.</P
+></DD
+><DT
+>-f <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;flags&#62;</I
+></TT
+></DT
+><DD
+><P
+>RAM disk flags. Should normally be 0x4000</P
+></DD
+><DT
+>-r <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;device number&#62;</I
+></TT
+></DT
+><DD
+><P
+>Root device specification. /dev/ram is 0x0101</P
+></DD
+><DT
+>-l <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;type&#62;</I
+></TT
+></DT
+><DD
+><P
+>Loader type</P
+></DD
+></DL
+></DIV
+><P
+>Finally the kernel entry address can be specified as an optional
+argument. The default is 0x8c102000</P
+><P
+>On the SE7751, Linux expects to be loaded at address 0x8c101000 with
+the entry point at 0x8c102000. This is configurable in the kernel
+using the CONFIG_MEMORY_START option.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7687">Memory Maps</H2
+><P
+>RedBoot sets up the following memory map on the SE7751 board.<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Physical Address Range  Description
+----------------------- -----------
+0x80000000 - 0x803fffff Flash (MBM29LV160)
+0x81000000 - 0x813fffff EPROM (M27C800)
+0x8c000000 - 0x8fffffff SDRAM
+0xb8000000 - 0xb8ffffff PCMCIA (MaruBun)
+0xb9000000 - 0xb9ffffff Switches
+0xba000000 - 0xbaffffff LEDs
+0xbd000000 - 0xbdffffff PCI MEM space
+0xbe200000 - 0xbe23ffff PCI Ctrl space
+0xbe240000 - 0xbe27ffff PCI IO space</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7691">Ethernet Driver</H2
+><P
+>The ethernet driver uses a hardwired ESA which can, at present,
+only be changed in CDL.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN7694">Rebuilding RedBoot</H2
+><P
+>These shell variables provide the platform-specific information
+needed for building RedBoot according to the procedure described in
+<A
+HREF="rebuilding-redboot.html"
+>Chapter 3</A
+>:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>export TARGET=se7751
+export ARCH_DIR=sh
+export PLATFORM_DIR=se7751</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The names of configuration files are listed above with the
+description of the associated modes.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="se77x9.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="the-ecos-hardware-abstraction-layer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SuperH/SH3(SH77X9) Hitachi Solution Engine 77X9</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="installation-and-testing.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>The eCos Hardware Abstraction Layer (HAL)</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

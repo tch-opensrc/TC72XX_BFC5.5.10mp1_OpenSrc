@@ -1,0 +1,239 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Synchronization Levels</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Device Driver Interface to the Kernel"
+HREF="devapi-device-driver-interface-to-the-kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="Device Driver Models"
+HREF="devapi-device-driver-models.html"><LINK
+REL="NEXT"
+TITLE="The API"
+HREF="devapi-api.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="devapi-device-driver-models.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 18. Device Driver Interface to the Kernel</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="devapi-api.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="DEVAPI-SYNCHRONIZATION-LEVELS">Synchronization Levels</H1
+><P
+>Since it would be dangerous for an ISR or DSR to make a call
+that might reschedule the current thread (by trying to lock a mutex
+for example) all functions in this API have an associated synchronization
+level. These levels are:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Thread</DT
+><DD
+><P
+>      This function may only be called from within threads. This is
+      usually the client code that makes calls into the device driver.
+      In a non-kernel configuration, this will be code running at the
+      default non-interrupt level.
+      </P
+></DD
+><DT
+>DSR</DT
+><DD
+><P
+>      This function may be called by either DSR or thread code.
+      </P
+></DD
+><DT
+>ISR</DT
+><DD
+><P
+>      This function may be called from ISR, DSR or thread code.
+      </P
+></DD
+></DL
+></DIV
+><P
+>The following table shows, for each API function, the levels
+at which is may be called:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>                                  Callable from:
+Function                       ISR     DSR    Thread
+-------------------------------------------------------------------------
+
+cyg_drv_isr_lock                X       X       X
+cyg_drv_isr_unlock              X       X       X
+cyg_drv_spinlock_init                           X
+cyg_drv_spinlock_destroy                        X
+cyg_drv_spinlock_spin           X       X       X
+cyg_drv_spinlock_clear          X       X       X
+cyg_drv_spinlock_try            X       X       X
+cyg_drv_spinlock_test           X       X       X
+cyg_drv_spinlock_spin_intsave   X       X       X
+cyg_drv_spinlock_clear_intsave  X       X       X
+cyg_drv_dsr_lock                        X       X
+cyg_drv_dsr_unlock                      X       X
+cyg_drv_mutex_init                              X
+cyg_drv_mutex_destroy                           X
+cyg_drv_mutex_lock                              X
+cyg_drv_mutex_trylock                           X
+cyg_drv_mutex_unlock                            X
+cyg_drv_mutex_release                           X
+cyg_drv_cond_init                               X
+cyg_drv_cond_destroy                            X
+cyg_drv_cond_wait                               X
+cyg_drv_cond_signal                     X       X
+cyg_drv_cond_broadcast                  X       X
+cyg_drv_interrupt_create                        X
+cyg_drv_interrupt_delete                        X
+cyg_drv_interrupt_attach        X       X       X
+cyg_drv_interrupt_detach        X       X       X
+cyg_drv_interrupt_mask          X       X       X
+cyg_drv_interrupt_unmask        X       X       X
+cyg_drv_interrupt_acknowledge   X       X       X
+cyg_drv_interrupt_configure     X       X       X
+cyg_drv_interrupt_level         X       X       X
+cyg_drv_interrupt_set_cpu       X       X       X
+cyg_drv_interrupt_get_cpu       X       X       X&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="devapi-device-driver-models.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="devapi-api.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Device Driver Models</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="devapi-device-driver-interface-to-the-kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>The API</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

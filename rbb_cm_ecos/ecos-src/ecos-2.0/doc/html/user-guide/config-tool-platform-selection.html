@@ -1,0 +1,255 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Platform Selection</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Updating the Configuration"
+HREF="config-tool-updating-configuration.html"><LINK
+REL="PREVIOUS"
+TITLE="Updating the Configuration"
+HREF="config-tool-updating-configuration.html"><LINK
+REL="NEXT"
+TITLE="Using Templates"
+HREF="config-tool-using-templates.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="config-tool-updating-configuration.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 19. Updating the Configuration</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="config-tool-using-templates.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CONFIG-TOOL-PLATFORM-SELECTION">Platform Selection</H1
+><P
+>To add, modify or remove entries in the list of
+	  platforms used for running tests, select
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Tools-&gt;Platforms</I
+></SPAN
+>. The following
+	  dialog will be displayed:</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN1393"><P
+><B
+>Figure 19-2. Platforms dialog box</B
+></P
+><P
+><IMG
+SRC="pix/toolsplatforms.png"></P
+></DIV
+><P
+>You may add, modify or remove platform entries as you
+	  wish, but in order to run tests, a platform must be defined
+	  to correspond to the currently loaded hardware template. The
+	  information associated with each platform name is used to
+	  run tests.</P
+><P
+>To modify a platform, click the
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Modify</I
+></SPAN
+> button with the appropriate
+	  platform selected, or double-click on an entry in the list.
+	  A dialog will be displayed that allows you to change the
+	  command prefix, platform type and arguments for
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>GDB</I
+></SPAN
+>. </P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN1400"><P
+><B
+>Figure 19-3. Platform Modify dialog box</B
+></P
+><P
+><IMG
+SRC="pix/modifyplatform.png"></P
+></DIV
+><P
+>To add a new platform, click the
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Add</I
+></SPAN
+> button. A similar dialog will be
+	  displayed that allows you to define a new platform. To
+	  remove a platform, click the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Delete</I
+></SPAN
+>
+	  button or press the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>DEL</I
+></SPAN
+> key with the
+	  appropriate platform selected.</P
+><P
+>The command prefix is used when running tests in order
+	  to determine the names of the executables (such as gdb) to
+	  be used. For example, if the gdb executable name is
+	  &#8220;arm-elf-gdb.exe&#8221; the prefix should be set to
+	  &#8220;arm-elf&#8221;.</P
+><P
+>The platform type indicates the capabilities of the platform
+- whether it is hardware or a simulator, and whether breakpoints
+are supported.</P
+><P
+>The arguments for the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>GDB</I
+></SPAN
+> field allow
+additional arguments to be passed to gdb when it is used to run
+a test.  This is typically used in the case of simulators linked
+to gdb in order to define memory layout.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="config-tool-updating-configuration.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="config-tool-using-templates.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Updating the Configuration</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="config-tool-updating-configuration.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Using Templates</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

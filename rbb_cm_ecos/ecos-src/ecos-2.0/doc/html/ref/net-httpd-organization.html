@@ -1,0 +1,307 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Server Organization</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Embedded HTTP Server"
+HREF="net-httpd-chapter.html"><LINK
+REL="PREVIOUS"
+TITLE="Embedded HTTP Server"
+HREF="net-httpd-chapter.html"><LINK
+REL="NEXT"
+TITLE="Server Configuration"
+HREF="net-httpd-configuration.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-httpd-chapter.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 48. Embedded HTTP Server</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-httpd-configuration.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-HTTPD-ORGANIZATION">Server Organization</H1
+><P
+>The server consists of one or more threads running in parallel to any
+application threads and which serve web pages to clients. Apart from
+defining content, the application does not need to do anything to
+start the HTTP server.</P
+><P
+>The HTTP server is started by a static constructor. This simply
+creates an initial thread and sets it running. Since this is called
+before the scheduler is started, nothing will happen until the
+application calls <TT
+CLASS="FUNCTION"
+>cyg_scheduler_start()</TT
+>.</P
+><P
+>When the thread gets to run it first optionally delays for some period
+of time. This is to allow the application to perform any
+initialization free of any interference from the HTTP server. When the
+thread does finally run it creates a socket, binds it to the HTTP
+server port, and puts it into listen mode. It will then create any
+additional HTTPD server threads that have been configured before
+becoming a server thread itself.</P
+><P
+>Each HTTPD server thread simply waits for a connection to be made to
+the server port. When the connection is made it reads the HTTP request
+and extracts the filename being accessed. If the request also contains
+form data, this is also preserved. The filename is then looked up in a
+table.</P
+><P
+>Each table entry contains a filename pattern string, a
+pointer to a handler function, and a user defined argument for the
+function. Table entries are defined using the same link-time table
+building mechanism used to generate device tables. This is all handled
+by the <TT
+CLASS="LITERAL"
+>CYG_HTTPD_TABLE_ENTRY()</TT
+> macro which has the
+following format:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&#13;#include &lt;cyg/httpd/httpd.h&gt;
+
+CYG_HTTPD_TABLE_ENTRY( __name, __pattern, __handler, __arg )&#13;</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <TT
+CLASS="PARAMETER"
+><I
+>__name</I
+></TT
+> argument is a variable name for the
+table entry since C does not allow us to define anonymous data
+structures. This name should be chosen so that it is unique and does
+not pollute the name space. The <TT
+CLASS="PARAMETER"
+><I
+>__pattern</I
+></TT
+>
+argument is the match pattern. The <TT
+CLASS="PARAMETER"
+><I
+>__handler</I
+></TT
+>
+argument is a pointer to the handler function and
+<TT
+CLASS="PARAMETER"
+><I
+>__arg</I
+></TT
+> the user defined value.</P
+><P
+>The link-time table building means that several different pieces of
+code can define server table entries, and so long as the patterns do
+not clash they can be totally oblivious of each other. However, note
+also that this mechanism does not guarantee the order in which entries
+appear, this depends on the order of object files in the link, which
+could vary from one build to the next. So any tricky pattern matching
+that relies on this may not always work.</P
+><P
+>A request filename matches an entry in the table if either it exactly
+matches the pattern string, or if the pattern ends in an asterisk, and
+it matches everything up to that point. So for example the pattern
+&quot;/monitor/threads.html&quot; will only match that exact filename,
+but the pattern &quot;/monitor/thread-*&quot; will match
+&quot;/monitor/thread-0040.html&quot;,
+&quot;/monitor/thread-0100.html&quot; and any other filename starting
+with &quot;/monitor/thread-&quot;.</P
+><P
+>When a pattern is matched, the hander function is called. It has the
+following prototype:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_bool cyg_httpd_handler(FILE *client,
+                           char *filename,
+                           char *formdata,
+                           void *arg);</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <TT
+CLASS="PARAMETER"
+><I
+>client</I
+></TT
+> argument is the TCP connection to
+the client: anything output through this stream will be returned to
+the browser. The <TT
+CLASS="PARAMETER"
+><I
+>filename</I
+></TT
+> argument is the
+filename from the HTTP request and the <TT
+CLASS="PARAMETER"
+><I
+>formdata</I
+></TT
+>
+argument is any form response data, or NULL if none was sent. The
+<TT
+CLASS="PARAMETER"
+><I
+>arg</I
+></TT
+> argument is the user defined value from the
+table entry.</P
+><P
+>The handler is entirely responsible for generating the response to the
+client, both HTTP header and content. If the handler decides that it
+does not want to generate a response it can return
+<TT
+CLASS="LITERAL"
+>false</TT
+>, in which case the table scan is resumed for
+another match. If no match is found, or no handler returns true, then
+a default response page is generated indicating that the requested
+page cannot be found.</P
+><P
+>Finally, the server thread closes the connection to the client and
+loops back to accept a new connection.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-httpd-chapter.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-httpd-configuration.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Embedded HTTP Server</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-httpd-chapter.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Server Configuration</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

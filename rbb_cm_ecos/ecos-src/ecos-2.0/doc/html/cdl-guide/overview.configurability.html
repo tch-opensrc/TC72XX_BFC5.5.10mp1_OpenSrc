@@ -1,0 +1,206 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Why Configurability?</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="Overview"
+HREF="overview.html"><LINK
+REL="PREVIOUS"
+TITLE="Overview"
+HREF="overview.html"><LINK
+REL="NEXT"
+TITLE="Approaches to Configurability"
+HREF="overview.approaches.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="overview.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Overview</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="overview.approaches.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="OVERVIEW.CONFIGURABILITY">Why Configurability?</H1
+><P
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> component framework places a great deal of emphasis on
+configurability. The fundamental goal is to allow large parts of
+embedded applications to be constructed from re-usable software
+components, which does not a priori require that those components be
+highly configurable. However embedded application development often
+involves some serious constraints.</P
+><P
+>Many embedded applications have to work with very little memory, to
+keep down manufacturing costs. The final application image that will
+get blown into EPROM's or used to manufacture ROMs should contain only
+the code that is absolutely necessary for the application to work, and
+nothing else. If a few tens of kilobytes are added unnecessarily to a
+typical desktop application then this is regrettable, but is quite
+likely to go unnoticed. If an embedded application does not fit on the
+target hardware then the problem is much more serious. The component
+framework must allow users to configure the components so that any
+unnecessary functionality gets removed.</P
+><P
+>Many embedded applications need deterministic behavior so that they
+can meet real-time requirements. Such deterministic behavior can
+often be provided, but at a cost in terms of code size, slower
+algorithms, and so on. Other applications have no such real-time
+requirements, or only for a small part of the overall system, and the
+bulk of the system should not suffer any penalties. Again the
+component framework must allow the users control over the timing
+behavior of components.</P
+><P
+>Embedded systems tend to be difficult to debug. Even when it is
+possible to get information out of the target hardware by means other
+than flashing an LED, the more interesting debugging problems are
+likely to be timing-related and hence very hard to reproduce and track
+down. The re-usable components can provide debugging assistance in
+various ways. They can provide functionality that can be exploited by
+source level debuggers such as gdb, for example per-thread debugging
+information. They can also contain various assertions so that problems
+can be detected early on, tracing mechanisms to figure out what
+happened before the assertion failure, and so on. Of course all of
+these involve overheads, especially code size, and affect the timing.
+Allowing users to control which debugging features are enabled for any
+given application build is very desirable.</P
+><P
+>However, although it is desirable for re-usable components to provide
+appropriate configuration options this is not required. It is possible
+to produce a package which does not provide a single configuration
+option&nbsp;&#8212;&nbsp;although the user still gets to choose
+whether or not to use the package. In such cases it is still necessary
+to provide a minimal CDL script, but its main purpose would be to
+integrate the package with the component framework's build system.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="overview.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="overview.approaches.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Overview</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="overview.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Approaches to Configurability</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,716 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Support Functions and Macros</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Embedded HTTP Server"
+HREF="net-httpd-chapter.html"><LINK
+REL="PREVIOUS"
+TITLE="Server Configuration"
+HREF="net-httpd-configuration.html"><LINK
+REL="NEXT"
+TITLE="System Monitor"
+HREF="net-httpd-monitor.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-httpd-configuration.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 48. Embedded HTTP Server</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-httpd-monitor.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-HTTPD-HTML">Support Functions and Macros</H1
+><P
+>The emphasis of this server is on dynamically generated content,
+rather than fetching it from a filesystem. To do this the handler
+functions make calls to <TT
+CLASS="FUNCTION"
+>fprintf()</TT
+> and
+<TT
+CLASS="FUNCTION"
+>fputs()</TT
+>. Such handler functions would end up a
+mass of print calls, with the actual structure of the HTML page hidden
+in the format strings and arguments, making maintenance and debugging
+very difficult. Such an approach would also result in the definition
+of many, often only slightly different, format strings, leading to
+unnecessary bloat.</P
+><P
+>In an effort to expose the structure of the HTML in the structure of
+the C code, and to maximize the sharing of string constants, the
+<TT
+CLASS="FILENAME"
+>cyg/httpd/httpd.h</TT
+> header file defines a set of
+helper functions and macros. Most of these are wrappers for predefined
+print calls on the <TT
+CLASS="PARAMETER"
+><I
+>client</I
+></TT
+> stream passed to the
+hander function. For examples of their use, see the System Monitor
+example.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>All arguments to macros are pointers to strings, unless otherwise
+stated. In general, wherever a function or macro has an
+<TT
+CLASS="PARAMETER"
+><I
+>attr</I
+></TT
+> or <TT
+CLASS="PARAMETER"
+><I
+>__attr</I
+></TT
+>
+parameter, then the contents of this string will be inserted into the
+tag being defined as HTML attributes. If it is a NULL or empty string
+it will be ignored.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN15305">HTTP Support</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_http_start( FILE *client, char *content_type, int content_length );
+void cyg_http_finish( FILE *client );
+#define html_begin(__client)
+#define html_end( __client )</PRE
+></TD
+></TR
+></TABLE
+><P
+>The function <TT
+CLASS="FUNCTION"
+>cyg_http_start()</TT
+> generates a simple
+HTTP response header containing the value of
+<TT
+CLASS="LITERAL"
+>CYGDAT_HTTPD_SERVER_ID</TT
+> in the &quot;Server&quot; field, and the
+values of <TT
+CLASS="PARAMETER"
+><I
+>content_type</I
+></TT
+> and
+<TT
+CLASS="PARAMETER"
+><I
+>content_length</I
+></TT
+> in the &quot;Content-type&quot;
+and &quot;Content-length&quot; field respectively. The function
+<TT
+CLASS="FUNCTION"
+>cyg_http_finish()</TT
+> just adds an extra newline to
+the end of the output and then flushes it to force the data out to the
+client.</P
+><P
+>The macro <TT
+CLASS="LITERAL"
+>html_begin()</TT
+> generates an HTTP header
+with a &quot;text/html&quot; content type followed by an opening
+&quot;&lt;html&gt;&quot; tag. <TT
+CLASS="LITERAL"
+>html_end()</TT
+> generates
+a closing &quot;&lt;/html&gt;&quot; tag and calls
+<TT
+CLASS="FUNCTION"
+>cyg_http_finish()</TT
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN15318">General HTML Support</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_html_tag_begin( FILE *client, char *tag, char *attr );
+void cyg_html_tag_end( FILE *client, char *tag );
+#define html_tag_begin( __client, __tag, __attr )
+#define html_tag_end( __client, __tag )
+#define html_head( __client, __title, __meta )
+#define html_body_begin( __client, __attr )
+#define html_body_end( __client )
+#define html_heading( __client, __level, __heading )
+#define html_para_begin( __client, __attr )
+#define html_url( __client, __text, __link )
+#define html_image( __client, __source, __alt, __attr )</PRE
+></TD
+></TR
+></TABLE
+><P
+>The function <TT
+CLASS="FUNCTION"
+>cyg_html_tag_begin()</TT
+> generates an
+opening tag with the given name. The function
+<TT
+CLASS="FUNCTION"
+>cyg_html_tag_end()</TT
+> generates a closing tag with
+the given name. The macros <TT
+CLASS="LITERAL"
+>html_tag_begin()</TT
+> and
+<TT
+CLASS="LITERAL"
+>html_tag_end</TT
+> are just wrappers for these functions.</P
+><P
+>The macro <TT
+CLASS="LITERAL"
+>html_head()</TT
+> generates an HTML header
+section with <TT
+CLASS="PARAMETER"
+><I
+>__title</I
+></TT
+> as the title. The
+<TT
+CLASS="PARAMETER"
+><I
+>__meta</I
+></TT
+> argument defines any meta tags that will
+be inserted into the header. <TT
+CLASS="LITERAL"
+>html_body_begin()</TT
+> and
+<TT
+CLASS="LITERAL"
+>html_body_end</TT
+> generate HTML body begin and end
+tags.</P
+><P
+><TT
+CLASS="LITERAL"
+>html_heading()</TT
+> generates a complete HTML header
+where <TT
+CLASS="PARAMETER"
+><I
+>__level</I
+></TT
+> is a numerical level, between 1
+and 6, and <TT
+CLASS="PARAMETER"
+><I
+>__heading</I
+></TT
+> is the heading
+text. <TT
+CLASS="LITERAL"
+>html_para_begin()</TT
+> generates a paragraph
+break.</P
+><P
+><TT
+CLASS="LITERAL"
+>html_url()</TT
+> inserts a URL where
+<TT
+CLASS="PARAMETER"
+><I
+>__text</I
+></TT
+> is the displayed text and
+<TT
+CLASS="PARAMETER"
+><I
+>__link</I
+></TT
+> is the URL of the linked
+page. <TT
+CLASS="LITERAL"
+>html_image()</TT
+> inserts an image tag where
+<TT
+CLASS="PARAMETER"
+><I
+>__source</I
+></TT
+> is the URL of the image to be
+included and <TT
+CLASS="PARAMETER"
+><I
+>__alt</I
+></TT
+> is the alternative text for
+when the image is not displayed.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN15344">Table Support</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define html_table_begin( __client, __attr )
+#define html_table_end( __client )
+#define html_table_header( __client, __content, __attr )        
+#define html_table_row_begin( __client, __attr )     
+#define html_table_row_end( __client )               
+#define html_table_data_begin( __client, __attr )     
+#define html_table_data_end( __client )               </PRE
+></TD
+></TR
+></TABLE
+><P
+><TT
+CLASS="LITERAL"
+>html_table_begin()</TT
+> starts a table and
+<TT
+CLASS="LITERAL"
+>html_table_end()</TT
+> end
+it. <TT
+CLASS="LITERAL"
+>html_table_header()</TT
+> generates a simple table
+column header containg the string <TT
+CLASS="PARAMETER"
+><I
+>__content</I
+></TT
+>. </P
+><P
+><TT
+CLASS="LITERAL"
+>html_table_row_begin()</TT
+> and
+<TT
+CLASS="LITERAL"
+>html_table_row_end()</TT
+> begin and end a table row,
+and similarly <TT
+CLASS="LITERAL"
+>html_table_data_begin()</TT
+> and
+<TT
+CLASS="LITERAL"
+>html_table_data_end()</TT
+> begin and end a table
+entry. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN15357">Forms Support</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define html_form_begin( __client, __url, __attr )      
+#define html_form_end( __client )               
+#define html_form_input( __client, __type, __name, __value, __attr )            
+#define html_form_input_radio( __client, __name, __value, __checked )
+#define html_form_input_checkbox( __client, __name, __value, __checked )
+#define html_form_input_hidden( __client, __name, __value ) 
+#define html_form_select_begin( __client, __name, __attr )      
+#define html_form_option( __client, __value, __label, __selected )      
+#define html_form_select_end( __client ) 
+void cyg_formdata_parse( char *data, char *list[], int size );
+char *cyg_formlist_find( char *list[], char *name );</PRE
+></TD
+></TR
+></TABLE
+><P
+><TT
+CLASS="LITERAL"
+>html_form_begin()</TT
+> begins a form, the
+<TT
+CLASS="PARAMETER"
+><I
+>__url</I
+></TT
+> argument is the value for the
+<TT
+CLASS="LITERAL"
+>action</TT
+>
+attribute. <TT
+CLASS="LITERAL"
+>html_form_end()</TT
+> ends the form.</P
+><P
+><TT
+CLASS="LITERAL"
+>html_form_input()</TT
+> defines a general form input
+element with the given type, name and
+value. <TT
+CLASS="LITERAL"
+>html_form_input_radio</TT
+> creates a radio button
+with the given name and value; the <TT
+CLASS="PARAMETER"
+><I
+>__checked</I
+></TT
+>
+argument is a boolean expression that is used to determine whether the
+<TT
+CLASS="LITERAL"
+>checked</TT
+> attribute is added to the tag. Similarly
+<TT
+CLASS="LITERAL"
+>html_form_input_checkbox()</TT
+> defines a checkbox
+element. <TT
+CLASS="LITERAL"
+>html_form_input_hidden()</TT
+> defines a hidden
+form element with the given name and value.</P
+><P
+><TT
+CLASS="LITERAL"
+>html_form_select_begin()</TT
+> begins a multiple choice
+menu with the given name. <TT
+CLASS="LITERAL"
+>html_form_select_end()</TT
+>
+end it. <TT
+CLASS="LITERAL"
+>html_form_option()</TT
+> defines a menu entry
+with the given value and label; the <TT
+CLASS="PARAMETER"
+><I
+>__selected</I
+></TT
+>
+argument is a boolean expression controlling whether the
+<TT
+CLASS="LITERAL"
+>selected</TT
+> attribute is added to the tag.</P
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_formdata_parse()</TT
+> converts a form response
+string into an <TT
+CLASS="LITERAL"
+>NULL</TT
+>-terminated array of
+&quot;name=value&quot; entries. The <TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>
+argument is the string as passed to the handler function; note that
+this string is not copied and will be updated in place to form the
+list entries.  <TT
+CLASS="PARAMETER"
+><I
+>list</I
+></TT
+> is a pointer to an array of
+character pointers, and is <TT
+CLASS="PARAMETER"
+><I
+>size</I
+></TT
+> elements long.
+<TT
+CLASS="FUNCTION"
+>cyg_formlist_find()</TT
+> searches a list generated by
+<TT
+CLASS="FUNCTION"
+>cyg_formdata_parse()</TT
+> and returns a pointer to the
+value part of the string whose name part matches
+<TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>; if there is no match it will return
+<TT
+CLASS="LITERAL"
+>NULL</TT
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN15388">Predefined Handlers</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&#13;int cyg_httpd_send_html( FILE *client, char *filename, char *request, void *arg );
+
+typedef struct
+{
+    char        *content_type;
+    cyg_uint32  content_length;
+    cyg_uint8   *data;
+} cyg_httpd_data;
+#define CYG_HTTPD_DATA( __name, __type, __length, __data )
+
+int cyg_httpd_send_data( FILE *client, char *filename, char *request, void *arg );&#13;</PRE
+></TD
+></TR
+></TABLE
+><P
+>The HTTP server defines a couple of predefined handers to make it
+easier to deliver simple, static content.</P
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_httpd_send_html()</TT
+> takes a
+<TT
+CLASS="LITERAL"
+>NULL</TT
+>-terminated string as the argument and sends it
+to the client with an HTTP header indicating that it is HTML. The
+following is an example of its use:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&#13;char cyg_html_message[] = "&lt;head&gt;&lt;title&gt;Welcome&lt;/title&gt;&lt;/head&gt;\n"
+                          "&lt;body&gt;&lt;h2&gt;Welcome to my Web Page&lt;/h2&gt;&lt;/body&gt;\n"
+
+CYG_HTTPD_TABLE_ENTRY( cyg_html_message_entry,
+                       "/message.html",
+                       cyg_httpd_send_html,
+                       cyg_html_message );&#13;</PRE
+></TD
+></TR
+></TABLE
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_httpd_send_data()</TT
+> Sends arbitrary data to the
+client. The argument is a pointer to a <SPAN
+CLASS="TYPE"
+>cyg_httpd_data</SPAN
+>
+structure that defines the content type and length of the data, and a
+pointer to the data itself. The <TT
+CLASS="LITERAL"
+>CYG_HTTPD_DATA()</TT
+>
+macro automates the definition of the structure. Here is a typical
+example of its use:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&#13;static cyg_uint8 ecos_logo_gif[] = {
+    ...
+};
+
+CYG_HTTPD_DATA( cyg_monitor_ecos_logo_data,
+                "image/gif",
+                sizeof(ecos_logo_gif),
+                ecos_logo_gif );
+
+CYG_HTTPD_TABLE_ENTRY( cyg_monitor_ecos_logo,
+                       "/monitor/ecos.gif",
+                       cyg_httpd_send_data,
+                       &amp;cyg_monitor_ecos_logo_data );&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-httpd-configuration.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-httpd-monitor.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Server Configuration</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-httpd-chapter.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>System Monitor</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

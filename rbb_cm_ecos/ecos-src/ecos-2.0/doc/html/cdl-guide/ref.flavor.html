@@ -1,0 +1,550 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>flavor</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="doc"
+HREF="ref.doc.html"><LINK
+REL="NEXT"
+TITLE="hardware"
+HREF="ref.hardware.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.doc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.hardware.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.FLAVOR"><SPAN
+CLASS="PROPERTY"
+>flavor</SPAN
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4315"
+></A
+><H2
+>Name</H2
+>Property <SPAN
+CLASS="PROPERTY"
+>flavor</SPAN
+>&nbsp;--&nbsp;Specify the nature of a configuration option.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4319"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_option &lt;name&gt; {
+    flavor &lt;flavor&gt;
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4321"
+></A
+><H2
+>Description</H2
+><P
+>The state of a <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> configuration option is a somewhat complicated
+concept. This state determines what happens when a build tree is
+generated: it controls what files get built and what
+<TT
+CLASS="LITERAL"
+>#define's</TT
+> end up in configuration header files. The
+state also controls the values used during expression evaluation. The
+key concepts are:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>An option may or may not be loaded into the current configuration.
+However it is still possible for packages to reference options which
+are not loaded in a <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> constraint or other expression. If an
+option is not loaded then it will have no direct effect on the build
+process, and <TT
+CLASS="LITERAL"
+>0</TT
+> will be used for expression
+evaluation. </P
+></LI
+><LI
+><P
+>Even if an option is loaded it may still be inactive. Usually this is
+controlled by the option's location in the configuration hierarchy. If
+an option's parent is active and enabled then the option will normally
+be active. If the parent is either inactive or disabled then the
+option will be inactive. For example, if kernel timeslicing is diabled
+then the option <TT
+CLASS="LITERAL"
+>CYGNUM_KERNEL_SCHED_TIMESLICE_TICKS</TT
+>
+is irrelevant and must have no effect. The <SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+> property can be
+used to specify additional constraints. If an option is inactive then
+it will have no direct effect on the build process, in other words it
+will not cause any files to get built or <TT
+CLASS="LITERAL"
+>#define's</TT
+>
+to be generated. For the purposes of expression evaluation an inactive
+option has a value of <TT
+CLASS="LITERAL"
+>0</TT
+>.</P
+></LI
+><LI
+><P
+>An option may be enabled or disabled. Most options are boolean in
+nature, for example a particular function may get inlined or it may
+involve a full procedure call. If an option is disabled then it has no
+direct effect on the build process, and for the purposes of expression
+evaluation it has a value of 0.</P
+></LI
+><LI
+><P
+>An option may also have additional data associated with it, for
+example a numerical value used to control the size of an array.</P
+></LI
+></OL
+><P
+>Most options are boolean in nature and do not have any additional
+associated data. For some options only the data part makes sense and
+users should be unable to manipulate the enabled/disabled part of the
+state. For a comparatively small number of options it makes sense to
+have the ability to disable that option or to enable it and associate
+data as well. Finally, when constructing an option hierarchy it is
+occasionally useful to have entities which serve only as placeholders.
+The <SPAN
+CLASS="PROPERTY"
+>flavor</SPAN
+> property can be used to control all this. There are four
+possible values. It should be noted that the active or inactive state
+of an option takes priority over the flavor: if an option is inactive
+then no <TT
+CLASS="LITERAL"
+>#define's</TT
+> will be generated and any
+build-related properties such as <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> will be ignored.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>flavor&nbsp;<TT
+CLASS="LITERAL"
+>none</TT
+></DT
+><DD
+><P
+>The <TT
+CLASS="LITERAL"
+>none</TT
+> is intended primarily for placeholder
+components in the hierarchy, although it can be used for other
+purposes. Options with this flavor are always enabled and do not have
+any additional data associated with them, so there is no way for users
+to modify the option. For the purposes of expression evaluation an
+option with flavor <TT
+CLASS="LITERAL"
+>none</TT
+> always has the value
+<TT
+CLASS="LITERAL"
+>1</TT
+>. Normal <TT
+CLASS="LITERAL"
+>#define</TT
+> processing
+will take place, so typically a single <TT
+CLASS="LITERAL"
+>#define</TT
+> will
+be generated using the option name and a value of
+<TT
+CLASS="LITERAL"
+>1</TT
+>. Similarly build-related properties such as
+<SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> will take effect.</P
+></DD
+><DT
+>flavor&nbsp;<TT
+CLASS="LITERAL"
+>bool</TT
+></DT
+><DD
+><P
+>Boolean options can be either enabled or disabled, and there is no
+additional data associated with them. If a boolean option is disabled
+then no <TT
+CLASS="LITERAL"
+>#define</TT
+> will be generated and any
+build-related properties such as <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> will be ignored. For the
+purposes of expression evaluation a disabled option has the value
+<TT
+CLASS="LITERAL"
+>0</TT
+>. If a boolean option is enabled then normal
+<TT
+CLASS="LITERAL"
+>#define</TT
+> processing will take place, all
+build-related properties take effect, and the option's value will be
+<TT
+CLASS="LITERAL"
+>1</TT
+>.</P
+></DD
+><DT
+>flavor&nbsp;<TT
+CLASS="LITERAL"
+>data</TT
+></DT
+><DD
+><P
+>Options with this flavor are always enabled, and have some additional
+data associated with them which can be edited by the user. This data
+can be any sequence of characters, although in practice the
+<SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> property will often be used to impose constraints. In
+appropriate contexts such as expressions the configuration tools will
+attempt to interpret the data as integer or floating point numbers.
+Since an option with the <TT
+CLASS="LITERAL"
+>data</TT
+> flavor cannot be
+disabled, normal <TT
+CLASS="LITERAL"
+>#define</TT
+> processing takes place and
+the data will be used for the value. Similarly all build-related
+properties take effect, and the option's value for the purposes of
+expression evaluation is the data.</P
+></DD
+><DT
+>flavor&nbsp;<TT
+CLASS="LITERAL"
+>booldata</TT
+></DT
+><DD
+><P
+>This combines the <TT
+CLASS="LITERAL"
+>bool</TT
+> and <TT
+CLASS="LITERAL"
+>data</TT
+>
+flavors. The option may be enabled or disabled, and in addition the
+option has some associated data. If the option is disabled then no
+<TT
+CLASS="LITERAL"
+>#define</TT
+> will be generated, the build-related
+properties have no effect, and for the purposes of expression
+evaluation the option's value is <TT
+CLASS="LITERAL"
+>0</TT
+>. If the option
+is enabled then a <TT
+CLASS="LITERAL"
+>#define</TT
+> will be generated using
+the data as the value, all build-related properties take effect, and
+the option's value for the purposes of expression evaluation is the
+data. If <TT
+CLASS="LITERAL"
+>0</TT
+> is legal data then it is not possible to
+distinguish this case from the option being disabled or inactive.</P
+></DD
+></DL
+></DIV
+><P
+>Options and components have the <TT
+CLASS="LITERAL"
+>bool</TT
+> flavor by
+default, but this can be changed as desired. Packages always have the
+<TT
+CLASS="LITERAL"
+>booldata</TT
+> flavor, and this cannot be changed.
+Interfaces have the <TT
+CLASS="LITERAL"
+>data</TT
+> flavor by default, since
+the value of an interface is a count of the number of active and
+enabled interfaces, but they can be given the <TT
+CLASS="LITERAL"
+>bool</TT
+>
+or <TT
+CLASS="LITERAL"
+>booldata</TT
+> flavors.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>The expression syntax needs to be extended to allow the loaded,
+active, enabled and data aspects of an option's state to be examined
+individually. This would allow component writers to distinguish
+between a disabled <TT
+CLASS="LITERAL"
+>booldata</TT
+> option and an enabled
+one which has a value of <TT
+CLASS="LITERAL"
+>0</TT
+>. Such an enhancement to
+the expression syntax may also prove useful in other circumstances.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4397"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&#13;cdl_component CYGPKG_LIBM_COMPATIBILITY {
+
+    cdl_component CYGNUM_LIBM_COMPATIBILITY {
+        flavor booldata
+        &#8230;
+
+        cdl_option CYGNUM_LIBM_COMPAT_DEFAULT {
+            flavor data
+            &#8230;
+        }
+    }
+
+    &#8230;
+}
+
+cdl_component CYGPKG_LIBM_TRACE {
+    flavor        bool
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4400"
+></A
+><H2
+>See Also</H2
+><P
+>Properties <A
+HREF="ref.calculated.html"
+><SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+></A
+>,
+<A
+HREF="ref.default-value.html"
+><SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+></A
+> and
+<A
+HREF="ref.legal-values.html"
+><SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+></A
+>,</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.doc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.hardware.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>doc</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>hardware</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

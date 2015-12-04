@@ -1,0 +1,503 @@
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool]
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms]
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\aaed2000]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\adder]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="powerpc-eabi-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="powerpc-eabi"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\aeb]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\aki3068net]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="h8300-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="h8300-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\am31_sim]
+"ServerSideGdb"=dword:00000001
+"Prompt"="(gdb) "
+"Inferior"="mn10300-elf-gdb -nw -q %e"
+"Commands"="set height 0;target sim --board=stdeval1 --memory-region 0x34004000,0x8;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;run;set cyg_test_is_simulator=1;cont;bt"
+"Prefix"="mn10300-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\asb]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="mn10300-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="mn10300-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\asb2305]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="mn10300-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="mn10300-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\assabet]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;set $ps=0xd3;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\at91]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\atlas_mips32_4kc]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="mipsisa32-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="mipsisa32-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\atlas_mips64_5kc]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="mipsisa32-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="mipsisa32-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\brutus]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;set $ps=0xd3;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\ceb_v850]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="v850-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="v850-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\cerf]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\cerfpda]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\cma230]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\cma28x]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="powerpc-eabi-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="powerpc-eabi"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\cme555]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="powerpc-eabi-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="powerpc-eabi"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\cq7708]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="sh-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="sh-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\csb281]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="powerpc-eabi-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="powerpc-eabi"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\dreamcast]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="sh-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="sh-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\e7t]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\ebsa285]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\ec555]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="powerpc-eabi-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="powerpc-eabi"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\edb7xxx]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\excalibur_arm9]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\fads]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="powerpc-eabi-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="powerpc-eabi"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\flexanet]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\frv400]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="frv-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="frv-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\h8300h_sim]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="h8300-elf-gdb -nw -q %e"
+"Commands"="set height 0;target sim;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=1;cont;bt"
+"Prefix"="h8300-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\hs7729pci]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="sh-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="sh-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\innovator]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\integrator_arm7]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\integrator_arm9]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\ipaq]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\iq80310]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\iq80321]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\jmr3904]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="mips-tx39-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="mips-tx39-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\linux]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="i686-pc-linux-gnu-gdb -nw -q %e"
+"Commands"="set height 0;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;run;set cyg_test_is_simulator=1;cont;bt"
+"Prefix"="i686-pc-linux-gnu"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\malta_mips32_4kc]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="mipsisa32-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="mipsisa32-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\malta_mips64_5kc]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="mipsisa32-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="mipsisa32-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\mbx]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="powerpc-eabi-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="powerpc-eabi"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\mcf5272c3]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="m68k-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="m68k-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\mpc50]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\nano]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\npwr]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\ocelot]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="mipsisa32-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="mipsisa32-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\pc]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="i386-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="i386-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\pc_giga]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="i386-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="i386-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\pid]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\psim]
+"ServerSideGdb"=dword:00000001
+"Prompt"="(gdb) "
+"Inferior"="powerpc-eabi-gdb -nw -q %e"
+"Commands"="set height 0;target sim -o '/#address-cells 1' -o '/openprom/init/register/pc 0x100' -o '/iobus@0xf0000000/reg 0xf0000000 0x01000000' -o '/iobus/pal@0xf0001000/reg 0xf0001000 32';load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;run;set cyg_test_is_simulator=1;cont;bt"
+"Prefix"="powerpc-eabi"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\ref4955]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="mips-tx49-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="mips-tx49-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\refidt334]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="mipsisa32-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="mipsisa32-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\sa1100mm]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\se7751]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="sh-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="sh-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\se77x9]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="sh-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="sh-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\sh7708]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="sh-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="sh-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\sleb]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="sparclite-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="sparclite-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\snds]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="arm-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="arm-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\sparc_erc32]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="sparc-rtems-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="sparc-rtems"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\sparc_leon]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="sparc-rtems-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="sparc-rtems"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\sparclite_sim]
+"ServerSideGdb"=dword:00000001
+"Prompt"="(gdb) "
+"Inferior"="sparclite-elf-gdb -nw -q %e"
+"Commands"="set height 0;target sim -nfp -sparclite -dumbio;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;run;set cyg_test_is_simulator=1;cont;bt"
+"Prefix"="sparclite-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\stb]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="mn10300-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="mn10300-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\stdeval1]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="mn10300-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="mn10300-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\ts1000]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="powerpc-eabi-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="powerpc-eabi"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\ts6]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="powerpc-eabi-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="powerpc-eabi"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\tx39_sim]
+"ServerSideGdb"=dword:00000001
+"Prompt"="(gdb) "
+"Inferior"="mips-tx39-elf-gdb -nw -q %e"
+"Commands"="set height 0;target sim --board=jmr3904pal --memory-region 0xffff8000,0x900 --memory-region 0xffffe000,0x4 --memory-region 0xb2100000,0x4;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;run;set cyg_test_is_simulator=1;cont;bt"
+"Prefix"="mips-tx39-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\vads]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="powerpc-eabi-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="powerpc-eabi"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\viper]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="powerpc-eabi-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="powerpc-eabi"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\vrc4373]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="mips64vr4300-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="mips64vr4300-elf"
+
+[HKEY_CURRENT_USER\Software\eCos Configuration Tool\Platforms\vrc4375]
+"ServerSideGdb"=dword:00000000
+"Prompt"="(gdb) "
+"Inferior"="mips64vr4300-elf-gdb -nw -q %e"
+"Commands"="set height 0;set debug remote 0;set remotebaud %b;target remote %p;load;break cyg_test_exit;break cyg_assert_fail;break cyg_test_init;cont;set cyg_test_is_simulator=0;cont;bt"
+"Prefix"="mips64vr4300-elf"
+

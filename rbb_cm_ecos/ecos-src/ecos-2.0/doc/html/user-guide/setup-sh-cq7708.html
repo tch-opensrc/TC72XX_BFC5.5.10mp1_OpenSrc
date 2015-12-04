@@ -1,0 +1,472 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>SH3/CQ7708 Hardware Setup</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Target Setup"
+HREF="appendix-target-setup.html"><LINK
+REL="PREVIOUS"
+TITLE="SH3/EDK7708 Hardware Setup"
+HREF="setup-sh-edk7708.html"><LINK
+REL="NEXT"
+TITLE="SH3/HS7729PCI Hardware Setup"
+HREF="setup-sh-hs7729pci.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="setup-sh-edk7708.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Target Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="setup-sh-hs7729pci.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SETUP-SH-CQ7708">SH3/CQ7708 Hardware Setup</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4116">Preparing the board</H2
+><P
+>Make sure the DIP switches on the board are set as follows:
+  </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SW1-1 ON
+SW1-2 OFF   
+SW1-3 ON   
+SW1-4 OFF</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SW2-1 ON   
+SW2-2 ON   
+SW2-3 OFF   
+SW2-4 OFF</PRE
+></TD
+></TR
+></TABLE
+><P
+>If you are using a straight through serial cable which has
+flow control lines, you will also need to cut JP12 (5-6) as the
+flow control lines can cause NMIs.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4122">eCos GDB Stubs</H2
+><P
+>The eCos installation CD contains a copy of the eCos GDB stubs
+in  binary format which must be programmed into an EPROM or FLASH
+and  installed on the board.</P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4125">Preparing the GDB stubs</H3
+><P
+>These stub preparation steps are not strictly necessary as
+the eCos distribution ships with pre-compiled stubs in the directory
+loaders/sh3-cq7708 relative to the installation root.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4128">Building the GDB stub image with the eCos Configuration Tool</H3
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Start with a new document - selecting the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>File-&#62;New</I
+></SPAN
+>
+ menu item if necessary to do this.</P
+></LI
+><LI
+><P
+>Choose the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build-&#62;Templates</I
+></SPAN
+>
+ menu item, and then select the SH3 cq7708 hardware.</P
+></LI
+><LI
+><P
+>While still displaying the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build-&#62;Templates</I
+></SPAN
+>
+ dialog box, select the stubs package template to build a GDB stub.
+Click 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>OK</I
+></SPAN
+>.</P
+></LI
+><LI
+><P
+> Build eCos stubs using 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build-&#62;Library</I
+></SPAN
+>.</P
+></LI
+><LI
+><P
+> When the build completes, the image files can be found
+in the 
+<TT
+CLASS="FILENAME"
+>bin/</TT
+>
+ subdirectory of the install tree. GDB stub images have the prefix 
+<TT
+CLASS="FILENAME"
+>gdb_module</TT
+>.</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4148">Building the GDB stub image with ecosconfig</H3
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Make an empty directory to contain the build tree,
+and cd into it.</P
+></LI
+><LI
+><P
+> To build a GDB stub ROM image, enter the command: 
+     
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig new cq7708 stubs </PRE
+></TD
+></TR
+></TABLE
+></P
+></LI
+><LI
+><P
+> Enter the commands:
+    
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig tree      
+$ make</PRE
+></TD
+></TR
+></TABLE
+></P
+></LI
+><LI
+><P
+>When the build completes, the image files can be found
+in the 
+<TT
+CLASS="FILENAME"
+>bin/</TT
+>
+ subdirectory of the install tree. GDB stub images have the prefix 
+<TT
+CLASS="FILENAME"
+>gdb_module</TT
+>.  </P
+></LI
+></OL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4163">Programming the stubs in EPROM/FLASH</H2
+><P
+>The board can use different sizes of ROMs. Use this table
+to adjust the board&#8217;s jumpers to the ROM sizes you are
+using.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>size(kbit)    JP7   JP9   JP10   JP11     
+256           2-3   2-3   open   open     
+512           1-2   2-3   open   open     
+1000          1-2   open  open   2-3     
+2000          1-2   1-2   open   2-3     
+4000          1-2   1-2   short  2-3     
+8000          1-2   1-2   short  1-2</PRE
+></TD
+></TR
+></TABLE
+><P
+>There are two ways to program the stubs. We advise you to
+use method 1, since it is simpler. Method 2 is unsupported and requires
+a bit of fiddling.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Method 1: </I
+></SPAN
+> </P
+><P
+>Program the binary stub image into two EPROMs, E and O. EPROM
+E should  contain the even bytes, and O the odd bytes (your EPROM
+programmer should  have the ability to split the image).</P
+><P
+>EPROM E should be installed in socket IC8, and EPROM O should
+be  installed in socket IC4.</P
+><P
+>Set JP6 to 16 bit mode (1-2 soldered, 2-3 cut)  Set SW1-4
+to ON and SW2-1 to OFF.</P
+><P
+></P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Method2: </I
+></SPAN
+> </P
+><P
+>Assuming that the stub binary is smaller than 32 KB, you can
+install it in a single EPROM.</P
+><P
+>Compile the <TT
+CLASS="FILENAME"
+>mkcqrom.c</TT
+> program
+found in the <TT
+CLASS="FILENAME"
+>misc</TT
+> directory.</P
+><P
+>Use it to convert the binary image to the required format.
+See the  <TT
+CLASS="FILENAME"
+>mkcqrom.c</TT
+> source for a
+description of what is done, and why it is  necessary. </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+> % mkcqrom gdb_module.bin gdb_mangled.bin</PRE
+></TD
+></TR
+></TABLE
+><P
+>Program the <TT
+CLASS="FILENAME"
+>gdb_mangled.bin</TT
+> file
+into an EPROM and install it in  socket IC4</P
+><P
+>Set JP6 to 8 bit mode (cut 1-2, solder 2-3)</P
+><P
+>The GDB stubs allow communication with GDB using the serial
+port at connector CN7. The communication parameters are fixed at
+38400 baud, 8 data bits, no parity bit and 1 stop bit (8-N-1). No
+flow control is employed. Connection to the host computer should
+be made using a  straight through serial cable.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="setup-sh-edk7708.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="setup-sh-hs7729pci.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SH3/EDK7708 Hardware Setup</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="appendix-target-setup.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SH3/HS7729PCI Hardware Setup</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

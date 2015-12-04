@@ -1,0 +1,467 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>More Features &#8212; Clocks and Alarm
+Handlers</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Programming With eCos"
+HREF="user-guide-programming.html"><LINK
+REL="PREVIOUS"
+TITLE="A Sample Program with Two Threads"
+HREF="sample-twothreads.html"><LINK
+REL="NEXT"
+TITLE="The eCos Configuration Tool"
+HREF="the-ecos-configuration-tool.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="sample-twothreads.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="the-ecos-configuration-tool.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="CLOCKS-AND-ALARM-HANDLERS">Chapter 14. More Features &#8212; Clocks and Alarm
+Handlers</H1
+><P
+>If a program wanted to execute a task at a given time, or
+periodically, it could do it in an inefficient way by sitting in a
+loop and checking the real-time clock to see if the proper amount of
+time has elapsed. But operating systems usually provide system calls
+which allow the program to be informed at the desired time.</P
+><P
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> provides a rich timekeeping formalism, involving
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>counters</I
+></SPAN
+>, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>clocks</I
+></SPAN
+>,
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>alarms</I
+></SPAN
+>, and <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>timers</I
+></SPAN
+>.  The
+precise definition, relationship, and motivation of these features is
+beyond the scope of this tutorial, but these examples illustrate how
+to set up basic periodic tasks.</P
+><P
+>Alarms are events that happen at
+a given time, either once or periodically. A thread associates an
+alarm handling function with the alarm, so that the function will
+be invoked every time the alarm &#8220;goes off&#8221;.</P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SAMPLE-ALARMS">A Sample Program with Alarms</H1
+><P
+><TT
+CLASS="FILENAME"
+>simple-alarm.c</TT
+> (in
+the examples directory) is a short program that creates a thread that
+creates an alarm. The alarm is handled by the function
+<TT
+CLASS="FUNCTION"
+>test_alarm_func()</TT
+>, which sets a global
+variable. When the main thread of execution sees that the variable has
+changed, it prints a message.</P
+><DIV
+CLASS="EXAMPLE"
+><A
+NAME="AEN910"><P
+><B
+>Example 14-1. A sample program that creates an alarm</B
+></P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>/* this is a very simple program meant to demonstrate
+ a basic use of time, alarms and alarm-handling functions  in eCos */
+
+#include &lt;cyg/kernel/kapi.h&#62;
+
+#include &lt;stdio.h&#62;
+
+#define NTHREADS 1
+#define STACKSIZE 4096
+
+static cyg_handle_t thread[NTHREADS];
+
+static cyg_thread thread_obj[NTHREADS];
+static char stack[NTHREADS][STACKSIZE];
+
+static void alarm_prog( cyg_addrword_t data );
+
+/* we install our own startup routine which sets up
+  threads and starts the scheduler */
+void cyg_user_start(void)
+{
+ cyg_thread_create(4, alarm_prog, (cyg_addrword_t) 0,
+	"alarm_thread", (void *) stack[0],
+	STACKSIZE, &amp;thread[0], &amp;thread_obj[0]);
+ cyg_thread_resume(thread[0]);
+}
+
+/* we need to declare the alarm handling function (which is
+ defined below), so that we can pass it to  cyg_alarm_initialize() */
+cyg_alarm_t test_alarm_func;
+
+/* alarm_prog() is a thread which sets up an alarm which is then
+ handled by test_alarm_func() */
+static void alarm_prog(cyg_addrword_t data)
+{
+ cyg_handle_t test_counterH, system_clockH, test_alarmH;
+ cyg_tick_count_t ticks;
+ cyg_alarm test_alarm;
+ unsigned how_many_alarms = 0, prev_alarms = 0, tmp_how_many;
+
+ system_clockH = cyg_real_time_clock();
+ cyg_clock_to_counter(system_clockH, &amp;test_counterH);
+ cyg_alarm_create(test_counterH, test_alarm_func,
+	(cyg_addrword_t) &amp;how_many_alarms,
+	&amp;test_alarmH, &amp;test_alarm);
+ cyg_alarm_initialize(test_alarmH, cyg_current_time()+200, 200);
+
+ /* get in a loop in which we read the current time and
+    print it out, just to have something scrolling by */
+ for (;;) {
+   ticks = cyg_current_time();
+   printf("Time is %llu\n", ticks);
+   /* note that we must lock access to how_many_alarms, since the
+   alarm handler might change it. this involves using the
+   annoying temporary variable tmp_how_many so that I can keep the
+   critical region short */
+   cyg_scheduler_lock();
+   tmp_how_many = how_many_alarms;
+   cyg_scheduler_unlock();
+   if (prev_alarms != tmp_how_many) {
+     printf(" --- alarm calls so far: %u\n", tmp_how_many);
+     prev_alarms = tmp_how_many;
+   }
+   cyg_thread_delay(30);
+ }
+}
+
+/* test_alarm_func() is invoked as an alarm handler, so
+   it should be quick and simple. in this case it increments
+   the data that is passed to it. */
+void test_alarm_func(cyg_handle_t alarmH, cyg_addrword_t data)
+{
+ ++*((unsigned *) data);
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>When you run this program (by typing <B
+CLASS="COMMAND"
+>continue</B
+> at
+the (<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>gdb</I
+></SPAN
+>) prompt) the output should look like
+this:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Starting program: <TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/examples/simple-alarm.exe
+Time is 0
+Time is 30
+Time is 60
+Time is 90
+Time is 120
+Time is 150
+Time is 180
+Time is 210
+  --- alarm calls so far: 1
+Time is 240
+Time is 270
+Time is 300
+Time is 330
+Time is 360
+Time is 390
+Time is 420
+  --- alarm calls so far: 2
+Time is 450
+Time is 480</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>When running in a simulator the  delays
+might be quite long. On a hardware board (where the clock speed is 100
+ticks/second) the delays should average to about 0.3 seconds (and 2
+seconds between alarms). In simulation, the delay will depend on the
+speed of the host processor and will almost always be much slower than
+the actual board. You might want to reduce the delay parameter when
+running in simulation.</P
+></BLOCKQUOTE
+></DIV
+><P
+>Here are a few things you might notice about this program:</P
+><P
+></P
+><UL
+><LI
+><P
+>It used the <TT
+CLASS="FUNCTION"
+>cyg_real_time_clock()</TT
+> function;
+this always returns a handle to the default system real-time  clock. </P
+></LI
+><LI
+><P
+>Clocks are based on  counters, so the function <TT
+CLASS="FUNCTION"
+>cyg_alarm_create()</TT
+>
+uses a counter handle. The program used the function
+<TT
+CLASS="FUNCTION"
+>cyg_clock_to_counter()</TT
+> to strip the clock handle
+to the underlying counter handle. </P
+></LI
+><LI
+><P
+>Once the alarm is created it is 
+initialized with <TT
+CLASS="FUNCTION"
+>cyg_alarm_initialize()</TT
+>, which
+sets the time at which the alarm should go off, as well as the period
+for repeating alarms. It is set to go off at the current time and
+then to repeat every 200 ticks. </P
+></LI
+><LI
+><P
+>The alarm handler function
+<TT
+CLASS="FUNCTION"
+>test_alarm_func()</TT
+> conforms to the guidelines for
+writing alarm handlers and other  delayed service routines: it does not invoke any
+functions which might lock the scheduler.  This is discussed in detail
+in the <I
+CLASS="CITETITLE"
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Reference Manual</I
+>, in the chapter
+<I
+CLASS="CITETITLE"
+>The <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Kernel</I
+>.</P
+></LI
+><LI
+><P
+>There is a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>critical region</I
+></SPAN
+> in this program:
+the variable <TT
+CLASS="LITERAL"
+>how_many_alarms</TT
+> is accessed in the
+main thread of control and is also modified in the alarm handler. To
+prevent a possible (though unlikely) race condition on this variable,
+access to <TT
+CLASS="LITERAL"
+>how_many_alarms</TT
+> in the principal thread
+is protected by calls to <TT
+CLASS="FUNCTION"
+>cyg_scheduler_lock()</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_scheduler_unlock()</TT
+>. When the scheduler is
+locked, the alarm handler will not be invoked, so the problem is
+averted. </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="sample-twothreads.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="the-ecos-configuration-tool.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>A Sample Program with Two Threads</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="user-guide-programming.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>The eCos Configuration Tool</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

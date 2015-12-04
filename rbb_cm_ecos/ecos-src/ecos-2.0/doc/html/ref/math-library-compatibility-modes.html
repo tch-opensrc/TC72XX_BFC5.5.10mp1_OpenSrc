@@ -1,0 +1,502 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Math library compatibility modes</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="C and math library overview"
+HREF="c-and-math-library-overview.html"><LINK
+REL="PREVIOUS"
+TITLE="C and math library overview"
+HREF="c-and-math-library-overview.html"><LINK
+REL="NEXT"
+TITLE="Some implementation details"
+HREF="libc-implementation-details.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c-and-math-library-overview.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 13. C and math library overview</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="libc-implementation-details.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MATH-LIBRARY-COMPATIBILITY-MODES">Math library compatibility modes</H1
+><P
+>This math library is capable of being operated in several
+different compatibility modes. These options deal solely with how
+errors are handled. </P
+><P
+>There are 4 compatibility modes: ANSI/POSIX 1003.1;
+IEEE-754; X/Open Portability Guide issue 3 (XPG3); and
+System V Interface Definition Edition 3. </P
+><P
+>In IEEE mode, the <TT
+CLASS="FUNCTION"
+>matherr()</TT
+> function
+(see below) is never called, no warning messages are printed on
+the stderr output stream, and errno is never set. </P
+><P
+>In ANSI/POSIX mode, errno is set correctly,
+but <TT
+CLASS="FUNCTION"
+>matherr()</TT
+> is never called and no warning messages
+are printed on the stderr output stream. </P
+><P
+>In X/Open mode, errno is set correctly,
+<TT
+CLASS="FUNCTION"
+>matherr()</TT
+> is called, but no warning messages are printed
+on the stderr output stream. </P
+><P
+>In SVID mode, functions which overflow return
+a value HUGE (defined in <TT
+CLASS="FILENAME"
+>math.h</TT
+>), which is the maximum
+single precision floating point value (as opposed to
+HUGE_VAL which is meant to stand for infinity). errno is
+set correctly and <TT
+CLASS="FUNCTION"
+>matherr()</TT
+> is called. If
+<TT
+CLASS="FUNCTION"
+>matherr()</TT
+> returns 0, warning messages are printed on
+the stderr output stream for some errors. </P
+><P
+>The mode can be compiled-in as IEEE-only, or any one of the
+above methods settable at run-time. </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>This math library assumes that the hardware (or software floating
+point emulation) supports IEEE-754 style arithmetic, 32-bit 2's
+complement integer arithmetic, doubles are in 64-bit IEEE-754 format.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN10153">matherr()</H2
+><P
+>As mentioned above, in X/Open or SVID modes, the user
+	    can supply a function <TT
+CLASS="FUNCTION"
+>matherr()</TT
+> of
+	    the form:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int <TT
+CLASS="FUNCTION"
+>matherr</TT
+>( struct exception *e )</PRE
+></TD
+></TR
+></TABLE
+><P
+>where struct exception is defined as:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct exception {
+ int type;
+ char *name;
+ double arg1, arg2, retval;
+}; </PRE
+></TD
+></TR
+></TABLE
+><P
+>type is the exception type and is one of:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>DOMAIN</DT
+><DD
+><P
+>argument domain exception</P
+></DD
+><DT
+>SING</DT
+><DD
+><P
+>argument singularity</P
+></DD
+><DT
+>OVERFLOW</DT
+><DD
+><P
+>overflow range exception</P
+></DD
+><DT
+>UNDERFLOW</DT
+><DD
+><P
+>underflow range exception</P
+></DD
+><DT
+>TLOSS</DT
+><DD
+><P
+>total loss of significance</P
+></DD
+><DT
+>PLOSS</DT
+><DD
+><P
+>partial loss of significance</P
+></DD
+></DL
+></DIV
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+> is a string containing the name of the
+function</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>arg1</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>arg2</I
+></TT
+> are the
+arguments passed to the function</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>retval</I
+></TT
+> is the default value that will be returned
+by the function, and can be changed by <TT
+CLASS="FUNCTION"
+>matherr()</TT
+></P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>matherr must have &#8220;C&#8221; linkage, not &#8220;C&#0043;&#0043;&#8221; linkage.</P
+></BLOCKQUOTE
+></DIV
+><P
+>If matherr returns zero, or the user doesn't supply
+their own matherr, then the following <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>usually</I
+></SPAN
+> happens
+in SVID mode:</P
+><DIV
+CLASS="TABLE"
+><A
+NAME="AEN10199"><P
+><B
+>Table 13-1. Behavior of math exception handling</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Type</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Behavior</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>DOMAIN</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>0.0 returned,
+errno=EDOM, and a message printed on stderr</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>SING</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>HUGE of appropriate
+sign is returned, errno=EDOM, and a message is printed
+on stderr</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>OVERFLOW</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>HUGE of
+appropriate sign is returned, and errno=ERANGE</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>UNDERFLOW</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>0.0 is
+returned and errno=ERANGE</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>TLOSS</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>0.0 is returned,
+errno=ERANGE, and a message is printed on stderr</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>PLOSS</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>The current
+implementation doesn't return this type</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>X/Open mode is similar except that the message is
+not printed on stderr and HUGE_VAL is used in place of
+HUGE</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN10226">Thread-safety and re-entrancy</H2
+><P
+>With the appropriate configuration options set below, the
+math library is fully thread-safe if:</P
+><P
+></P
+><UL
+><LI
+><P
+>Depending on the compatibility mode, the
+		setting of the errno variable from the C library is
+		thread-safe</P
+></LI
+><LI
+><P
+>Depending on the compatibility mode, sending error messages
+to the stderr output stream using the C library 
+<TT
+CLASS="FUNCTION"
+>fputs()</TT
+>
+ function is thread-safe </P
+></LI
+><LI
+><P
+>Depending on the compatibility mode, the user-supplied 
+<TT
+CLASS="FUNCTION"
+>matherr()</TT
+>
+ function and anything it depends on are thread-safe </P
+></LI
+></UL
+><P
+>In addition, with the exception of the <TT
+CLASS="FUNCTION"
+>gamma*()</TT
+> and <TT
+CLASS="FUNCTION"
+>lgamma*()</TT
+> functions,
+the math library is reentrant (and thus safe to use from interrupt handlers)
+if the Math library is always in IEEE mode.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c-and-math-library-overview.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="libc-implementation-details.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>C and math library overview</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c-and-math-library-overview.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Some implementation details</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

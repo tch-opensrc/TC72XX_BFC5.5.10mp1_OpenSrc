@@ -1,0 +1,199 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Changes to eCos sources</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="SNMP for eCos"
+HREF="net-snmp-ecos-port.html"><LINK
+REL="PREVIOUS"
+TITLE="MIBs supported"
+HREF="net-snmp-mibs-supported.html"><LINK
+REL="NEXT"
+TITLE="Starting the SNMP Agent"
+HREF="net-snmp-starting-the-snmp-agent.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-snmp-mibs-supported.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 47. SNMP for <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-snmp-starting-the-snmp-agent.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-SNMP-ECOS-CHANGES">Changes to eCos sources</H1
+><P
+>Small changes have been made in three areas:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Various hardware-specific ethernet drivers.</P
+></LI
+><LI
+><P
+>The generic ethernet device driver.</P
+></LI
+><LI
+><P
+>The OpenBSD TCP/IP networking package.</P
+></LI
+></OL
+><P
+>These changes were made in order to export information about the driver and
+the network that the SNMP agent must report.  The changes were trivial in
+the case of the network stack, since it was already SNMP-friendly.  The
+generic ethernet device driver was re-organized to have an extensive header
+file and to add a couple of APIs to extract statistics that the
+hardware-specific device drivers keep within themselves.</P
+><P
+>There may be a performance hit for recording that data; disabling
+a config option named something like
+<TT
+CLASS="LITERAL"
+>CYGDBG_DEVS_ETH_xxxx_xxxx_KEEP_STATISTICS</TT
+>
+depending on the specific device driver will prevent that.</P
+><P
+>Not all platform ethernet device drivers export complete SNMP statistical
+information; if the exported information is missing, SNMP will report zero
+values for such data (in the dot3 MIB).</P
+><P
+>The interface chipset has an ID which is an OID; not all the latest greatest
+devices are listed in the abailable database, so new chipsets may need to
+be added to the client MIB, if not defined in those from UCD.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-snmp-mibs-supported.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-snmp-starting-the-snmp-agent.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>MIBs supported</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-snmp-ecos-port.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Starting the SNMP Agent</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

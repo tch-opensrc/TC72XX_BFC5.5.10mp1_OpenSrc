@@ -1,0 +1,487 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+> TTY driver</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Serial driver details"
+HREF="io-serial-driver-details.html"><LINK
+REL="PREVIOUS"
+TITLE="Serial driver details"
+HREF="io-serial-driver-details.html"><LINK
+REL="NEXT"
+TITLE="How to Write a Driver"
+HREF="io-how-to-write-a-driver.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="io-serial-driver-details.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 16. Serial driver details</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="io-how-to-write-a-driver.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="IO-TTY-DRIVER">TTY driver</H1
+><P
+>Use the include file <TT
+CLASS="FILENAME"
+>&lt;cyg/io/ttyio.h&gt;</TT
+> for
+this driver.</P
+><P
+>This driver is built on top of the simple
+serial driver and is typically used for a device that interfaces with
+humans such as a terminal. It provides some minimal formatting of data
+on output and allows for line-oriented editing on input.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN10715">Runtime configuration</H2
+><P
+>Runtime configuration is achieved by exchanging data structures with
+the driver via the <TT
+CLASS="FUNCTION"
+>cyg_io_set_config()</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_io_get_config()</TT
+> functions.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+ cyg_uint32 tty_out_flags;
+ cyg_uint32 tty_in_flags;
+} cyg_tty_info_t;</PRE
+></TD
+></TR
+></TABLE
+><P
+>The field <TT
+CLASS="STRUCTFIELD"
+><I
+>tty_out_flags</I
+></TT
+>
+is used to control what happens to data as it is send to the serial
+port. It contains a bitmap comprised of the bits as defined by the
+<TT
+CLASS="LITERAL"
+>CYG_TTY_OUT_FLAGS_xxx</TT
+> values below. </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYG_TTY_OUT_FLAGS_CRLF 0x0001 // Map '\n' =&gt; '\n\r' on output</PRE
+></TD
+></TR
+></TABLE
+><P
+>If this bit is set in <TT
+CLASS="STRUCTFIELD"
+><I
+>tty_out_flags</I
+></TT
+>,
+any occurrence of the character &quot;\n&quot; will
+be replaced by the sequence &quot;\n\r&quot; before
+being sent to the device.</P
+><P
+>The field <TT
+CLASS="STRUCTFIELD"
+><I
+>tty_in_flags</I
+></TT
+>
+is used to control how data is handled as it comes from the serial
+port. It contains a bitmap comprised of the bits as defined by the
+<TT
+CLASS="LITERAL"
+>CYG_TTY_IN_FLAGS_xxx</TT
+> values below. </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYG_TTY_IN_FLAGS_CR 0x0001 // Map '\r' =&gt; '\n' on input</PRE
+></TD
+></TR
+></TABLE
+><P
+>If this bit is set in <TT
+CLASS="STRUCTFIELD"
+><I
+>tty_in_flags</I
+></TT
+>, the
+character &quot;\r&quot; (&#8220;return&#8221; or &#8220;enter&#8221; on
+most keyboards) will be mapped to &quot;\n&quot;.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYG_TTY_IN_FLAGS_CRLF 0x0002 // Map '\n\r' =&gt; '\n' on input</PRE
+></TD
+></TR
+></TABLE
+><P
+>If this bit is set in <TT
+CLASS="STRUCTFIELD"
+><I
+>tty_in_flags</I
+></TT
+>, the
+character sequence &quot;\n\r&quot; (often sent by DOS/Windows
+based terminals) will be mapped to &quot;\n&quot;. </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYG_TTY_IN_FLAGS_BINARY 0x0004 // No input processing</PRE
+></TD
+></TR
+></TABLE
+><P
+>If this bit is set in <TT
+CLASS="STRUCTFIELD"
+><I
+>tty_in_flags</I
+></TT
+>, the
+input will not be manipulated in any way before being placed in
+the user&#8217;s buffer. </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYG_TTY_IN_FLAGS_ECHO 0x0008 // Echo characters as processed</PRE
+></TD
+></TR
+></TABLE
+><P
+>If this bit is set in <TT
+CLASS="STRUCTFIELD"
+><I
+>tty_in_flags</I
+></TT
+>, characters
+will be echoed back to the serial port as they are processed. </P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN10742">API details</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_io_read(handle, buf, len)</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function is used to read data from the device. In the
+default case, data is read until an end-of-line character ("\n"
+or "\r") is read. Additionally, the characters are echoed
+back to the [terminal] device. Minimal editing
+of the input is also supported. </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>When connecting to a remote target via GDB it is not possible
+to provide console input while GDB is connected. The GDB remote
+protocol does not support input. Users must disconnect from GDB
+if this functionality is required.</P
+></BLOCKQUOTE
+></DIV
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>	
+cyg_io_write(handle, buf, len)</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function is used to send data to the device. In the default
+case, the end-of-line character "\n" is replaced by the
+sequence "\n\r". </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_io_get_config(handle, key, buf, len)</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function is used to get information about the channel&#8217;s
+configuration at runtime. </P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_IO_GET_CONFIG_TTY_INFO</TT
+></DT
+><DD
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Buf type:</DT
+><DD
+><P
+>cyg_tty_info_t</P
+></DD
+><DT
+>Function:</DT
+><DD
+><P
+>This function retrieves the current state of the
+	    driver.
+            </P
+></DD
+></DL
+></DIV
+></DD
+></DL
+></DIV
+><P
+>Serial driver keys (see above) may also be specified
+in which case the call is passed directly to the serial
+driver. </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_io_set_config(handle, key, buf, len)</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function is used to modify the channel&#8217;s configuration
+at runtime. </P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_IO_SET_CONFIG_TTY_INFO</TT
+></DT
+><DD
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Buf type:</DT
+><DD
+><P
+>cyg_tty_info_t</P
+></DD
+><DT
+>Function:</DT
+><DD
+><P
+>This function changes the current state of the
+	    driver.</P
+></DD
+></DL
+></DIV
+></DD
+></DL
+></DIV
+><P
+>Serial driver
+keys (see above) may also be specified in which case the
+call is passed directly to the serial driver. </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="io-serial-driver-details.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="io-how-to-write-a-driver.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Serial driver details</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="io-serial-driver-details.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>How to Write a Driver</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

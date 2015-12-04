@@ -1,0 +1,382 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>help</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Common Commands"
+HREF="common-commands.html"><LINK
+REL="PREVIOUS"
+TITLE="dump"
+HREF="dump-command.html"><LINK
+REL="NEXT"
+TITLE="ip_address"
+HREF="ip-address-command.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="dump-command.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ip-address-command.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="HELP-COMMAND">help</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN3316"
+></A
+><H2
+>Name</H2
+>help&nbsp;--&nbsp;Display help on available commands</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN3319"><H2
+>Synopsis</H2
+><P
+><B
+CLASS="COMMAND"
+>help</B
+>  [<TT
+CLASS="REPLACEABLE"
+><I
+> topic</I
+></TT
+>]</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3324"
+></A
+><H2
+>Arguments</H2
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3326"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Name</TH
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Type</TH
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Default</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="REPLACEABLE"
+><I
+>topic</I
+></TT
+></TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>String</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Which command to provide help for.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>All commands</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3345"
+></A
+><H2
+>Description</H2
+><P
+>The <B
+CLASS="COMMAND"
+>help</B
+> command displays information about the available
+RedBoot commands.  If a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>topic</I
+></SPAN
+> is given, then the display
+is restricted to information about that specific command.
+      </P
+><P
+>If the command has sub-commands, e.g. <B
+CLASS="COMMAND"
+>fis</B
+>, then the topic
+specific display will print additional information about the available sub-commands.
+special (ICMP) packets to a specific host. These packets should be automatically
+returned by that host. The command will indicate how many of these round-trips
+were successfully completed. 
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3352"
+></A
+><H2
+>Examples</H2
+><P
+>Show generic help.  Note that the contents of this display will depend on the various configuration
+options for RedBoot when it was built.
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>help</B
+></TT
+>
+Manage aliases kept in FLASH memory
+   alias name [value]
+Manage machine caches
+   cache [ON | OFF]
+Display/switch console channel
+   channel [-1|&lt;channel number&gt;]
+Compute a 32bit checksum [POSIX algorithm] for a range of memory
+   cksum -b &lt;location&gt; -l &lt;length&gt;
+Display (hex dump) a range of memory
+   dump -b &lt;location&gt; [-l &lt;length&gt;] [-s] [-1|2|4]
+Manage FLASH images
+   fis {cmds}
+Manage configuration kept in FLASH memory
+   fconfig [-i] [-l] [-n] [-f] [-d] | [-d] nickname [value]
+Execute code at a location
+   go [-w &lt;timeout&gt;] [entry]
+Help about help?
+   help [&lt;topic&gt;]
+Set/change IP addresses
+   ip_address [-l &lt;local_ip_address&gt;] [-h &lt;server_address&gt;]
+Load a file
+   load [-r] [-v] [-d] [-h &lt;host&gt;] [-m {TFTP | HTTP | {x|y}MODEM -c &lt;channel_number&gt;}]
+        [-b &lt;base_address&gt;] &lt;file_name&gt;
+Compare two blocks of memory
+   mcmp -s &lt;location&gt; -d &lt;location&gt; -l &lt;length&gt; [-1|-2|-4]
+Fill a block of memory with a pattern
+   mfill -b &lt;location&gt; -l &lt;length&gt; -p &lt;pattern&gt; [-1|-2|-4]
+Network connectivity test
+   ping [-v] [-n &lt;count&gt;] [-l &lt;length&gt;] [-t &lt;timeout&gt;] [-r &lt;rate&gt;]
+        [-i &lt;IP_addr&gt;] -h &lt;IP_addr&gt;
+Reset the system
+   reset 
+Display RedBoot version information
+   version 
+Display (hex dump) a range of memory
+   x -b &lt;location&gt; [-l &lt;length&gt;] [-s] [-1|2|4]</PRE
+></TD
+></TR
+></TABLE
+> 
+      </P
+><P
+>Help about a command with sub-commands.
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>help fis</B
+></TT
+>
+Manage FLASH images
+   fis {cmds}
+Create an image
+  fis create -b &lt;mem_base&gt; -l &lt;image_length&gt; [-s &lt;data_length&gt;]
+      [-f &lt;flash_addr&gt;] [-e &lt;entry_point&gt;] [-r &lt;ram_addr&gt;] [-n] &lt;name&gt;
+Display an image from FLASH Image System [FIS]
+  fis delete name
+Erase FLASH contents
+  fis erase -f &lt;flash_addr&gt; -l &lt;length&gt;
+Display free [available] locations within FLASH Image System [FIS]
+  fis free 
+Initialize FLASH Image System [FIS]
+  fis init [-f]
+Display contents of FLASH Image System [FIS]
+  fis list [-c] [-d]
+Load image from FLASH Image System [FIS] into RAM
+  fis load [-d] [-b &lt;memory_load_address&gt;] [-c] name
+Write raw data directly to FLASH
+  fis write -f &lt;flash_addr&gt; -b &lt;mem_base&gt; -l &lt;image_length&gt;</PRE
+></TD
+></TR
+></TABLE
+> 
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="dump-command.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ip-address-command.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>dump</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="common-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>ip_address</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

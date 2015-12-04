@@ -1,0 +1,361 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Synchronization [POSIX Section 11]</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="POSIX Standard Support"
+HREF="posix-standard-support.html"><LINK
+REL="PREVIOUS"
+TITLE="Data Interchange Format [POSIX Section 10]"
+HREF="posix-data-interchange-format.html"><LINK
+REL="NEXT"
+TITLE="Memory Management [POSIX Section 12]"
+HREF="posix-memory-management.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="posix-data-interchange-format.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 31. POSIX Standard Support</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="posix-memory-management.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="POSIX-SYNCHRONIZATION">Synchronization &#0091;POSIX Section 11&#0093;</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13150">Functions Implemented</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>int sem&#0095;init(sem&#0095;t &#0042;sem, int pshared, unsigned int value); 
+int sem&#0095;destroy(sem&#0095;t &#0042;sem); 
+int sem&#0095;wait(sem&#0095;t &#0042;sem); 
+int sem&#0095;trywait(sem&#0095;t &#0042;sem); 
+int sem&#0095;post(sem&#0095;t &#0042;sem);
+int sem&#0095;getvalue(sem&#0095;t &#0042;sem, int &#0042;sval); 
+int pthread&#0095;mutexattr&#0095;init( pthread&#0095;mutexattr&#0095;t &#0042;attr); 
+int pthread&#0095;mutexattr&#0095;destroy( pthread&#0095;mutexattr&#0095;t &#0042;attr); 
+int pthread&#0095;mutex&#0095;init(pthread&#0095;mutex&#0095;t &#0042;mutex,
+	               const pthread&#0095;mutexattr&#0095;t &#0042;mutex&#0095;attr); 
+int pthread&#0095;mutex&#0095;destroy(pthread&#0095;mutex&#0095;t &#0042;mutex); 
+int pthread&#0095;mutex&#0095;lock(pthread&#0095;mutex&#0095;t &#0042;mutex); 
+int pthread&#0095;mutex&#0095;trylock(pthread&#0095;mutex&#0095;t &#0042;mutex); 
+int pthread&#0095;mutex&#0095;unlock(pthread&#0095;mutex&#0095;t &#0042;mutex); 
+int pthread&#0095;condattr&#0095;init(pthread&#0095;condattr&#0095;t &#0042;attr); 
+int pthread&#0095;condattr&#0095;destroy(pthread&#0095;condattr&#0095;t &#0042;attr); 
+int pthread&#0095;cond&#0095;init(pthread&#0095;cond&#0095;t &#0042;cond, 
+	               const pthread&#0095;condattr&#0095;t &#0042;attr); 
+int pthread&#0095;cond&#0095;destroy(pthread&#0095;cond&#0095;t &#0042;cond); 
+int pthread&#0095;cond&#0095;signal(pthread&#0095;cond&#0095;t &#0042;cond); 
+int pthread&#0095;cond&#0095;broadcast(pthread&#0095;cond&#0095;t &#0042;cond); 
+int pthread&#0095;cond&#0095;wait(pthread&#0095;cond&#0095;t &#0042;cond, 
+	               pthread&#0095;mutex&#0095;t &#0042;mutex);
+int pthread&#0095;cond&#0095;timedwait(pthread&#0095;cond&#0095;t &#0042;cond,
+	                   pthread&#0095;mutex&#0095;t &#0042;mutex,
+	                   const struct timespec &#0042;abstime);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13153">Functions Omitted</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>sem&#0095;t &#0042;sem&#0095;open(const char &#0042;name, int oflag, ...);		&#0047;&#0047; TBA 
+int sem&#0095;close(sem&#0095;t &#0042;sem);					&#0047;&#0047; TBA 
+int sem&#0095;unlink(const char &#0042;name);				&#0047;&#0047; TBA 
+int pthread&#0095;mutexattr&#0095;getpshared( const pthread&#0095;mutexattr&#0095;t &#0042;attr,
+	                          int &#0042;pshared );
+int pthread&#0095;mutexattr&#0095;setpshared( const pthread&#0095;mutexattr&#0095;t &#0042;attr,
+	                          int pshared );
+int  pthread&#0095;condattr&#0095;getpshared( const pthread&#0095;condattr&#0095;t &#0042;attr, 
+	                          int &#0042;pshared);
+int  pthread&#0095;condattr&#0095;setpshared( const pthread&#0095;condattr&#0095;t &#0042;attr,
+	                          int pshared);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13156">Notes</H2
+><P
+></P
+><UL
+><LI
+><P
+>	    The presence of semaphores is controlled by the
+	    CYGPKG&#0095;POSIX&#0095;SEMAPHORES option. This in turn
+	    causes the &#0095;POSIX&#0095;SEMAPHORES feature test
+	    macro to be defined and the semaphore API to be made
+	    available.
+	    </P
+></LI
+><LI
+><P
+>	    The <SPAN
+CLASS="strong"
+><B
+CLASS="EMPHASIS"
+>pshared</B
+></SPAN
+> argument to
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>sem&#0095;init()</I
+></SPAN
+> is not implemented,
+	    its value is ignored.
+	    </P
+></LI
+><LI
+><P
+>	    Functions <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>sem&#0095;open()</I
+></SPAN
+>, 
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>sem&#0095;close()</I
+></SPAN
+> and
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>sem&#0095;unlink()</I
+></SPAN
+> are present but
+	    always return an error (ENOSYS).
+	    </P
+></LI
+><LI
+><P
+>	    The exact priority inversion protocols supported may be
+	    controlled with the
+	    &#0095;POSIX&#0095;THREAD&#0095;PRIO&#0095;INHERIT and
+	    &#0095;POSIX&#0095;THREAD&#0095;PRIO&#0095;PROTECT
+	    configuration options.
+	    </P
+></LI
+><LI
+><P
+>	    &#0123;&#0095;POSIX&#0095;THREAD&#0095;PROCESS&#0095;SHARED&#0125; is
+	    not defined, so the 
+	    <SPAN
+CLASS="strong"
+><B
+CLASS="EMPHASIS"
+>process-shared</B
+></SPAN
+> mutex
+	    and condition variable attributes are not supported, and
+	    neither are the functions
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pthread&#0095;mutexattr&#0095;getpshared()</I
+></SPAN
+>,
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pthread&#0095;mutexattr&#0095;setpshared()</I
+></SPAN
+>, 
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pthread&#0095;condattr&#0095;getpshared()</I
+></SPAN
+> and 
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pthread&#0095;condattr&#0095;setpshared()</I
+></SPAN
+>. 
+	    </P
+></LI
+><LI
+><P
+>	    Condition variables do not become bound to a particular
+	    mutex when
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pthread&#0095;cond&#0095;wait()</I
+></SPAN
+> is
+	    called. Hence different threads may wait on a condition
+	    variable with different mutexes. This is at variance with
+	    the standard, which requires a condition variable to
+	    become (dynamically) bound by the first waiter, and
+	    unbound when the last finishes. However, this difference
+	    is largely benign, and the cost of policing this feature
+	    is non-trivial.
+	  </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="posix-data-interchange-format.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="posix-memory-management.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Data Interchange Format &#0091;POSIX Section 10&#0093;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="posix-standard-support.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Memory Management &#0091;POSIX Section 12&#0093;</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

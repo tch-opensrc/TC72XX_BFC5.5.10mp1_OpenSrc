@@ -1,0 +1,756 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>SMP Support</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="HAL Interfaces"
+HREF="hal-interfaces.html"><LINK
+REL="PREVIOUS"
+TITLE="Diagnostic Support"
+HREF="hal-diagnostic-support.html"><LINK
+REL="NEXT"
+TITLE="Exception Handling"
+HREF="hal-exception-handling.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="hal-diagnostic-support.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. HAL Interfaces</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="hal-exception-handling.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="HAL-SMP-SUPPORT">SMP Support</H1
+><P
+>eCos contains support for limited Symmetric Multi-Processing
+(SMP). This is only available on selected architectures and platforms.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN8275">Target Hardware Limitations</H2
+><P
+>To allow a reasonable implementation of SMP, and to reduce the
+disruption to the existing source base, a number of assumptions have
+been made about the features of the target hardware.</P
+><P
+></P
+><UL
+><LI
+><P
+>Modest multiprocessing. The typical number of CPUs supported is two
+to four, with an upper limit around eight. While there are no
+inherent limits in the code, hardware and algorithmic limitations
+will probably become significant beyond this point.</P
+></LI
+><LI
+><P
+>SMP synchronization support. The hardware must supply a mechanism to
+allow software on two CPUs to synchronize. This is normally provided
+as part of the instruction set in the form of test-and-set,
+compare-and-swap or load-link/store-conditional instructions. An
+alternative approach is the provision of hardware semaphore
+registers which can be used to serialize implementations of these
+operations. Whatever hardware facilities are available, they are
+used in eCos to implement spinlocks.</P
+></LI
+><LI
+><P
+>Coherent caches. It is assumed that no extra effort will be required
+to access shared memory from any processor. This means that either
+there are no caches, they are shared by all processors, or are
+maintained in a coherent state by the hardware. It would be too
+disruptive to the eCos sources if every memory access had to be
+bracketed by cache load/flush operations. Any hardware that requires
+this is not supported.</P
+></LI
+><LI
+><P
+>Uniform addressing. It is assumed that all memory that is
+shared between CPUs is addressed at the same location from all
+CPUs. Like non-coherent caches, dealing with CPU-specific address
+translation is considered too disruptive to the eCos source
+base. This does not, however, preclude systems with non-uniform
+access costs for different CPUs.</P
+></LI
+><LI
+><P
+>Uniform device addressing. As with access to memory, it is assumed
+that all devices are equally accessible to all CPUs. Since device
+access is often made from thread contexts, it is not possible to
+restrict access to device control registers to certain CPUs, since
+there is currently no support for binding or migrating threads to CPUs.</P
+></LI
+><LI
+><P
+>Interrupt routing. The target hardware must have an interrupt
+controller that can route interrupts to specific CPUs. It is
+acceptable for all interrupts to be delivered to just one CPU, or
+for some interrupts to be bound to specific CPUs, or for some
+interrupts to be local to each CPU. At present dynamic routing,
+where a different CPU may be chosen each time an interrupt is
+delivered, is not supported. ECos cannot support hardware where all
+interrupts are delivered to all CPUs simultaneously with the
+expectation that software will resolve any conflicts.</P
+></LI
+><LI
+><P
+>Inter-CPU interrupts. A mechanism to allow one CPU to interrupt
+another is needed. This is necessary so that events on one CPU can
+cause rescheduling on other CPUs.</P
+></LI
+><LI
+><P
+>CPU Identifiers. Code running on a CPU must be able to determine
+which CPU it is running on. The CPU Id is usually provided either in
+a CPU status register, or in a register associated with the
+inter-CPU interrupt delivery subsystem. ECos expects CPU Ids to be
+small positive integers, although alternative representations, such
+as bitmaps, can be converted relatively easily. Complex mechanisms
+for getting the CPU Id cannot be supported. Getting the CPU Id must
+be a cheap operation, since it is done often, and in performance
+critical places such as interrupt handlers and the scheduler.</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN8295">HAL Support</H2
+><P
+>SMP support in any platform depends on the HAL supplying the
+appropriate operations. All HAL SMP support is defined in the
+<TT
+CLASS="FILENAME"
+>cyg/hal/hal_smp.h</TT
+> header. Variant and platform
+specific definitions will be in <TT
+CLASS="FILENAME"
+>cyg/hal/var_smp.h</TT
+>
+and <TT
+CLASS="FILENAME"
+>cyg/hal/plf_smp.h</TT
+> respectively. These files
+are include automatically by this header, so need not be included
+explicitly.</P
+><P
+>SMP support falls into a number of functional groups.</P
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN8302">CPU Control</H3
+><P
+>This group consists of descriptive and control macros for managing the
+CPUs in an SMP system.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_SMP_CPU_TYPE</TT
+></DT
+><DD
+><P
+>A type that can contain a CPU id. A CPU id is
+usually a small integer that is used to index
+arrays of variables that are managed on an
+per-CPU basis.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_SMP_CPU_MAX</TT
+></DT
+><DD
+><P
+>The maximum number of CPUs that can be
+supported. This is used to provide the size of
+any arrays that have an element per CPU.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_SMP_CPU_COUNT()</TT
+></DT
+><DD
+><P
+>Returns the number of CPUs currently
+operational. This may differ from
+HAL_SMP_CPU_MAX depending on the runtime
+environment.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_SMP_CPU_THIS()</TT
+></DT
+><DD
+><P
+>Returns the CPU id of the current CPU.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_SMP_CPU_NONE</TT
+></DT
+><DD
+><P
+>A value that does not match any real CPU
+id. This is uses where a CPU type variable
+must be set to a null value.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_SMP_CPU_START( cpu )</TT
+></DT
+><DD
+><P
+>Starts the given CPU executing at a defined
+HAL entry point. After performing any HAL
+level initialization, the CPU calls up into
+the kernel at <TT
+CLASS="FUNCTION"
+>cyg_kernel_cpu_startup()</TT
+>.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_SMP_CPU_RESCHEDULE_INTERRUPT( cpu, wait )</TT
+></DT
+><DD
+><P
+>Sends the CPU a reschedule interrupt, and if
+<TT
+CLASS="PARAMETER"
+><I
+>wait</I
+></TT
+> is non-zero, waits for an
+acknowledgment. The interrupted CPU should call
+<TT
+CLASS="FUNCTION"
+>cyg_scheduler_set_need_reschedule()</TT
+> in its DSR to
+cause the reschedule to occur.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_SMP_CPU_TIMESLICE_INTERRUPT( cpu, wait )</TT
+></DT
+><DD
+><P
+>Sends the CPU a timeslice interrupt, and if
+<TT
+CLASS="PARAMETER"
+><I
+>wait</I
+></TT
+> is non-zero, waits for an
+acknowledgment. The interrupted CPU should call
+<TT
+CLASS="FUNCTION"
+>cyg_scheduler_timeslice_cpu()</TT
+> to cause the
+timeslice event to be processed.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN8351">Test-and-set Support</H3
+><P
+>Test-and-set is the foundation of the SMP synchronization
+mechanisms.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_TAS_TYPE</TT
+></DT
+><DD
+><P
+>The type for all test-and-set variables. The
+test-and-set macros only support operations on
+a single bit (usually the least significant
+bit) of this location. This allows for maximum
+flexibility in the implementation.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_TAS_SET( tas, oldb )</TT
+></DT
+><DD
+><P
+>Performs a test and set operation on the
+location <TT
+CLASS="PARAMETER"
+><I
+>tas</I
+></TT
+>. <TT
+CLASS="PARAMETER"
+><I
+>oldb</I
+></TT
+> will contain <TT
+CLASS="LITERAL"
+>true</TT
+> if
+the location was already set, and <TT
+CLASS="LITERAL"
+>false</TT
+> if
+it was clear.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_TAS_CLEAR( tas, oldb )</TT
+></DT
+><DD
+><P
+>Performs a test and clear operation on the
+location <TT
+CLASS="PARAMETER"
+><I
+>tas</I
+></TT
+>. <TT
+CLASS="PARAMETER"
+><I
+>oldb</I
+></TT
+> will contain <TT
+CLASS="LITERAL"
+>true</TT
+> if
+the location was already set, and <TT
+CLASS="LITERAL"
+>false</TT
+> if
+it was clear.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN8378">Spinlocks</H3
+><P
+>Spinlocks provide inter-CPU locking. Normally they will be implemented
+on top of the test-and-set mechanism above, but may also be
+implemented by other means if, for example, the hardware has more
+direct support for spinlocks.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_SPINLOCK_TYPE</TT
+></DT
+><DD
+><P
+>The type for all spinlock variables.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_SPINLOCK_INIT_CLEAR</TT
+></DT
+><DD
+><P
+>A value that may be assigned to a spinlock
+variable to initialize it to clear.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_SPINLOCK_INIT_SET</TT
+></DT
+><DD
+><P
+>A value that may be assigned to a spinlock
+variable to initialize it to set.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_SPINLOCK_SPIN( lock )</TT
+></DT
+><DD
+><P
+>The caller spins in a busy loop waiting for
+the lock to become clear. It then sets it and
+continues. This is all handled atomically, so
+that there are no race conditions between CPUs.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_SPINLOCK_CLEAR( lock )</TT
+></DT
+><DD
+><P
+>The caller clears the lock. One of any waiting
+spinners will then be able to proceed.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_SPINLOCK_TRY( lock, val )</TT
+></DT
+><DD
+><P
+>Attempts to set the lock. The value put in
+<TT
+CLASS="PARAMETER"
+><I
+>val</I
+></TT
+> will be <TT
+CLASS="LITERAL"
+>true</TT
+> if the lock was
+claimed successfully, and <TT
+CLASS="LITERAL"
+>false</TT
+> if it was
+not.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_SPINLOCK_TEST( lock, val )</TT
+></DT
+><DD
+><P
+>Tests the current value of the lock. The value
+put in <TT
+CLASS="PARAMETER"
+><I
+>val</I
+></TT
+> will be <TT
+CLASS="LITERAL"
+>true</TT
+> if the lock is
+claimed and <TT
+CLASS="LITERAL"
+>false</TT
+> of it is clear.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN8423">Scheduler Lock</H3
+><P
+>The scheduler lock is the main protection for all kernel data
+structures. By default the kernel implements the scheduler lock itself
+using a spinlock. However, if spinlocks cannot be supported by the
+hardware, or there is a more efficient implementation available, the
+HAL may provide macros to implement the scheduler lock.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_SMP_SCHEDLOCK_DATA_TYPE</TT
+></DT
+><DD
+><P
+>A data type, possibly a structure, that
+contains any data items needed by the
+scheduler lock implementation. A variable of
+this type will be instantiated as a static
+member of the Cyg_Scheduler_SchedLock class
+and passed to all the following macros.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_SMP_SCHEDLOCK_INIT( lock, data )</TT
+></DT
+><DD
+><P
+>Initialize the scheduler lock. The <TT
+CLASS="PARAMETER"
+><I
+>lock</I
+></TT
+>
+argument is the scheduler lock counter and the
+<TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+> argument is a variable of
+HAL_SMP_SCHEDLOCK_DATA_TYPE type.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_SMP_SCHEDLOCK_INC( lock, data )</TT
+></DT
+><DD
+><P
+>Increment the scheduler lock. The first
+increment of the lock from zero to one for any
+CPU may cause it to wait until the lock is
+zeroed by another CPU. Subsequent increments
+should be less expensive since this CPU
+already holds the lock.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_SMP_SCHEDLOCK_ZERO( lock, data )</TT
+></DT
+><DD
+><P
+>Zero the scheduler lock. This operation will
+also clear the lock so that other CPUs may
+claim it.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_SMP_SCHEDLOCK_SET( lock, data, new )</TT
+></DT
+><DD
+><P
+>Set the lock to a different value, in
+<TT
+CLASS="PARAMETER"
+><I
+>new</I
+></TT
+>. This is only called when the lock is
+already known to be owned by the current CPU. It is never called to
+zero the lock, or to increment it from zero.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN8455">Interrupt Routing</H3
+><P
+>The routing of interrupts to different CPUs is supported by two new
+interfaces in hal_intr.h.</P
+><P
+>Once an interrupt has been routed to a new CPU, the existing vector
+masking and configuration operations should take account of the CPU
+routing. For example, if the operation is not invoked on the
+destination CPU itself, then the HAL may need to arrange to transfer
+the operation to the destination CPU for correct application.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_INTERRUPT_SET_CPU( vector, cpu )</TT
+></DT
+><DD
+><P
+>Route the interrupt for the given <TT
+CLASS="PARAMETER"
+><I
+>vector</I
+></TT
+> to
+the given <TT
+CLASS="PARAMETER"
+><I
+>cpu</I
+></TT
+>. </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>HAL_INTERRUPT_GET_CPU( vector, cpu )</TT
+></DT
+><DD
+><P
+>Set <TT
+CLASS="PARAMETER"
+><I
+>cpu</I
+></TT
+> to the id of the CPU to which this
+vector is routed.</P
+></DD
+></DL
+></DIV
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="hal-diagnostic-support.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="hal-exception-handling.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Diagnostic Support</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="hal-interfaces.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Exception Handling</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

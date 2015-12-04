@@ -1,0 +1,365 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Per-thread data</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Kernel"
+HREF="kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="Thread priorities"
+HREF="kernel-thread-priorities.html"><LINK
+REL="NEXT"
+TITLE="Thread destructors"
+HREF="kernel-thread-destructors.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="kernel-thread-priorities.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="kernel-thread-destructors.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="KERNEL-THREAD-DATA">Per-thread data</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN660"
+></A
+><H2
+>Name</H2
+>cyg_thread_new_data_index, cyg_thread_free_data_index, cyg_thread_get_data, cyg_thread_get_data_ptr, cyg_thread_set_data&nbsp;--&nbsp;Manipulate per-thread data</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN667"><H2
+>Synopsis</H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><A
+NAME="AEN668"><P
+></P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &lt;cyg/kernel/kapi.h&gt;
+        </PRE
+></TD
+></TR
+></TABLE
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_ucount32 cyg_thread_new_data_index</CODE
+>(void);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_thread_free_data_index</CODE
+>(cyg_ucount32 index);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_addrword_t cyg_thread_get_data</CODE
+>(cyg_ucount32 index);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_addrword_t* cyg_thread_get_data_ptr</CODE
+>(cyg_ucount32 index);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_thread_set_data</CODE
+>(cyg_ucount32 index, cyg_addrword_t data);</CODE
+></P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN696"
+></A
+><H2
+>Description</H2
+><P
+>In some applications and libraries it is useful to have some data that
+is specific to each thread. For example, many of the functions in the
+POSIX compatibility package return -1 to indicate an error and store
+additional information in what appears to be a global variable
+<TT
+CLASS="VARNAME"
+>errno</TT
+>. However, if multiple threads make concurrent
+calls into the POSIX library and if <TT
+CLASS="VARNAME"
+>errno</TT
+> were
+really a global variable then a thread would have no way of knowing
+whether the current <TT
+CLASS="VARNAME"
+>errno</TT
+> value really corresponded
+to the last POSIX call it made, or whether some other thread had run
+in the meantime and made a different POSIX call which updated the
+variable. To avoid such confusion <TT
+CLASS="VARNAME"
+>errno</TT
+> is instead
+implemented as a per-thread variable, and each thread has its own
+instance.
+      </P
+><P
+>The support for per-thread data can be disabled via the configuration
+option <TT
+CLASS="VARNAME"
+>CYGVAR_KERNEL_THREADS_DATA</TT
+>. If enabled, each
+<SPAN
+CLASS="STRUCTNAME"
+>cyg_thread</SPAN
+> data structure holds a small array
+of words. The size of this array is determined by the configuration
+option <TT
+CLASS="VARNAME"
+>CYGNUM_KERNEL_THREADS_DATA_MAX</TT
+>. When a
+thread is created the array is filled with zeroes.
+      </P
+><P
+>If an application needs to use per-thread data then it needs an index
+into this array which has not yet been allocated to other code. This
+index can be obtained by calling
+<TT
+CLASS="FUNCTION"
+>cyg_thread_new_data_index</TT
+>, and then used in
+subsequent calls to <TT
+CLASS="FUNCTION"
+>cyg_thread_get_data</TT
+>.
+Typically indices are allocated during system initialization and
+stored in static variables. If for some reason a slot in the array is
+no longer required and can be re-used then it can be released by calling
+<TT
+CLASS="FUNCTION"
+>cyg_thread_free_data_index</TT
+>, 
+      </P
+><P
+>The current per-thread data in a given slot can be obtained using
+<TT
+CLASS="FUNCTION"
+>cyg_thread_get_data</TT
+>. This implicitly operates on
+the current thread, and its single argument should be an index as
+returned by <TT
+CLASS="FUNCTION"
+>cyg_thread_new_data_index</TT
+>. The
+per-thread data can be updated using
+<TT
+CLASS="FUNCTION"
+>cyg_thread_set_data</TT
+>. If a particular item of
+per-thread data is needed repeatedly then
+<TT
+CLASS="FUNCTION"
+>cyg_thread_get_data_ptr</TT
+> can be used to obtain the
+address of the data, and indirecting through this pointer allows the
+data to be examined and updated efficiently.
+      </P
+><P
+>Some packages, for example the error and POSIX packages, have
+pre-allocated slots in the array of per-thread data. These slots
+should not normally be used by application code, and instead slots
+should be allocated during initialization by a call to
+<TT
+CLASS="FUNCTION"
+>cyg_thread_new_data_index</TT
+>. If it is known that,
+for example, the configuration will never include the POSIX
+compatibility package then application code may instead decide to
+re-use the slot allocated to that package,
+<TT
+CLASS="VARNAME"
+>CYGNUM_KERNEL_THREADS_DATA_POSIX</TT
+>, but obviously
+this does involve a risk of strange and subtle bugs if the
+application's requirements ever change.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-THREAD-DATA-CONTEXT"
+></A
+><H2
+>Valid contexts</H2
+><P
+>Typically <TT
+CLASS="FUNCTION"
+>cyg_thread_new_data_index</TT
+> is only
+called during initialization, but may also be called at any time in
+thread context. <TT
+CLASS="FUNCTION"
+>cyg_thread_free_data_index</TT
+>, if
+used at all, can also be called during initialization or from thread
+context. <TT
+CLASS="FUNCTION"
+>cyg_thread_get_data</TT
+>,
+<TT
+CLASS="FUNCTION"
+>cyg_thread_get_data_ptr</TT
+>, and
+<TT
+CLASS="FUNCTION"
+>cyg_thread_set_data</TT
+> may only be called from
+thread context because they implicitly operate on the current thread.
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="kernel-thread-priorities.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="kernel-thread-destructors.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Thread priorities</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Thread destructors</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

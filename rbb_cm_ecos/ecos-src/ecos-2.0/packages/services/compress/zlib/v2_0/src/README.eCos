@@ -1,0 +1,17 @@
+Note that these are not the complete zlib sources - the following
+directories have been deleted since they are irrelevant for the
+eCos support:
+
+amiga/
+contrib/
+msdos/
+nt/
+os2/
+
+See the main site http://www.info-zip.org/pub/infozip/zlib/ for
+places to download the complete sources.
+
+Additionally, local changes has been made to the remaining files. Code
+changes are marked by __ECOS__ (comments or definitions). Finally, the
+headers zlib.h and zconf.h have been moved out of the directory into
+../include.

@@ -1,0 +1,280 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>µITRON API</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="µITRON"
+HREF="compat-uitron.html"><LINK
+REL="PREVIOUS"
+TITLE="µITRON"
+HREF="compat-uitron.html"><LINK
+REL="NEXT"
+TITLE="µITRON and eCos"
+HREF="compat-uitron-over-ecos.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="compat-uitron.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="compat-uitron-over-ecos.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="COMPAT-UITRON-MICROITRON-API">Chapter 32. &micro;ITRON API</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="compat-uitron-microitron-api.html#COMPAT-UITRON-INTRODUCTION"
+>Introduction to &micro;ITRON</A
+></DT
+><DT
+><A
+HREF="compat-uitron-over-ecos.html"
+>&micro;ITRON and <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+></A
+></DT
+><DT
+><A
+HREF="compat-uitron-task-management-functions.html"
+>Task Management Functions</A
+></DT
+><DT
+><A
+HREF="compat-uitron-task-dependent-synch-functions.html"
+>Task-Dependent Synchronization Functions</A
+></DT
+><DT
+><A
+HREF="compat-uitron-sync-and-comm-functions.html"
+>Synchronization and Communication Functions</A
+></DT
+><DT
+><A
+HREF="compat-uitron-extended-sync-comm-functions.html"
+>Extended Synchronization and Communication Functions</A
+></DT
+><DT
+><A
+HREF="compat-uitron-interrupt-management-functions.html"
+>Interrupt management functions</A
+></DT
+><DT
+><A
+HREF="compat-uitron-memory-pool-mgmt-functions.html"
+>Memory pool Management Functions</A
+></DT
+><DT
+><A
+HREF="compat-uitron-time-mgmt-functions.html"
+>Time Management Functions</A
+></DT
+><DT
+><A
+HREF="compat-uitron-system-mgmt-functions.html"
+>System Management Functions</A
+></DT
+><DT
+><A
+HREF="compat-uitron-network-support-functions.html"
+>Network Support Functions</A
+></DT
+><DT
+><A
+HREF="compat-uitron-configuration-faq.html"
+>&micro;ITRON Configuration FAQ</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="COMPAT-UITRON-INTRODUCTION">Introduction to &micro;ITRON</H1
+><P
+>The &micro;ITRON specification
+defines a highly flexible operating system architecture designed
+specifically for application in embedded systems. The specification addresses
+features which are common to the majority of processor architectures and
+deliberately avoids virtualization which would adversely impact
+real-time performance. The &micro;ITRON specification
+may be implemented on many hardware platforms and provides significant
+advantages by reducing the effort involved in understanding and
+porting application software to new processor architectures. </P
+><P
+>Several revisions of the &micro;ITRON specification exist.
+	In this release, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+> supports the
+	&micro;ITRON version 3.02 specification, with complete
+	&#8220;Standard functionality&#8221; (level S), plus many
+	&#8220;Extended&#8221; (level E) functions. The definitive
+	reference on &micro;ITRON is Dr. Sakamura&#8217;s book:
+	  <I
+CLASS="CITETITLE"
+>&micro;ITRON 3.0, An Open and Portable Real-Time Operating
+	  System for Embedded Systems</I
+>. 
+	The book can be purchased from the IEEE Press, and
+	an ASCII version of the standard can be found online at
+<A
+HREF="http://www.itron.gr.jp/"
+TARGET="_top"
+>http://www.itron.gr.jp/</A
+>.
+The old address 
+<A
+HREF="http://tron.um.u-tokyo.ac.jp/TRON/ITRON/"
+TARGET="_top"
+>http://tron.um.u-tokyo.ac.jp/TRON/ITRON/</A
+>
+still exists as a mirror site. </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="compat-uitron.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="compat-uitron-over-ecos.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>&micro;ITRON</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="compat-uitron.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&micro;ITRON and <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

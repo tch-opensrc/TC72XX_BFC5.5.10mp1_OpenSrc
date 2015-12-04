@@ -1,0 +1,479 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>POSIX Standard Support</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="eCos POSIX compatibility layer"
+HREF="posix-compatibility.html"><LINK
+REL="PREVIOUS"
+TITLE="eCos POSIX compatibility layer"
+HREF="posix-compatibility.html"><LINK
+REL="NEXT"
+TITLE="Process Environment [POSIX Section 4]"
+HREF="posix-process-environment.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="posix-compatibility.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="posix-process-environment.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="POSIX-STANDARD-SUPPORT">Chapter 31. POSIX Standard Support</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="posix-standard-support.html#POSIX-PROCESS-PRIMITIVES"
+>Process Primitives &#0091;POSIX Section 3&#0093;</A
+></DT
+><DT
+><A
+HREF="posix-process-environment.html"
+>Process Environment &#0091;POSIX Section 4&#0093;</A
+></DT
+><DT
+><A
+HREF="posix-files-and-directories.html"
+>Files and Directories &#0091;POSIX Section 5&#0093;</A
+></DT
+><DT
+><A
+HREF="posix-input-and-output.html"
+>Input and Output &#0091;POSIX Section 6&#0093;</A
+></DT
+><DT
+><A
+HREF="posix-device-and-class-specific-functions.html"
+>Device and Class Specific Functions &#0091;POSIX Section 7&#0093;</A
+></DT
+><DT
+><A
+HREF="posix-c-language-services.html"
+>C Language Services &#0091;POSIX Section 8&#0093;</A
+></DT
+><DT
+><A
+HREF="posix-system-databases.html"
+>System Databases &#0091;POSIX Section 9&#0093;</A
+></DT
+><DT
+><A
+HREF="posix-data-interchange-format.html"
+>Data Interchange Format &#0091;POSIX Section 10&#0093;</A
+></DT
+><DT
+><A
+HREF="posix-synchronization.html"
+>Synchronization &#0091;POSIX Section 11&#0093;</A
+></DT
+><DT
+><A
+HREF="posix-memory-management.html"
+>Memory Management &#0091;POSIX Section 12&#0093;</A
+></DT
+><DT
+><A
+HREF="posix-execution-scheduling.html"
+>Execution Scheduling &#0091;POSIX Section 13&#0093;</A
+></DT
+><DT
+><A
+HREF="posix-clocks-and-timers.html"
+>Clocks and Timers &#0091;POSIX Section 14&#0093;</A
+></DT
+><DT
+><A
+HREF="posix-message-passing.html"
+>Message Passing &#0091;POSIX Section 15&#0093;</A
+></DT
+><DT
+><A
+HREF="posix-thread-management.html"
+>Thread Management &#0091;POSIX Section 16&#0093;</A
+></DT
+><DT
+><A
+HREF="posix-thread-specific-data.html"
+>Thread-Specific Data &#0091;POSIX Section 17&#0093;</A
+></DT
+><DT
+><A
+HREF="posix-thread-cancellation.html"
+>Thread Cancellation &#0091;POSIX Section 18&#0093;</A
+></DT
+><DT
+><A
+HREF="posix-non-posix-functions.html"
+>Non-POSIX Functions</A
+></DT
+></DL
+></DIV
+><P
+>      eCos contains support for the POSIX Specification (ISO&#0047;IEC
+      9945-1)&#0091;POSIX&#0093;.
+    </P
+><P
+>      POSIX support is divided between the POSIX and the FILEIO
+      packages. The POSIX package provides support for threads,
+      signals, synchronization, timers and message queues. The FILEIO
+      package provides support for file and device I&#0047;O. The two
+      packages may be used together or separately, depending on
+      configuration.
+    </P
+><P
+>      This document takes a functional approach to the POSIX
+      library. Support for a function implies that the data types and
+      definitions necessary to support that function, and the objects
+      it manipulates, are also defined. Any exceptions to this are
+      noted, and unless otherwise noted, implemented functions behave
+      as specified in the POSIX standard.
+    </P
+><P
+>      This document only covers the differences between the eCos
+      implementation and the standard; it does not provide complete
+      documentation. For full information, see the POSIX standard
+      &#0091;POSIX&#0093;. Online, the Open Group Single Unix
+      Specification &#0091;SUS2&#0093; provides complete documentation
+      of a superset of POSIX. If you have access to a Unix system with
+      POSIX compatibility, then the manual pages for this will be of
+      use.  There are also a number of books available.
+      &#0091;Lewine&#0093; covers the process, signal, file and I&#0047;O
+      functions, while &#0091;Lewis1&#0093;, &#0091;Lewis2&#0093;,
+      &#0091;Nichols&#0093; and &#0091;Norton&#0093; cover Pthreads and
+      related topics (see Bibliography, xref). However, many of these
+      books are oriented toward using POSIX in non-embedded systems,
+      so care should be taken in applying them to programming under
+      eCos.
+    </P
+><P
+>      The remainder of this chapter broadly follows the structure
+      of the POSIX Specification. References to the appropriate
+      section of the Standard are included.
+    </P
+><P
+>      Omitted functions marked with &#8220;&#0047;&#0047; TBA&#8221;
+      are potential candidates for later implementation.
+    </P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="POSIX-PROCESS-PRIMITIVES">Process Primitives &#0091;POSIX Section 3&#0093;</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN12979">Functions Implemented</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>int kill(pid&#0095;t pid, int sig); 
+int pthread&#0095;kill(pthread&#0095;t thread, int sig); 
+int sigaction(int sig, const struct sigaction &#0042;act,
+              struct sigaction &#0042;oact); 
+int sigqueue(pid&#0095;t pid, int sig, const union sigval value); 
+int sigprocmask(int how, const sigset&#0095;t &#0042;set,
+                sigset&#0095;t &#0042;oset); 
+int pthread&#0095;sigmask(int how, const sigset&#0095;t &#0042;set,
+                    sigset&#0095;t &#0042;oset); 
+int sigpending(sigset&#0095;t &#0042;set);
+int sigsuspend(const sigset&#0095;t &#0042;set); 
+int sigwait(const sigset&#0095;t &#0042;set, int &#0042;sig); 
+int sigwaitinfo(const sigset&#0095;t &#0042;set, siginfo&#0095;t &#0042;info); 
+int sigtimedwait(const sigset&#0095;t &#0042;set, siginfo&#0095;t &#0042;info,
+                 const struct timespec &#0042;timeout); 
+int sigemptyset(sigset&#0095;t &#0042;set); 
+int sigfillset(sigset&#0095;t &#0042;set); 
+int sigaddset(sigset&#0095;t &#0042;set, int signo); 
+int sigdelset(sigset&#0095;t &#0042;set, int signo); 
+int sigismember(const sigset&#0095;t &#0042;set, int signo);
+unsigned int alarm( unsigned int seconds );
+int pause( void ); 
+unsigned int sleep( unsigned int seconds );</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN12982">Functions Omitted</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>pid&#0095;t fork(void); 
+int execl( const char &#0042;path, const char &#0042;arg, ... ); 
+int execv( const char &#0042;path, char &#0042;const argv&#0091;&#0093; ); 
+int execle( const char &#0042;path, const char &#0042;arg, ... ); 
+int execve( const char &#0042;path, char &#0042;const argv&#0091;&#0093;,
+            char &#0042;const envp&#0091;&#0093; ); 
+int execlp( const char &#0042;path, const char &#0042;arg, ... ); 
+int execvp( const char &#0042;path, char &#0042;const argv&#0091;&#0093; ); 
+int pthread&#0095;atfork( void(&#0042;prepare)(void),
+                    void (&#0042;parent)(void),
+                    void (&#0042;child)() );
+pid&#0095;t wait( int &#0042;stat&#0095;loc );		    
+pid&#0095;t waitpid( pid&#0095;t pid, int &#0042;stat&#0095;loc,
+               int options ); 
+void &#0095;exit( int status );</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN12985">Notes</H2
+><P
+></P
+><UL
+><LI
+><P
+>    Signal handling may be enabled or disabled with the
+    CYGPKG&#0095;POSIX&#0095;SIGNALS option. Since signals are used
+    by other POSIX components, such as timers, disabling signals will
+    disable those components too.
+    </P
+></LI
+><LI
+><P
+>    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>kill()</I
+></SPAN
+> and
+    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>sigqueue()</I
+></SPAN
+> may only take a 
+    <SPAN
+CLASS="strong"
+><B
+CLASS="EMPHASIS"
+>pid</B
+></SPAN
+> argument of zero,
+    which maps to the current process.
+    </P
+></LI
+><LI
+><P
+>    The <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>SIGEV&#0095;THREAD</I
+></SPAN
+> notification type is
+	    not currently implemented.
+    </P
+></LI
+><LI
+><P
+>    Job Control and Memory Protection signals are
+	    not supported.
+    </P
+></LI
+><LI
+><P
+>    An extra implementation defined
+    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>si&#0095;code</I
+></SPAN
+> value,
+    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>SI&#0095;EXCEPT</I
+></SPAN
+>, is defined to
+    distinguish hardware generated exceptions from
+    others.
+    </P
+></LI
+><LI
+><P
+>    Extra signals are defined:
+    &#0095;SIGTRAP&#0095;,&#0095;SIGIOT&#0095;,
+    &#0095;SIGEMT&#0095;, and &#0095;SIGSYS&#0095;. These are
+    largely to maintain compatibility with the signal numbers used by
+    GDB.
+    </P
+></LI
+><LI
+><P
+>    Signal delivery may currently occur at unexpected places in some
+    API functions. Using <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>longjmp()</I
+></SPAN
+> to transfer
+    control out of a signal handler may result in the interrupted
+    function not being able to complete properly. This may result in
+    later function calls failing or deadlocking.
+    </P
+></LI
+></UL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="posix-compatibility.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="posix-process-environment.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>eCos POSIX compatibility layer</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="posix-compatibility.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Process Environment &#0091;POSIX Section 4&#0093;</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

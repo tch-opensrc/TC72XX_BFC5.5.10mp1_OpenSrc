@@ -1,0 +1,265 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Server Configuration</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Embedded HTTP Server"
+HREF="net-httpd-chapter.html"><LINK
+REL="PREVIOUS"
+TITLE="Server Organization"
+HREF="net-httpd-organization.html"><LINK
+REL="NEXT"
+TITLE="Support Functions and Macros"
+HREF="net-httpd-html.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-httpd-organization.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 48. Embedded HTTP Server</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-httpd-html.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-HTTPD-CONFIGURATION">Server Configuration</H1
+><P
+>The HTTP server has a number of configuration options:</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN15263"><TT
+CLASS="LITERAL"
+>CYGNUM_HTTPD_SERVER_PORT</TT
+></H2
+><P
+>This option defines the TCP port that the server will listen on. It
+defaults to the standard HTTP port number 80. It may be changed to a
+different number if, for example, another HTTP server is using the
+main HTTP port.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN15267"><TT
+CLASS="LITERAL"
+>CYGDAT_HTTPD_SERVER_ID</TT
+></H2
+><P
+>This is the string that is reported to the client in the
+&quot;Server:&quot; field of the HTTP header. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN15271"><TT
+CLASS="LITERAL"
+>CYGNUM_HTTPD_THREAD_COUNT</TT
+></H2
+><P
+>The HTTP server can be configured to use more than one thread to
+service HTTP requests. If you expect to serve complex pages with many
+images or other components that are fetched separately, or if any
+pages may take a long time to send, then it may be useful to increase
+the number of server threads. For most uses, however, the connection
+queuing in the TCP/IP stack and the speed with which each page is
+generated, means that a single thread is usually adequate.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN15275"><TT
+CLASS="LITERAL"
+>CYGNUM_HTTPD_THREAD_PRIORITY</TT
+></H2
+><P
+>The HTTP server threads can be run at any priority. The exact priority
+depends on the importance of the server relative to the rest of the
+system. The default is to put them in the middle of the priority range
+to provide reasonable response without impacting genuine high priority
+threads.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN15279"><TT
+CLASS="LITERAL"
+>CYGNUM_HTTPD_THREAD_STACK_SIZE</TT
+></H2
+><P
+>This is the amount of stack to be allocated for each of the HTTPD
+threads. The actual stack size allocated will be this value plus the
+values of <TT
+CLASS="LITERAL"
+>CYGNUM_HAL_STACK_SIZE_MINIMUM</TT
+> and
+<TT
+CLASS="LITERAL"
+>CYGNUM_HTTPD_SERVER_BUFFER_SIZE</TT
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN15285"><TT
+CLASS="LITERAL"
+>CYGNUM_HTTPD_SERVER_BUFFER_SIZE</TT
+></H2
+><P
+>This defines the size of the buffer used to receive the first line of
+each HTTP request. If you expect to use particularly long URLs or have
+very complex forms, this should be increased.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN15289"><TT
+CLASS="LITERAL"
+>CYGNUM_HTTPD_SERVER_DELAY</TT
+></H2
+><P
+>This defines the number of system clock ticks that the HTTP server
+will wait before initializing itself and spawning any extra server
+threads. This is to give the application a chance to initialize
+properly without any interference from the HTTPD.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-httpd-organization.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-httpd-html.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Server Organization</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-httpd-chapter.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Support Functions and Macros</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

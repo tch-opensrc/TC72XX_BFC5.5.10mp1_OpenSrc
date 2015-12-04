@@ -1,0 +1,231 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>if_nametoindex</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="getservent"
+HREF="net-common-tcpip-manpages-getservent.html"><LINK
+REL="NEXT"
+TITLE="inet"
+HREF="net-common-tcpip-manpages-inet.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-getservent.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-inet.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-IF-NAMETOINDEX">if_nametoindex</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>IF_NAMETOINDEX(3)       System Library Functions Manual      IF_NAMETOINDEX(3)
+
+NAME
+     if_nametoindex, if_indextoname, if_nameindex, if_freenameindex - convert
+     interface index to name, and vice versa
+
+SYNOPSIS
+     #include &lt;net/if.h&#62;
+
+     unsigned int
+     if_nametoindex(const char *ifname);
+
+     char *
+     if_indextoname(unsigned int ifindex, char *ifname);
+
+     struct if_nameindex *
+     if_nameindex(void);
+
+     void
+     if_freenameindex(struct if_nameindex *ptr);
+
+DESCRIPTION
+     These functions map interface indexes to interface names (such as
+     ``lo0''), and vice versa.
+
+     The if_nametoindex() function converts an interface name specified by the
+     ifname argument to an interface index (positive integer value).  If the
+     specified interface does not exist, 0 will be returned.
+
+     if_indextoname() converts an interface index specified by the ifindex
+     argument to an interface name.  The ifname argument must point to a
+     buffer of at least IF_NAMESIZE bytes into which the interface name corre-
+     sponding to the specified index is returned.  (IF_NAMESIZE is also
+     defined in &lt;net/if.h&#62; and its value includes a terminating null byte at
+     the end of the interface name.)  This pointer is also the return value of
+     the function.  If there is no interface corresponding to the specified
+     index, NULL is returned.
+
+     if_nameindex() returns an array of if_nameindex structures.
+     if_nametoindex is also defined in &lt;net/if.h&#62;, and is as follows:
+
+     struct if_nameindex {
+         unsigned int   if_index;  /* 1, 2, ... */
+         char          *if_name;   /* null terminated name: "le0", ... */
+     };
+
+     The end of the array of structures is indicated by a structure with an
+     if_index of 0 and an if_name of NULL.  The function returns a null
+     pointer on error.  The memory used for this array of structures along
+     with the interface names pointed to by the if_name members is obtained
+     dynamically.  This memory is freed by the if_freenameindex() function.
+
+     if_freenameindex() takes a pointer that was returned by if_nameindex() as
+     argument (ptr), and it reclaims the region allocated.
+
+DIAGNOSTICS
+     if_nametoindex() returns 0 on error, positive integer on success.
+     if_indextoname() and if_nameindex() return NULL on errors.
+
+SEE ALSO
+     R. Gilligan, S.  Thomson, J. Bound, and W. Stevens, ``Basic Socket Inter-
+     face Extensions for IPv6,'' RFC2553, March 1999.
+
+STANDARDS
+     These functions are defined in ``Basic Socket Interface Extensions for
+     IPv6'' (RFC2533).
+
+BSD                              May 21, 1998                              BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-getservent.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-inet.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>getservent</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>inet</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

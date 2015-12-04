@@ -1,0 +1,309 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>	  System Management Functions</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="µITRON API"
+HREF="compat-uitron-microitron-api.html"><LINK
+REL="PREVIOUS"
+TITLE="Time Management Functions"
+HREF="compat-uitron-time-mgmt-functions.html"><LINK
+REL="NEXT"
+TITLE="	  Network Support Functions"
+HREF="compat-uitron-network-support-functions.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="compat-uitron-time-mgmt-functions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 32. &micro;ITRON API</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="compat-uitron-network-support-functions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="COMPAT-UITRON-SYSTEM-MGMT-FUNCTIONS">System Management Functions</H1
+><P
+>These functions are fully supported in this release:
+	</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>get_ver</TT
+>( 
+    T_VER *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_ver</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>ref_sys</TT
+>( 
+    T_RSYS *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_rsys</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>ref_cfg</TT
+>( 
+    T_RCFG *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_rcfg</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><P
+>Note that the information returned by each of these calls
+may be configured to match the user's own versioning system,
+and the values supplied by the default configuration may be inappropriate. </P
+><P
+>These functions are not supported in this release: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>def_svc</TT
+>( 
+    FN <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>s_fncd,</I
+></SPAN
+>
+    T_DSVC *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_dsvc</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>def_exc</TT
+>( 
+    UINT <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>exckind,</I
+></SPAN
+>
+    T_DEXC *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_dexc</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN14067">Error checking</H2
+><P
+>The following conditions are only checked for, and
+	    only return errors if
+	    
+<TT
+CLASS="LITERAL"
+>CYGSEM_UITRON_BAD_PARAMS_RETURN_ERRORS</TT
+>
+ is enabled: </P
+><P
+></P
+><UL
+><LI
+><P
+>return value pointer in all calls is a valid
+	      pointer, or E_PAR</P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="compat-uitron-time-mgmt-functions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="compat-uitron-network-support-functions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Time Management Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="compat-uitron-microitron-api.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Network Support Functions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

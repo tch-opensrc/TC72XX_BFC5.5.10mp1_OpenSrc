@@ -1,0 +1,537 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Interrupt management functions</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="µITRON API"
+HREF="compat-uitron-microitron-api.html"><LINK
+REL="PREVIOUS"
+TITLE="Extended Synchronization and Communication Functions"
+HREF="compat-uitron-extended-sync-comm-functions.html"><LINK
+REL="NEXT"
+TITLE="	  Memory pool Management Functions"
+HREF="compat-uitron-memory-pool-mgmt-functions.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="compat-uitron-extended-sync-comm-functions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 32. &micro;ITRON API</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="compat-uitron-memory-pool-mgmt-functions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="COMPAT-UITRON-INTERRUPT-MANAGEMENT-FUNCTIONS">Interrupt management functions</H1
+><P
+>These functions are fully supported in this release:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void	<TT
+CLASS="FUNCTION"
+> ret_int</TT
+>( void )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>loc_cpu</TT
+>( void )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>unl_cpu</TT
+>( void )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>dis_int</TT
+>( 
+    UINT <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eintno</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>ena_int</TT
+>( 
+    UINT <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eintno</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void	<TT
+CLASS="FUNCTION"
+>ret_wup</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tskid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>iwup_tsk</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tskid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>isig_sem</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>semid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>iset_flg</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>flgid ,</I
+></SPAN
+>
+    UID<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+> setptn</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>isend_msg</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mbxid ,</I
+></SPAN
+>
+    T_MSG<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+> *pk_msg</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><P
+>Note that <TT
+CLASS="FUNCTION"
+>ret_int()</TT
+> and
+the <TT
+CLASS="FUNCTION"
+>ret_wup()</TT
+> are  implemented
+as macros, containing a &#8220;return&#8221; statement.</P
+><P
+>Also note that <TT
+CLASS="FUNCTION"
+>ret_wup()</TT
+> and
+the <TT
+CLASS="FUNCTION"
+>ixxx_yyy()</TT
+> style functions
+will only work when called from an ISR whose associated DSR is <TT
+CLASS="FUNCTION"
+>cyg_uitron_dsr()</TT
+>,
+as specified in include file <TT
+CLASS="FILENAME"
+>&lt;cyg/compat/uitron/uit_ifnc.h&gt;</TT
+>,
+which defines the <TT
+CLASS="FUNCTION"
+>ixxx_yyy()</TT
+> style
+functions also.</P
+><P
+>If you are writing interrupt handlers more in the
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+> style, with separate ISR and DSR routines both of
+your own devising, do not use these special functions from a DSR: use plain
+<TT
+CLASS="FUNCTION"
+>xxx_yyy()</TT
+> style functions (with no &#8216;i&#8217; prefix)
+instead, and do not call any &micro;ITRON functions from the ISR at
+all.</P
+><P
+>The following functions are not supported in this release: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>def_int</TT
+>( 
+    UINT <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>dintno,</I
+></SPAN
+>
+  T_DINT *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_dint</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>chg_iXX</TT
+>( 
+    UINT <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>iXXXX</I
+></SPAN
+> )
+  </PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>ref_iXX</TT
+>( 
+    UINT * <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>p_iXXXX</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><P
+>These unsupported functions are all Level C (CPU dependent).
+Equivalent functionality is available via other <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+>-specific
+APIs. </P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13831">Error checking</H2
+><P
+>The following conditions are only checked for, and only return
+errors if 
+<TT
+CLASS="LITERAL"
+>CYGSEM_UITRON_BAD_PARAMS_RETURN_ERRORS</TT
+>
+is enabled:</P
+><P
+></P
+><UL
+><LI
+><P
+><TT
+CLASS="FUNCTION"
+>loc/unl_cpu()</TT
+>
+: these must only be called in a 
+&micro;ITRON task context, else E_CTX.</P
+></LI
+><LI
+><P
+><TT
+CLASS="FUNCTION"
+>dis/ena_int()</TT
+>
+: the interrupt number must be in range as specified by the platform
+HAL in qustion, else E_PAR.</P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="compat-uitron-extended-sync-comm-functions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="compat-uitron-memory-pool-mgmt-functions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Extended Synchronization and Communication Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="compat-uitron-microitron-api.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Memory pool Management Functions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

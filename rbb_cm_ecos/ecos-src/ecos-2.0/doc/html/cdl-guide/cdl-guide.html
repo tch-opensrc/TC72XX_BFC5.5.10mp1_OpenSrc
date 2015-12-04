@@ -1,0 +1,788 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>The eCos Component Writer's Guide</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="NEXT"
+TITLE="Overview"
+HREF="overview.html"></HEAD
+><BODY
+CLASS="BOOK"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="BOOK"
+><A
+NAME="CDL-GUIDE"><DIV
+CLASS="TITLEPAGE"
+><H1
+CLASS="TITLE"
+><A
+NAME="AEN4">The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</H1
+><H3
+CLASS="AUTHOR"
+><A
+NAME="AEN8">Bart Veer</H3
+><H3
+CLASS="AUTHOR"
+><A
+NAME="AEN11">John Dallaway</H3
+><P
+CLASS="COPYRIGHT"
+>Copyright &copy; 2000, 2001 by Red Hat Inc.</P
+><HR></DIV
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+>1. <A
+HREF="overview.html"
+>Overview</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="overview.html#OVERVIEW.TERMINOLOGY"
+>Terminology</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="overview.html#CONCEPTS.TERMINOLOGY.FRAMEWORK"
+>Component Framework</A
+></DT
+><DT
+><A
+HREF="overview.html#CONCEPTS.TERMINOLOGY.OPTION"
+>Configuration Option</A
+></DT
+><DT
+><A
+HREF="overview.html#CONCEPTS.TERMINOLOGY.COMPONENT"
+>Component</A
+></DT
+><DT
+><A
+HREF="overview.html#CONCEPTS.TERMINOLOGY.PACKAGE"
+>Package</A
+></DT
+><DT
+><A
+HREF="overview.html#CONCEPTS.TERMINOLOGY.CONFIGURATION"
+>Configuration</A
+></DT
+><DT
+><A
+HREF="overview.html#CONCEPTS.TERMINOLOGY.TARGET"
+>Target</A
+></DT
+><DT
+><A
+HREF="overview.html#CONCEPTS.TERMINOLOGY.TEMPLATE"
+>Template</A
+></DT
+><DT
+><A
+HREF="overview.html#CONCEPTS.TERMINOLOGY.PROPERTIES"
+>Properties</A
+></DT
+><DT
+><A
+HREF="overview.html#CONCEPTS.TERMINOLOGY.CONSEQUENCES"
+>Consequences</A
+></DT
+><DT
+><A
+HREF="overview.html#CONCEPTS.TERMINOLOGY.CONSTRAINTS"
+>Constraints</A
+></DT
+><DT
+><A
+HREF="overview.html#CONCEPTS.TERMINOLOGY.CONFLICTS"
+>Conflicts</A
+></DT
+><DT
+><A
+HREF="overview.html#CONCEPTS.TERMINOLOGY.CDL"
+>CDL</A
+></DT
+><DT
+><A
+HREF="overview.html#CONCEPTS.TERMINOLOGY.REPO"
+>Component Repository</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="overview.configurability.html"
+>Why Configurability?</A
+></DT
+><DT
+><A
+HREF="overview.approaches.html"
+>Approaches to Configurability</A
+></DT
+><DT
+><A
+HREF="overview.degress.html"
+>Degrees of Configurability</A
+></DT
+><DT
+><A
+HREF="overview.warning.html"
+>Warnings</A
+></DT
+></DL
+></DD
+><DT
+>2. <A
+HREF="package.html"
+>Package Organization</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="package.html#PACKAGE.HIERARCHY"
+>Packages and the Component Repository</A
+></DT
+><DT
+><A
+HREF="package.versions.html"
+>Package Versioning</A
+></DT
+><DT
+><A
+HREF="package.contents.html"
+>Package Contents and Layout</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="package.contents.html#PACKAGE.BUILD"
+>Outline of the Build Process</A
+></DT
+><DT
+><A
+HREF="package.contents.html#PACKAGE.SOURCE"
+>Configurable Source Code</A
+></DT
+><DT
+><A
+HREF="package.contents.html#PACKAGE.HEADERS"
+>Exported Header Files</A
+></DT
+><DT
+><A
+HREF="package.contents.html#PACKAGE.DOCUMENTATION"
+>Package Documentation</A
+></DT
+><DT
+><A
+HREF="package.contents.html#PACKAGE.TESTS"
+>Test Cases</A
+></DT
+><DT
+><A
+HREF="package.contents.html#PACKAGE.HOST"
+>Host-side Support</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="package.distrib.html"
+>Making a Package Distribution</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="package.distrib.html#PACKAGE.DISTRIB.FORMAT"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> package distribution file format</A
+></DT
+><DT
+><A
+HREF="package.distrib.html#PACKAGE.DISTRIB.PREPARE"
+>Preparing eCos packages for distribution</A
+></DT
+></DL
+></DD
+></DL
+></DD
+><DT
+>3. <A
+HREF="language.html"
+>The CDL Language</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="language.html#LANGUAGE.OVERVIEW"
+>Language Overview</A
+></DT
+><DT
+><A
+HREF="language.commands.html"
+>CDL Commands</A
+></DT
+><DT
+><A
+HREF="language.properties.html"
+>CDL Properties</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="language.properties.html#LANGUAGE.PROPERTIES.USER"
+>Information-providing Properties</A
+></DT
+><DT
+><A
+HREF="language.properties.html#LANGUAGE.PROPERTIES.HIERARCHY"
+>The Configuration Hierarchy</A
+></DT
+><DT
+><A
+HREF="language.properties.html#LANGUAGE.PROPERTIES.VALUE"
+>Value-related Properties</A
+></DT
+><DT
+><A
+HREF="language.properties.html#LANGUAGE.PROPERTIES.DEFINE"
+>Generating the Configuration Header Files</A
+></DT
+><DT
+><A
+HREF="language.properties.html#LANGUAGE.PROPERTIES.BUILD"
+>Controlling what gets Built</A
+></DT
+><DT
+><A
+HREF="language.properties.html#LANGUAGE.PROPERTIES.MISCELLANEOUS"
+>Miscellaneous Properties</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="language.naming.html"
+>Option Naming Convention</A
+></DT
+><DT
+><A
+HREF="language.tcl.html"
+>An Introduction to Tcl</A
+></DT
+><DT
+><A
+HREF="language.values.html"
+>Values and Expressions</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="language.values.html#LANGUAGE.VALUES.VALUE"
+>Option Values</A
+></DT
+><DT
+><A
+HREF="language.values.html#LANGUAGE.EXPRESSION"
+>Ordinary Expressions</A
+></DT
+><DT
+><A
+HREF="language.values.html#LANGUAGE.FUNCTIONS"
+>Functions</A
+></DT
+><DT
+><A
+HREF="language.values.html#LANGUAGE.GOAL-EXPRESSION"
+>Goal Expressions</A
+></DT
+><DT
+><A
+HREF="language.values.html#LANGUAGE.LIST-EXPRESSION"
+>List Expressions</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="language.interface.html"
+>Interfaces</A
+></DT
+><DT
+><A
+HREF="language.database.html"
+>Updating the <SPAN
+CLASS="DATABASE"
+>ecos.db</SPAN
+> database</A
+></DT
+></DL
+></DD
+><DT
+>4. <A
+HREF="build.html"
+>The Build Process</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="build.html#BUILD.OUTLINE"
+>Build Tree Generation</A
+></DT
+><DT
+><A
+HREF="build.headers.html"
+>Configuration Header File Generation</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="build.headers.html#BUILD.HEADERS.SYSTEM.H"
+>The <TT
+CLASS="FILENAME"
+>system.h</TT
+> Header</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="build.make.html"
+>Building eCos</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="build.make.html#BUILD.MAKE.UPDATE"
+>Updating the Build Tree</A
+></DT
+><DT
+><A
+HREF="build.make.html#BUILD.MAKE.EXPORT"
+>Exporting Public Header Files</A
+></DT
+><DT
+><A
+HREF="build.make.html#BUILD.MAKE.COMPILES"
+>Compiling</A
+></DT
+><DT
+><A
+HREF="build.make.html#BUILD.MAKE.LIBRARIES"
+>Generating the Libraries</A
+></DT
+><DT
+><A
+HREF="build.make.html#BUILD.EXTRAS"
+>The <TT
+CLASS="FILENAME"
+>extras.o</TT
+> file</A
+></DT
+><DT
+><A
+HREF="build.make.html#BUILD.FLAGS"
+>Compilers and Flags</A
+></DT
+><DT
+><A
+HREF="build.make.html#BUILD.CUSTOM"
+>Custom Build Steps</A
+></DT
+><DT
+><A
+HREF="build.make.html#BUILD.STARTUP"
+>Startup Code</A
+></DT
+><DT
+><A
+HREF="build.make.html#BUILD.LINKERSCRIPT"
+>The Linker Script</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="build.tests.html"
+>Building Test Cases</A
+></DT
+></DL
+></DD
+><DT
+>5. <A
+HREF="reference.html"
+>CDL Language Specification</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="ref.cdl-option.html"
+><TT
+CLASS="LITERAL"
+>cdl_option</TT
+></A
+>&nbsp;--&nbsp;Define a single configuration option</DT
+><DT
+><A
+HREF="ref.cdl-component.html"
+><TT
+CLASS="LITERAL"
+>cdl_component</TT
+></A
+>&nbsp;--&nbsp;Define a component, a collection of configuration options</DT
+><DT
+><A
+HREF="ref.cdl-package.html"
+><TT
+CLASS="LITERAL"
+>cdl_package</TT
+></A
+>&nbsp;--&nbsp;Define a package, a component that can be distributed</DT
+><DT
+><A
+HREF="ref.cdl-interface.html"
+><TT
+CLASS="LITERAL"
+>cdl_interface</TT
+></A
+>&nbsp;--&nbsp;Define an interface, functionality that can be provided by
+a number of different implementations.</DT
+><DT
+><A
+HREF="ref.active-if.html"
+><SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+></A
+>&nbsp;--&nbsp;Allow additional control over the active state of an
+option or other CDL entity.</DT
+><DT
+><A
+HREF="ref.calculated.html"
+><SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+></A
+>&nbsp;--&nbsp;Used if the current option's value is not user-modifiable,
+but is calculated using a suitable CDL expression.</DT
+><DT
+><A
+HREF="ref.compile.html"
+><SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+></A
+>&nbsp;--&nbsp;List the source files that should be built if this option
+is active and enabled.</DT
+><DT
+><A
+HREF="ref.default-value.html"
+><SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+></A
+>&nbsp;--&nbsp;Provide a default value for this option using a CDL expression.</DT
+><DT
+><A
+HREF="ref.define.html"
+><SPAN
+CLASS="PROPERTY"
+>define</SPAN
+></A
+>&nbsp;--&nbsp;Specify additional <TT
+CLASS="LITERAL"
+>#define</TT
+> symbols that
+should go into the owning package's configuration header file.</DT
+><DT
+><A
+HREF="ref.define-format.html"
+><SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+></A
+>&nbsp;--&nbsp;Control how an option's value will appear in the
+configuration header file.</DT
+><DT
+><A
+HREF="ref.define-header.html"
+><SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+></A
+>&nbsp;--&nbsp;Specify the  configuration header file that
+will be generated for a given package.</DT
+><DT
+><A
+HREF="ref.define-proc.html"
+><SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+></A
+>&nbsp;--&nbsp;Use a fragment of Tcl code to output additional data to
+configuration header files.</DT
+><DT
+><A
+HREF="ref.description.html"
+><SPAN
+CLASS="PROPERTY"
+>description</SPAN
+></A
+>&nbsp;--&nbsp;Provide a textual description for an option.</DT
+><DT
+><A
+HREF="ref.display.html"
+><SPAN
+CLASS="PROPERTY"
+>display</SPAN
+></A
+>&nbsp;--&nbsp;Provide a short string describing this option.</DT
+><DT
+><A
+HREF="ref.doc.html"
+><SPAN
+CLASS="PROPERTY"
+>doc</SPAN
+></A
+>&nbsp;--&nbsp;The location of online-documentation for a configuration option.</DT
+><DT
+><A
+HREF="ref.flavor.html"
+><SPAN
+CLASS="PROPERTY"
+>flavor</SPAN
+></A
+>&nbsp;--&nbsp;Specify the nature of a configuration option.</DT
+><DT
+><A
+HREF="ref.hardware.html"
+><SPAN
+CLASS="PROPERTY"
+>hardware</SPAN
+></A
+>&nbsp;--&nbsp;Specify that a package is tied to specific hardware.</DT
+><DT
+><A
+HREF="ref.if-define.html"
+><SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+></A
+>&nbsp;--&nbsp;Output a common preprocessor construct to a configuration
+header file.</DT
+><DT
+><A
+HREF="ref.implements.html"
+><SPAN
+CLASS="PROPERTY"
+>implements</SPAN
+></A
+>&nbsp;--&nbsp;Enabling this option provides one instance of a more
+general interface.</DT
+><DT
+><A
+HREF="ref.include-dir.html"
+><SPAN
+CLASS="PROPERTY"
+>include_dir</SPAN
+></A
+>&nbsp;--&nbsp;Specify the desired location of a package's exported
+header files in the install tree.</DT
+><DT
+><A
+HREF="ref.include-files.html"
+><SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+></A
+>&nbsp;--&nbsp;List the header files that are exported by a package.</DT
+><DT
+><A
+HREF="ref.legal-values.html"
+><SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+></A
+>&nbsp;--&nbsp;Impose constraints on the possible values for an option.</DT
+><DT
+><A
+HREF="ref.library.html"
+><SPAN
+CLASS="PROPERTY"
+>library</SPAN
+></A
+>&nbsp;--&nbsp;Specify which library should contain the object files
+generated by building this package.</DT
+><DT
+><A
+HREF="ref.make.html"
+><SPAN
+CLASS="PROPERTY"
+>make</SPAN
+></A
+>&nbsp;--&nbsp;Define an additional custom build step associated with an
+option, resulting in a target that should not go directly into a library.</DT
+><DT
+><A
+HREF="ref.make-object.html"
+><SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+></A
+>&nbsp;--&nbsp;Define a custom build step, resulting in an object file
+that should go into a library.</DT
+><DT
+><A
+HREF="ref.no-define.html"
+><SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+></A
+>&nbsp;--&nbsp;Suppress the normal generation of a preprocessor
+<TT
+CLASS="LITERAL"
+>#define</TT
+> symbol in a configuration header file.</DT
+><DT
+><A
+HREF="ref.parent.html"
+><SPAN
+CLASS="PROPERTY"
+>parent</SPAN
+></A
+>&nbsp;--&nbsp;Control the location of an option in the configuration hierarchy.</DT
+><DT
+><A
+HREF="ref.requires.html"
+><SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+></A
+>&nbsp;--&nbsp;List constraints that the configuration should satisfy if
+a given option is active and enabled..</DT
+><DT
+><A
+HREF="ref.script.html"
+><SPAN
+CLASS="PROPERTY"
+>script</SPAN
+></A
+>&nbsp;--&nbsp;Include additional configuration information from another
+CDL script.</DT
+></DL
+></DD
+><DT
+>6. <A
+HREF="advanced.html"
+>Templates, Targets and Other Topics</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="advanced.html#ADVANCED.TEMPLATES"
+>Templates</A
+></DT
+><DT
+><A
+HREF="advanced.targets.html"
+>Targets</A
+></DT
+></DL
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="overview.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Overview</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

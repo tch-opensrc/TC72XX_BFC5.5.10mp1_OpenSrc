@@ -1,0 +1,340 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>include_dir</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="implements"
+HREF="ref.implements.html"><LINK
+REL="NEXT"
+TITLE="include_files"
+HREF="ref.include-files.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.implements.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.include-files.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.INCLUDE-DIR"><SPAN
+CLASS="PROPERTY"
+>include_dir</SPAN
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4534"
+></A
+><H2
+>Name</H2
+>Property <SPAN
+CLASS="PROPERTY"
+>include_dir</SPAN
+>&nbsp;--&nbsp;Specify the desired location of a package's exported
+header files in the install tree.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4538"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_package &lt;name&gt; {
+    include_dir &lt;sub-directory&gt;
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4540"
+></A
+><H2
+>Description</H2
+><P
+>Most packages export one or more header files defining their public
+interface. For example the C library exports header files such as
+<TT
+CLASS="FILENAME"
+>stdio.h</TT
+> and
+<TT
+CLASS="FILENAME"
+>ctype.h</TT
+>. 
+If the package follows the <A
+HREF="package.html#PACKAGE.HIERARCHY"
+>directory
+layout conventions</A
+> then the exported header files will normally
+be found in the package's
+<TT
+CLASS="FILENAME"
+>include</TT
+> sub-directory.
+Alternatively the <SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+> property can be used to specify
+which header files should be exported.</P
+><P
+>By default a package's exported header files will be copied to
+the <TT
+CLASS="FILENAME"
+>include</TT
+> sub-directory of
+the install tree. This is correct for packages like the C library
+because that is the correct location for files such as
+<TT
+CLASS="FILENAME"
+>stdio.h</TT
+>. However to reduce the
+probability of name clashes it is desirable for packages to use
+different sub-directories, for example infrastructure header files get
+copied to <TT
+CLASS="FILENAME"
+>include/cyg/infra</TT
+>
+rather than to the top-level
+<TT
+CLASS="FILENAME"
+>include</TT
+> directory itself.</P
+><P
+>It would be possible to replicate these sub-directories in each
+package's source tree, such that the infrastructure header file
+sources lived in
+<TT
+CLASS="FILENAME"
+>include/cyg/infra</TT
+> in the source
+tree as well as in the install tree. This would make things more
+difficult for the package developers. Instead it is possible to
+specify the desired install tree sub-directory using an <SPAN
+CLASS="PROPERTY"
+>include_dir</SPAN
+>
+property, for example <TT
+CLASS="LITERAL"
+>include_dir&nbsp;cyg/infra</TT
+>.</P
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>include_dir</SPAN
+> property can only be used in the body of a
+<TT
+CLASS="LITERAL"
+>cdl_package</TT
+> command, since it applies to all of the header files
+exported by a package, and only one <SPAN
+CLASS="PROPERTY"
+>include_dir</SPAN
+> property can be
+used. If there is no <SPAN
+CLASS="PROPERTY"
+>include_dir</SPAN
+> property then exported header files
+will end up in the top-level <TT
+CLASS="FILENAME"
+>include</TT
+>
+directory of the install tree.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4563"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_INFRA {
+    display       "Infrastructure"
+    include_dir   cyg/infra
+    description   "
+        Common types and useful macros.
+        Tracing and assertion facilities.
+        Package startup options."
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4566"
+></A
+><H2
+>See Also</H2
+><P
+>Property <A
+HREF="ref.include-files.html"
+><SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+></A
+>, and
+command <A
+HREF="ref.cdl-package.html"
+><TT
+CLASS="LITERAL"
+>cdl_package</TT
+></A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.implements.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.include-files.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>implements</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,492 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Package Structure</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Managing the Package Repository"
+HREF="managing-package-repository.html"><LINK
+REL="PREVIOUS"
+TITLE="Managing the Package Repository"
+HREF="managing-package-repository.html"><LINK
+REL="NEXT"
+TITLE="Appendixes"
+HREF="appendices.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="managing-package-repository.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 29. Managing the Package Repository</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="appendices.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="PACKAGE-STRUCTURE">Package Structure</H1
+><P
+>The files in an installed <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> source tree are organized in
+a natural tree structure, grouping together files which work together
+into <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Packages</I
+></SPAN
+>. For example, the kernel files
+are all together in: </P
+><P
+></P
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+><TT
+CLASS="FILENAME"
+><TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/kernel/<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+>/include/</TT
+></TD
+></TR
+><TR
+><TD
+>	    <TT
+CLASS="FILENAME"
+><TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/kernel/<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+>/src/</TT
+></TD
+></TR
+><TR
+><TD
+>	<TT
+CLASS="FILENAME"
+><TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/kernel/<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+>/tests/</TT
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+><P
+>and &micro;ITRON compatibility layer files are in:
+	</P
+><P
+></P
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>	    <TT
+CLASS="FILENAME"
+><TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/compat/uitron/<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+>/include/</TT
+></TD
+></TR
+><TR
+><TD
+>	<TT
+CLASS="FILENAME"
+><TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/compat/uitron/<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+>/src/</TT
+></TD
+></TR
+><TR
+><TD
+>	<TT
+CLASS="FILENAME"
+><TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/compat/uitron/<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+>/tests/</TT
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+><P
+>The feature of these names which is of interest here is
+	  the <TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+> near the end. It may seem odd to place a version number deep in the
+	  path, rather than having something like
+	  <TT
+CLASS="FILENAME"
+><TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+>/...everything...</TT
+>
+          or leaving it up to you to choose a different
+	  install-place when a new release of the system arrives.
+	</P
+><P
+>There is a rationale for this organization: as
+	  indicated, the kernel and the
+	  &micro;ITRON compatibility subsystem
+	  are examples of software packages. For the first few
+	  releases of <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>, all the packages will move along
+	  in step, i.e. Release 1.3.x will feature Version
+	  1.3.x of every package, and so forth. But in future,
+	  especially when third party packages become available, it is
+	  intended that the package be the unit of software
+	  distribution, so it will be possible to build a system from
+	  a selection of packages with different version numbers, and
+	  even differing versioning <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>schemes</I
+></SPAN
+>. A
+	  Tcl script <B
+CLASS="COMMAND"
+>ecosadmin.tcl</B
+> is
+	  provided in the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> repository to manage the installation
+	  and removal of packages in this way.</P
+><P
+>Many users will have their own source code control system,
+version control system or equivalent, and will want to use it with
+<SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> sources. In that case, since a new release of <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> comes with
+different pathnames for all the source files, a bit of work is necessary
+to import a new release into your source repository. </P
+><P
+>One way of handling the import is to rename all the version
+parts to some common name, for example &#8220;current&#8221;,
+and continue to work. &#8220;current&#8221; is suggested because <B
+CLASS="COMMAND"
+>ecosconfig</B
+> recognizes
+it and places it first in any list of versions. In the future, we
+may provide a tool to help with this, or an option in the install
+wizard. Alternatively, in a POSIX shell environment (Linux or Cygwin
+on Windows) use the following command: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>find . -name <TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+> -type d -printf 'mv &#0037;p &#0037;h/current\n' | sh</PRE
+></TD
+></TR
+></TABLE
+><P
+>Having carried out such a renaming operation, your
+	  source tree will now look like this: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+><TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/kernel/current/include/
+<TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/kernel/current/src/
+<TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/kernel/current/tests/
+	...
+<TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/compat/uitron/current/include/
+<TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/compat/uitron/current/src/
+<TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/compat/uitron/current/tests/
+	</PRE
+></TD
+></TR
+></TABLE
+><P
+>which is a suitable format for import into your own
+	  source code control system. When you get a subsequent
+	  release of <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>, do the same thing and use your own source
+	  code control system to manage the new source base, by
+	  importing the new version from </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+><TT
+CLASS="REPLACEABLE"
+><I
+>NEW_BASE_DIR</I
+></TT
+>/kernel/current/include/</PRE
+></TD
+></TR
+></TABLE
+><P
+>and so on. </P
+><P
+>The <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> build tool will now offer only the
+	  &#8220;current&#8221; version of each package; select this
+	  for the packages you wish to use. </P
+><P
+>Making such a change has implications for any build
+	  trees you already have in use. A configured build tree
+	  contains information about the selected packages and their
+	  selected versions. Changing the name of the
+	  &#8220;versioning&#8221; folder in the source tree
+	  invalidates this information, and in consequence it also
+	  invalidates any local configuration options you have set up
+	  in this build tree. So if you want to change the version
+	  information in the source tree, do it first, before
+	  investing any serious time in configuring and building your
+	  system. When you create a new build tree to deal with the
+	  new source layout, it will contain default settings for all
+	  the configuration options, just like the old build tree did
+	  before you configured it. You will need to redo that
+	  configuration work in the new tree. </P
+><P
+>Moving source code around also invalidates debugging information
+in any programs or libraries built from the old tree; these will
+need to be rebuilt. </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="managing-package-repository.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="appendices.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Managing the Package Repository</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="managing-package-repository.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Appendixes</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

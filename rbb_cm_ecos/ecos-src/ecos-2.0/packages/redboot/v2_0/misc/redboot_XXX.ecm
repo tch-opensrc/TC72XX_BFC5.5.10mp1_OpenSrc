@@ -1,0 +1,20 @@
+cdl_savefile_version 1;
+cdl_savefile_command cdl_savefile_version {};
+cdl_savefile_command cdl_savefile_command {};
+cdl_savefile_command cdl_configuration { description hardware template package };
+cdl_savefile_command cdl_package { value_source user_value wizard_value inferred_value };
+cdl_savefile_command cdl_component { value_source user_value wizard_value inferred_value };
+cdl_savefile_command cdl_option { value_source user_value wizard_value inferred_value };
+cdl_savefile_command cdl_interface { value_source user_value wizard_value inferred_value };
+
+cdl_configuration eCos {
+    package -template CYGPKG_NS_DNS v2_0 ;
+    package -template CYGPKG_COMPRESS_ZLIB v2_0 ;
+    package -template CYGPKG_IO_FLASH v2_0;
+    package -template CYGPKG_IO_ETH_DRIVERS v2_0;
+};
+
+
+cdl_option CYGBLD_ISO_DNS_HEADER {
+    inferred_value 1 <cyg/ns/dns/dns.h>
+};

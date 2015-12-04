@@ -1,0 +1,393 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>TX49 Hardware Setup</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Target Setup"
+HREF="appendix-target-setup.html"><LINK
+REL="PREVIOUS"
+TITLE="TX39 Architectural Simulator Setup"
+HREF="setup-tx39-sim.html"><LINK
+REL="NEXT"
+TITLE="VR4300 Hardware Setup"
+HREF="setup-vr4300-vrc4373.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="setup-tx39-sim.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Target Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="setup-vr4300-vrc4373.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SETUP-TX49-REF4955">TX49 Hardware Setup</H1
+><P
+>The eCos installation CD contains a copy of the eCos GDB stubs
+in  SREC format which must be programmed into the board&#8217;s
+FLASH memory.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3296">Preparing the GDB stubs</H2
+><P
+>These stub preparation steps are not strictly necessary as
+the eCos distribution ships with pre-compiled stubs in the directory <TT
+CLASS="FILENAME"
+>loaders/tx49-ref4955</TT
+> relative
+to the installation root.</P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN3300">Building the GDB stub image with the eCos Configuration Tool</H3
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>		  Start with a new document - selecting the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>File-&#62;New</I
+></SPAN
+>
+ menu item if necessary to do this.</P
+></LI
+><LI
+><P
+>Choose the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build-&#62;Templates</I
+></SPAN
+>
+ menu item, and then select the TX49 REF4955 hardware.</P
+></LI
+><LI
+><P
+>While still displaying the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build-&#62;Templates</I
+></SPAN
+>
+ dialog box, select the stubs package template to build a GDB stub.
+Click 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>OK</I
+></SPAN
+>.</P
+></LI
+><LI
+><P
+>Build eCos stubs using 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build-&#62;Library</I
+></SPAN
+>.</P
+></LI
+><LI
+><P
+>When the build completes, the image files can be found
+in the bin/ subdirectory of the install tree. GDB stub
+images have the prefix gdb_module.</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN3318">Building the GDB stub image with ecosconfig</H3
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>		  Make an empty directory to contain the build tree,
+		  and cd into it.</P
+></LI
+><LI
+><P
+>To build a GDB stub ROM image, enter the command:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig new ref4955 stubs </PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>Enter the commands:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig tree
+$ make</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>When the build completes, the image files can be found
+in the bin/ subdirectory of the install tree. GDB stub
+images have the prefix gdb_module.</P
+></LI
+></OL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3331">Installing GDB stubs into FLASH</H2
+><P
+>Boot into the board&#8217;s firmware in little-endian mode:</P
+><P
+>Set the switches like this:   </P
+><P
+>SW1: 10000000 (first lever up, the rest down)   
+SW2: 10000010</P
+><P
+>Connect serial cable on the lower connector, configure terminal
+emulator for 38400, 8-N-1.</P
+><P
+>When booting the board, you should get this prompt:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>HCP5 rev 0.9B .    
+HCP5?</PRE
+></TD
+></TR
+></TABLE
+><P
+>Select o (option), a (FLASH) and b (boot write). You should
+see this:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Boot ROM Write   
+ROM address-ffffffffbd000000, Boot Bus-[32bit]  
+ID2 0 4 ffffffffa002ad40  
+zzz SS-40000 IV-1 CS-20000 CC-2   
+Flash ROM-[28F640J5], [16bit chip] * 2 * 1
+Block size-00040000  count-64  
+ROM adr ffffffffbd000000-ffffffffbe000000  mask-00fc0000
+Send Srecord file sa=00000000 size=ffffffffffffffff
+ra=fffffffffe000000
+	  </PRE
+></TD
+></TR
+></TABLE
+><P
+>Now send the stub SREC data down to the board using the terminal
+ emulator&#8217;s &#8216;send ASCII&#8217; (or similar)
+functionality. </P
+><P
+>Red Hat has experienced some sensitivity to how fast the data
+is written to the board. Under Windows you should configure Minicom
+to use a line delay of 100 milliseconds. Under Linux, use the slow_cat.tcl
+ script:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>% cd BASE_DIR/packages/hal/mips/ref4955/<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+>/misc
+% slow_cat.tcl &lt; [path]/gdb_module.srec &#62; /dev/ttyS0</PRE
+></TD
+></TR
+></TABLE
+><P
+>Power off the board, and change it to boot the GDB stubs in
+big-endian mode by setting the switches like this:</P
+><P
+>SW1: 00000000 (all levers down)   
+SW2: 10001010</P
+><P
+>The GDB stubs allow communication with GDB using the serial
+port at connector PJ7A (lower connector). The communication parameters
+are  fixed at 38400 baud, 8 data bits, no parity bit and 1 stop
+bit  (8-N-1). No flow control is employed. Connection to the host
+computer should be made using a straight through serial cable.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="setup-tx39-sim.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="setup-vr4300-vrc4373.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>TX39 Architectural Simulator Setup</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="appendix-target-setup.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>VR4300 Hardware Setup</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

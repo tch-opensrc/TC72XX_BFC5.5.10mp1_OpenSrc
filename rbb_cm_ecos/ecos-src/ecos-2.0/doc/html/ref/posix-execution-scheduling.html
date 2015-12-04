@@ -1,0 +1,372 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Execution Scheduling [POSIX Section 13]</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="POSIX Standard Support"
+HREF="posix-standard-support.html"><LINK
+REL="PREVIOUS"
+TITLE="Memory Management [POSIX Section 12]"
+HREF="posix-memory-management.html"><LINK
+REL="NEXT"
+TITLE="Clocks and Timers [POSIX Section 14]"
+HREF="posix-clocks-and-timers.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="posix-memory-management.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 31. POSIX Standard Support</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="posix-clocks-and-timers.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="POSIX-EXECUTION-SCHEDULING">Execution Scheduling &#0091;POSIX Section 13&#0093;</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13195">Functions Implemented</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>int sched&#0095;yield(void); 
+int sched&#0095;get&#0095;priority&#0095;max(int policy); 
+int sched&#0095;get&#0095;priority&#0095;min(int policy); 
+int sched&#0095;rr&#0095;get&#0095;interval(pid&#0095;t pid, struct timespec &#0042;t); 
+int pthread&#0095;attr&#0095;setscope(pthread&#0095;attr&#0095;t &#0042;attr, int scope); 
+int pthread&#0095;attr&#0095;getscope(const pthread&#0095;attr&#0095;t &#0042;attr, int &#0042;scope); 
+int pthread&#0095;attr&#0095;setinheritsched(pthread&#0095;attr&#0095;t &#0042;attr, int inherit); 
+int pthread&#0095;attr&#0095;getinheritsched(const pthread&#0095;attr&#0095;t &#0042;attr, int &#0042;inherit); 
+int pthread&#0095;attr&#0095;setschedpolicy(pthread&#0095;attr&#0095;t &#0042;attr, int policy); 
+int pthread&#0095;attr&#0095;getschedpolicy(const pthread&#0095;attr&#0095;t &#0042;attr, int &#0042;policy);
+int pthread&#0095;attr&#0095;setschedparam( pthread&#0095;attr&#0095;t &#0042;attr, const struct sched&#0095;param &#0042;param); 
+int pthread&#0095;attr&#0095;getschedparam( const pthread&#0095;attr&#0095;t &#0042;attr,
+	                        struct sched&#0095;param &#0042;param); 
+int pthread&#0095;setschedparam(pthread&#0095;t thread, int policy,
+	                  const struct sched&#0095;param &#0042;param); 
+int pthread&#0095;getschedparam(pthread&#0095;t thread, int &#0042;policy,
+	                  struct sched&#0095;param &#0042;param); 
+int pthread&#0095;mutexattr&#0095;setprotocol( pthread&#0095;mutexattr&#0095;t &#0042;attr,
+                                   int protocol);
+int pthread&#0095;mutexattr&#0095;getprotocol( pthread&#0095;mutexattr&#0095;t &#0042;attr,
+                                   int &#0042;protocol); 
+int pthread&#0095;mutexattr&#0095;setprioceiling( pthread&#0095;mutexattr&#0095;t &#0042;attr,
+                                      int prioceiling); 
+int pthread&#0095;mutexattr&#0095;getprioceiling( pthread&#0095;mutexattr&#0095;t &#0042;attr,
+	                              int &#0042;prioceiling);
+int pthread&#0095;mutex&#0095;setprioceiling( pthread&#0095;mutex&#0095;t &#0042;mutex,
+	                          int prioceiling,
+	                          int &#0042;old&#0095;ceiling); 
+int pthread&#0095;mutex&#0095;getprioceiling( pthread&#0095;mutex&#0095;t &#0042;mutex,
+                                  int &#0042;prioceiling);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13198">Functions Omitted</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>int sched&#0095;setparam(pid&#0095;t pid, const struct sched&#0095;param &#0042;param); 
+int sched&#0095;getparam(pid&#0095;t pid, struct sched&#0095;param &#0042;param); 
+int sched&#0095;setscheduler(pid&#0095;t pid, int policy,
+	               const struct sched&#0095;param &#0042;param); 
+int sched&#0095;getscheduler(pid&#0095;t pid);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13201">Notes</H2
+><P
+></P
+><UL
+><LI
+><P
+>	  The functions <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>sched&#0095;setparam()</I
+></SPAN
+>, 
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>sched&#0095;getparam()</I
+></SPAN
+>,
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>sched&#0095;setscheduler()</I
+></SPAN
+> and
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>sched&#0095;getscheduler()</I
+></SPAN
+> are present
+	  but always return an error.
+	  </P
+></LI
+><LI
+><P
+>	  The scheduler policy <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>SCHED&#0095;OTHER</I
+></SPAN
+> is
+	  equivalent to <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>SCHED&#0095;RR</I
+></SPAN
+>.
+	  </P
+></LI
+><LI
+><P
+>	  Only <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>PTHREAD&#0095;SCOPE&#0095;SYSTEM</I
+></SPAN
+>
+	  is supported as a
+	  <SPAN
+CLASS="strong"
+><B
+CLASS="EMPHASIS"
+>contentionscope</B
+></SPAN
+>
+	  attribute.
+	  </P
+></LI
+><LI
+><P
+>	  The default thread scheduling attributes are:
+	  <TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>	  contentionscope          PTHREAD&#0095;SCOPE&#0095;SYSTEM
+	  inheritsched             PTHREAD&#0095;INHERIT&#0095;SCHED
+	  schedpolicy              SCHED&#0095;OTHER
+	  schedparam.sched	   0
+	  </PRE
+></TD
+></TR
+></TABLE
+>
+          </P
+></LI
+><LI
+><P
+>	  Mutex priority inversion protection is controlled by a
+	  number of kernel configuration options.
+	  If CYGSEM&#0095;KERNEL&#0095;SYNCH&#0095;MUTEX&#0095;PRIORITY&#0095;INVERSION&#0095;PROTOCOL&#0095;INHERIT
+	  is defined then
+	  &#0123;&#0095;POSIX&#0095;THREAD&#0095;PRIO&#0095;INHERIT&#0125;
+	  will be defined and PTHREAD&#0095;PRIO&#0095;INHERIT may
+	  be set as the protocol in a
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pthread&#0095;mutexattr&#0095;t</I
+></SPAN
+>
+	  object.
+	  If CYGSEM&#0095;KERNEL&#0095;SYNCH&#0095;MUTEX&#0095;PRIORITY&#0095;INVERSION&#0095;PROTOCOL&#0095;CEILING
+	  is defined then
+	  &#0123;&#0095;POSIX&#0095;THREAD&#0095;PRIO&#0095;PROTECT&#0125;
+	  will be defined and PTHREAD&#0095;PRIO&#0095;PROTECT may
+	  be set as the protocol in a
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pthread&#0095;mutexattr&#0095;t</I
+></SPAN
+> object.
+          </P
+></LI
+><LI
+><P
+>	  The default attribute values set by
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pthread&#0095;mutexattr&#0095;init()</I
+></SPAN
+>
+	  is to set the protocol attribute to
+	  PTHREAD&#0095;PRIO&#0095;NONE and the prioceiling
+	  attribute to zero.
+	  </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="posix-memory-management.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="posix-clocks-and-timers.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Memory Management &#0091;POSIX Section 12&#0093;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="posix-standard-support.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Clocks and Timers &#0091;POSIX Section 14&#0093;</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

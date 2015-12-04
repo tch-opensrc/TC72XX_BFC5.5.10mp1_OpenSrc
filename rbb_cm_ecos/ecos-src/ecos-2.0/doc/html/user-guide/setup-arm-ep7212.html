@@ -1,0 +1,214 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Cirrus Logic ARM EP7212 Development Board
+Hardware Setup</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Target Setup"
+HREF="appendix-target-setup.html"><LINK
+REL="PREVIOUS"
+TITLE="Cirrus Logic ARM EP7211 Development
+Board Hardware Setup"
+HREF="setup-arm-ep7211.html"><LINK
+REL="NEXT"
+TITLE="Cirrus Logic ARM EP7312 Development Board
+Hardware Setup"
+HREF="setup-arm-ep7312.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="setup-arm-ep7211.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Target Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="setup-arm-ep7312.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SETUP-ARM-EP7212">Cirrus Logic ARM EP7212 Development Board
+Hardware Setup</H1
+><P
+>The Cirrus Logic EP7212 Development Board is almost identical
+to the EP7211 Development Board from a hardware setup viewpoint,
+and is based on the same port of eCos. Therefore the earlier documentation
+for the EP7211 Development Board can be considered equivalent, but
+with the following changes:</P
+><P
+></P
+><UL
+><LI
+><P
+>The first serial port is silk screened as "UART 1" on
+the EP7211 Development Board, but is silk screened as "Serial Port
+0" on the EP7212 Development Board. Similarly "UART 2" is silk screened
+as "Serial Port 1" on the EP7212 Development Board.</P
+></LI
+><LI
+><P
+>JP2 (used to control reprogramming of the FLASH) is not
+silkscreened with "Boot Enable".</P
+></LI
+><LI
+><P
+>To setup the EP7212 Development Board for use with the
+ARM Multi-ICE JTAG debugging interface unit, it is necessary to
+connect TEST0 and TEST1 of the EP7212 to ground.  On the Development
+Board, this is accomplished by placing shorting blocks on JP47 and
+JP48. When the shorting blocks are fitted, the board can only be
+operated through the Multi-ICE - debugging over a serial line is
+not possible.</P
+></LI
+><LI
+><P
+>Pre-built GDB stubs are
+	      provided in the directory
+	      <TT
+CLASS="FILENAME"
+>loaders/arm-edb7212</TT
+> relative to the
+	      root of your eCos installation</P
+></LI
+><LI
+><P
+>When rebuilding the GDB stub ROM image, change the "Cirrus
+Logic processor variant" option (CYGHWR_HAL_ARM_EDB7XXX_VARIANT)
+from the EP7211 to the EP7212. This can be selected in the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos Configuration Tool</I
+></SPAN
+>
+, or if using ecosconfig, can be set by uncommenting the user_value
+property of this option in ecos.ecc and setting it to "EP7212".</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="setup-arm-ep7211.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="setup-arm-ep7312.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Cirrus Logic ARM EP7211 Development
+Board Hardware Setup</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="appendix-target-setup.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Cirrus Logic ARM EP7312 Development Board
+Hardware Setup</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

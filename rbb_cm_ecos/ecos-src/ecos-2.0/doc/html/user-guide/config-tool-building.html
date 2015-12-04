@@ -1,0 +1,332 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Building</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="The eCos Configuration Tool"
+HREF="the-ecos-configuration-tool.html"><LINK
+REL="PREVIOUS"
+TITLE="Searching"
+HREF="config-tool-searching.html"><LINK
+REL="NEXT"
+TITLE="Selecting User Tools"
+HREF="config-tool-selecting-user-tools.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="config-tool-searching.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="config-tool-selecting-user-tools.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="CONFIG-TOOL-BUILDING">Chapter 21. Building</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="config-tool-building.html#CONFIG-TOOL-SELECTING-BUILD-TOOLS"
+>Selecting Build Tools</A
+></DT
+><DT
+><A
+HREF="config-tool-selecting-user-tools.html"
+>Selecting User Tools</A
+></DT
+></DL
+></DIV
+><P
+>When you have configured <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>, you may build the configuration.</P
+><P
+>On the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build</I
+></SPAN
+> menu, click:</P
+><P
+></P
+><UL
+><LI
+><P
+>			
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Library</I
+></SPAN
+>
+ (or click the Build Library icon on the toolbar) &#8211; this
+causes the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> configuration to be built. The result of a successful
+build will be (among other things) a library against which user
+code can be linked</P
+></LI
+><LI
+><P
+>			
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Tests</I
+></SPAN
+>
+ &#8211; this causes the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> configuration to be built, and
+additionally builds the relevant test cases linked against the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> library</P
+></LI
+><LI
+><P
+>			
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Clean</I
+></SPAN
+>
+ &#8211; this removes all intermediate files, thus causing a
+subsequent build/library or build/tests operation
+to cause recompilation of all relevant files.</P
+></LI
+><LI
+><P
+>			
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Stop</I
+></SPAN
+>
+ &#8211; this causes a currently executing build (any of the
+above steps) to be interrupted</P
+></LI
+></UL
+><P
+>Build options may be displayed by using the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build-&gt;Options</I
+></SPAN
+> menu
+item. This displays a dialog box containing a drop-list control
+and two windows. The drop-list control allows you to select the
+type of build option to be displayed (for example &#8220;LDFLAGS&#8221; are
+the options applied at link-time. The left-hand window is a tree
+view of the packages loaded in the current configuration. The right-hand
+window is a list of the build options that will be used for the
+currently selected package.</P
+><P
+>Note that this dialog box currently affords only read-only
+access to the build options. In order to change build options you
+must edit the relevant string configuration item.</P
+><P
+>A single level of inheritance is supported: each package&#8217;s
+build options are combined with the global options (these are to
+be found in the &#8220;Global build options&#8221; folder
+in the configuration view).</P
+><P
+><P
+><IMG
+SRC="pix/buildoptions.png"></P
+></P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CONFIG-TOOL-SELECTING-BUILD-TOOLS">Selecting Build Tools</H1
+><P
+>Normally the installation process will supply the information
+required for the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+><SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+> to
+locate the build tools (compiler, linker, etc.) necessary
+to perform a build. However if this information is not registered,
+or it is necessary to specify the location manually (for example,
+when a new toolchain installation has been made), select <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Tools</I
+></SPAN
+>-&gt;<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Paths</I
+></SPAN
+>-&gt;<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build
+Tools</I
+></SPAN
+>. The following dialog box will be displayed:</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN1521"><P
+><B
+>Figure 21-1. Build tools</B
+></P
+><P
+><IMG
+SRC="pix/build-tools2.png"></P
+></DIV
+><P
+>This dialog box allows you to locate the folder containing
+the build tools. </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="config-tool-searching.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="config-tool-selecting-user-tools.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Searching</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="the-ecos-configuration-tool.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Selecting User Tools</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

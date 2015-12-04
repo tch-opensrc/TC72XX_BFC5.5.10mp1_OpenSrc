@@ -1,0 +1,456 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>getaddrinfo</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="ethers"
+HREF="net-common-tcpip-manpages-ethers.html"><LINK
+REL="NEXT"
+TITLE="gethostbyname"
+HREF="net-common-tcpip-manpages-gethostbyname.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-ethers.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-gethostbyname.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-GETADDRINFO">getaddrinfo</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>GETADDRINFO(3)          System Library Functions Manual         GETADDRINFO(3)
+
+NAME
+     getaddrinfo, freeaddrinfo, gai_strerror - nodename-to-address translation
+     in protocol-independent manner
+
+SYNOPSIS
+     #include &lt;sys/types.h&#62;
+     #include &lt;sys/socket.h&#62;
+     #include &lt;netdb.h&#62;
+
+     int
+     getaddrinfo(const char *nodename, const char *servname,
+             const struct addrinfo *hints, struct addrinfo **res);
+
+     void
+     freeaddrinfo(struct addrinfo *ai);
+
+     char *
+     gai_strerror(int ecode);
+
+DESCRIPTION
+     The getaddrinfo() function is defined for protocol-independent nodename-
+     to-address translation.  It performs the functionality of
+     gethostbyname(3) and getservbyname(3), but in a more sophisticated man-
+     ner.
+
+     The addrinfo structure is defined as a result of including the &lt;netdb.h&#62;
+     header:
+
+     struct addrinfo {                                                  *
+          int     ai_flags;     /* AI_PASSIVE, AI_CANONNAME, AI_NUMERICHOST */
+          int     ai_family;    /* PF_xxx */
+          int     ai_socktype;  /* SOCK_xxx */
+          int     ai_protocol;  /* 0 or IPPROTO_xxx for IPv4 and IPv6 */
+          size_t  ai_addrlen;   /* length of ai_addr */
+          char   *ai_canonname; /* canonical name for nodename */
+          struct sockaddr  *ai_addr; /* binary address */
+          struct addrinfo  *ai_next; /* next structure in linked list */
+     };
+
+     The nodename and servname arguments are pointers to NUL-terminated
+     strings or NULL.  One or both of these two arguments must be a non-null
+     pointer.  In the normal client scenario, both the nodename and servname
+     are specified.  In the normal server scenario, only the servname is spec-
+     ified.  A non-null nodename string can be either a node name or a numeric
+     host address string (i.e., a dotted-decimal IPv4 address or an IPv6 hex
+     address).  A non-null servname string can be either a service name or a
+     decimal port number.
+
+     The caller can optionally pass an addrinfo structure, pointed to by the
+     third argument, to provide hints concerning the type of socket that the
+     caller supports.  In this hints structure all members other than
+     ai_flags, ai_family, ai_socktype, and ai_protocol must be zero or a null
+     pointer.  A value of PF_UNSPEC for ai_family means the caller will accept
+     any protocol family.  A value of 0 for ai_socktype means the caller will
+     accept any socket type.  A value of 0 for ai_protocol means the caller
+     will accept any protocol.  For example, if the caller handles only TCP
+     and not UDP, then the ai_socktype member of the hints structure should be
+     set to SOCK_STREAM when getaddrinfo() is called.  If the caller handles
+     only IPv4 and not IPv6, then the ai_family member of the hints structure
+     should be set to PF_INET when getaddrinfo() is called.  If the third
+     argument to getaddrinfo() is a null pointer, this is the same as if the
+     caller had filled in an addrinfo structure initialized to zero with
+     ai_family set to PF_UNSPEC.
+
+     Upon successful return a pointer to a linked list of one or more addrinfo
+     structures is returned through the final argument.  The caller can pro-
+     cess each addrinfo structure in this list by following the ai_next
+     pointer, until a null pointer is encountered.  In each returned addrinfo
+     structure the three members ai_family, ai_socktype, and ai_protocol are
+     the corresponding arguments for a call to the socket() function.  In each
+     addrinfo structure the ai_addr member points to a filled-in socket
+     address structure whose length is specified by the ai_addrlen member.
+
+     If the AI_PASSIVE bit is set in the ai_flags member of the hints struc-
+     ture, then the caller plans to use the returned socket address structure
+     in a call to bind().  In this case, if the nodename argument is a null
+     pointer, then the IP address portion of the socket address structure will
+     be set to INADDR_ANY for an IPv4 address or IN6ADDR_ANY_INIT for an IPv6
+     address.
+
+     If the AI_PASSIVE bit is not set in the ai_flags member of the hints
+     structure, then the returned socket address structure will be ready for a
+     call to connect() (for a connection-oriented protocol) or either
+     connect(), sendto(), or sendmsg() (for a connectionless protocol).  In
+     this case, if the nodename argument is a null pointer, then the IP
+     address portion of the socket address structure will be set to the loop-
+     back address.
+
+     If the AI_CANONNAME bit is set in the ai_flags member of the hints struc-
+     ture, then upon successful return the ai_canonname member of the first
+     addrinfo structure in the linked list will point to a NUL-terminated
+     string containing the canonical name of the specified nodename.
+
+     If the AI_NUMERICHOST bit is set in the ai_flags member of the hints
+     structure, then a non-null nodename string must be a numeric host address
+     string.  Otherwise an error of EAI_NONAME is returned.  This flag pre-
+     vents any type of name resolution service (e.g., the DNS) from being
+     called.
+
+     The arguments to getaddrinfo() must sufficiently be consistent and unam-
+     biguous.  Here are pitfall cases you may encounter:
+
+     o   getaddrinfo() will raise an error if members of the hints structure
+         are not consistent.  For example, for internet address families,
+         getaddrinfo() will raise an error if you specify SOCK_STREAM to
+         ai_socktype while you specify IPPROTO_UDP to ai_protocol.
+
+     o   If you specify a servname which is defined only for certain
+         ai_socktype, getaddrinfo() will raise an error because the arguments
+         are not consistent.  For example, getaddrinfo() will raise an error
+         if you ask for ``tftp'' service on SOCK_STREAM.
+
+     o   For internet address families, if you specify servname while you set
+         ai_socktype to SOCK_RAW, getaddrinfo() will raise an error, because
+         service names are not defined for the internet SOCK_RAW space.
+
+     o   If you specify a numeric servname, while leaving ai_socktype and
+         ai_protocol unspecified, getaddrinfo() will raise an error.  This is
+         because the numeric servname does not identify any socket type, and
+         getaddrinfo() is not allowed to glob the argument in such case.
+
+     All of the information returned by getaddrinfo() is dynamically allo-
+     cated: the addrinfo structures, the socket address structures, and canon-
+     ical node name strings pointed to by the addrinfo structures.  To return
+     this information to the system the function freeaddrinfo() is called.
+     The addrinfo structure pointed to by the ai argument is freed, along with
+     any dynamic storage pointed to by the structure.  This operation is
+     repeated until a NULL ai_next pointer is encountered.
+
+     To aid applications in printing error messages based on the EAI_xxx codes
+     returned by getaddrinfo(), gai_strerror() is defined.  The argument is
+     one of the EAI_xxx values defined earlier and the return value points to
+     a string describing the error.  If the argument is not one of the EAI_xxx
+     values, the function still returns a pointer to a string whose contents
+     indicate an unknown error.
+
+   Extension for scoped IPv6 address
+     The implementation allows experimental numeric IPv6 address notation with
+     scope identifier.  By appending the percent character and scope identi-
+     fier to addresses, you can fill sin6_scope_id field for addresses.  This
+     would make management of scoped address easier, and allows cut-and-paste
+     input of scoped address.
+
+     At this moment the code supports only link-local addresses with the for-
+     mat.  Scope identifier is hardcoded to name of hardware interface associ-
+     ated with the link.  (such as ne0).  Example would be like
+     ``fe80::1%ne0'', which means ``fe80::1 on the link associated with ne0
+     interface''.
+
+     The implementation is still very experimental and non-standard.  The cur-
+     rent implementation assumes one-by-one relationship between interface and
+     link, which is not necessarily true from the specification.
+
+EXAMPLES
+     The following code tries to connect to ``www.kame.net'' service ``http''.
+     via stream socket.  It loops through all the addresses available, regard-
+     less from address family.  If the destination resolves to IPv4 address,
+     it will use AF_INET socket.  Similarly, if it resolves to IPv6, AF_INET6
+     socket is used.  Observe that there is no hardcoded reference to particu-
+     lar address family.  The code works even if getaddrinfo returns addresses
+     that are not IPv4/v6.
+
+           struct addrinfo hints, *res, *res0;
+           int error;
+           int s;
+           const char *cause = NULL;
+
+           memset(&amp;hints, 0, sizeof(hints));
+           hints.ai_family = PF_UNSPEC;
+           hints.ai_socktype = SOCK_STREAM;
+           error = getaddrinfo("www.kame.net", "http", &amp;hints, &amp;res0);
+           if (error) {
+                   errx(1, "%s", gai_strerror(error));
+                   /*NOTREACHED*/
+           }
+           s = -1;
+           for (res = res0; res; res = res-&#62;ai_next) {
+                   s = socket(res-&#62;ai_family, res-&#62;ai_socktype,
+                       res-&#62;ai_protocol);
+                   if (s &lt; 0) {
+                           cause = "socket";
+                           continue;
+                   }
+
+                   if (connect(s, res-&#62;ai_addr, res-&#62;ai_addrlen) &lt; 0) {
+                           cause = "connect";
+                           close(s);
+                           s = -1;
+                           continue;
+                   }
+
+                   break;  /* okay we got one */
+           }
+           if (s &lt; 0) {
+                   err(1, cause);
+                   /*NOTREACHED*/
+           }
+           freeaddrinfo(res0);
+
+     The following example tries to open a wildcard listening socket onto ser-
+     vice ``http'', for all the address families available.
+
+           struct addrinfo hints, *res, *res0;
+           int error;
+           int s[MAXSOCK];
+           int nsock;
+           const char *cause = NULL;
+
+           memset(&amp;hints, 0, sizeof(hints));
+           hints.ai_family = PF_UNSPEC;
+           hints.ai_socktype = SOCK_STREAM;
+           hints.ai_flags = AI_PASSIVE;
+           error = getaddrinfo(NULL, "http", &amp;hints, &amp;res0);
+           if (error) {
+                   errx(1, "%s", gai_strerror(error));
+                   /*NOTREACHED*/
+           }
+           nsock = 0;
+           for (res = res0; res &amp;&amp; nsock &lt; MAXSOCK; res = res-&#62;ai_next) {
+                   s[nsock] = socket(res-&#62;ai_family, res-&#62;ai_socktype,
+                       res-&#62;ai_protocol);
+                   if (s[nsock] &lt; 0) {
+                           cause = "socket";
+                           continue;
+                   }
+
+                   if (bind(s[nsock], res-&#62;ai_addr, res-&#62;ai_addrlen) &lt; 0) {
+                           cause = "bind";
+                           close(s[nsock]);
+                           continue;
+                   }
+                   (void) listen(s[nsock], 5);
+
+                   nsock++;
+           }
+           if (nsock == 0) {
+                   err(1, cause);
+                   /*NOTREACHED*/
+           }
+           freeaddrinfo(res0);
+
+DIAGNOSTICS
+     Error return status from getaddrinfo() is zero on success and non-zero on
+     errors.  Non-zero error codes are defined in &lt;netdb.h&#62;, and as follows:
+
+     EAI_ADDRFAMILY  Address family for nodename not supported.
+     EAI_AGAIN       Temporary failure in name resolution.
+     EAI_BADFLAGS    Invalid value for ai_flags.
+     EAI_FAIL        Non-recoverable failure in name resolution.
+     EAI_FAMILY      ai_family not supported.
+     EAI_MEMORY      Memory allocation failure.
+     EAI_NODATA      No address associated with nodename.
+     EAI_NONAME      nodename nor servname provided, or not known.
+     EAI_SERVICE     servname not supported for ai_socktype.
+     EAI_SOCKTYPE    ai_socktype not supported.
+     EAI_SYSTEM      System error returned in errno.
+
+     If called with proper argument, gai_strerror() returns a pointer to a
+     string describing the given error code.  If the argument is not one of
+     the EAI_xxx values, the function still returns a pointer to a string
+     whose contents indicate an unknown error.
+
+SEE ALSO
+     getnameinfo(3), gethostbyname(3), getservbyname(3), hosts(5),
+     resolv.conf(5), services(5), hostname(7), named(8)
+
+     R. Gilligan, S. Thomson, J. Bound, and W. Stevens, Basic Socket Interface
+     Extensions for IPv6, RFC2553, March 1999.
+
+     Tatsuya Jinmei and Atsushi Onoe, An Extension of Format for IPv6 Scoped
+     Addresses, internet draft, draft-ietf-ipngwg-scopedaddr-format-02.txt,
+     work in progress material.
+
+     Craig Metz, "Protocol Independence Using the Sockets API", Proceedings of
+     the freenix track: 2000 USENIX annual technical conference, June 2000.
+
+HISTORY
+     The implementation first appeared in WIDE Hydrangea IPv6 protocol stack
+     kit.
+
+STANDARDS
+     The getaddrinfo() function is defined in IEEE POSIX 1003.1g draft speci-
+     fication, and documented in ``Basic Socket Interface Extensions for
+     IPv6'' (RFC2553).
+
+BUGS
+     The current implementation is not thread-safe.
+
+     The text was shamelessly copied from RFC2553.
+
+BSD                              May 25, 1995                              BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-ethers.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-gethostbyname.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>ethers</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>gethostbyname</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

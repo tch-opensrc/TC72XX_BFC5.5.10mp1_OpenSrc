@@ -1,0 +1,223 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>ns</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="net_addrcmp"
+HREF="net-common-tcpip-manpages-net-addrcmp.html"><LINK
+REL="NEXT"
+TITLE="resolver"
+HREF="net-common-tcpip-manpages-resolver.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-net-addrcmp.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-resolver.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-NS">ns</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>NS(3)                   System Library Functions Manual                  NS(3)
+
+NAME
+     ns_addr, ns_ntoa - Xerox NS(tm) address conversion routines
+
+SYNOPSIS
+     #include &lt;sys/types.h&#62;
+     #include &lt;netns/ns.h&#62;
+
+     struct ns_addr
+     ns_addr(char *cp);
+
+     char *
+     ns_ntoa(struct ns_addr ns);
+
+DESCRIPTION
+     The routine ns_addr() interprets character strings representing XNS
+     addresses, returning binary information suitable for use in system calls.
+     The routine ns_ntoa() takes XNS addresses and returns ASCII strings rep-
+     resenting the address in a notation in common use in the Xerox Develop-
+     ment Environment:
+
+           &lt;network number&#62;.&lt;host number&#62;.&lt;port number&#62;
+
+     Trailing zero fields are suppressed, and each number is printed in hex-
+     adecimal, in a format suitable for input to ns_addr().  Any fields lack-
+     ing super-decimal digits will have a trailing `H' appended.
+
+     Unfortunately, no universal standard exists for representing XNS
+     addresses.  An effort has been made to ensure that ns_addr() be compati-
+     ble with most formats in common use.  It will first separate an address
+     into 1 to 3 fields using a single delimiter chosen from period (`.'),
+     colon (`:'), or pound-sign `#'.  Each field is then examined for byte
+     separators (colon or period).  If there are byte separators, each sub-
+     field separated is taken to be a small hexadecimal number, and the
+     entirety is taken as a network-byte-ordered quantity to be zero extended
+     in the high-network-order bytes.  Next, the field is inspected for
+     hyphens, in which case the field is assumed to be a number in decimal
+     notation with hyphens separating the millenia.  Next, the field is
+     assumed to be a number: It is interpreted as hexadecimal if there is a
+     leading `0x' (as in C), a trailing `H' (as in Mesa), or there are any
+     super-decimal digits present.  It is interpreted as octal is there is a
+     leading `0' and there are no super-octal digits.  Otherwise, it is con-
+     verted as a decimal number.
+
+RETURN VALUES
+     None.  (See BUGS.)
+
+SEE ALSO
+     hosts(5), networks(5)
+
+HISTORY
+     The ns_addr() and ns_toa() functions appeared in 4.3BSD.
+
+BUGS
+     The string returned by ns_ntoa() resides in a static memory area.  The
+     function ns_addr() should diagnose improperly formed input, and there
+     should be an unambiguous way to recognize this.
+
+BSD                              June 4, 1993                              BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-net-addrcmp.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-resolver.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>net_addrcmp</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>resolver</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,2961 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>The API</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Device Driver Interface to the Kernel"
+HREF="devapi-device-driver-interface-to-the-kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="Synchronization Levels"
+HREF="devapi-synchronization-levels.html"><LINK
+REL="NEXT"
+TITLE="File System Support Infrastructure"
+HREF="fileio.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="devapi-synchronization-levels.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 18. Device Driver Interface to the Kernel</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="fileio.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="DEVAPI-API">The API</H1
+><P
+>This section details the Driver Kernel
+Interface. Note that most of these functions are identical to Kernel C
+API calls, and will in most configurations be wrappers for them. In
+non-kernel configurations they will be supported directly by the HAL,
+or by code to emulate the required behavior.</P
+><P
+>This API is defined in the header file
+<TT
+CLASS="FILENAME"
+>&lt;cyg/hal/drv_api.h&gt;</TT
+>.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11310">cyg_drv_isr_lock</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_isr_lock()</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+>None</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>ISR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>      Disables delivery of interrupts, preventing all ISRs running.  This
+      function maintains a counter of the number of times it is
+      called.
+      </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11333">cyg_drv_isr_unlock</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_isr_unlock()</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+>None</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>ISR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Re-enables delivery of interrupts, allowing ISRs to
+      run. This function decrements the counter maintained by
+      <TT
+CLASS="FUNCTION"
+>cyg_drv_isr_lock()</TT
+>, and only re-allows
+      interrupts when it goes to zero. </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11357">cyg_drv_spinlock_init</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_spinlock_init(cyg_spinlock_t *lock, cyg_bool_t locked )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>lock</I
+></TT
+> - pointer to spinlock to initialize</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>locked</I
+></TT
+> - initial state of lock</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None</P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>Thread</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>      Initialize a spinlock. The <TT
+CLASS="PARAMETER"
+><I
+>locked</I
+></TT
+>
+      argument indicates how the spinlock should be initialized:
+      <TT
+CLASS="LITERAL"
+>TRUE</TT
+> for locked or <TT
+CLASS="LITERAL"
+>FALSE</TT
+>
+      for unlocked state.
+      </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11386">cyg_drv_spinlock_destroy</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_spinlock_destroy(cyg_spinlock_t *lock )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>lock</I
+></TT
+> - pointer to spinlock destroy</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None</P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>Thread</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>      Destroy a spinlock that is no longer of use. There should be no
+      CPUs attempting to claim the lock at the time this function is
+      called, otherwise the behavior is undefined.
+      </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11410">cyg_drv_spinlock_spin</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_spinlock_spin(cyg_spinlock_t *lock )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>lock</I
+></TT
+> - pointer to spinlock to claim</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None</P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>ISR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>      Claim a spinlock, waiting in a busy loop until it is
+      available. Wherever this is called from, this operation
+      effectively pauses the CPU until it succeeds. This operations
+      should therefore be used sparingly, and in situations where
+      deadlocks/livelocks cannot occur. Also see
+      <TT
+CLASS="FUNCTION"
+>cyg_drv_spinlock_spin_intsave()</TT
+>.
+      </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11435">cyg_drv_spinlock_clear</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_spinlock_clear(cyg_spinlock_t *lock )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>lock</I
+></TT
+> - pointer to spinlock to clear </P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None</P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>ISR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>      Clear a spinlock. This clears the spinlock and allows another
+      CPU to claim it. If there is more than one CPU waiting in
+      <TT
+CLASS="FUNCTION"
+>cyg_drv_spinlock_spin()</TT
+> then just one of
+      them will be allowed to proceed.
+      </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11460">cyg_drv_spinlock_try</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_bool_t cyg_drv_spinlock_try(cyg_spinlock_t *lock )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>lock</I
+></TT
+> - pointer to spinlock to try</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>TRUE</TT
+> if the spinlock was claimed,
+      <TT
+CLASS="LITERAL"
+>FALSE</TT
+> otherwise.</P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>ISR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>      Try to claim the spinlock without waiting. If the spinlock could
+      be claimed immediately then <TT
+CLASS="LITERAL"
+>TRUE</TT
+> is
+      returned. If the spinlock is already claimed then the result is
+      <TT
+CLASS="LITERAL"
+>FALSE</TT
+>.
+      </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11488">cyg_drv_spinlock_test</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_bool_t cyg_drv_spinlock_test(cyg_spinlock_t *lock )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>lock</I
+></TT
+> - pointer to spinlock to test</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>TRUE</TT
+> if the spinlock is available,
+      <TT
+CLASS="LITERAL"
+>FALSE</TT
+> otherwise.</P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>ISR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>      Inspect the state of the spinlock. If the spinlock is not locked
+      then the result is <TT
+CLASS="LITERAL"
+>TRUE</TT
+>. If it is locked then
+      the result will be <TT
+CLASS="LITERAL"
+>FALSE</TT
+>.
+      </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11516">cyg_drv_spinlock_spin_intsave</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_spinlock_spin_intsave(cyg_spinlock_t *lock,
+                                   cyg_addrword_t *istate )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>lock</I
+></TT
+> - pointer to spinlock to claim</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>istate</I
+></TT
+> - pointer to interrupt state save location</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None</P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>ISR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>      This function behaves exactly like
+      <TT
+CLASS="FUNCTION"
+>cyg_drv_spinlock_spin()</TT
+> except that it also
+      disables interrupts before attempting to claim the lock. The
+      current interrupt enable state is saved in
+      <TT
+CLASS="PARAMETER"
+><I
+>*istate</I
+></TT
+>. Interrupts remain disabled once
+      the spinlock had been claimed and must be restored by calling
+      <TT
+CLASS="FUNCTION"
+>cyg_drv_spinlock_clear_intsave()</TT
+>.
+      </P
+><P
+>      In general, device drivers should use this function to claim and
+      release spinlocks rather than the
+      non-<TT
+CLASS="FUNCTION"
+>_intsave()</TT
+> variants, to ensure proper
+      exclusion with code running on both other CPUs and this CPU.
+      </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11547">cyg_drv_spinlock_clear_intsave</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_spinlock_clear_intsave( cyg_spinlock_t *lock,
+                                     cyg_addrword_t istate )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>lock</I
+></TT
+> - pointer to spinlock to clear </P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>istate</I
+></TT
+> - interrupt state to restore </P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None</P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>ISR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>      This function behaves exactly like
+      <TT
+CLASS="FUNCTION"
+>cyg_drv_spinlock_clear()</TT
+> except that it
+      also restores an interrupt state saved by
+      <TT
+CLASS="FUNCTION"
+>cyg_drv_spinlock_spin_intsave()</TT
+>. The
+      <TT
+CLASS="PARAMETER"
+><I
+>istate</I
+></TT
+> argument must have been
+      initialized by a previous call to
+      <TT
+CLASS="FUNCTION"
+>cyg_drv_spinlock_spin_intsave()</TT
+>.
+      </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11577">cyg_drv_dsr_lock</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_dsr_lock()</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+>None</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>DSR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Disables scheduling of DSRs. This function maintains a
+      counter of the number of times it has been called. </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11600">cyg_drv_dsr_unlock</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_dsr_unlock()</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+>None</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>		</P
+><P
+>None </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>DSR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Re-enables scheduling of DSRs. This function decrements
+      the counter incremented by
+      <TT
+CLASS="FUNCTION"
+>cyg_drv_dsr_lock()</TT
+>.  DSRs are only allowed
+      to be delivered when the counter goes to zero. </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11625">cyg_drv_mutex_init</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_mutex_init(cyg_drv_mutex *mutex)</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>mutex</I
+></TT
+> - pointer to mutex to initialize</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>Thread</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Initialize the mutex pointed to by the
+      <TT
+CLASS="LITERAL"
+>mutex</TT
+> argument. </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11650">cyg_drv_mutex_destroy</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_mutex_destroy( cyg_drv_mutex *mutex )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>mutex</I
+></TT
+> - pointer to mutex to destroy</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>Thread</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Destroy the mutex pointed to by the
+      <TT
+CLASS="PARAMETER"
+><I
+>mutex</I
+></TT
+> argument. The mutex should be unlocked
+      and there should be no threads waiting to lock it when this call
+      in made.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11675">cyg_drv_mutex_lock</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_bool cyg_drv_mutex_lock( cyg_drv_mutex *mutex )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>mutex</I
+></TT
+> - pointer to mutex to lock</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>TRUE</TT
+> it the thread has claimed the
+      lock, <TT
+CLASS="LITERAL"
+>FALSE</TT
+> otherwise.</P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>Thread</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Attempt to lock the mutex pointed to by the
+      <TT
+CLASS="PARAMETER"
+><I
+>mutex</I
+></TT
+> argument.  If the mutex is already
+      locked by another thread then this thread will wait until that
+      thread is finished. If the result from this function is
+      <TT
+CLASS="LITERAL"
+>FALSE</TT
+> then the thread was broken out of its
+      wait by some other thread. In this case the mutex will not have
+      been locked. </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11703">cyg_drv_mutex_trylock</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_bool cyg_drv_mutex_trylock( cyg_drv_mutex *mutex )</PRE
+></TD
+></TR
+></TABLE
+></P
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>mutex</I
+></TT
+> - pointer to mutex to lock</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>TRUE</TT
+> if the mutex has been locked,
+      <TT
+CLASS="LITERAL"
+>FALSE</TT
+> otherwise. </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>Thread</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Attempt to lock the mutex pointed to by the
+      <TT
+CLASS="PARAMETER"
+><I
+>mutex</I
+></TT
+> argument without waiting. If the
+      mutex is already locked by some other thread then this function
+      returns <TT
+CLASS="LITERAL"
+>FALSE</TT
+>. If the function can lock the
+      mutex without waiting, then <TT
+CLASS="LITERAL"
+>TRUE</TT
+> is
+      returned. </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11733">cyg_drv_mutex_unlock</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_mutex_unlock( cyg_drv_mutex *mutex )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>mutex</I
+></TT
+> - pointer to mutex to unlock</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>Thread</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Unlock the mutex pointed to by the
+      <TT
+CLASS="PARAMETER"
+><I
+>mutex</I
+></TT
+> argument. If there are any threads
+      waiting to claim the lock, one of them is woken up to try and
+      claim it. </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11758">cyg_drv_mutex_release</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_mutex_release( cyg_drv_mutex *mutex )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>mutex</TT
+> - pointer to mutex to release</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>Thread</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Release all threads waiting on the mutex pointed to by the
+      <TT
+CLASS="PARAMETER"
+><I
+>mutex</I
+></TT
+> argument. These threads will return
+      from <TT
+CLASS="FUNCTION"
+>cyg_drv_mutex_lock()</TT
+> with a
+      <TT
+CLASS="LITERAL"
+>FALSE</TT
+> result and will not have claimed the
+      mutex. This function has no effect on any thread that may have
+      the mutex claimed. </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11785">cyg_drv_cond_init</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+> void cyg_drv_cond_init( cyg_drv_cond *cond, cyg_drv_mutex *mutex )
+	      </PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>cond</I
+></TT
+> - condition variable to initialize</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>mutex</I
+></TT
+> - mutex to associate with this condition variable</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None</P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>Thread </P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Initialize the condition variable pointed to by the
+      <TT
+CLASS="PARAMETER"
+><I
+>cond</I
+></TT
+> argument.  The
+      <TT
+CLASS="PARAMETER"
+><I
+>mutex</I
+></TT
+> argument must point to a mutex with
+      which this condition variable is associated. A thread may only
+      wait on this condition variable when it has already locked the
+      associated mutex. Waiting will cause the mutex to be unlocked,
+      and when the thread is reawakened, it will automatically claim
+      the mutex before continuing. </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11813">cyg_drv_cond_destroy</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+> void cyg_drv_cond_destroy( cyg_drv_cond *cond )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>cond</I
+></TT
+> - condition variable to destroy</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>Thread</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Destroy the condition variable pointed to by the
+      <TT
+CLASS="PARAMETER"
+><I
+>cond</I
+></TT
+> argument. </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11838">cyg_drv_cond_wait</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_cond_wait( cyg_drv_cond *cond )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>cond</I
+></TT
+> - condition variable to wait on</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>Thread</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Wait for a signal on the condition variable pointed to by
+      the <TT
+CLASS="PARAMETER"
+><I
+>cond</I
+></TT
+> argument. The thread must have
+      locked the associated mutex, supplied in
+      <TT
+CLASS="FUNCTION"
+>cyg_drv_cond_init()</TT
+>, before waiting on this
+      condition variable. While the thread waits, the mutex will be
+      unlocked, and will be re-locked before this function returns. It
+      is possible for threads waiting on a condition variable to
+      occasionally wake up spuriously. For this reason it is necessary
+      to use this function in a loop that re-tests the condition each
+      time it returns. Note that this function performs an implicit
+      scheduler unlock/relock sequence, so that it may be used within
+      an explicit
+      <TT
+CLASS="LITERAL"
+>cyg_drv_dsr_lock()...cyg_drv_dsr_unlock()</TT
+>
+      structure.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11865">cyg_drv_cond_signal</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_cond_signal( cyg_drv_cond *cond )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>cond</I
+></TT
+> - condition variable to signal</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>DSR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Signal the condition variable pointed to by the <TT
+CLASS="PARAMETER"
+><I
+>cond</I
+></TT
+>
+      argument.  If there are any threads waiting on this variable at
+      least one of them will be awakened. Note that in some
+      configurations there may not be any difference between this
+      function and <TT
+CLASS="FUNCTION"
+>cyg_drv_cond_broadcast()</TT
+>.
+      </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11891">cyg_drv_cond_broadcast</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_cond_broadcast( cyg_drv_cond *cond )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>cond</I
+></TT
+> - condition variable to broadcast to</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>DSR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Signal the condition variable pointed to by the
+      <TT
+CLASS="PARAMETER"
+><I
+>cond</I
+></TT
+> argument.  If there are any threads
+      waiting on this variable they will all be awakened. </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11916">cyg_drv_interrupt_create</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_interrupt_create( cyg_vector_t vector,
+                               cyg_priority_t priority,
+                               cyg_addrword_t data,
+                               cyg_ISR_t *isr,
+                               cyg_DSR_t *dsr,
+                               cyg_handle_t *handle,
+                               cyg_interrupt *intr
+                             )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>vector</I
+></TT
+> - vector to attach to</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>priority</I
+></TT
+> - queuing priority</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+> - data pointer</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>isr</I
+></TT
+> - interrupt service routine</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>dsr</I
+></TT
+> - deferred service routine</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>handle</I
+></TT
+> - returned handle</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>intr</I
+></TT
+> - put interrupt object here</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None</P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>Thread</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Create an interrupt object and returns a handle to it. The
+      object contains information about which interrupt vector to use
+      and the ISR and DSR that will be called after the interrupt
+      object is attached to the vector. The interrupt object will be
+      allocated in the memory passed in the
+      <TT
+CLASS="PARAMETER"
+><I
+>intr</I
+></TT
+> parameter. The interrupt object is
+      not immediately attached; it must be attached with the
+      <TT
+CLASS="FUNCTION"
+>cyg_interrupt_attach()</TT
+> call. </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11954">cyg_drv_interrupt_delete</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+> void cyg_drv_interrupt_delete( cyg_handle_t interrupt )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>interrupt</I
+></TT
+> - interrupt to delete</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>Thread</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Detach the interrupt from the vector and free the memory
+      passed in the <TT
+CLASS="PARAMETER"
+><I
+>intr</I
+></TT
+> argument to
+      <TT
+CLASS="FUNCTION"
+>cyg_drv_interrupt_create()</TT
+> for
+      reuse. </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11980">cyg_drv_interrupt_attach</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_interrupt_attach( cyg_handle_t interrupt )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>interrupt</I
+></TT
+> - interrupt to attach</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>ISR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Attach the interrupt to the vector so that interrupts will
+      be delivered to the ISR when the interrupt occurs. </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN12004">cyg_drv_interrupt_detach</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_interrupt_detach( cyg_handle_t interrupt )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>interrupt</I
+></TT
+> - interrupt to detach</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>ISR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Detach the interrupt from the vector so that interrupts
+      will no longer be delivered to the ISR. </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN12028">cyg_drv_interrupt_mask</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_interrupt_mask(cyg_vector_t vector )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>vector</I
+></TT
+> - vector to mask</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>ISR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Program the interrupt controller to stop delivery of
+      interrupts on the given vector. On architectures which implement
+      interrupt priority levels this may also disable all lower
+      priority interrupts. </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN12052">cyg_drv_interrupt_mask_intunsafe</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_interrupt_mask_intunsafe(cyg_vector_t vector )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>vector</I
+></TT
+> - vector to mask</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>ISR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Program the interrupt controller to stop delivery of
+      interrupts on the given vector. On architectures which implement
+      interrupt priority levels this may also disable all lower
+      priority interrupts. This version differs from
+      <TT
+CLASS="FUNCTION"
+>cyg_drv_interrupt_mask()</TT
+> in not being
+      interrupt safe. So in situations where, for example, interrupts
+      are already known to be disabled, this may be called to avoid
+      the extra overhead.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN12077">cyg_drv_interrupt_unmask</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_interrupt_unmask(cyg_vector_t vector )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>vector</I
+></TT
+> - vector to unmask</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>ISR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Program the interrupt controller to re-allow delivery of
+      interrupts on the given <TT
+CLASS="PARAMETER"
+><I
+>vector</I
+></TT
+>. </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN12102">cyg_drv_interrupt_unmask_intunsafe</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_interrupt_unmask_intunsafe(cyg_vector_t vector )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>vector</I
+></TT
+> - vector to unmask</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>ISR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Program the interrupt controller to re-allow delivery of
+      interrupts on the given <TT
+CLASS="PARAMETER"
+><I
+>vector</I
+></TT
+>. This
+      version differs from
+      <TT
+CLASS="FUNCTION"
+>cyg_drv_interrupt_unmask()</TT
+> in not being
+      interrupt safe.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN12128">cyg_drv_interrupt_acknowledge</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_interrupt_acknowledge( cyg_vector_t vector )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>vector</I
+></TT
+> - vector to acknowledge</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>ISR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Perform any processing required at the interrupt
+      controller and in the CPU to cancel the current interrupt
+      request on the <TT
+CLASS="PARAMETER"
+><I
+>vector</I
+></TT
+>. An ISR may also
+      need to program the hardware of the device to prevent an
+      immediate re-triggering of the interrupt. </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN12153">cyg_drv_interrupt_configure</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_interrupt_configure( cyg_vector_t vector,
+                                  cyg_bool_t level, 
+                                  cyg_bool_t up
+                                )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>vector</I
+></TT
+> - vector to configure</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>level</I
+></TT
+> - level or edge triggered</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>up</I
+></TT
+> - rising/falling edge, high/low level</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None</P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>ISR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Program the interrupt controller with the characteristics
+      of the interrupt source. The <TT
+CLASS="PARAMETER"
+><I
+>level</I
+></TT
+>
+      argument chooses between level- or edge-triggered
+      interrupts. The <TT
+CLASS="PARAMETER"
+><I
+>up</I
+></TT
+> argument chooses
+      between high and low level for level triggered interrupts or
+      rising and falling edges for edge triggered interrupts. This
+      function only works with interrupt controllers that can control
+      these parameters. </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN12183">cyg_drv_interrupt_level</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_interrupt_level( cyg_vector_t vector,
+                              cyg_priority_t level
+                            )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>vector</I
+></TT
+> - vector to configure</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>level</I
+></TT
+> - level to set</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None </P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>ISR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Program the interrupt controller to deliver the given
+       interrupt at the supplied priority level. This function only
+       works with interrupt controllers that can control this
+       parameter.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN12209">cyg_drv_interrupt_set_cpu</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void cyg_drv_interrupt_set_cpu( cyg_vector_t vector,
+                                cyg_cpu_t cpu
+                              )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>vector</I
+></TT
+> - interrupt vector to route</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>cpu</I
+></TT
+> - destination CPU</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None</P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>ISR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>      This function causes all interrupts on the given vector to be
+      routed to the specified CPU. Subsequently, all such interrupts
+      will be handled by that CPU. This only works if the underlying
+      hardware is capable of performing this kind of routing. This
+      function does nothing on a single CPU system.
+      </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN12235">cyg_drv_interrupt_get_cpu</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Function:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_cpu_t cyg_drv_interrupt_set_cpu( cyg_vector_t vector )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Arguments:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>vector</I
+></TT
+> - interrupt vector to query</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>The CPU to which this vector is routed</P
+></DD
+><DT
+>Level:</DT
+><DD
+><P
+>ISR</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>      In multi-processor systems this function returns the id of the
+      CPU to which interrupts on the given vector are current being
+      delivered. In single CPU systems this function returns zero.
+      </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN12259">cyg_ISR_t</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Type:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef cyg_uint32 cyg_ISR_t( cyg_vector_t vector,
+                              cyg_addrword_t data
+                            )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Fields:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>vector</I
+></TT
+> - vector being delivered</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+> - data value supplied by client</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>Bit mask indicating whether interrupt was handled and
+      whether the DSR should be called. </P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Interrupt Service Routine definition. A pointer to a
+      function with this prototype is passed to
+      <TT
+CLASS="FUNCTION"
+>cyg_interrupt_create()</TT
+> when an interrupt
+      object is created. When an interrupt is delivered the function
+      will be called with the vector number and the data value that
+      was passed to <TT
+CLASS="FUNCTION"
+>cyg_interrupt_create()</TT
+>.
+      </P
+><P
+>The return value is a bit mask containing one or both of the
+      following bits: </P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>CYG_ISR_HANDLED</DT
+><DD
+><P
+>indicates that the interrupt was handled by this
+	    ISR. It is a configuration option whether this will
+	    prevent further ISR being run. </P
+></DD
+><DT
+>CYG_ISR_CALL_DSR</DT
+><DD
+><P
+>causes the DSR that was passed to
+	    <TT
+CLASS="FUNCTION"
+>cyg_interrupt_create()</TT
+> to be
+	    scheduled to be called.</P
+></DD
+></DL
+></DIV
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN12294">cyg_DSR_t</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Type:</DT
+><DD
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef void cyg_DSR_t( cyg_vector_t vector,
+                        cyg_ucount32 count,
+                        cyg_addrword_t data
+                      )</PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+>Fields:</DT
+><DD
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>vector</I
+></TT
+> - vector being delivered</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>count</I
+></TT
+> - number of times DSR has been scheduled</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+> - data value supplied by client</P
+></DD
+><DT
+>Result:</DT
+><DD
+><P
+>None</P
+></DD
+><DT
+>Description:</DT
+><DD
+><P
+>Deferred Service Routine prototype. A pointer to a
+      function with this prototype is passed to
+      <TT
+CLASS="FUNCTION"
+>cyg_interrupt_create()</TT
+> when an interrupt
+      object is created. When the ISR requests the scheduling of its
+      DSR, this function will be called at some later point. In
+      addition to the <TT
+CLASS="PARAMETER"
+><I
+>vector</I
+></TT
+> and
+      <TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+> arguments, which will be the same as
+      those passed to the ISR, this routine is also passed a
+      <TT
+CLASS="PARAMETER"
+><I
+>count</I
+></TT
+> of the number of times the ISR has
+      requested that this DSR be scheduled.  This counter is zeroed
+      each time the DSR actually runs, so it indicates how many
+      interrupts have occurred since it last ran.</P
+></DD
+></DL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="devapi-synchronization-levels.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="fileio.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Synchronization Levels</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="devapi-device-driver-interface-to-the-kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>File System Support Infrastructure</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,293 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>description</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="define_proc"
+HREF="ref.define-proc.html"><LINK
+REL="NEXT"
+TITLE="display"
+HREF="ref.display.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.define-proc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.display.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.DESCRIPTION"><SPAN
+CLASS="PROPERTY"
+>description</SPAN
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4219"
+></A
+><H2
+>Name</H2
+>Property <SPAN
+CLASS="PROPERTY"
+>description</SPAN
+>&nbsp;--&nbsp;Provide a textual description for an option.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4223"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_option &lt;name&gt; {
+    description &lt;text&gt;
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4225"
+></A
+><H2
+>Description</H2
+><P
+>Users can only be expected to manipulate configuration options
+sensibly if they are given sufficient information about these options.
+There are three properties which serve to explain an option in plain
+text: the <SPAN
+CLASS="PROPERTY"
+>display</SPAN
+> property gives a textual alias for an option,
+which is usually more comprehensible than something like
+<TT
+CLASS="LITERAL"
+>CYGPKG_LIBC_TIME_ZONES</TT
+>; the <SPAN
+CLASS="PROPERTY"
+>description</SPAN
+> property
+gives a longer description, typically a paragraph or so; the <SPAN
+CLASS="PROPERTY"
+>doc</SPAN
+>
+property specifies the location of additional on-line documentation
+related to a configuration option. In the context of a graphical tool
+the <SPAN
+CLASS="PROPERTY"
+>display</SPAN
+> string will be the primary way for users to identify
+configuration options; the <SPAN
+CLASS="PROPERTY"
+>description</SPAN
+> paragraph will be visible
+whenever the option is selected; the on-line documentation will only
+be accessed when the user explicitly requests it.</P
+><P
+>At present there is no way of providing any sort of formatting mark-up
+in a description. It is possible that future versions of the
+configuration tools will provide some control over the way the
+description text gets rendered.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4235"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYGDBG_INFRA_DEBUG_TRACE_MESSAGE {
+    display       "Use trace text"
+    default_value 1
+    description   "
+        All trace calls within eCos contain a text message
+        which should give some information about the circumstances.
+        These text messages will end up being embedded in the
+        application image and hence there is a significant penalty
+        in terms of image size.
+        It is possible to suppress the use of these messages by
+        disabling this option.
+        This results in smaller code size, but there is less
+        human-readable information available in the trace output,
+        possibly only filenames and line numbers."
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4238"
+></A
+><H2
+>See Also</H2
+><P
+>Properties <A
+HREF="ref.display.html"
+><SPAN
+CLASS="PROPERTY"
+>display</SPAN
+></A
+> and
+<A
+HREF="ref.doc.html"
+><SPAN
+CLASS="PROPERTY"
+>doc</SPAN
+></A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.define-proc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.display.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>display</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,350 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>C library startup</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="C and math library overview"
+HREF="c-and-math-library-overview.html"><LINK
+REL="PREVIOUS"
+TITLE="Thread safety"
+HREF="libc-thread-safety.html"><LINK
+REL="NEXT"
+TITLE="I/O Package (Device Drivers)"
+HREF="io.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="libc-thread-safety.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 13. C and math library overview</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="io.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="C-LIBRARY-STARTUP">C library startup</H1
+><P
+>The C library includes a function declared as:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void <TT
+CLASS="FUNCTION"
+>cyg_iso_c_start</TT
+>( void )</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function is used to start an environment in which an
+ISO C style program can run in the most compatible way.</P
+><P
+>What this function does is to create a thread which will invoke <TT
+CLASS="FUNCTION"
+>main()</TT
+> &#8212; normally
+considered a program's entry point. In particular, it can
+supply arguments to <TT
+CLASS="FUNCTION"
+>main()</TT
+> using the CYGDAT_LIBC_ARGUMENTS
+configuration option, and when returning from <TT
+CLASS="FUNCTION"
+>main()</TT
+>,
+or calling <TT
+CLASS="FUNCTION"
+>exit()</TT
+>, pending stdio file output
+is flushed and any functions registered with <TT
+CLASS="FUNCTION"
+>atexit()</TT
+> are
+invoked. This is all compliant with the ISO C standard in this respect. </P
+><P
+>This thread starts execution when the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+> scheduler
+is started. If the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+> kernel package is not
+available (and hence there is no scheduler), then <TT
+CLASS="FUNCTION"
+>cyg_iso_c_start()</TT
+> will
+invoke the <TT
+CLASS="FUNCTION"
+>main()</TT
+> function directly, i.e.
+it will not return until the <TT
+CLASS="FUNCTION"
+>main()</TT
+> function
+returns. </P
+><P
+>The <TT
+CLASS="FUNCTION"
+>main()</TT
+> function should be defined
+as the following, and if defined in a C&#0043;&#0043; file,
+should have &#8220;C&#8221; linkage: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>extern int <TT
+CLASS="FUNCTION"
+>main</TT
+>( 
+  int <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>argc,</I
+></SPAN
+>
+  char *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>argv[] </I
+></SPAN
+>)</PRE
+></TD
+></TR
+></TABLE
+><P
+>The thread that is started by <TT
+CLASS="FUNCTION"
+>cyg_iso_c_start()</TT
+> can
+be manipulated directly, if you wish. For example you can suspend
+it. The kernel C API needs a handle to do this, which is available
+by including the following in your source code.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>extern cyg_handle_t cyg_libc_main_thread;</PRE
+></TD
+></TR
+></TABLE
+><P
+>Then for example, you can suspend the thread with the line:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_thread_suspend( cyg_libc_main_thread );</PRE
+></TD
+></TR
+></TABLE
+><P
+>If you call <TT
+CLASS="FUNCTION"
+>cyg_iso_c_start()</TT
+> and
+do not provide your own <TT
+CLASS="FUNCTION"
+>main()</TT
+> function,
+the system will provide a <TT
+CLASS="FUNCTION"
+>main()</TT
+> for you
+which will simply return immediately.</P
+><P
+>In the default configuration, <TT
+CLASS="FUNCTION"
+>cyg_iso_c_start()</TT
+> is
+invoked automatically by the <TT
+CLASS="FUNCTION"
+>cyg_package_start()</TT
+> function
+in the infrastructure configuration. This means that in the simplest
+case, your program can indeed consist of simply:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int main( int argc, char *argv[] )
+{
+ printf("Hello eCos\n");
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>If you override <TT
+CLASS="FUNCTION"
+>cyg_package_start()</TT
+> or <TT
+CLASS="FUNCTION"
+>cyg_start()</TT
+>,
+or disable the infrastructure configuration option CYGSEM_START_ISO_C_COMPATIBILITY
+then you must ensure that you call <TT
+CLASS="FUNCTION"
+>cyg_iso_c_start()</TT
+> yourself
+if you want to be able to have your program start at the entry point
+of <TT
+CLASS="FUNCTION"
+>main()</TT
+> automatically.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="libc-thread-safety.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="io.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Thread safety</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c-and-math-library-overview.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>I/O Package (Device Drivers)</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,602 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Option Naming Convention</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="The CDL Language"
+HREF="language.html"><LINK
+REL="PREVIOUS"
+TITLE="CDL Properties"
+HREF="language.properties.html"><LINK
+REL="NEXT"
+TITLE="An Introduction to Tcl"
+HREF="language.tcl.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.properties.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. The CDL Language</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.tcl.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="LANGUAGE.NAMING">Option Naming Convention</H1
+><P
+>All the options in a given configuration live in the same namespace.
+Furthermore it is not possible for two separate options to have the
+same name, because this would make any references to those options in
+<SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> expressions ambiguous. A naming convention exists to avoid
+problems. It is recommended that component writers observe some or all
+of this convention to reduce the probability of name clashes with
+other packages.</P
+><P
+>There is an important restriction on option names. Typically the
+component framework will output a <TT
+CLASS="LITERAL"
+>#define</TT
+> for every
+active and enabled option, using the name as the symbol being defined.
+This requires that all names are valid C preprocessor symbols, a
+limitation that is enforced even for options which have the
+<SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+> property. Preprocessor symbols can be any sequence of
+lower case letters <TT
+CLASS="LITERAL"
+>a</TT
+>-<TT
+CLASS="LITERAL"
+>z</TT
+>, upper
+case letters, <TT
+CLASS="LITERAL"
+>A</TT
+>-<TT
+CLASS="LITERAL"
+>Z</TT
+>, the
+underscore character <TT
+CLASS="LITERAL"
+>_</TT
+>, and the digits
+<TT
+CLASS="LITERAL"
+>0</TT
+>-<TT
+CLASS="LITERAL"
+>9</TT
+>. The first character must be
+a non-digit. Using an underscore as the first character is
+discouraged, because that may clash with reserved language
+identifiers. In addition there is a convention that preprocessor
+symbols only use upper case letters, and some component writers may
+wish to follow this convention.</P
+><P
+>A typical option name could be something like
+<TT
+CLASS="VARNAME"
+>CYGSEM_KERNEL_SCHED_BITMAP</TT
+>. This name consists of
+several different parts:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>The first few characters, in this case the three letters
+<TT
+CLASS="LITERAL"
+>CYG</TT
+>, are used to identify the organization that
+produced the package. For historical reasons packages produced by Red
+Hat tend to use the prefix <TT
+CLASS="LITERAL"
+>CYG</TT
+> rather than
+<TT
+CLASS="LITERAL"
+>RHAT</TT
+>. Component writers should use their own
+prefix: even when cutting and pasting from an existing <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> script
+the prefix should be changed to something appropriate to their
+organization. </P
+><P
+>It can be argued that a short prefix, often limited to upper case
+letters, is not sufficiently long to eliminate the possibility of
+name clashes. A longer prefix could be used, for example one based on
+internet domain names. However the C preprocessor has no concept of
+namespaces or <TT
+CLASS="LITERAL"
+>import</TT
+> directives, so it would always
+be necessary to use the full option name in component source code
+which gets tedious - option names tend to be long enough as it is.
+There is a small increased risk of name clashes, but this risk is felt
+to be acceptable.</P
+></LI
+><LI
+><P
+>The next three characters indicate the nature of the option, for
+example whether it affects the interface or just the implementation. A
+list of common tags is given below.</P
+></LI
+><LI
+><P
+>The <TT
+CLASS="LITERAL"
+>KERNEL_SCHED</TT
+> part indicates the location of the
+option within the overall hierarchy. In this case the option is part of
+the scheduling component of the kernel package. Having the hierarchy
+details as part of the option name can help in understanding
+configurable code and further reduces the probability of a name clash.</P
+></LI
+><LI
+><P
+>The final part, <TT
+CLASS="LITERAL"
+>BITMAP</TT
+>, identifies the option
+itself. </P
+></LI
+></OL
+><P
+>The three-character tag is intended to provide some additional
+information about the nature of the option. There are a number of
+pre-defined tags. However for many options there is a choice:
+options related to the platform should normally use
+<TT
+CLASS="LITERAL"
+>HWR</TT
+>, but numerical options should normally use
+<TT
+CLASS="LITERAL"
+>NUM</TT
+>; a platform-related numerical option such as
+the size of an interrupt stack could therefore use either tag.
+There are no absolute rules, and it is left to component writers to
+interpret the following guidelines:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>xxxARC_</TT
+></DT
+><DD
+><P
+>The <TT
+CLASS="LITERAL"
+>ARC</TT
+> tag is intended for options related
+to the processor architecture. Typically such options will only occur
+in architectural or variant HAL packages.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>xxxHWR_</TT
+></DT
+><DD
+><P
+>The <TT
+CLASS="LITERAL"
+>HWR</TT
+> tag is intended for options related to
+the specific target board. Typically such options will only occur in
+platform HAL packages.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>xxxPKG_</TT
+></DT
+><DD
+><P
+>This tag is intended for packages or components, in other words
+options which extend the configuration hierarchy. Arguably a
+<TT
+CLASS="LITERAL"
+>COM</TT
+> tag would be more appropriate for
+components, but this could be confusing because of the considerable
+number of computing terms that begin with com.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>xxxGLO_</TT
+></DT
+><DD
+><P
+>This is intended for global configuration options, especially
+preferences.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>xxxDBG_</TT
+></DT
+><DD
+><P
+>The <TT
+CLASS="LITERAL"
+>DBG</TT
+> tag indicates that the option is in
+some way related to debugging, for example it may enable assertions in
+some part of the system.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>xxxTST_</TT
+></DT
+><DD
+><P
+>This tag is for testing-related options. Typically these do not
+affect actual application code, instead they control the interaction
+between target-side test cases and a host-side testing infrastructure.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>xxxFUN_</TT
+></DT
+><DD
+><P
+>This is for configuration options which affect the interface of a
+package. There are a number of related tag which are also
+interface-related. <TT
+CLASS="LITERAL"
+>xxxFUN_</TT
+> is intended primarily
+for options that control whether or not one or more functions are
+provided by the package, but can also be used if none of the other
+interface-related tags is applicable.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>xxxVAR_</TT
+></DT
+><DD
+><P
+>This is analogous to <TT
+CLASS="LITERAL"
+>FUN</TT
+> but controls the presence
+or absence of one or more variables or objects.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>xxxCLS_</TT
+></DT
+><DD
+><P
+>The <TT
+CLASS="LITERAL"
+>CLS</TT
+> tag is intended only for packages that
+provide an object-oriented interface, and controls the presence or
+absence of an entire class.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>xxxMFN_</TT
+></DT
+><DD
+><P
+>This is also for object-orientated interfaces, and indicates the
+presence or absence of a member function rather than an entire class.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>xxxSEM_</TT
+></DT
+><DD
+><P
+>A <TT
+CLASS="LITERAL"
+>SEM</TT
+> option does not affect the interface (or if
+does affect the interface, this is incidental). Instead it is used for
+options which have a fundamental effect on the semantic behavior of a
+package. For example the choice of kernel schedulers is semantic in
+nature: it does not affect the interface, in particular the function
+<TT
+CLASS="FUNCTION"
+>cyg_thread_create</TT
+> exists irrespective of which
+scheduler has been selected. However it does have a major impact on
+the system's behavior.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>xxxIMP_</TT
+></DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>IMP</TT
+> is for implementation options. These do not
+affect either the interface or the semantic behavior (with the
+possible exception of timing-related changes). A typical
+implementation option controls whether or not a particular function or
+set of functions should get inlined.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>xxxNUM_</TT
+></DT
+><DD
+><P
+>This tag is for numerical options, for example the number of
+scheduling priority levels.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>xxxDAT_</TT
+></DT
+><DD
+><P
+>This is for data items that are not numerical in nature, for example a
+device name.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>xxxBLD_</TT
+></DT
+><DD
+><P
+>The <TT
+CLASS="LITERAL"
+>BLD</TT
+> tag indicates an option that affects
+the build process, for example compiler flag settings.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>xxxINT_</TT
+></DT
+><DD
+><P
+>This should normally be used for <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> interfaces, which is a language
+construct that is largely independent from the interface exported by a
+package via its header files. For more details of <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> interfaces
+see <A
+HREF="language.interface.html"
+>the Section called <I
+>Interfaces</I
+></A
+>.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>xxxPRI_</TT
+></DT
+><DD
+><P
+>This tag is not normally used for configuration options. Instead
+it is used by <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> scripts to pass additional private information to
+the source code via the configuration header files, typically inside a
+<SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+> property.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>xxxSRC_</TT
+></DT
+><DD
+><P
+>This tag is not normally used for configuration options. Instead
+it can be used by package source code to interact with such options,
+especially in the context of the <SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+> property.</P
+></DD
+></DL
+></DIV
+><P
+>There is one special case of a potential name clash that is worth
+mentioning here. When the component framework generates a
+configuration header file for a given package, by default it will use
+a name derived from the package name (the <SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+> property can
+be used to override this). The file name is constructed from the
+package name by removing everything up to and including the first
+underscore, converting the remainder of the name to lower case, and
+appending a <TT
+CLASS="LITERAL"
+>.h</TT
+> suffix. For example the kernel
+package <TT
+CLASS="VARNAME"
+>CYGPKG_KERNEL</TT
+> will involve a header file
+<TT
+CLASS="FILENAME"
+>pkgconf/kernel.h</TT
+>. If a
+configuration contained some other package
+<TT
+CLASS="VARNAME"
+>XYZPKG_KERNEL</TT
+> then this would attempt to use the
+same configuration header file, with unfortunate effects. Case
+sensitivity could introduce problems as well, so a package
+<TT
+CLASS="VARNAME"
+>xyzpkg_kernel</TT
+> would involve the same problem. Even
+if the header file names preserved the case of the package name, not
+all file systems are case sensitive. There is no simple solution to
+this problem. Changing the names of the generated configuration header
+files would involve a major incompatible change to the interface, to
+solve a problem which is essentially hypothetical in nature.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.properties.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.tcl.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>CDL Properties</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>An Introduction to Tcl</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

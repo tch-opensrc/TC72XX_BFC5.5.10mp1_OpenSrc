@@ -1,0 +1,288 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Board: Toshiba REF 4955</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Real-time characterization"
+HREF="real-time-characterization.html"><LINK
+REL="PREVIOUS"
+TITLE="Board: Toshiba JMR3904 Evaluation Board"
+HREF="rt-tx39-jmr3904.html"><LINK
+REL="NEXT"
+TITLE="Board: Matsushita STDEVAL1 Board"
+HREF="rt-mn10300-stdeval1.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="rt-tx39-jmr3904.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix B. Real-time characterization</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="rt-mn10300-stdeval1.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RT-TX49-REF4955">Board: Toshiba REF 4955</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="LITERALLAYOUT"
+>&#13;Board: Toshiba REF 4955
+
+CPU  : Toshiba TX4955 66MHz
+
+Startup, main stack             : stack used   960 size  2936
+Startup              :  Interrupt stack used   168 size  4096
+Startup              : Idlethread stack used   372 size  2048
+
+eCos Kernel Timings
+Notes: all times are in microseconds (.000001) unless otherwise stated
+
+Reading the hardware clock takes 3 `ticks' overhead
+... this value will be factored out of all other measurements
+Clock interrupt took    4.00 microseconds (264 raw clock ticks)
+
+Testing parameters:
+   Clock samples:            32
+   Threads:                  64
+   Thread switches:         128
+   Mutexes:                  32
+   Mailboxes:                32
+   Semaphores:               32
+   Scheduler operations:    128
+   Counters:                 32
+   Alarms:                   32
+
+
+                                 Confidence
+     Ave     Min     Max     Var  Ave  Min  Function
+  ======  ======  ======  ====== ========== ========
+   11.21    9.58   14.11    0.95   48%  34% Create thread
+    0.66    0.65    1.29    0.02   98%  98% Yield thread [all suspended]
+    0.63    0.53    3.06    0.17   82%  82% Suspend [suspended] thread
+    0.54    0.53    1.06    0.02   98%  98% Resume thread
+    0.78    0.74    1.39    0.05   93%  93% Set priority
+    0.05    0.05    0.36    0.01   98%  98% Get priority
+    2.06    1.89    6.65    0.25   95%  79% Kill [suspended] thread
+    0.65    0.65    0.68    0.00   98%  98% Yield [no other] thread
+    1.15    1.02    3.03    0.20   81%  81% Resume [suspended low prio] thread
+    0.54    0.52    1.18    0.03   96%  96% Resume [runnable low prio] thread
+    0.94    0.88    1.27    0.01   95%   1% Suspend [runnable] thread
+    0.65    0.65    0.68    0.00   98%  98% Yield [only low prio] thread
+    0.54    0.53    0.86    0.01   98%  96% Suspend [runnable-&#62;not runnable]
+    1.97    1.89    2.98    0.12   84%  84% Kill [runnable] thread
+    1.03    0.92    4.94    0.17   89%  89% Destroy [dead] thread
+    2.55    2.33    4.38    0.24   89%  70% Destroy [runnable] thread
+    5.62    4.11   13.23    0.99   65%  40% Resume [high priority] thread
+    1.84    1.83    2.79    0.02   98%  98% Thread switch
+
+    0.12    0.02    0.65    0.15   74%  74% Scheduler lock
+    0.35    0.35    0.35    0.00  100% 100% Scheduler unlock [0 threads]
+    0.35    0.35    0.35    0.00  100% 100% Scheduler unlock [1 suspended]
+    0.43    0.35    1.17    0.13   78%  78% Scheduler unlock [many suspended]
+    0.45    0.35    1.17    0.15   75%  75% Scheduler unlock [many low prio]
+
+    0.46    0.15    3.38    0.30   62%  50% Init mutex
+    0.73    0.64    3.27    0.16   96%  96% Lock [unlocked] mutex
+    0.77    0.65    4.50    0.23   96%  96% Unlock [locked] mutex
+    0.58    0.55    1.42    0.05   96%  96% Trylock [unlocked] mutex
+    0.51    0.50    0.83    0.02   96%  96% Trylock [locked] mutex
+    0.12    0.11    0.41    0.02   96%  96% Destroy mutex
+    4.72    4.70    5.58    0.05   96%  96% Unlock/Lock mutex
+
+    1.01    0.67    3.48    0.40   71%  71% Create mbox
+    0.02    0.00    0.53    0.03   96%  96% Peek [empty] mbox
+    0.89    0.68    4.20    0.29   96%  71% Put [first] mbox
+    0.02    0.00    0.33    0.02   96%  96% Peek [1 msg] mbox
+    0.69    0.68    0.76    0.01   50%  46% Put [second] mbox
+    0.02    0.00    0.30    0.02   96%  96% Peek [2 msgs] mbox
+    0.81    0.71    3.83    0.19   96%  96% Get [first] mbox
+    0.72    0.71    1.02    0.02   96%  96% Get [second] mbox
+    0.81    0.65    2.74    0.22   96%  71% Tryput [first] mbox
+    0.67    0.62    2.27    0.10   96%  96% Peek item [non-empty] mbox
+    0.77    0.71    2.41    0.10   96%  96% Tryget [non-empty] mbox
+    0.59    0.58    0.88    0.02   96%  96% Peek item [empty] mbox
+    0.62    0.62    0.67    0.00   96%  96% Tryget [empty] mbox
+    0.03    0.02    0.32    0.02   96%  96% Waiting to get mbox
+    0.02    0.02    0.06    0.01   50%  46% Waiting to put mbox
+    0.75    0.65    3.59    0.18   96%  96% Delete mbox
+    2.80    2.77    3.59    0.05   96%  96% Put/Get mbox
+
+    0.37    0.18    0.88    0.28   71%  71% Init semaphore
+    0.48    0.47    0.80    0.02   96%  96% Post [0] semaphore
+    0.60    0.59    0.67    0.01   50%  46% Wait [1] semaphore
+    0.53    0.50    1.41    0.06   96%  96% Trywait [0] semaphore
+    0.51    0.50    0.71    0.01   96%  50% Trywait [1] semaphore
+    0.09    0.09    0.15    0.00   96%  96% Peek semaphore
+    0.12    0.11    0.41    0.02   96%  96% Destroy semaphore
+    3.05    3.05    3.05    0.00  100% 100% Post/Wait semaphore
+
+    0.57    0.17    2.76    0.24   59%  25% Create counter
+    0.06    0.05    0.58    0.03   96%  96% Get counter value
+    0.06    0.03    0.64    0.04   96%  96% Set counter value
+    0.73    0.71    1.02    0.02   96%  96% Tick counter
+    0.12    0.11    0.15    0.01   50%  46% Delete counter
+
+    0.89    0.64    3.15    0.34   84%  71% Create alarm
+    1.00    0.95    2.41    0.09   96%  96% Initialize alarm
+    0.09    0.06    0.68    0.04   96%  96% Disable alarm
+    1.05    1.00    2.48    0.09   96%  96% Enable alarm
+    0.18    0.17    0.50    0.02   96%  96% Delete alarm
+    0.90    0.89    1.11    0.01   96%  96% Tick counter [1 alarm]
+    5.60    5.59    5.88    0.02   96%  96% Tick counter [many alarms]
+    1.53    1.52    2.11    0.04   96%  96% Tick &#38; fire counter [1 alarm]
+   25.48   25.47   25.76    0.02   96%  96% Tick &#38; fire counters [&#62;1 together]
+    6.22    6.21    6.44    0.01   96%  96% Tick &#38; fire counters [&#62;1 separately]
+    2.59    2.56    6.17    0.07   98%  98% Alarm latency [0 threads]
+    4.06    3.95    6.24    0.08   78%  57% Alarm latency [2 threads]
+    5.03    2.56    9.03    0.89   59%  10% Alarm latency [many threads]
+    5.68    5.59   15.45    0.15   99%  99% Alarm -&#62; thread resume latency
+
+    2.52    1.41    8.12    0.00            Clock/interrupt latency
+
+    2.05    1.17    6.00    0.00            Clock DSR latency
+
+   34       0    1072  (main stack:  1320)  Thread stack used (1912 total)
+All done, main stack            : stack used  1320 size  2936
+All done             :  Interrupt stack used   136 size  4096
+All done             : Idlethread stack used   996 size  2048
+
+Timing complete - 30360 ms total
+
+PASS:&lt;Basic timing OK&#62;
+EXIT:&lt;done&#62;
+
+	</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="rt-tx39-jmr3904.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="rt-mn10300-stdeval1.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Board: Toshiba JMR3904 Evaluation Board</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="real-time-characterization.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Board: Matsushita STDEVAL1 Board</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,512 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Configuration Tool on Windows and Linux Quick Start</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Configuring and Building eCos from Source"
+HREF="configuring-and-building-ecos-from-source.html"><LINK
+REL="PREVIOUS"
+TITLE="Configuring and Building eCos from Source"
+HREF="configuring-and-building-ecos-from-source.html"><LINK
+REL="NEXT"
+TITLE="Ecosconfig on Windows and Linux Quick Start"
+HREF="using-ecosconfig-on-linux.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="configuring-and-building-ecos-from-source.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 11. Configuring and Building <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> from Source</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="using-ecosconfig-on-linux.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="USING-CONFIGTOOL-WINDOWS-LINUX">Configuration Tool on Windows and Linux Quick Start</H1
+><P
+> 
+
+Note that the use of the <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+>
+is described in detail in <A
+HREF="the-ecos-configuration-tool.html"
+>Part IV in <I
+>eCos User Guide</I
+></A
+>.</P
+><P
+>The <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+> (see <A
+HREF="using-configtool-windows-linux.html#PROGRAMMING-FIGURE-CONFIGURATION-TOOL"
+>Figure 11-1</A
+>)
+has five main elements: the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>configuration window</I
+></SPAN
+>,
+the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>conflicts window</I
+></SPAN
+>,
+the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>properties window</I
+></SPAN
+>, the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>short
+description window</I
+></SPAN
+>,
+and the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>output window</I
+></SPAN
+>.</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="PROGRAMMING-FIGURE-CONFIGURATION-TOOL"><P
+><B
+>Figure 11-1. Configuration Tool</B
+></P
+><P
+><IMG
+SRC="pix/config-f1.png"></P
+></DIV
+><P
+>Start by opening the templates window via <SPAN
+CLASS="GUIMENUITEM"
+>Build-&#62;Templates</SPAN
+>.
+Select the desired target (see <A
+HREF="using-configtool-windows-linux.html#FIGURE-TEMPLATE-SELECTION"
+>Figure 11-2</A
+>).</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="FIGURE-TEMPLATE-SELECTION"><P
+><B
+>Figure 11-2. Template selection</B
+></P
+><P
+><IMG
+SRC="pix/templates01.png"></P
+></DIV
+><P
+>Make sure that the configuration is correct for the target
+in terms of endianness, CPU model, Startup type, etc. (see <A
+HREF="using-configtool-windows-linux.html#CONFIGURING-FOR-THE-TARGET"
+>Figure 11-3</A
+>).</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="CONFIGURING-FOR-THE-TARGET"><P
+><B
+>Figure 11-3. Configuring
+for the target</B
+></P
+><P
+><IMG
+SRC="pix/ARMStartup01.png"></P
+></DIV
+><P
+>Next, select the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build-&#62;Library</I
+></SPAN
+> menu
+item to start building <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> (see <A
+HREF="using-configtool-windows-linux.html#FIGURE-SELECTING-THE-BUILD-LIBRARY-MENU-ITEM"
+>Figure 11-4</A
+>).  The
+application will configure the sources, prepare a build tree, and
+build the <TT
+CLASS="FILENAME"
+>libtarget.a</TT
+> library, which contains the
+<SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> kernel and other packages.</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="FIGURE-SELECTING-THE-BUILD-LIBRARY-MENU-ITEM"><P
+><B
+>Figure 11-4. Selecting the Build Library menu item</B
+></P
+><P
+><IMG
+SRC="pix/build-lib01.png"></P
+></DIV
+><P
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Save As</I
+></SPAN
+> dialog box will appear, asking
+you to specify a directory in which to place your save file. You
+can use the default, but it is a good idea to make a subdirectory,
+called <TT
+CLASS="FILENAME"
+>ecos-work</TT
+> for example. </P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN607"><P
+><B
+>Figure 11-5. Save file dialog</B
+></P
+><P
+><IMG
+SRC="pix/save-as-dialog.png"></P
+></DIV
+><P
+>The first time you build an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> library for a specific
+architecture, the <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+> may prompt
+you for the location of the appropriate build tools (including
+<B
+CLASS="COMMAND"
+>make</B
+> and
+<B
+CLASS="COMMAND"
+><TT
+CLASS="REPLACEABLE"
+><I
+>TARGET-</I
+></TT
+>gcc</B
+>) using a
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build Tools</I
+></SPAN
+> dialog box (as shown in <A
+HREF="using-configtool-windows-linux.html#FIGURE-BUILD-TOOLS-DIALOG"
+>Figure 11-6</A
+>). You can select a location from
+the drop down list, browse to the directory using the
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Browse</I
+></SPAN
+> button, or type in the location of the
+build tools manually.</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="FIGURE-BUILD-TOOLS-DIALOG"><P
+><B
+>Figure 11-6. Build tools dialog</B
+></P
+><P
+><IMG
+SRC="pix/build-tools2.png"></P
+></DIV
+><P
+>The <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+> may also prompt you
+for the location of the user tools (such as <B
+CLASS="COMMAND"
+>cat</B
+> and
+<B
+CLASS="COMMAND"
+>ls</B
+>) using a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>User Tools</I
+></SPAN
+> dialog
+box (as shown in <A
+HREF="using-configtool-windows-linux.html#FIGURE-USER-TOOLS-DIALOG"
+>Figure 11-7</A
+>). As with
+the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build Tools</I
+></SPAN
+> dialog, you can select a location
+from the drop down list, browse to the directory using the
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Browse</I
+></SPAN
+> button, or type in the location of the
+user tools manually. Note that on Linux, this will often be
+unnecessary as the tools will already be on your PATH.</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="FIGURE-USER-TOOLS-DIALOG"><P
+><B
+>Figure 11-7. User tools dialog</B
+></P
+><P
+><IMG
+SRC="pix/user-tools-dialog.png"></P
+></DIV
+><P
+>When the tool locations have been entered, the <SPAN
+CLASS="APPLICATION"
+>Configuration
+Tool</SPAN
+> will configure the sources, prepare a build tree,
+and build the <TT
+CLASS="FILENAME"
+>libtarget.a</TT
+> library, which contains
+the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> kernel and other packages.</P
+><P
+>The output from the configuration process and the building
+of <TT
+CLASS="FILENAME"
+>libtarget.a</TT
+> will be shown in the output
+window.</P
+><P
+>Once the build process has finished you will have a kernel
+with other packages in <TT
+CLASS="FILENAME"
+>libtarget.a</TT
+>. You should
+now build the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> tests for your particular configuration. </P
+><P
+>You can do this by selecting <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build</I
+></SPAN
+> -&#62; <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Tests</I
+></SPAN
+>.
+Notice that you could have selected <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Tests</I
+></SPAN
+> instead
+of <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Library</I
+></SPAN
+> in the earlier step and it would
+have built <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>both</I
+></SPAN
+> the library and the tests,
+but this would increase the build time substantially, and if you
+do not need to build the tests it is unnecessary.</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN648"><P
+><B
+>Figure 11-8. Selecting the Build Tests menu item</B
+></P
+><P
+><IMG
+SRC="pix/build-tests01.png"></P
+></DIV
+><P
+><A
+HREF="running-an-ecos-test-case.html"
+>Chapter 12</A
+> will guide you through running one
+	    of the test cases you just built on the selected target,
+	    using GDB. </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="configuring-and-building-ecos-from-source.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="using-ecosconfig-on-linux.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Configuring and Building <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> from Source</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="configuring-and-building-ecos-from-source.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Ecosconfig on Windows and Linux Quick Start</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

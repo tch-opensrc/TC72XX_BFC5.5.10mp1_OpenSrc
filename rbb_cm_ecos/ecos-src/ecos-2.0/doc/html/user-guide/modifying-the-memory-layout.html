@@ -1,0 +1,416 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Modifying the Memory Layout</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Manual Configuration"
+HREF="manual-configuration.html"><LINK
+REL="PREVIOUS"
+TITLE="Editing the Sources"
+HREF="editing-the-sources.html"><LINK
+REL="NEXT"
+TITLE="Managing the Package Repository"
+HREF="managing-package-repository.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="editing-the-sources.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 28. Manual Configuration</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="managing-package-repository.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MODIFYING-THE-MEMORY-LAYOUT">Modifying the Memory Layout</H1
+><P
+>Each <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> platform package is supplied with linker script
+fragments which describe the location of memory regions on the evaluation
+board and the location of memory sections within these regions.
+The correct linker script fragment is selected and included in the
+<SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> linker script <TT
+CLASS="FILENAME"
+>target.ld</TT
+> when
+<SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> is built.</P
+><P
+>It is not necessary to modify the default memory
+layouts in order to start development with <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>. However, it will
+be necessary to edit a linker script fragment when the memory map
+of the evaluation board is changed. For example, if additional memory
+is added, the linker must be notified that the new memory is available
+for use. As a minimum, this would involve modifying the length of
+the corresponding memory region. Where the available memory is non-contiguous,
+it may be necessary to declare a new memory region and reassign
+certain linker output sections to the new region.</P
+><P
+>Linker script fragments and memory layout header files should
+be edited within the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> install tree. They are
+located at <TT
+CLASS="FILENAME"
+>include/pkgconf/mlt_*.*</TT
+>.
+Where multiple start-up types are in use, it will be necessary to
+edit multiple linker script fragments and header files. The information
+provided in the header file and the corresponding linker script
+fragment must always match. A typical linker script fragment is
+shown below:</P
+><DIV
+CLASS="EXAMPLE"
+><A
+NAME="AEN2992"><P
+><B
+>Example 28-1. <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> linker script fragment</B
+></P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>MEMORY
+{
+ rom : ORIGIN = 0x40000000, LENGTH = 0x80000
+ ram : ORIGIN = 0x48000000, LENGTH = 0x200000
+}
+
+SECTIONS
+{
+ SECTIONS_BEGIN
+ SECTION_rom_vectors (rom, 0x40000000, LMA_EQ_VMA)
+ SECTION_text (rom, ALIGN (0x1), LMA_EQ_VMA)
+ SECTION_fini (rom, ALIGN (0x1), LMA_EQ_VMA)
+ SECTION_rodata (rom, ALIGN (0x1), LMA_EQ_VMA)
+ SECTION_rodata1 (rom, ALIGN (0x1), LMA_EQ_VMA)
+ SECTION_fixup (rom, ALIGN (0x1), LMA_EQ_VMA)
+ SECTION_gcc_except_table (rom, ALIGN (0x1), LMA_EQ_VMA)
+ SECTION_data (ram, 0x48000000, FOLLOWING (.gcc_except_table))
+ SECTION_bss (ram, ALIGN (0x4), LMA_EQ_VMA)
+ SECTIONS_END
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>The file consists of two blocks, the <TT
+CLASS="LITERAL"
+>MEMORY</TT
+> block
+contains lines describing the address (<TT
+CLASS="LITERAL"
+>ORIGIN</TT
+>)
+and the size (<TT
+CLASS="LITERAL"
+>LENGTH</TT
+>) of each memory
+region. The <TT
+CLASS="LITERAL"
+>MEMORY</TT
+> block is followed
+by the <TT
+CLASS="LITERAL"
+>SECTIONS</TT
+> block which contains
+lines describing each of the linker output sections. Each section
+is represented by a macro call. The arguments of these macros are
+ordered as follows: </P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>The memory region in which the section will finally
+	      reside.</P
+></LI
+><LI
+><P
+>The final address (
+<TT
+CLASS="LITERAL"
+>VMA</TT
+>
+) of the section. This is expressed using one of the following forms:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>n</I
+></SPAN
+></DT
+><DD
+><P
+>at the absolute address specified by the
+		    unsigned integer <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>n</I
+></SPAN
+></P
+></DD
+><DT
+>ALIGN (<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>n</I
+></SPAN
+>)</DT
+><DD
+><P
+>following the final location of the previous section
+		    with alignment to the next <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>n</I
+></SPAN
+>-byte
+		    boundary</P
+></DD
+></DL
+></DIV
+></LI
+><LI
+><P
+>The initial address (<TT
+CLASS="LITERAL"
+>LMA</TT
+>)
+	      of the section. This is expressed using one of the
+	      following forms:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>LMA_EQ_VMA</DT
+><DD
+><P
+>the <TT
+CLASS="LITERAL"
+>LMA</TT
+>
+		    equals the <TT
+CLASS="LITERAL"
+>VMA</TT
+> (no relocation)</P
+></DD
+><DT
+>AT (<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>n</I
+></SPAN
+>)</DT
+><DD
+><P
+>at the absolute address specified by the
+		    unsigned integer <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>n</I
+></SPAN
+></P
+></DD
+><DT
+>FOLLOWING (.<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>name</I
+></SPAN
+>)</DT
+><DD
+><P
+>following the initial location of section
+		    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>name</I
+></SPAN
+></P
+></DD
+></DL
+></DIV
+></LI
+></OL
+><P
+>In order to maintain compatibility with linker script
+	  fragments and header files exported by the
+	  <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+>, the use
+	  of other expressions within these files is not
+	  recommended.</P
+><P
+>Note that the names of the linker output sections will vary
+between target architectures. A description of these sections can
+be found in the specific <SPAN
+CLASS="PRODUCTNAME"
+>GCC</SPAN
+> documentation for
+your architecture.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="editing-the-sources.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="managing-package-repository.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Editing the Sources</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="manual-configuration.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Managing the Package Repository</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

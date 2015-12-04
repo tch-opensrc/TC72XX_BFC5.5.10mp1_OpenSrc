@@ -1,0 +1,338 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>CRC Functions</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="CRC Algorithms"
+HREF="services-crc.html"><LINK
+REL="PREVIOUS"
+TITLE="CRC Algorithms"
+HREF="services-crc.html"><LINK
+REL="NEXT"
+TITLE="CPU load measurements"
+HREF="services-cpuload.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="services-crc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="services-cpuload.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="CRC-FUNCTIONS">Chapter 50. CRC Functions</H1
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SERVICES-CRC-API">CRC API</H1
+><P
+>The package implements a number of CRC functions as described below.
+The API to these functions is in the include file
+<TT
+CLASS="FILENAME"
+>cyg/crc/crc.h</TT
+>.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="SERVICES-CRC-API-CYG-POSIX-CRC32">cyg_posix_crc32</H2
+><P
+>This function implements a 32 bit CRC which is compliant to the POSIX
+1008.2 Standard. This is the same as the Linux cksum program.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_uint32 cyg_posix_crc32(unsigned char &#0042; s, int len);</PRE
+></TD
+></TR
+></TABLE
+><P
+>The CRC calculation is run over the data pointed to by
+<TT
+CLASS="PARAMETER"
+><I
+>s</I
+></TT
+>, of length <TT
+CLASS="PARAMETER"
+><I
+>len</I
+></TT
+>. The
+CRC is returned as an unsigned long.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="SERVICES-CRC-API-CYG-CRC32">cyg_crc32</H2
+><P
+>These functions implement a 32 bit CRC by Gary S. Brown. They use the
+polynomial
+X^32+X^26+X^23+X^22+X^16+X^12+X^11+X^10+X^8+X^7+X^5+X^4+X^2+X^1+X^0.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_uint32 cyg_crc32(unsigned char &#0042; s, int len);
+cyg_uint32 cyg_crc32_accumulate(cyg_uint32 crc, unsigned char &#0042; s, int len);</PRE
+></TD
+></TR
+></TABLE
+><P
+>The CRC calculation is run over the data pointed to by
+<TT
+CLASS="PARAMETER"
+><I
+>s</I
+></TT
+>, of length <TT
+CLASS="PARAMETER"
+><I
+>len</I
+></TT
+>. The
+CRC is returned as an unsigned long.</P
+><P
+> The CRC can be calculated over data separated into multiple
+buffers by using the function <TT
+CLASS="PARAMETER"
+><I
+> cyg_crc32_accumulate()</I
+></TT
+>. The parameter <TT
+CLASS="PARAMETER"
+><I
+>crc</I
+></TT
+> should be the
+result from the previous CRC calculation.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="SERVICES-CRC-API-CYG-ETHER-CRC32">cyg_ether_crc32</H2
+><P
+>These functions implement the 32 bit CRC used by the Ethernet FCS word.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_uint32 cyg_ether_crc32(unsigned char &#0042; s, int len);
+cyg_uint32 cyg_ether_crc32_accumulate(cyg_uint32 crc, unsigned char &#0042; s, int len);</PRE
+></TD
+></TR
+></TABLE
+><P
+>The CRC calculation is run over the data pointed to by
+<TT
+CLASS="PARAMETER"
+><I
+>s</I
+></TT
+>, of length <TT
+CLASS="PARAMETER"
+><I
+>len</I
+></TT
+>. The
+CRC is returned as an unsigned long.</P
+><P
+> The CRC can be calculated over data separated into multiple
+buffers by using the function <TT
+CLASS="PARAMETER"
+><I
+> cyg_ether_crc32_accumulate()</I
+></TT
+>. The parameter <TT
+CLASS="PARAMETER"
+><I
+>crc</I
+></TT
+> should be the
+result from the previous CRC calculation.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="SERVICES-CRC-API-CYG-CRC16">cyg_crc16</H2
+><P
+>This function implements a 16 bit CRC. It uses the polynomial
+x^16+x^12+x^5+1.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_uint16 cyg_crc16(unsigned char &#0042; s, int len);</PRE
+></TD
+></TR
+></TABLE
+><P
+>The CRC calculation is run over the data pointed to by
+<TT
+CLASS="PARAMETER"
+><I
+>s</I
+></TT
+>, of length <TT
+CLASS="PARAMETER"
+><I
+>len</I
+></TT
+>. The
+CRC is returned as an unsigned short.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="services-crc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="services-cpuload.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>CRC Algorithms</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="services-crc.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>CPU load measurements</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

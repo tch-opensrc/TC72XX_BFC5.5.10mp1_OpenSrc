@@ -1,0 +1,397 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Using the command line</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Running an eCos Test Case"
+HREF="running-an-ecos-test-case.html"><LINK
+REL="PREVIOUS"
+TITLE="Running an eCos Test Case"
+HREF="running-an-ecos-test-case.html"><LINK
+REL="NEXT"
+TITLE="Testing Filters"
+HREF="testing-filters.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="running-an-ecos-test-case.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 12. Running an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Test Case</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="testing-filters.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="USING-COMMANDLINE-TESTCASE">Using the command line</H1
+><P
+>Start a command shell (such as a Cygwin shell window in Windows)
+with the environment variables set as described in the toolchain
+documentation.  Change to the directory in which you set up your build
+tree, and invoke  GDB on the test
+program.</P
+><P
+>To run the bin_sem0 test (which will
+test the kernel for the correct creation and destruction of binary
+semaphores) type: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ <TT
+CLASS="REPLACEABLE"
+><I
+>TARGET-</I
+></TT
+>gdb -nw install/tests/kernel/<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+>/tests/bin_sem0</PRE
+></TD
+></TR
+></TABLE
+><P
+>You should see output similar to the following in the command
+window:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>GNU gdb THIS-GDB-VERSION
+Copyright 2001 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you are
+welcome to change it and/or distribute copies of it under certain conditions.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for details.
+This GDB was configured as "--host=THIS-HOST --target=THIS-TARGET".
+(gdb)</PRE
+></TD
+></TR
+></TABLE
+><P
+>If you are trying to run a synthetic target test on Linux, skip the following connection and download
+steps. Otherwise, connect to the target by typing: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>(gdb) set remotebaud 38400
+(gdb) target remote /dev/ttyS0</PRE
+></TD
+></TR
+></TABLE
+><P
+>on Linux or</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>(gdb) set remotebaud 38400
+(gdb) target remote com1</PRE
+></TD
+></TR
+></TABLE
+><P
+>on Windows or</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>(gdb) target sim</PRE
+></TD
+></TR
+></TABLE
+><P
+>to use a simulator in either host O/S.</P
+><P
+>Check the documentation for the target board for the actual baud rate
+to use when connecting to real targets.</P
+><P
+>You will see output similar to the following: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Remote debugging using /dev/ttyS1
+0x0000d50c in ?? ()
+    at <TT
+CLASS="REPLACEABLE"
+><I
+>BASE_DIR</I
+></TT
+>/kernel/<TT
+CLASS="REPLACEABLE"
+><I
+>&#60;version&#62;</I
+></TT
+>/src/common/kapi.cxx:345
+
+Current language:  auto; currently c++
+(gdb) </PRE
+></TD
+></TR
+></TABLE
+><P
+>Or if you are using the simulator:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Connected to the simulator.
+(gdb)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Now download the program to the target with</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>(gdb) load</PRE
+></TD
+></TR
+></TABLE
+><P
+>You should see output similar to the following on your screen: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Loading section .text, size 0x4b04 lma 0x108000
+Loading section .rodata, size 0x738 lma 0x10cb08
+Loading section .data, size 0x1c0 lma 0x10d240
+Start address 0x108000, load size 21500
+Transfer rate: 24571 bits/sec, 311 bytes/write.
+(gdb)</PRE
+></TD
+></TR
+></TABLE
+><P
+>You are now ready to run your program. If you type: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>(gdb) continue</PRE
+></TD
+></TR
+></TABLE
+><P
+>you will see output similar to the following: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Continuing.
+PASS:&lt;Binary Semaphore 0 OK&gt;
+EXIT:&lt;done&gt;</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+> If you are using a simulator or the synthetic target rather
+	    than real hardware, you must use the GDB command
+	    &#8220;run&#8221; rather than &#8220;continue&#8221; to
+	    start your program.</P
+></BLOCKQUOTE
+></DIV
+><P
+>You can terminate your GDB session with
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Control+C</I
+></SPAN
+>, otherwise it will sit in the
+&#8220;idle&#8221; thread and use up CPU time. This is not a problem
+with real targets, but may have undesirable effects in simulated or
+synthetic targets. Type <B
+CLASS="COMMAND"
+>quit</B
+> and you are
+done. </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="running-an-ecos-test-case.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="testing-filters.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Running an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Test Case</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="running-an-ecos-test-case.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Testing Filters</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

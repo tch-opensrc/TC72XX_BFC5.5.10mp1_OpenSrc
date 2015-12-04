@@ -1,0 +1,1643 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>CDL Properties</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="The CDL Language"
+HREF="language.html"><LINK
+REL="PREVIOUS"
+TITLE="CDL Commands"
+HREF="language.commands.html"><LINK
+REL="NEXT"
+TITLE="Option Naming Convention"
+HREF="language.naming.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.commands.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. The CDL Language</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.naming.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="LANGUAGE.PROPERTIES">CDL Properties</H1
+><P
+>Each package, component, option, and interface has a body of
+properties, which provide the component framework with information
+about how to handle each option. For example there is a property for a
+descriptive text message which can be displayed to a user who is
+trying to figure out just what effect manipulating the option would
+have on the target application. There is another property for the
+default value, for example whether a particular option should be
+enabled or disabled by default.</P
+><P
+>All of the properties are optional, it is legal to define a
+configuration option which has an empty body. However some properties
+are more optional than others: users will not appreciate having to
+manipulate an option if they are not given any sort of description or
+documentation. Other properties are intended only for very specific
+purposes, for example <SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+> and <SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+>, and are used
+only rarely.</P
+><P
+>Because different properties serve very different purposes, their
+syntax is not as uniform as the top-level commands. Some properties
+take no arguments at all. Other properties take a single argument such
+as a description string, or a list of arguments such as a <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+>
+property which specifies the file or files that should be compiled if
+a given option is active and enabled. The <SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+> property takes
+as argument a snippet of <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> code. The <SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+>, <SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+>,
+<SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+>, <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> and <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> properties take various
+expressions. Additional properties may be defined in future which take
+new kinds of arguments.</P
+><P
+>All property parsing code supports options for every property,
+although at present the majority of properties do not yet take any
+options. Any initial arguments that begin with a hyphen character
+<TT
+CLASS="LITERAL"
+>-</TT
+> will be interpreted as an option, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_HAL_ARM {
+    &#8230;
+    make -priority 1 {
+        &#8230;
+    }
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>If the option involves additional data, as for the
+<TT
+CLASS="LITERAL"
+>-priority</TT
+> example above, then this can be written
+as either <TT
+CLASS="LITERAL"
+>-priority=1</TT
+> or as
+<TT
+CLASS="LITERAL"
+>-priority&nbsp;1</TT
+>. On occasion the option parsing
+code can get in the way, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYGNUM_LIBC_TIME_DST_DEFAULT_STATE {
+    &#8230;
+    legal_values -1 to 1
+    default_value -1
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>Neither the <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> nor the <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+> property will
+accept <TT
+CLASS="LITERAL"
+>-1</TT
+> as a valid option, so this will result in
+syntax errors when the <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> script is read in by the component
+framework. To avoid problems, the option parsing code will recognize
+the string <TT
+CLASS="LITERAL"
+>--</TT
+> and will not attempt to interpret any
+subsequent arguments. Hence this option should be written as:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYGNUM_LIBC_TIME_DST_DEFAULT_STATE {
+    &#8230;
+    legal_values  -- -1 to 1
+    default_value -- -1
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The property parsing code involves a recursive invocation of the Tcl
+interpreter that is used to parse the top-level commands. This means
+that some characters in the body of an option will be treated
+specially. The <TT
+CLASS="LITERAL"
+>#</TT
+> character can be used for
+comments. The backslash character <TT
+CLASS="LITERAL"
+>\</TT
+>, the
+dollar character <TT
+CLASS="LITERAL"
+>$</TT
+>, square brackets
+<TT
+CLASS="LITERAL"
+>[</TT
+> and <TT
+CLASS="LITERAL"
+>]</TT
+>, braces
+<TT
+CLASS="LITERAL"
+>{</TT
+> and <TT
+CLASS="LITERAL"
+>}</TT
+>, and the quote character
+<TT
+CLASS="LITERAL"
+>"</TT
+> may all receive special treatment. Most of the
+time this is not a problem because these characters are not useful for
+most properties. On occasion having a <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> interpreter around
+performing the parser can be very powerful. For more details of
+how the presence of a <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> interpreter can affect <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> scripts,
+see <A
+HREF="language.tcl.html"
+>the Section called <I
+>An Introduction to Tcl</I
+></A
+>.</P
+><P
+>Many of the properties can be used in any of <TT
+CLASS="LITERAL"
+>cdl_package</TT
+>,
+<TT
+CLASS="LITERAL"
+>cdl_component</TT
+>, <TT
+CLASS="LITERAL"
+>cdl_option</TT
+> or <TT
+CLASS="LITERAL"
+>cdl_interface</TT
+>. Other properties are
+more specific. The <SPAN
+CLASS="PROPERTY"
+>script</SPAN
+> property is only relevant to components.
+The <SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+>, <SPAN
+CLASS="PROPERTY"
+>hardware</SPAN
+>, <SPAN
+CLASS="PROPERTY"
+>include_dir</SPAN
+>, <SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+>, and
+<SPAN
+CLASS="PROPERTY"
+>library</SPAN
+> properties apply to a package as a whole, so can only occur
+in the body of a <TT
+CLASS="LITERAL"
+>cdl_package</TT
+> command. The <SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+>,
+<SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+>, <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> and <SPAN
+CLASS="PROPERTY"
+>flavor</SPAN
+> properties are not
+relevant to packages, as will be explained later. The <SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+> and
+<SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+> properties are also not relevant to interfaces.</P
+><P
+>This section lists the various properties, grouped by purpose. Each
+property also has a full reference page in <A
+HREF="reference.html"
+>Chapter 5</A
+>.
+Properties related to values and expressions are described in more
+detail in <A
+HREF="language.values.html"
+>the Section called <I
+>Values and Expressions</I
+></A
+>. Properties related to
+header file generation and to the build process are described in
+<A
+HREF="build.html"
+>Chapter 4</A
+>.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LANGUAGE.PROPERTIES.USER">Information-providing Properties</H2
+><P
+>Users can only be expected to manipulate configuration options
+sensibly if they are given sufficient information about these options.
+There are three properties which serve to explain an option in plain
+text: the <A
+HREF="ref.display.html"
+><SPAN
+CLASS="PROPERTY"
+>display</SPAN
+></A
+> property gives
+a textual alias for an option, which is usually more comprehensible
+than something like <TT
+CLASS="LITERAL"
+>CYGPKG_LIBC_TIME_ZONES`</TT
+>; the
+<A
+HREF="ref.description.html"
+><SPAN
+CLASS="PROPERTY"
+>description</SPAN
+></A
+> property gives a
+longer description, typically a paragraph or so; the <A
+HREF="ref.doc.html"
+><SPAN
+CLASS="PROPERTY"
+>doc</SPAN
+></A
+> property specifies the location of
+additional on-line documentation related to a configuration option. In
+the context of a graphical tool the <SPAN
+CLASS="PROPERTY"
+>display</SPAN
+> string will be the
+primary way for users to identify configuration options; the
+<SPAN
+CLASS="PROPERTY"
+>description</SPAN
+> paragraph will be visible whenever the option is
+selected; the on-line documentation will only be accessed when the
+user explicitly requests it.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_UITRON {
+    display       "uITRON compatibility layer"
+    doc           ref/ecos-ref.a.html
+    description   "
+        eCos supports a uITRON Compatibility Layer, providing
+        full Level S (Standard) compliance with Version 3.02 of
+        the uITRON Standard, plus many Level E (Extended) features.
+        uITRON is the premier Japanese embedded RTOS standard."
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>All three properties take a single argument. For <SPAN
+CLASS="PROPERTY"
+>display</SPAN
+> and
+<SPAN
+CLASS="PROPERTY"
+>description</SPAN
+> this argument is just a string. For <SPAN
+CLASS="PROPERTY"
+>doc</SPAN
+> it should be a
+pointer to a suitable HTML file, optionally including an anchor within
+that page. If the <A
+HREF="package.html#PACKAGE.HIERARCHY"
+>directory layout
+conventions</A
+> are observed then the component framework will look
+for the HTML file in the package's <TT
+CLASS="FILENAME"
+>doc</TT
+> sub-directory, otherwise the <SPAN
+CLASS="PROPERTY"
+>doc</SPAN
+>
+filename will be treated as relative to the package's top-level directory.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LANGUAGE.PROPERTIES.HIERARCHY">The Configuration Hierarchy</H2
+><P
+>There are two properties related to the hierarchical organization of
+components and options: <A
+HREF="ref.parent.html"
+><SPAN
+CLASS="PROPERTY"
+>parent</SPAN
+></A
+> and
+<A
+HREF="ref.script.html"
+><SPAN
+CLASS="PROPERTY"
+>script</SPAN
+></A
+>.</P
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>parent</SPAN
+> property can be used to move a <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> entity somewhere
+else in the hierarchy. The most common use is for packages, to avoid
+having all the packages appear at the top-level of the configuration
+hierarchy. For example an architectural HAL package such as
+<TT
+CLASS="VARNAME"
+>CYGPKG_HAL_SH</TT
+> is placed below the common HAL
+package <TT
+CLASS="VARNAME"
+>CYGPKG_HAL</TT
+> using a <SPAN
+CLASS="PROPERTY"
+>parent</SPAN
+> property.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_HAL_SH {
+    display       "SH architecture"
+    parent        CYGPKG_HAL
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>parent</SPAN
+> property can also be used in the body of a
+<TT
+CLASS="LITERAL"
+>cdl_component</TT
+>, <TT
+CLASS="LITERAL"
+>cdl_option</TT
+> or <TT
+CLASS="LITERAL"
+>cdl_interface</TT
+>, but this is less
+common. However care has to be taken since excessive re-parenting can
+be confusing. Care also has to be taken when reparenting below some
+other package that may not actually be loaded in a given
+configuration, since the resulting behavior is undefined.</P
+><P
+>As a special case, if the parent is the empty string then the
+<SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> entity is placed at the root of the hierarchy. This is useful
+for global preferences, default compiler flags, and other settings
+that may affect every package.</P
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>script</SPAN
+> property can only be used in the body of a
+<TT
+CLASS="LITERAL"
+>cdl_component</TT
+> command. The property takes a single filename as
+argument, and this should be another <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> script containing
+additional options, sub-components and interfaces that should go below
+the current component in the hierarchy. If the <A
+HREF="package.html#PACKAGE.HIERARCHY"
+>directory layout conventions</A
+> are
+observed then the component framework will look for the specified file
+relative to the <TT
+CLASS="FILENAME"
+>cdl</TT
+>
+subdirectory of the package, otherwise the filename will be treated as
+relative to the package's top-level directory.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_component CYGPKG_LIBC_STDIO {
+    display       "Standard input/output functions"
+    flavor        bool
+    requires      CYGPKG_IO
+    requires      CYGPKG_IO_SERIAL_HALDIAG
+    default_value 1
+    description   "
+        This enables support for standard I/O functions from &lt;stdio.h&gt;."
+
+    script        stdio.cdl
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LANGUAGE.PROPERTIES.VALUE">Value-related Properties</H2
+><P
+>There are seven properties which are related to option values and
+state: <A
+HREF="ref.flavor.html"
+><SPAN
+CLASS="PROPERTY"
+>flavor</SPAN
+></A
+>,
+<A
+HREF="ref.calculated.html"
+><SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+></A
+>,
+<A
+HREF="ref.default-value.html"
+><SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+></A
+>,
+<A
+HREF="ref.legal-values.html"
+><SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+></A
+>,
+<A
+HREF="ref.active-if.html"
+><SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+></A
+>,
+<A
+HREF="ref.implements.html"
+><SPAN
+CLASS="PROPERTY"
+>implements</SPAN
+></A
+>, and
+<A
+HREF="ref.requires.html"
+><SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+></A
+>. More detailed
+information can be found in <A
+HREF="language.values.html"
+>the Section called <I
+>Values and Expressions</I
+></A
+>.</P
+><P
+>In the context of configurability, the concept of an option's value is
+somewhat non-trivial. First an option may or may not be loaded: it is
+possible to build a configuration which has the math library but not
+the kernel; however the math library's <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> scripts still reference
+kernel options, for example
+<TT
+CLASS="VARNAME"
+>CYGSEM_LIBM_THREAD_SAFE_COMPAT_MODE</TT
+> has a
+<SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> constraint on
+<TT
+CLASS="VARNAME"
+>CYGVAR_KERNEL_THREADS_DATA</TT
+>. Even if an option is
+loaded it may or may not be active, depending on what is happening
+higher up in the hierarchy: if the C library's
+<TT
+CLASS="VARNAME"
+>CYGPKG_LIBC_STDIO</TT
+> component is disabled then some
+other options such as <TT
+CLASS="VARNAME"
+>CYGNUM_LIBC_STDIO_BUFSIZE</TT
+>
+become irrelevant. In addition each option has both a boolean
+enabled/disabled flag and a data part. For many options only the
+boolean flag is of interest, while for others only the data part is of
+interest. The <SPAN
+CLASS="PROPERTY"
+>flavor</SPAN
+> property can be used to control this:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>flavor none</TT
+></DT
+><DD
+><P
+>This flavor indicates that neither the boolean nor the data parts are
+user-modifiable: the option is always enabled and the data is always
+set to <TT
+CLASS="LITERAL"
+>1</TT
+>. The most common use for this is to have a
+component that just acts as a placeholder in the hierarchy, allowing
+various options to be grouped below it.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>flavor bool</TT
+></DT
+><DD
+><P
+>Only the boolean part of the option is user-modifiable. The data part
+is fixed at <TT
+CLASS="LITERAL"
+>1</TT
+>.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>flavor data</TT
+></DT
+><DD
+><P
+>Only the data part of the option is user-modifiable. The boolean part
+is fixed at enabled.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>flavor booldata</TT
+></DT
+><DD
+><P
+>Both the boolean and the data part of the option are user-modifiable.</P
+></DD
+></DL
+></DIV
+><P
+>For more details of <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> flavors and how a flavor affects expression
+evaluation, and other consequences, see <A
+HREF="language.values.html"
+>the Section called <I
+>Values and Expressions</I
+></A
+>. The <SPAN
+CLASS="PROPERTY"
+>flavor</SPAN
+> property cannot be used for a
+package because packages always have the <TT
+CLASS="LITERAL"
+>booldata</TT
+>
+flavor. Options and components have the <TT
+CLASS="LITERAL"
+>bool</TT
+> flavor
+by default, since most configuration choices are simple yes-or-no
+choices. Interfaces have the <TT
+CLASS="LITERAL"
+>data</TT
+> flavor by default.</P
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+> property can be used for options which should not be
+user-modifiable, but which instead are fixed by the target hardware or
+determined from the current values of other options. In general
+<SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+> options should be avoided, since they can be confusing to
+users who need to figure out whether or not a particular option can
+actually be changed. There are a number of valid uses for <SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+>
+options, and quite a few invalid ones as well. The <A
+HREF="ref.calculated.html"
+>reference packages</A
+> should be consulted
+for further details. The property takes an <A
+HREF="language.values.html#LANGUAGE.EXPRESSION"
+>ordinary <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> expression</A
+> as
+argument, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+># A constant on some target hardware, perhaps user-modifiable on other
+# targets.
+cdl_option CYGNUM_HAL_RTC_PERIOD {
+    display       "Real-time clock period"
+    flavor        data
+    calculated    12500
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+> property cannot be used for packages or interfaces.
+The value of a package always corresponds to the version of that
+package which is loaded, and this is under user control. Interfaces
+are implicitly calculated, based on the number of active and enabled
+implementors.</P
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+> property is similar to <SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+>, but only
+specifies a default value which users can modify. Again this property
+is not relevant to packages or interfaces. A typical example would be:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYGDBG_HAL_DEBUG_GDB_THREAD_SUPPORT {
+    display       "Include GDB multi-threading debug support"
+    requires      CYGDBG_KERNEL_DEBUG_GDB_THREAD_SUPPORT
+    default_value CYGDBG_KERNEL_DEBUG_GDB_THREAD_SUPPORT
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> property imposes a constraint on the possible
+values of the data part of an option. Hence it is only applicable to
+options with the <TT
+CLASS="LITERAL"
+>data</TT
+> or
+<TT
+CLASS="LITERAL"
+>booldata</TT
+> flavors. It cannot be used for a package
+since the only valid value for a package is its version number. The
+arguments to the <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> property should constitute a <A
+HREF="language.values.html#LANGUAGE.LIST-EXPRESSION"
+><SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> list expression</A
+>.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYGNUM_LIBC_TIME_STD_DEFAULT_OFFSET {
+    display       "Default Standard Time offset"
+    flavor        data
+    legal_values  -- -90000 to 90000
+    default_value -- 0
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+> property does not relate directly to an option's
+value, but rather to its active state. Usually this is controlled via
+the configuration hierarchy: if the
+<TT
+CLASS="VARNAME"
+>CYGPKG_LIBC_STDIO</TT
+> component is disabled then all
+options below it are inactive and do not have any consequences.
+In some cases the hierarchy does not provide sufficient control, for
+example an option should only be active if two disjoint sets of
+conditions are satisfied: the hierarchy could be used for one of these
+conditions, and an additional <SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+> property could be used for
+the other one. The arguments to <SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+> should constitute a
+<A
+HREF="language.values.html#LANGUAGE.GOAL-EXPRESSION"
+><SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> goal expression</A
+>.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+># Do not provide extra semaphore debugging if there are no semaphores
+cdl_option CYGDBG_KERNEL_INSTRUMENT_BINSEM {
+    active_if CYGPKG_KERNEL_SYNCH
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>implements</SPAN
+> property is related to the concept of <A
+HREF="language.interface.html"
+><SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> interfaces</A
+>. If an option is
+active and enabled and it implements a particular interface then it
+contributes <TT
+CLASS="LITERAL"
+>1</TT
+> to that interface's value.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_NET_EDB7XXX_ETH_DRIVERS {
+    display       "Cirrus Logic ethernet driver"
+    implements    CYGHWR_NET_DRIVERS
+    implements    CYGHWR_NET_DRIVER_ETH0
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> property is used to impose constraints on the user's
+choices. For example it is unreasonable to expect the C library to
+provide thread-safe implementations of certain functions if the
+underlying kernel support has been disabled, or even if the kernel is
+not being used at all.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYGSEM_LIBC_PER_THREAD_ERRNO {
+    display       "Per-thread errno"
+    doc           ref/ecos-ref.15.html
+    requires      CYGVAR_KERNEL_THREADS_DATA
+    default_value 1
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The arguments to the <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> property should be a <A
+HREF="language.values.html#LANGUAGE.GOAL-EXPRESSION"
+><SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> goal expression</A
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LANGUAGE.PROPERTIES.DEFINE">Generating the Configuration Header Files</H2
+><P
+>When creating or updating a build tree the component framework will
+also generate configuration header files, one per package. By default
+it will generate a <TT
+CLASS="LITERAL"
+>#define</TT
+> for each option,
+component or interface that is active and enabled. For options with
+the <TT
+CLASS="LITERAL"
+>data</TT
+> or <TT
+CLASS="LITERAL"
+>booldata</TT
+> flavors the
+<TT
+CLASS="LITERAL"
+>#define</TT
+> will use the option's data part, otherwise
+it will use the constant <TT
+CLASS="LITERAL"
+>1</TT
+>. Typical output would
+include:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYGFUN_LIBC_TIME_POSIX 1
+#define CYGNUM_LIBC_TIME_DST_DEFAULT_STATE -1</PRE
+></TD
+></TR
+></TABLE
+><P
+>There are six properties which can be used to control the header file
+generation process:
+<A
+HREF="ref.define-header.html"
+><SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+></A
+>,
+<A
+HREF="ref.no-define.html"
+><SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+></A
+>,
+<A
+HREF="ref.define-format.html"
+><SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+></A
+>,
+<A
+HREF="ref.define.html"
+><SPAN
+CLASS="PROPERTY"
+>define</SPAN
+></A
+>,
+<A
+HREF="ref.if-define.html"
+><SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+></A
+>, and
+<A
+HREF="ref.define-proc.html"
+><SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+></A
+>.</P
+><P
+>By default the component framework will generate a configuration
+header file for each package based on the package's name: everything
+up to and including the first underscore is discarded, the rest of the
+name is lower-cased, and a <TT
+CLASS="LITERAL"
+>.h</TT
+> suffix is appended.
+For example the configuration header file for the kernel package
+<TT
+CLASS="VARNAME"
+>CYGPKG_KERNEL</TT
+> is <TT
+CLASS="FILENAME"
+>pkgconf/kernel.h</TT
+>. The <SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+>
+property can be used to specify an alternative filename. This applies
+to all the components and options within a package, so it can only be
+used in the body of a <TT
+CLASS="LITERAL"
+>cdl_package</TT
+> command. For example the following
+specifies that the configuration header file for the SPARClite HAL
+package is <TT
+CLASS="FILENAME"
+>pkgconf/hal_sparclite.h</TT
+>.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_HAL_SPARCLITE {
+    display "SPARClite architecture"
+    parent        CYGPKG_HAL
+    hardware
+    define_header hal_sparclite.h
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>At present the main use for the <SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+> property is related 
+to hardware packages, see the <A
+HREF="ref.hardware.html"
+>reference
+pages</A
+> for more details.</P
+></BLOCKQUOTE
+></DIV
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+> property is used to suppress the generation of the
+default <TT
+CLASS="LITERAL"
+>#define</TT
+>. This can be useful if an option's
+consequences are all related to the build process or to constraints,
+and the option is never actually checked in any source code. It can
+also be useful in conjunction with the <SPAN
+CLASS="PROPERTY"
+>define</SPAN
+>, <SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+> or
+<SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+> properties. The <SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+> property does not take any
+arguments. </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_component CYG_HAL_STARTUP {
+    display       "Startup type"
+    flavor        data
+    legal_values  { "RAM" "ROM" }
+    default_value {"RAM"}
+    no_define
+    define -file system.h CYG_HAL_STARTUP
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>This example also illustrates the <SPAN
+CLASS="PROPERTY"
+>define</SPAN
+> property, which can be used
+to generate a <TT
+CLASS="LITERAL"
+>#define</TT
+> in addition to the default
+one. It takes a single argument, the name of the symbol to be defined.
+It also takes options to control the configuration header file in
+which the symbol should be defined and the format to be used.</P
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+> property can be used to control how the value part
+of the default <TT
+CLASS="LITERAL"
+>#define</TT
+> gets formatted. For example
+a format string of  <TT
+CLASS="LITERAL"
+>"0x%04x"</TT
+> could be used to
+generate a four-digit hexadecimal number. </P
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+> property is intended for use primarily to control
+assertions, tracing, and similar functionality. It supports a specific
+implementation model for these, allowing control at the grain of
+packages or even individual source files. The <A
+HREF="ref.if-define.html"
+>reference pages</A
+> provide additional
+information.</P
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+> property provides an escape mechanism for those
+cases where something special has to happen at configuration header
+file generation time. It takes a single argument, a fragment of <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+>
+code, which gets executed when the header file is generated. This code
+can output arbitrary data to the header file, or perform any other
+actions that might be appropriate.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LANGUAGE.PROPERTIES.BUILD">Controlling what gets Built</H2
+><P
+>There are six properties which affect the build process:
+<A
+HREF="ref.compile.html"
+><SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+></A
+>,
+<A
+HREF="ref.make.html"
+><SPAN
+CLASS="PROPERTY"
+>make</SPAN
+></A
+>,
+<A
+HREF="ref.make-object.html"
+><SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+></A
+>,
+<A
+HREF="ref.library.html"
+><SPAN
+CLASS="PROPERTY"
+>library</SPAN
+></A
+>,
+<A
+HREF="ref.include-dir.html"
+><SPAN
+CLASS="PROPERTY"
+>include_dir</SPAN
+></A
+>, and
+<A
+HREF="ref.include-files.html"
+><SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+></A
+>.
+The last three apply to a package as a whole, and can only occur in
+the body of a <TT
+CLASS="LITERAL"
+>cdl_package</TT
+> command.</P
+><P
+>Most of the source files that go into a package should simply be
+compiled with the appropriate compiler, selected by the target
+architecture, and with the appropriate flags, with an additional set
+defined by the target hardware and possible modifications on a
+per-package basis. The resulting object files will go into the library
+<TT
+CLASS="FILENAME"
+>libtarget.a</TT
+>, which can then be linked against
+application code. The <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> property is used to list these source
+files: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_ERROR {
+    display       "Common error code support"
+    compile       strerror.cxx
+    include_dir   cyg/error
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The arguments to the <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> property should be one or more source
+files. Typically most of the sources will be needed for the package as
+a whole, and hence they will be listed in one or more <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+>
+properties in the body of the <TT
+CLASS="LITERAL"
+>cdl_package</TT
+>. Some sources may be
+specific to particular configuration options, in other words there is
+no point in compiling them unless that option is enabled, in which
+case the sources should be listed in a <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> property in the
+corresponding <TT
+CLASS="LITERAL"
+>cdl_option</TT
+>, <TT
+CLASS="LITERAL"
+>cdl_component</TT
+> or <TT
+CLASS="LITERAL"
+>cdl_interface</TT
+> body.</P
+><P
+>Some packages may have more complicated build requirements, for
+example they may involve a special target such as a linker script
+which should not end up in the usual library, or they may involve
+special build steps for generating an object file. The <SPAN
+CLASS="PROPERTY"
+>make</SPAN
+> and
+<SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+> properties provide support for such requirements, for
+example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_HAL_MN10300_AM33 {
+    display       "MN10300 AM33 variant"
+    &#8230;
+    make {
+        &lt;PREFIX&gt;/lib/target.ld: &lt;PACKAGE&gt;/src/mn10300_am33.ld
+        $(CC) -E -P -Wp,-MD,target.tmp -DEXTRAS=1 -xc $(INCLUDE_PATH) \
+            $(CFLAGS) -o $@ $&lt;
+        @echo $@ ": \\" &gt; $(notdir $@).deps
+        @tail --lines=+2 target.tmp &gt;&gt; $(notdir $@).deps
+        @echo &gt;&gt; $(notdir $@).deps
+        @rm target.tmp
+    }
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>For full details of custom build steps and the build process
+generally, see <A
+HREF="build.html"
+>Chapter 4</A
+>.</P
+><P
+>By default all object files go into the library
+<TT
+CLASS="FILENAME"
+>libtarget.a</TT
+>. It is possible to override this at
+the package level using the <SPAN
+CLASS="PROPERTY"
+>library</SPAN
+> property, but this should be
+avoided since it complicates application development: instead of just
+linking with a single library for all <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+>-related packages, it
+suddenly becomes necessary to link with several libraries.</P
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>include_dir</SPAN
+> and <SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+> properties relate to a package's
+exported header files. By default a package's header files will be
+exported to the <TT
+CLASS="FILENAME"
+>install/include</TT
+>
+directory. This is the desired behavior for some packages like the C
+library, since headers like <TT
+CLASS="FILENAME"
+>stdio.h</TT
+> should exist at that level.
+However if all header files were to end up in that directory then
+there would be a significant risk of a name clash. Instead it is
+better for packages to specify some sub-directory for their exported
+header files, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_INFRA {
+    display       "Infrastructure"
+    include_dir   cyg/infra
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The various header files exported by the infrastructure, for example
+<TT
+CLASS="FILENAME"
+>cyg_ass.h</TT
+> and <TT
+CLASS="FILENAME"
+>cyg_trac.h</TT
+> will now end up in the
+<TT
+CLASS="FILENAME"
+>install/include/cyg/infra</TT
+>
+sub-directory, where a name clash is very unlikely.</P
+><P
+>For packages which follow the <A
+HREF="package.html#PACKAGE.HIERARCHY"
+>directory layout conventions</A
+> the
+component framework will assume that the package's
+<TT
+CLASS="FILENAME"
+>include</TT
+> sub-directory contains
+all exported header files. If this is not the case, for example
+because the package is sufficiently simple that the layout convention
+is inappropriate, then the exported header files can be listed
+explicitly in an <SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+> property.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LANGUAGE.PROPERTIES.MISCELLANEOUS">Miscellaneous Properties</H2
+><P
+>The <A
+HREF="ref.hardware.html"
+><SPAN
+CLASS="PROPERTY"
+>hardware</SPAN
+></A
+> property is
+only relevant to packages. Some packages such as device drivers and
+HAL packages are hardware-specific, and generally it makes no sense to
+add such packages to a configuration unless the corresponding hardware
+is present on your target system. Typically hardware package selection
+happens automatically when you select your target. The <SPAN
+CLASS="PROPERTY"
+>hardware</SPAN
+>
+property should be used to identify a hardware-specific package, and
+does not take any arguments.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_HAL_MIPS {
+    display "MIPS architecture"
+    parent        CYGPKG_HAL
+    hardware
+    include_dir   cyg/hal
+    define_header hal_mips.h
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>At present the <SPAN
+CLASS="PROPERTY"
+>hardware</SPAN
+> property is largely ignored by the component
+framework. This may change in future releases.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.commands.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.naming.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>CDL Commands</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Option Naming Convention</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

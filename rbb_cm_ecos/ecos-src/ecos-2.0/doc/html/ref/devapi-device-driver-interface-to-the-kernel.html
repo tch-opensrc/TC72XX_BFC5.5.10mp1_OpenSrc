@@ -1,0 +1,251 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Device Driver Interface to the Kernel</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="I/O Package (Device Drivers)"
+HREF="io.html"><LINK
+REL="PREVIOUS"
+TITLE="Serial testing with ser_filter"
+HREF="io-serial-testing-with-serfilter.html"><LINK
+REL="NEXT"
+TITLE="Synchronization"
+HREF="devapi-synchronization.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="io-serial-testing-with-serfilter.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="devapi-synchronization.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="DEVAPI-DEVICE-DRIVER-INTERFACE-TO-THE-KERNEL">Chapter 18. Device Driver Interface to the Kernel</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="devapi-device-driver-interface-to-the-kernel.html#DEVAPI-INTERRUPT-MODEL"
+>Interrupt Model</A
+></DT
+><DT
+><A
+HREF="devapi-synchronization.html"
+>Synchronization</A
+></DT
+><DT
+><A
+HREF="devapi-smp-support.html"
+>SMP Support</A
+></DT
+><DT
+><A
+HREF="devapi-device-driver-models.html"
+>Device Driver Models</A
+></DT
+><DT
+><A
+HREF="devapi-synchronization-levels.html"
+>Synchronization Levels</A
+></DT
+><DT
+><A
+HREF="devapi-api.html"
+>The API</A
+></DT
+></DL
+></DIV
+><P
+>This chapter describes the API that device drivers may use
+to interact with the kernel and HAL. It is primarily concerned with
+the control and management of interrupts and the synchronization of
+ISRs, DSRs and threads.</P
+><P
+>The same API will be present in configurations where the kernel
+is not present. In this case the functions will be supplied by code
+acting directly on the HAL.</P
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="DEVAPI-INTERRUPT-MODEL">Interrupt Model</H1
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+> presents a three level interrupt model to
+device drivers. This consists of Interrupt Service Routines (ISRs) that are invoked
+in response to a hardware interrupt; Deferred
+Service Routines (DSRs) that are invoked in response to a request by
+an ISR; and threads that are the clients of the driver. </P
+><P
+>Hardware interrupts are delivered with minimal intervention to an
+ISR. The HAL decodes the hardware source of the interrupt and calls
+the ISR of the attached interrupt object. This ISR may manipulate the
+hardware but is only allowed to make a restricted set of calls on the
+driver API. When it returns, an ISR may request that its DSR should be
+scheduled to run.</P
+><P
+>A DSR will be run when it is safe to do so without interfering with
+the scheduler. Most of the time the DSR will run immediately after the
+ISR, but if the current thread is in the scheduler, it will be delayed
+until the thread is finished. A DSR is allowed to make a larger set of
+driver API calls, including, in particular, being able to call
+<TT
+CLASS="FUNCTION"
+>cyg_drv_cond_signal()</TT
+> to wake up waiting
+threads.</P
+><P
+>Finally, threads are able to make all API calls and in particular are
+allowed to wait on mutexes and condition variables. </P
+><P
+>For a device driver to receive interrupts it must first define ISR and
+DSR routines as shown below, and then call
+<TT
+CLASS="FUNCTION"
+>cyg_drv_interrupt_create()</TT
+>.  Using the handle
+returned, the driver must then call
+<TT
+CLASS="FUNCTION"
+>cyg_drv_interrupt_attach()</TT
+> to actually attach the
+interrupt to the hardware vector.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="io-serial-testing-with-serfilter.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="devapi-synchronization.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Serial testing with ser_filter</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="io.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Synchronization</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

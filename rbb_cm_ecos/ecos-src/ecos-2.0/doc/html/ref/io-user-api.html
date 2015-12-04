@@ -1,0 +1,435 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>User API</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="I/O Package (Device Drivers)"
+HREF="io.html"><LINK
+REL="PREVIOUS"
+TITLE="Introduction"
+HREF="io-package-intro.html"><LINK
+REL="NEXT"
+TITLE="Serial driver details"
+HREF="io-serial-driver-details.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="io-package-intro.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="io-serial-driver-details.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="IO-USER-API">Chapter 15. User API</H1
+><P
+>All functions, except <TT
+CLASS="FUNCTION"
+>cyg_io_lookup()</TT
+>
+require an I/O &#8220;handle&#8221;.</P
+><P
+>All functions return a value of the type <SPAN
+CLASS="TYPE"
+>Cyg_ErrNo</SPAN
+>. If an
+error condition is detected, this value will be negative and the
+absolute value indicates the actual error, as specified in
+<TT
+CLASS="FILENAME"
+>cyg/error/codes.h</TT
+>. The only other legal return
+value will be <TT
+CLASS="VARNAME"
+>ENOERR</TT
+>. All other function arguments
+are pointers (references). This allows the drivers to pass information
+efficiently, both into and out of the driver. The most striking
+example of this is the &#8220;length&#8221; value passed to the read
+and write functions. This parameter contains the desired length of
+data on input to the function and the actual transferred length on
+return.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>// Lookup a device and return its handle 
+  Cyg_ErrNo <TT
+CLASS="FUNCTION"
+>cyg_io_lookup</TT
+>( 
+    const char <TT
+CLASS="PARAMETER"
+><I
+>*name</I
+></TT
+>,
+    cyg_io_handle_t <TT
+CLASS="PARAMETER"
+><I
+>*handle</I
+></TT
+> )</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function maps a device name onto an appropriate handle. If the
+named device is not in the system, then the error
+<TT
+CLASS="VARNAME"
+>-ENOENT</TT
+> is returned. If the device is found, then
+the handle for the device is returned by way of the handle pointer
+<TT
+CLASS="PARAMETER"
+><I
+>*handle</I
+></TT
+>.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>// Write data to a device 
+Cyg_ErrNo <TT
+CLASS="FUNCTION"
+>cyg_io_write</TT
+>( 
+    cyg_io_handle_t <TT
+CLASS="PARAMETER"
+><I
+>handle</I
+></TT
+>,
+    const void <TT
+CLASS="PARAMETER"
+><I
+>*buf</I
+></TT
+>,
+    cyg_uint32 <TT
+CLASS="PARAMETER"
+><I
+>*len</I
+></TT
+> )</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function sends data to a device. The size of data to send is
+contained in <TT
+CLASS="PARAMETER"
+><I
+>*len</I
+></TT
+> and the actual size sent will
+be returned in the same place.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>// Read data from a device 
+Cyg_ErrNo <TT
+CLASS="FUNCTION"
+>cyg_io_read</TT
+>( 
+    cyg_io_handle_t <TT
+CLASS="PARAMETER"
+><I
+>handle</I
+></TT
+>,
+    void <TT
+CLASS="PARAMETER"
+><I
+>*buf</I
+></TT
+>,
+    cyg_uint32 <TT
+CLASS="PARAMETER"
+><I
+>*len</I
+></TT
+> )</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function receives data from a device. The desired size of data to
+receive is contained in <TT
+CLASS="PARAMETER"
+><I
+>*len</I
+></TT
+> and the actual
+size obtained will be returned in the same place.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>// Get the configuration of a device 
+Cyg_ErrNo <TT
+CLASS="FUNCTION"
+>cyg_io_get_config</TT
+>( 
+    cyg_io_handle_t <TT
+CLASS="PARAMETER"
+><I
+>handle</I
+></TT
+>,
+    cyg_uint32 <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>,
+    void *<TT
+CLASS="PARAMETER"
+><I
+>buf</I
+></TT
+>,
+    cyg_uint32 *<TT
+CLASS="PARAMETER"
+><I
+>len</I
+></TT
+> )</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function is used to obtain run-time configuration about a
+device. The type of information retrieved is specified by the
+<TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>. The data will be returned in the given
+buffer. The value of <TT
+CLASS="PARAMETER"
+><I
+>*len</I
+></TT
+> should contain the
+amount of data requested, which must be at least as large as the size
+appropriate to the selected key. The actual size of data retrieved is
+placed in <TT
+CLASS="PARAMETER"
+><I
+> *len</I
+></TT
+>. The appropriate key values
+differ for each driver and are all listed in the file
+<TT
+CLASS="FILENAME"
+>&lt;cyg/io/config_keys.h&gt;</TT
+>.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>// Change the configuration of a device 
+Cyg_ErrNo <TT
+CLASS="FUNCTION"
+>cyg_io_set_config</TT
+>( 
+    cyg_io_handle_t <TT
+CLASS="PARAMETER"
+><I
+>handle</I
+></TT
+>,
+    cyg_uint32 <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>,
+    const void <TT
+CLASS="PARAMETER"
+><I
+>*buf</I
+></TT
+>,
+    cyg_uint32 <TT
+CLASS="PARAMETER"
+><I
+>*len</I
+></TT
+> )</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function is used to manipulate or change the run-time
+configuration of a device. The type of information is specified by the
+<TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>. The data will be obtained from the given
+buffer. The value of <TT
+CLASS="PARAMETER"
+><I
+>*len</I
+></TT
+> should contain the
+amount of data provided, which must match the size appropriate to the
+selected key.  The appropriate key values differ for each driver and
+are all listed in the file
+<TT
+CLASS="FILENAME"
+>&lt;cyg/io/config_keys.h&gt;</TT
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="io-package-intro.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="io-serial-driver-details.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Introduction</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="io.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Serial driver details</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

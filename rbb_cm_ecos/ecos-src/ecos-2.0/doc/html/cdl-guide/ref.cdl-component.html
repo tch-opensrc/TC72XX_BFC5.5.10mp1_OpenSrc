@@ -1,0 +1,632 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>cdl_component</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="cdl_option"
+HREF="ref.cdl-option.html"><LINK
+REL="NEXT"
+TITLE="cdl_package"
+HREF="ref.cdl-package.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.cdl-option.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.cdl-package.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.CDL-COMPONENT"><TT
+CLASS="LITERAL"
+>cdl_component</TT
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN3091"
+></A
+><H2
+>Name</H2
+>Command <TT
+CLASS="LITERAL"
+>cdl_component</TT
+>&nbsp;--&nbsp;Define a component, a collection of configuration options</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN3095"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_component &lt;name&gt; {
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3097"
+></A
+><H2
+>Description</H2
+><P
+>A component is a configuration option that can contain additional
+options and sub-components. The body of a <TT
+CLASS="LITERAL"
+>cdl_component</TT
+> can contain
+the same properties as that of a <TT
+CLASS="LITERAL"
+>cdl_option</TT
+>. There is an additional
+property, <SPAN
+CLASS="PROPERTY"
+>script</SPAN
+> which allows configuration data to be split into
+multiple files. It is also possible for a component body to include
+<TT
+CLASS="LITERAL"
+>cdl_component</TT
+>, <TT
+CLASS="LITERAL"
+>cdl_option</TT
+> and <TT
+CLASS="LITERAL"
+>cdl_interface</TT
+> entities that should
+go below this component in the configuration hierarchy.</P
+><P
+><TT
+CLASS="LITERAL"
+>cdl_component</TT
+> is implemented as a Tcl command that takes two
+arguments, a name and a body. The name must be a valid C preprocessor
+identifier: a sequence of upper or lower case letters, digits or
+underscores, starting with a non-digit character; identifiers
+beginning with an underscore should normally be avoided because they
+may clash with system packages or with identifiers reserved for use by
+the compiler. Within a single configuration, names must be unique. If
+a configuration contained two packages which defined the same entity
+<TT
+CLASS="LITERAL"
+>CYGIMP_SOME_OPTION</TT
+>, any references to that entity
+in a <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> property or any other expression would be ambiguous.
+It is possible for a given name to be used by two different packages
+if those packages should never be loaded into a single configuration.
+For example, architectural HAL packages are allowed to re-use certain
+names because a single configuration cannot target two different
+architectures. For a recommended naming convention see <A
+HREF="package.contents.html"
+>the Section called <I
+>Package Contents and Layout</I
+> in Chapter 2</A
+>.</P
+><P
+>The second argument to <TT
+CLASS="LITERAL"
+>cdl_component</TT
+> is a body of properties and
+other commands, typically surrounded by braces so that the Tcl
+interpreter treats it as a single argument. This body will be
+processed by a recursive invocation of the Tcl interpreter, extended
+with additional commands for the various properties that are allowed
+inside a <TT
+CLASS="LITERAL"
+>cdl_component</TT
+>. The valid commands are:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><A
+HREF="ref.active-if.html"
+><SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+></A
+></DT
+><DD
+><P
+>Allow additional control over the active state of this component.</P
+></DD
+><DT
+><A
+HREF="ref.calculated.html"
+><SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+></A
+></DT
+><DD
+><P
+>The component's value is not directly user-modifiable, it is calculated
+using a suitable CDL expression.</P
+></DD
+><DT
+><A
+HREF="ref.cdl-component.html"
+><TT
+CLASS="LITERAL"
+>cdl_component</TT
+></A
+></DT
+><DD
+><P
+>Define a sub-component.</P
+></DD
+><DT
+><A
+HREF="ref.cdl-interface.html"
+><TT
+CLASS="LITERAL"
+>cdl_interface</TT
+></A
+></DT
+><DD
+><P
+>Define an interface which should appear immediately below this
+component in the configuration hierarchy.</P
+></DD
+><DT
+><A
+HREF="ref.cdl-option.html"
+><TT
+CLASS="LITERAL"
+>cdl_option</TT
+></A
+></DT
+><DD
+><P
+>Define a configuration option which should appear immediately below
+this component in the configuration hierarchy.</P
+></DD
+><DT
+><A
+HREF="ref.compile.html"
+><SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+></A
+></DT
+><DD
+><P
+>List the source files that should be built if this component is active
+and enabled.</P
+></DD
+><DT
+><A
+HREF="ref.default-value.html"
+><SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+></A
+></DT
+><DD
+><P
+>Provide a default value for this component using a CDL expression.</P
+></DD
+><DT
+><A
+HREF="ref.define.html"
+><SPAN
+CLASS="PROPERTY"
+>define</SPAN
+></A
+></DT
+><DD
+><P
+>Specify additional <TT
+CLASS="LITERAL"
+>#define</TT
+> symbols that should go
+into the owning package's configuration header file.</P
+></DD
+><DT
+><A
+HREF="ref.define-format.html"
+><SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+></A
+></DT
+><DD
+><P
+>Control how the component's value will appear in the configuration header
+file.</P
+></DD
+><DT
+><A
+HREF="ref.define-proc.html"
+><SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+></A
+></DT
+><DD
+><P
+>Use a fragment of Tcl code to output additional data to
+configuration header files.</P
+></DD
+><DT
+><A
+HREF="ref.description.html"
+><SPAN
+CLASS="PROPERTY"
+>description</SPAN
+></A
+></DT
+><DD
+><P
+>Provide a textual description for this component.</P
+></DD
+><DT
+><A
+HREF="ref.display.html"
+><SPAN
+CLASS="PROPERTY"
+>display</SPAN
+></A
+></DT
+><DD
+><P
+>Provide a short string describing this component.</P
+></DD
+><DT
+><A
+HREF="ref.doc.html"
+><SPAN
+CLASS="PROPERTY"
+>doc</SPAN
+></A
+></DT
+><DD
+><P
+>The location of on-line documentation for this component.</P
+></DD
+><DT
+><A
+HREF="ref.flavor.html"
+><SPAN
+CLASS="PROPERTY"
+>flavor</SPAN
+></A
+></DT
+><DD
+><P
+>Specify the nature of this component.</P
+></DD
+><DT
+><A
+HREF="ref.if-define.html"
+><SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+></A
+></DT
+><DD
+><P
+>Output a common preprocessor construct to a configuration header file. </P
+></DD
+><DT
+><A
+HREF="ref.implements.html"
+><SPAN
+CLASS="PROPERTY"
+>implements</SPAN
+></A
+></DT
+><DD
+><P
+>Enabling this component provides one instance of a more general
+interface. </P
+></DD
+><DT
+><A
+HREF="ref.legal-values.html"
+><SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+></A
+></DT
+><DD
+><P
+>Impose constraints on the possible values for this component.</P
+></DD
+><DT
+><A
+HREF="ref.make.html"
+><SPAN
+CLASS="PROPERTY"
+>make</SPAN
+></A
+></DT
+><DD
+><P
+>An additional custom build step associated with this component, resulting
+in a target that should not go directly into a library.</P
+></DD
+><DT
+><A
+HREF="ref.make-object.html"
+><SPAN
+CLASS="PROPERTY"
+>make_object</SPAN
+></A
+></DT
+><DD
+><P
+>An additional custom build step associated with this component, resulting
+in an object file that should go into a library.</P
+></DD
+><DT
+><A
+HREF="ref.no-define.html"
+><SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+></A
+></DT
+><DD
+><P
+>Suppress the normal generation of a preprocessor
+<TT
+CLASS="LITERAL"
+>#define</TT
+> symbol in a configuration header file.</P
+></DD
+><DT
+><A
+HREF="ref.parent.html"
+><SPAN
+CLASS="PROPERTY"
+>parent</SPAN
+></A
+></DT
+><DD
+><P
+>Control the location of this component in the configuration hierarchy. </P
+></DD
+><DT
+><A
+HREF="ref.requires.html"
+><SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+></A
+></DT
+><DD
+><P
+>List constraints that the configuration should satisfy if this component is
+active and enabled.</P
+></DD
+><DT
+><A
+HREF="ref.script.html"
+><SPAN
+CLASS="PROPERTY"
+>script</SPAN
+></A
+></DT
+><DD
+><P
+>Include additional configuration information from another
+CDL script</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3255"
+></A
+><H2
+>Example</H2
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_component CYGDBG_USE_ASSERTS {
+    display       "Use asserts"
+    default_value 1
+    description   "
+        If this component is enabled, assertions in the code are
+        tested at run-time. Assert functions (CYG_ASSERT()) are
+        defined in 'include/cyg/infra/cyg_ass.h' within the 'install'
+        tree. If the component is disabled, these result in no
+        additional object code and no checking of the asserted
+        conditions."
+    script        assert.cdl
+}</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3259"
+></A
+><H2
+>See Also</H2
+><P
+>Command <A
+HREF="ref.cdl-option.html"
+><TT
+CLASS="LITERAL"
+>cdl_option</TT
+></A
+>,
+command <A
+HREF="ref.cdl-package.html"
+><TT
+CLASS="LITERAL"
+>cdl_package</TT
+></A
+>,
+command <A
+HREF="ref.cdl-interface.html"
+><TT
+CLASS="LITERAL"
+>cdl_interface</TT
+></A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.cdl-option.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.cdl-package.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><TT
+CLASS="LITERAL"
+>cdl_option</TT
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><TT
+CLASS="LITERAL"
+>cdl_package</TT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

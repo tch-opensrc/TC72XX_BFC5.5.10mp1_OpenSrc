@@ -1,0 +1,415 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>File Table</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="File System Support Infrastructure"
+HREF="fileio.html"><LINK
+REL="PREVIOUS"
+TITLE="Mount Table"
+HREF="fileio-mount-table.html"><LINK
+REL="NEXT"
+TITLE="Directories"
+HREF="fileio-directories.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="fileio-mount-table.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="fileio-directories.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="FILEIO-FILE-TABLE">Chapter 22. File Table</H1
+><P
+>Once a file has been opened it is represented by an open file
+object. These are allocated from an array of available file
+objects. User code accesses these open file objects via a second array
+of pointers which is indexed by small integer offsets. This gives the
+usual Unix file descriptor functionality, complete with the various
+duplication mechanisms.</P
+><P
+>A file table entry has the following structure:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct CYG_FILE_TAG
+{
+    cyg_uint32	                f_flag;		/* file state                   */
+    cyg_uint16                  f_ucount;       /* use count                    */
+    cyg_uint16                  f_type;		/* descriptor type              */
+    cyg_uint32                  f_syncmode;     /* synchronization protocol     */
+    struct CYG_FILEOPS_TAG      *f_ops;         /* file operations              */
+    off_t       	        f_offset;       /* current offset               */
+    CYG_ADDRWORD	        f_data;		/* file or socket               */
+    CYG_ADDRWORD                f_xops;         /* extra type specific ops      */
+    cyg_mtab_entry              *f_mte;         /* mount table entry            */
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>f_flag</I
+></TT
+> field contains some FILEIO
+control bits and some bits propagated from the
+<TT
+CLASS="PARAMETER"
+><I
+>flags</I
+></TT
+> argument of the
+<TT
+CLASS="FUNCTION"
+>open()</TT
+> call (defined by
+<TT
+CLASS="LITERAL"
+>CYG_FILE_MODE_MASK</TT
+>).</P
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>f_ucount</I
+></TT
+> field contains a use count that
+controls when a file will be closed. Each duplicate in the file
+descriptor array counts for one reference here. It is also
+incremented around each I/O operation to ensure that the file cannot
+be closed while it has current I/O operations.</P
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>f_type</I
+></TT
+> field indicates the type of the
+underlying file object. Some of the possible values here are
+<TT
+CLASS="LITERAL"
+>CYG_FILE_TYPE_FILE</TT
+>,
+<TT
+CLASS="LITERAL"
+>CYG_FILE_TYPE_SOCKET</TT
+> or <TT
+CLASS="LITERAL"
+>CYG_FILE_TYPE_DEVICE</TT
+>.</P
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>f_syncmode</I
+></TT
+> field is copied from the
+<TT
+CLASS="STRUCTFIELD"
+><I
+>syncmode</I
+></TT
+> field of the implementing
+filesystem. Its use is described in <A
+HREF="fileio-synchronization.html"
+>Chapter 24</A
+>.</P
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>f_offset</I
+></TT
+> field records the current file
+position. It is the responsibility of the file operation functions to
+keep this field up to date.</P
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>f_data</I
+></TT
+> field contains private data
+placed here by the underlying filesystem. Normally this will be a
+pointer to, or handle on, the filesystem object that implements this
+file.</P
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>f_xops</I
+></TT
+> field contains a pointer to any
+extra type specific operation functions. For example, the socket I/O
+system installs a pointer to a table of functions that implement the
+standard socket operations.</P
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>f_mte</I
+></TT
+> field contains a pointer to the
+parent mount table entry for this file. It is used mainly to implement
+the synchronization protocol. This may contain a pointer to some other
+data structure in file objects not derived from a filesystem.</P
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>f_ops</I
+></TT
+> field contains a pointer to a
+table of file I/O operations. This has the following structure:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct CYG_FILEOPS_TAG
+{
+        int	(*fo_read)      (struct CYG_FILE_TAG *fp, struct CYG_UIO_TAG *uio);
+        int	(*fo_write)     (struct CYG_FILE_TAG *fp, struct CYG_UIO_TAG *uio);
+        int     (*fo_lseek)     (struct CYG_FILE_TAG *fp, off_t *pos, int whence );
+        int	(*fo_ioctl)     (struct CYG_FILE_TAG *fp, CYG_ADDRWORD com,
+                                 CYG_ADDRWORD data);
+        int	(*fo_select)    (struct CYG_FILE_TAG *fp, int which, CYG_ADDRWORD info);
+        int     (*fo_fsync)     (struct CYG_FILE_TAG *fp, int mode );        
+        int	(*fo_close)     (struct CYG_FILE_TAG *fp);
+        int     (*fo_fstat)     (struct CYG_FILE_TAG *fp, struct stat *buf );
+        int     (*fo_getinfo)   (struct CYG_FILE_TAG *fp, int key, char *buf, int len );
+        int     (*fo_setinfo)   (struct CYG_FILE_TAG *fp, int key, char *buf, int len );
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+>It should be obvious from the names of most of these functions what
+their responsibilities are. The <TT
+CLASS="FUNCTION"
+>fo_getinfo()</TT
+>
+and <TT
+CLASS="FUNCTION"
+>fo_setinfo()</TT
+> function pointers, like their
+counterparts in the filesystem structure, implement minor control and
+info functions such as <TT
+CLASS="FUNCTION"
+>fpathconf()</TT
+>.</P
+><P
+>The second argument to the <TT
+CLASS="FUNCTION"
+>fo_read()</TT
+> and
+<TT
+CLASS="FUNCTION"
+>fo_write()</TT
+> function pointers is a pointer to a
+UIO structure:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct CYG_UIO_TAG
+{
+    struct CYG_IOVEC_TAG *uio_iov;	/* pointer to array of iovecs */
+    int	                 uio_iovcnt;	/* number of iovecs in array */
+    off_t       	 uio_offset;	/* offset into file this uio corresponds to */
+    ssize_t     	 uio_resid;	/* residual i/o count */
+    enum cyg_uio_seg     uio_segflg;    /* see above */
+    enum cyg_uio_rw      uio_rw;        /* see above */
+};
+
+struct CYG_IOVEC_TAG
+{
+    void           *iov_base;           /* Base address. */
+    ssize_t        iov_len;             /* Length. */
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+>This structure encapsulates the parameters of any data transfer
+operation. It provides support for scatter/gather operations and
+records the progress of any data transfer. It is also compatible with
+the I/O operations of any BSD-derived network stacks and filesystems.</P
+><P
+>When a file is opened (or a file object created by some other means,
+such as <TT
+CLASS="FUNCTION"
+>socket()</TT
+> or <TT
+CLASS="FUNCTION"
+>accept()</TT
+>) it is the
+responsibility of the filesystem open operation to initialize all the
+fields of the object except the <TT
+CLASS="STRUCTFIELD"
+><I
+>f_ucount</I
+></TT
+>,
+<TT
+CLASS="STRUCTFIELD"
+><I
+>f_syncmode</I
+></TT
+> and
+<TT
+CLASS="STRUCTFIELD"
+><I
+>f_mte</I
+></TT
+> fields. Since the
+<TT
+CLASS="STRUCTFIELD"
+><I
+>f_flag</I
+></TT
+> field will already contain bits belonging to the FILEIO
+infrastructure, any changes to it must be made with the appropriate
+logical operations.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="fileio-mount-table.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="fileio-directories.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Mount Table</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="fileio.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Directories</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

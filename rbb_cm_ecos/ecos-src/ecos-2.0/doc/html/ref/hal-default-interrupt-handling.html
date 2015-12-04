@@ -1,0 +1,301 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Default Interrupt Handling</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Exception Handling"
+HREF="hal-exception-handling.html"><LINK
+REL="PREVIOUS"
+TITLE="Default Synchronous Exception Handling"
+HREF="hal-default-synchronous-exception-handling.html"><LINK
+REL="NEXT"
+TITLE="	Porting Guide"
+HREF="hal-porting-guide.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="hal-default-synchronous-exception-handling.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 10. Exception Handling</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="hal-porting-guide.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="HAL-DEFAULT-INTERRUPT-HANDLING">Default Interrupt Handling</H1
+><P
+>Most asynchronous external interrupt vectors will point to a default
+interrupt VSR which decodes the actual interrupt being delivered from
+the interrupt controller and invokes the appropriate ISR.</P
+><P
+>The default interrupt VSR has a number of responsibilities if it is
+going to interact with the Kernel cleanly and allow interrupts to
+cause thread preemption.</P
+><P
+>To support this VSR an ISR vector table is needed. For each valid
+vector three pointers need to be stored: the ISR, its data pointer and
+an opaque (to the HAL) interrupt object pointer needed by the
+kernel. It is implementation defined whether these are stored in a
+single table of triples, or in three separate tables.</P
+><P
+>The VSR follows the following approximate plan:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>    Save the CPU state. In non-debug configurations, it may be
+    possible to get away with saving less than the entire machine
+    state. The option
+    <TT
+CLASS="LITERAL"
+>CYGDBG_HAL_COMMON_INTERRUPTS_SAVE_MINIMUM_CONTEXT</TT
+>
+    is supported in some targets to do this.
+    </P
+></LI
+><LI
+><P
+>    Increment the kernel scheduler lock. This is a static member of
+    the Cyg_Scheduler class, however it has also been aliased to
+    <TT
+CLASS="LITERAL"
+>cyg_scheduler_sched_lock</TT
+> so that it can be
+    accessed from assembly code.
+    </P
+></LI
+><LI
+><P
+>    (Optional) Switch to an interrupt stack if not already running on
+    it. This allows nested interrupts to be delivered without needing
+    every thread to have a stack large enough to take the maximum
+    possible nesting. It is implementation defined how to detect
+    whether this is a nested interrupt but there are two basic
+    techniques. The first is to inspect the stack pointer and switch
+    only if it is not currently within the interrupt stack range; the
+    second is to maintain a counter of the interrupt nesting level and
+    switch only if it is zero. The option
+    <TT
+CLASS="LITERAL"
+>CYGIMP_HAL_COMMON_INTERRUPTS_USE_INTERRUPT_STACK</TT
+>
+    controls whether this happens.
+    </P
+></LI
+><LI
+><P
+>    Decode the actual external interrupt being delivered from
+    the interrupt controller. This will yield the ISR vector
+    number. The code to do this usually needs to come from the
+    variant or platform HAL, so is usually present in the form of a
+    macro or procedure callout.
+    </P
+></LI
+><LI
+><P
+>    (Optional) Re-enable interrupts to permit nesting. At this point
+    we can potentially allow higher priority interrupts to occur. It
+    depends on the interrupt architecture of the CPU and platform
+    whether more interrupts will occur at this point, or whether they
+    will only be delivered after the current interrupt has been
+    acknowledged (by a call to
+    <TT
+CLASS="FUNCTION"
+>HAL_INTERRUPT_ACKNOWLEDGE()</TT
+> in the ISR).
+    </P
+></LI
+><LI
+><P
+>    Using the ISR vector number as an index, retrieve the
+    ISR pointer and its data pointer from the ISR vector table.
+    </P
+></LI
+><LI
+><P
+>    Construct a C call stack frame. This may involve making stack
+    space for call frames, and arguments, and initializing the back
+    pointers to halt a GDB backtrace operation.
+    </P
+></LI
+><LI
+><P
+>    Call the ISR, passing the vector number and data pointer.  The
+    vector number and a pointer to the saved state should be preserved
+    across this call, preferably by storing them in registers that are
+    defined to be callee-saved by the calling conventions.
+    </P
+></LI
+><LI
+><P
+>    If this is an un-nested interrupt and a separate interrupt
+    stack is being used, switch back to the interrupted thread's
+    own stack.
+    </P
+></LI
+><LI
+><P
+>    Use the saved ISR vector number to get the interrupt object
+    pointer from the ISR vector table.
+    </P
+></LI
+><LI
+><P
+>    Call <TT
+CLASS="FUNCTION"
+>interrupt_end()</TT
+> passing it the return
+    value from the ISR, the interrupt object pointer and a pointer to
+    the saved CPU state. This function is implemented by the Kernel
+    and is responsible for finishing off the interrupt
+    handling. Specifically, it may post a DSR depending on the ISR
+    return value, and will decrement the scheduler lock. If the lock
+    is zeroed by this operation then any posted DSRs may be called and
+    may in turn result in a thread context switch.
+    </P
+></LI
+><LI
+><P
+>    The return from <TT
+CLASS="FUNCTION"
+>interrupt_end()</TT
+> may occur
+    some time after the call. Many other threads may have executed in
+    the meantime. So here all we may do is restore the machine state
+    and resume execution of the interrupted thread. Depending on the
+    architecture, it may be necessary to disable interrupts again for
+    part of this.
+    </P
+></LI
+></OL
+><P
+>The detailed order of these steps may vary slightly depending on the
+architecture, in particular where interrupts are enabled and disabled.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="hal-default-synchronous-exception-handling.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="hal-porting-guide.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Default Synchronous Exception Handling</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="hal-exception-handling.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Porting Guide</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

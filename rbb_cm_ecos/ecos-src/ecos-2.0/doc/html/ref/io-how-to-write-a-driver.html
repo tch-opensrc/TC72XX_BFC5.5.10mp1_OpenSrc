@@ -1,0 +1,1154 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>How to Write a Driver</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="I/O Package (Device Drivers)"
+HREF="io.html"><LINK
+REL="PREVIOUS"
+TITLE=" TTY driver"
+HREF="io-tty-driver.html"><LINK
+REL="NEXT"
+TITLE="Serial testing with ser_filter"
+HREF="io-serial-testing-with-serfilter.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="io-tty-driver.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="io-serial-testing-with-serfilter.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="IO-HOW-TO-WRITE-A-DRIVER">Chapter 17. How to Write a Driver</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="io-how-to-write-a-driver.html#IO-HOW-TO-WRITE-SERIAL-INTERFACE-DRIVER"
+>How to Write a Serial Hardware Interface Driver</A
+></DT
+><DT
+><A
+HREF="io-serial-testing-with-serfilter.html"
+>Serial testing with ser_filter</A
+></DT
+></DL
+></DIV
+><P
+>A device driver is nothing more than a
+named entity that supports the basic I/O functions - read, write, get
+config, and set config. Typically a device driver also uses and
+manages interrupts from the device. While the interface is generic and
+device driver independent, the actual driver implementation is
+completely up to the device driver designer. </P
+><P
+>That said, the reason for using a device driver is to provide
+access to a device from application code in as general purpose a
+fashion as reasonable. Most driver writers are also concerned with
+making this access as simple as possible while being as efficient
+as possible. </P
+><P
+>Most device drivers are concerned with the movement of information,
+for example data bytes along a serial interface, or packets in a
+network. In order to make the most efficient use of system resources,
+interrupts are used. This will allow other application processing
+to take place while the data transfers are under way, with interrupts
+used to indicate when various events have occurred. For example,
+a serial port typically generates an interrupt after a character
+has been sent &#8220;down the wire&#8221; and the interface
+is ready for another. It makes sense to allow further application
+processing while the data is being sent since this can take quite
+a long time. The interrupt can be used to allow the driver to send
+a character as soon as the current one is complete, without any
+active participation by the application code. </P
+><P
+>The main building blocks for device drivers are found in the
+include file: <TT
+CLASS="FILENAME"
+>&lt;cyg/io/devtab.h&gt;</TT
+></P
+><P
+>All device drivers in <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+> are described
+by a device table entry, using the <SPAN
+CLASS="TYPE"
+>cyg_devtab_entry_t</SPAN
+> type.
+The entry should be created using the <TT
+CLASS="FUNCTION"
+>DEVTAB_ENTRY()</TT
+> macro,
+like this:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><TT
+CLASS="FUNCTION"
+>DEVTAB_ENTRY</TT
+>(l, name, dep_name, handlers, init, lookup, priv)</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+>Arguments</B
+></P
+><DL
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>l</I
+></TT
+></DT
+><DD
+><P
+>The "C" label for this device table entry.</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+></DT
+><DD
+><P
+>The "C" string name for the device.</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>dep_name</I
+></TT
+></DT
+><DD
+><P
+>For a layered device, the "C" string name of the
+    device this device is built upon.</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>handlers</I
+></TT
+></DT
+><DD
+><P
+>A pointer to the I/O function "handlers" (see below).</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>init</I
+></TT
+></DT
+><DD
+><P
+>A function called when eCos is initialized. This
+    function can query the device, setup hardware, etc.</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>lookup</I
+></TT
+></DT
+><DD
+><P
+>A function called when <TT
+CLASS="FUNCTION"
+>cyg_io_lookup()</TT
+> is called
+    for this device. </P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>priv</I
+></TT
+></DT
+><DD
+><P
+>A placeholder for any device specific data
+    required by the driver.</P
+></DD
+></DL
+></DIV
+><P
+>The interface to the driver is through the <TT
+CLASS="STRUCTFIELD"
+><I
+>handlers</I
+></TT
+> field.  This is a pointer to
+a set of functions which implement the various <TT
+CLASS="FUNCTION"
+>cyg_io_XXX()</TT
+>
+routines. This table is defined by the macro:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>DEVIO_TABLE(l, write, read, get_config, set_config)</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+>Arguments</B
+></P
+><DL
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>l</I
+></TT
+></DT
+><DD
+><P
+>The "C" label for this table of handlers.</P
+></DD
+><DT
+>write</DT
+><DD
+><P
+>The function called as a result of
+    <TT
+CLASS="FUNCTION"
+>cyg_io_write()</TT
+>.</P
+></DD
+><DT
+>read</DT
+><DD
+><P
+>The function called as a result of
+    <TT
+CLASS="FUNCTION"
+>cyg_io_read()</TT
+>. </P
+></DD
+><DT
+>get_config</DT
+><DD
+><P
+>The function called as a result of
+    <TT
+CLASS="FUNCTION"
+>cyg_io_get_config()</TT
+>.</P
+></DD
+><DT
+>set_config</DT
+><DD
+><P
+>The function called as a result of
+    <TT
+CLASS="FUNCTION"
+>cyg_io_set_config()</TT
+>. </P
+></DD
+></DL
+></DIV
+><P
+>When <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+> is initialized (sometimes called
+&#8220;boot&#8221; time), the <TT
+CLASS="FUNCTION"
+>init()</TT
+> function is called
+for all devices in the system. The <TT
+CLASS="FUNCTION"
+>init()</TT
+> function is
+allowed to return an error in which case the device will be placed
+&#8220;off line&#8221; and all I/O requests to that device will be
+considered in error.</P
+><P
+>The <TT
+CLASS="FUNCTION"
+>lookup()</TT
+> function is called whenever
+the <TT
+CLASS="FUNCTION"
+>cyg_io_lookup()</TT
+> function
+is called with this device name. The lookup function may cause the device
+to come &#8220;on line&#8221; which would then allow I/O
+operations to proceed. Future versions of the I/O system
+will allow for other states, including power saving modes,
+etc.</P
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="IO-HOW-TO-WRITE-SERIAL-INTERFACE-DRIVER">How to Write a Serial Hardware Interface Driver</H1
+><P
+>The standard serial driver supplied with
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+> is structured as a hardware independent
+portion and a hardware dependent interface module. To add support for
+a new serial port, the user should be able to use the existing
+hardware independent portion and just add their own interface driver which handles the details of the
+actual device. The user should have no need to change the hardware
+independent portion. </P
+><P
+>The interfaces used by the serial driver and serial implementation
+modules are contained in the file <TT
+CLASS="FILENAME"
+>&lt;cyg/io/serial.h&gt;</TT
+></P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>In the sections below we use the notation &lt;&lt;xx&gt;&gt; to
+mean a module specific value, referred to as &#8220;xx&#8221; below.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN10881">DevTab Entry</H2
+><P
+>The interface module contains the devtab entry (or entries
+if a single module supports more than one interface). This entry
+should have the form: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>DEVTAB_ENTRY(&lt;&lt;module_name&gt;&gt;, 
+             &lt;&lt;device_name&gt;&gt;,
+             0,
+             &amp;serial_devio, 
+             &lt;&lt;module_init&gt;&gt;, 
+             &lt;&lt;module_lookup&gt;&gt;,
+             &amp;&lt;&lt;serial_channel&gt;&gt;
+            );</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+>Arguments</B
+></P
+><DL
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>module_name</I
+></TT
+></DT
+><DD
+><P
+>The "C" label for this devtab entry</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>device_name</I
+></TT
+></DT
+><DD
+><P
+>The "C" string for the
+    device. E.g. <TT
+CLASS="FILENAME"
+>/dev/serial0</TT
+>.</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>serial_devio</I
+></TT
+></DT
+><DD
+><P
+>The table of I/O functions. This set is defined in
+    the hardware independent serial driver and should be used.</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>module_init</I
+></TT
+></DT
+><DD
+><P
+>The module initialization function.</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>module_lookup</I
+></TT
+></DT
+><DD
+><P
+>The device lookup function. This function
+    typically sets up the device for actual use, turning on
+    interrupts, configuring the port, etc.</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>serial_channel</I
+></TT
+></DT
+><DD
+><P
+>This table (defined below) contains the interface
+    between the interface module and the serial driver proper.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN10918">Serial Channel Structure</H2
+><P
+>Each serial device must have a &#8220;serial channel&#8221;.
+This is a set of data which describes all operations on the device.
+It also contains buffers, etc., if the device is to be buffered.
+The serial channel is created by the macro: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SERIAL_CHANNEL_USING_INTERRUPTS(l, funs, dev_priv, baud,stop, parity, word_length,
+                                flags, out_buf, out_buflen, in_buf, in_buflen)</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+>Arguments</B
+></P
+><DL
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>l</I
+></TT
+></DT
+><DD
+><P
+>The "C" label for this structure.</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>funs</I
+></TT
+></DT
+><DD
+><P
+>The set of interface functions (see below).</P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+><I
+>dev_priv</I
+></TT
+></DT
+><DD
+><P
+>A placeholder for any device specific data for
+    this channel.</P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+><I
+>baud</I
+></TT
+></DT
+><DD
+><P
+>The initial baud rate value
+    (<SPAN
+CLASS="TYPE"
+>cyg_serial_baud_t</SPAN
+>).</P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+><I
+>stop</I
+></TT
+></DT
+><DD
+><P
+>The initial stop bits value
+    (<SPAN
+CLASS="TYPE"
+>cyg_serial_stop_bits_t</SPAN
+>).</P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+><I
+>parity</I
+></TT
+></DT
+><DD
+><P
+>The initial parity mode value
+    (<SPAN
+CLASS="TYPE"
+>cyg_serial_parity_t</SPAN
+>).</P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+><I
+>word_length</I
+></TT
+></DT
+><DD
+><P
+>The initial word length value
+    (<SPAN
+CLASS="TYPE"
+>cyg_serial_word_length_t</SPAN
+>).</P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+><I
+>flags</I
+></TT
+></DT
+><DD
+><P
+>The initial driver flags value.</P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+><I
+>out_buf</I
+></TT
+></DT
+><DD
+><P
+>Pointer to the output
+    buffer. <TT
+CLASS="LITERAL"
+>NULL</TT
+> if none required.</P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+><I
+>out_buflen</I
+></TT
+></DT
+><DD
+><P
+>The length of the output buffer.</P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+><I
+>in_buf</I
+></TT
+></DT
+><DD
+><P
+>pointer to the input
+    buffer. <TT
+CLASS="LITERAL"
+>NULL</TT
+> if none required.</P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+><I
+>in_buflen</I
+></TT
+></DT
+><DD
+><P
+>The length of the input buffer. </P
+></DD
+></DL
+></DIV
+><P
+>If either buffer length is zero, no buffering will take place
+in that direction and only polled mode functions will be used.</P
+><P
+>The interface from the hardware independent driver into the
+hardware interface module is contained in the <TT
+CLASS="STRUCTFIELD"
+><I
+>funs</I
+></TT
+> table.
+This is defined by the macro:</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN10993">Serial Functions Structure</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SERIAL_FUNS(l, putc, getc, set_config, start_xmit, stop_xmit)</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+>Arguments</B
+></P
+><DL
+><DT
+><TT
+CLASS="STRUCTFIELD"
+><I
+>l</I
+></TT
+></DT
+><DD
+><P
+>The "C" label for this structure.</P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+><I
+>putc</I
+></TT
+></DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>bool (*putc)(serial_channel *priv, unsigned char
+      c)</TT
+></P
+><P
+>      This function sends one character to the interface. It should
+      return <TT
+CLASS="LITERAL"
+>true</TT
+> if the character is actually consumed. It should
+      return <TT
+CLASS="LITERAL"
+>false</TT
+> if there is no space in the interface
+      </P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+><I
+>getc</I
+></TT
+></DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>unsigned char (*getc)(serial_channel *priv)</TT
+></P
+><P
+>      This function fetches one character from the interface. It will
+      be only called in a non-interrupt driven mode, thus it should
+      wait for a character by polling the device until ready.
+      </P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+><I
+>set_config</I
+></TT
+></DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>bool (*set_config)(serial_channel
+      *priv,cyg_serial_info_t *config)</TT
+></P
+><P
+>        This function is used to configure the port. It should return
+        <TT
+CLASS="LITERAL"
+>true</TT
+> if the hardware is updated to match the desired
+        configuration. It should return <TT
+CLASS="LITERAL"
+>false</TT
+> if the port cannot
+        support some parameter specified by the given
+        configuration. E.g. selecting 1.5 stop bits and 8 data bits is
+        invalid for most serial devices and should not be allowed.
+      </P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>start_xmit</I
+></TT
+></DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>void (*start_xmit)(serial_channel *priv)</TT
+></P
+><P
+>        In interrupt mode, turn on the transmitter and allow for
+        transmit interrupts.
+      </P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>stop_xmit</I
+></TT
+></DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>void (*stop_xmit)(serial_channel *priv)</TT
+></P
+><P
+>In interrupt mode, turn off the transmitter.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN11042">Callbacks</H2
+><P
+>The device interface module can execute functions in the
+hardware independent driver via <TT
+CLASS="LITERAL"
+>chan-&gt;callbacks</TT
+>.
+These functions are available:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void (*serial_init)( serial_channel *chan )</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function is used to initialize the serial channel. It
+is only required if the channel is being used in interrupt
+mode.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void (*xmt_char)( serial_channel *chan )</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function would be called from an interrupt handler after a
+transmit interrupt indicating that additional characters may be
+sent. The upper driver will call the <TT
+CLASS="FUNCTION"
+>putc</TT
+>
+function as appropriate to send more data to the device.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void (*rcv_char)( serial_channel *chan, unsigned char c )</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function is used to tell the driver that a character has arrived
+at the interface. This function is typically called from the interrupt
+handler. </P
+><P
+>Furthermore, if the device has a FIFO it should require the hardware
+independent driver to provide block transfer functionality (driver CDL
+should include &quot;implements
+CYGINT_IO_SERIAL_BLOCK_TRANSFER&quot;).  In that case, the following
+functions are available as well:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>bool (*data_xmt_req)(serial_channel *chan,
+                     int space,
+                     int* chars_avail,
+                     unsigned char** chars)
+void (*data_xmt_done)(serial_channel *chan)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Instead of calling <TT
+CLASS="FUNCTION"
+>xmt_char()</TT
+> to get a single
+character for transmission at a time, the driver should call
+<TT
+CLASS="FUNCTION"
+>data_xmt_req()</TT
+> in a loop, requesting character
+blocks for transfer. Call with a <TT
+CLASS="PARAMETER"
+><I
+>space</I
+></TT
+> argument of how much space
+there is available in the FIFO.</P
+><P
+>If the call returns <TT
+CLASS="LITERAL"
+>true</TT
+>, the driver can read
+<TT
+CLASS="PARAMETER"
+><I
+>chars_avail</I
+></TT
+> characters from
+<TT
+CLASS="PARAMETER"
+><I
+>chars</I
+></TT
+> and copy them into the FIFO.</P
+><P
+>If the call returns <TT
+CLASS="LITERAL"
+>false</TT
+>, there are
+no more buffered characters and the driver should continue without
+filling up the FIFO.</P
+><P
+>When all data has been unloaded, the
+driver must call <TT
+CLASS="FUNCTION"
+>data_xmt_done()</TT
+>.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>bool (*data_rcv_req)(serial_channel *chan,
+                     int avail,
+                     int* space_avail,
+                     unsigned char** space)
+void (*data_rcv_done)(serial_channel *chan)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Instead of calling <TT
+CLASS="FUNCTION"
+>rcv_char()</TT
+> with a single
+character at a time, the driver should call
+<TT
+CLASS="FUNCTION"
+>data_rcv_req()</TT
+> in a loop, requesting space to
+unload the FIFO to. <TT
+CLASS="PARAMETER"
+><I
+>avail</I
+></TT
+> is the number of
+characters the driver wishes to unload.</P
+><P
+>If the call returns <TT
+CLASS="LITERAL"
+>true</TT
+>, the driver can copy
+<TT
+CLASS="PARAMETER"
+><I
+>space_avail</I
+></TT
+> characters to
+<TT
+CLASS="PARAMETER"
+><I
+>space</I
+></TT
+>. </P
+><P
+>If the call returns <TT
+CLASS="LITERAL"
+>false</TT
+>, the input buffer is
+full. It is up to the driver to decide what to do in that case
+(callback functions for registering overflow are being planned for
+later versions of the serial driver).</P
+><P
+>When all data has been unloaded, the driver must call
+<TT
+CLASS="FUNCTION"
+>data_rcv_done()</TT
+>.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="io-tty-driver.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="io-serial-testing-with-serfilter.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>TTY driver</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="io.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Serial testing with ser_filter</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

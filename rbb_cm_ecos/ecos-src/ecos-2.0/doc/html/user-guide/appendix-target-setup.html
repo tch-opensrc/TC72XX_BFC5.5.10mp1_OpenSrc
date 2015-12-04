@@ -1,0 +1,388 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Target Setup</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Appendixes"
+HREF="appendices.html"><LINK
+REL="PREVIOUS"
+TITLE="Appendixes"
+HREF="appendices.html"><LINK
+REL="NEXT"
+TITLE="MN10300 Architectural Simulator Setup"
+HREF="setup-mn10300-sim.html"></HEAD
+><BODY
+CLASS="APPENDIX"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="appendices.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="setup-mn10300-sim.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="APPENDIX"
+><H1
+><A
+NAME="APPENDIX-TARGET-SETUP">Appendix A. Target Setup</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="appendix-target-setup.html#SETUP-MN10300-STDEVAL1"
+>MN10300 stdeval1 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-mn10300-sim.html"
+>MN10300 Architectural Simulator Setup</A
+></DT
+><DT
+><A
+HREF="setup-am33-stb.html"
+>AM33 STB Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-tx39-jmr3904.html"
+>TX39 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-tx39-sim.html"
+>TX39 Architectural Simulator Setup</A
+></DT
+><DT
+><A
+HREF="setup-tx49-ref4955.html"
+>TX49 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-vr4300-vrc4373.html"
+>VR4300 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-vr4300-vrc4375.html"
+>VRC4375 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-mips-atlasmalta.html"
+>Atlas/Malta Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-ppc-cogent.html"
+>PowerPC Cogent Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-ppc-mbx860.html"
+>PowerPC MBX860 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-ppc-sim.html"
+>PowerPC Architectural Simulator Setup</A
+></DT
+><DT
+><A
+HREF="setup-sparclite-sleb.html"
+>SPARClite Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-sparclite-sim.html"
+>SPARClite Architectural Simulator Setup</A
+></DT
+><DT
+><A
+HREF="setup-arm-pid.html"
+>ARM PID Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-arm-aeb1.html"
+>ARM AEB-1 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-arm-cma230.html"
+>ARM Cogent CMA230 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-arm-ep7211.html"
+>Cirrus Logic ARM EP7211 Development
+Board Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-arm-ep7212.html"
+>Cirrus Logic ARM EP7212 Development Board
+Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-arm-ep7312.html"
+>Cirrus Logic ARM EP7312 Development Board
+Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-arm-ep7209.html"
+>Cirrus Logic ARM EP7209 Development Board Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-arm-clps7111.html"
+>Cirrus Logic ARM CL-PS7111 Evaluation Board Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-arm-ebsa285.html"
+>StrongARM EBSA-285 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-arm-ipaq.html"
+>Compaq iPAQ PocketPC Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-sh-edk7708.html"
+>SH3/EDK7708 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-sh-cq7708.html"
+>SH3/CQ7708 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-sh-hs7729pci.html"
+>SH3/HS7729PCI Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-sh-se77x9.html"
+>SH3/SE77x9 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-sh-cq7750.html"
+>SH4/CQ7750 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-sh-se7751.html"
+>SH4/SE7751 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-v850-cebsa1.html"
+>NEC CEB-V850/SA1 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-v850-cebsb1.html"
+>NEC CEB-V850/SB1 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-i386-pc.html"
+>i386 PC Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-synth-i386linux.html"
+>i386/Linux Synthetic Target Setup</A
+></DT
+></DL
+></DIV
+><P
+>The following sections detail the setup of many of the targets
+supported by eCos. </P
+><DIV
+CLASS="CAUTION"
+><P
+></P
+><TABLE
+CLASS="CAUTION"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Caution</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>This information is presented here only temporarily. It is intended
+that there will be separate documents detailing this information for
+each target in future releases. Consequently not much effort has been
+put into bringing the following documentation up to date -- much of it
+is obsolete, bogus or just plain wrong.</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SETUP-MN10300-STDEVAL1">MN10300 stdeval1 Hardware Setup</H1
+><P
+>The eCos Developer&#8217;s Kit package comes with a pair
+of EPROMs which provide GDB support for the Matsushita MN10300 (AM31)
+series evaluation board using CygMon, the Cygnus ROM monitor. Images
+of these EPROMs are also provided at <TT
+CLASS="FILENAME"
+>BASE_DIR/loaders/mn10300-stdeval1/cygmon.bin</TT
+>.
+The LSB EPROM (LROM) is installed to socket IC8 on the board and
+the MSB EPROM (UROM) is installed to socket IC9. Attention should
+be paid to the correct orientation of these EPROMs during installation.</P
+><P
+>The CygMon stubs allows communication with GDB by way of the
+serial port at connector CN2. The communication parameters are fixed
+at 38400 baud, 8 data bits, no parity bit, and 1 stop bit (8-N-1).
+No flow control is employed. Connection to the host computer should
+be made using a standard RS232C serial cable (not a null modem cable).
+A gender changer may also be required.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="appendices.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="setup-mn10300-sim.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Appendixes</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="appendices.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>MN10300 Architectural Simulator Setup</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

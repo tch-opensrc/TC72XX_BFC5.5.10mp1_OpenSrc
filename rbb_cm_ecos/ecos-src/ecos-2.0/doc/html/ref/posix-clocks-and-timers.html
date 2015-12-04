@@ -1,0 +1,224 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Clocks and Timers [POSIX Section 14]</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="POSIX Standard Support"
+HREF="posix-standard-support.html"><LINK
+REL="PREVIOUS"
+TITLE="Execution Scheduling [POSIX Section 13]"
+HREF="posix-execution-scheduling.html"><LINK
+REL="NEXT"
+TITLE="Message Passing [POSIX Section 15]"
+HREF="posix-message-passing.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="posix-execution-scheduling.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 31. POSIX Standard Support</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="posix-message-passing.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="POSIX-CLOCKS-AND-TIMERS">Clocks and Timers &#0091;POSIX Section 14&#0093;</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13230">Functions Implemented</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>int clock&#0095;settime( clockid&#0095;t clock&#0095;id,
+const struct timespec &#0042;tp); 
+int clock&#0095;gettime( clockid&#0095;t clock&#0095;id, struct timespec &#0042;tp); 
+int clock&#0095;getres( clockid&#0095;t clock&#0095;id, struct timespec &#0042;tp); 
+int timer&#0095;create( clockid&#0095;t clock&#0095;id, struct sigevent &#0042;evp,
+	          timer&#0095;t &#0042;timer&#0095;id);
+int timer&#0095;delete( timer&#0095;t timer&#0095;id ); 
+int timer&#0095;settime( timer&#0095;t timerid, int flags,
+	           const struct itimerspec &#0042;value,
+	           struct itimerspec &#0042;ovalue ); 
+int timer&#0095;gettime( timer&#0095;t timerid, struct itimerspec &#0042;value ); 
+int timer&#0095;getoverrun( timer&#0095;t timerid ); 
+int nanosleep( const struct timespec &#0042;rqtp, struct timespec &#0042;rmtp);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13233">Functions Omitted</H2
+><P
+>&lt;none&gt;</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13236">Notes</H2
+><P
+></P
+><UL
+><LI
+><P
+>    Currently <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>timer&#0095;getoverrun()</I
+></SPAN
+> only
+    reports timer notifications that are delayed in the timer
+    subsystem.  If they are delayed in the signal subsystem, due to
+    signal masks for example, this is not counted as an overrun.
+    </P
+></LI
+><LI
+><P
+>    The option CYGPKG&#0095;POSIX&#0095;TIMERS allows the timer support to be
+    enabled or disabled, and causes &#0095;POSIX&#0095;TIMERS to be defined
+    appropriately. This will cause other parts of the POSIX system to
+    have limited functionality.
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="posix-execution-scheduling.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="posix-message-passing.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Execution Scheduling &#0091;POSIX Section 13&#0093;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="posix-standard-support.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Message Passing &#0091;POSIX Section 15&#0093;</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

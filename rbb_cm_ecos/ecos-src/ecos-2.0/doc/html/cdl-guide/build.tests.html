@@ -1,0 +1,348 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Building Test Cases</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="The Build Process"
+HREF="build.html"><LINK
+REL="PREVIOUS"
+TITLE="Building eCos"
+HREF="build.make.html"><LINK
+REL="NEXT"
+TITLE="CDL Language Specification"
+HREF="reference.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="build.make.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. The Build Process</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="reference.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="BUILD.TESTS">Building Test Cases</H1
+><DIV
+CLASS="CAUTION"
+><P
+></P
+><TABLE
+CLASS="CAUTION"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Caution</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>The support in the current implementation of the component framework
+for building and running test cases is limited, and should be enhanced
+considerably in a future version. Compatibility with the existing
+mechanisms described below will be maintained if possible, but this
+cannot be guaranteed.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>Whenever possible packages should be shipped with one or more test
+cases. This allows users to check that all packages function correctly
+in their particular configuration and on their target, which may be
+custom hardware unavailable to the package developer. The component
+framework needs to provide a way of building such test cases. For
+example, if a makefile system is used then there could be a
+<TT
+CLASS="LITERAL"
+>make&nbsp;tests</TT
+> target to build the test cases, or
+possibly a <TT
+CLASS="LITERAL"
+>make&nbsp;check</TT
+> target to build and run
+the test cases and process all the results. Unfortunately there are
+various complications.</P
+><P
+>Not every test case will be applicable to every configuration. For
+example if the user has disabled the C library's
+<TT
+CLASS="VARNAME"
+>CYGPKG_LIBC_STDIO</TT
+> component then there is no point
+in building or running any of the test cases for that component. This
+implies that test cases need to be associated with configuration
+options somehow. It is possible for the test case to use one or more
+<TT
+CLASS="LITERAL"
+>#ifdef</TT
+> statements to check whether or not it is
+applicable in the current configuration, and compile to a null program
+when not applicable. This is inefficient because the test case will
+still get built and possibly run, even though it will not provide any
+useful information.</P
+><P
+>Many packages involve direct interaction with hardware, for example a
+serial line or an ethernet interface. In such cases it is only
+worthwhile building and running the test if there is suitable software
+running at the other end of the serial line or listening on the same
+ethernet segment, and that software would typically have to run on the
+host. Of course the serial line in question may be hooked up to a
+different piece of hardware which the application needs to talk to, so
+disconnecting it and then hooking it up to the host for running some
+tests may be undesirable. The decision as to whether or not to build
+the test depends not just on the eCos configuration but also on the
+hardware setup and the availability of suitable host software.</P
+><P
+>There are different kinds of tests, and it is not always desirable to
+run all of them. For example a package may contain a number of stress
+tests intended to run for long periods of time, possibly days or
+longer. Such tests should certainly be distinguished somehow from
+ordinary test cases so that users will not run them accidentally and
+wonder how long they should wait for a <TT
+CLASS="LITERAL"
+>pass</TT
+> message
+before giving up. Stress tests may also have dependencies on the
+hardware configuration and on host software, for example a network
+stress test may require lots of ethernet packets.</P
+><P
+>In the current implementation of the component framework these issues
+are not yet addressed. Instead there is only very limited support for
+building test cases. Any package can define a calculated configuration
+option of the form
+<TT
+CLASS="LITERAL"
+>CYGPKG_&lt;package-name&gt;_TESTS</TT
+>, whose value is a
+list of test cases. The <SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+> property can involve an
+expression so it is possible to adapt to a small number of
+configuration options, but this quickly becomes unwieldy. A typical
+example would be:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>        cdl_option CYGPKG_UITRON_TESTS {
+            display "uITRON tests"
+            flavor  data
+            no_define
+            calculated { "tests/test1 tests/test2 tests/test3 \
+                tests/test4 tests/test5 tests/test6 tests/test7 \
+                tests/test8 tests/test9 tests/testcxx tests/testcx2 \
+                tests/testcx3 tests/testcx4 tests/testcx5 \
+                tests/testcx6 tests/testcx7 tests/testcx8 \
+                tests/testcx9 tests/testintr" }
+            description   "
+This option specifies the set of tests for the uITRON compatibility layer."
+        }</PRE
+></TD
+></TR
+></TABLE
+><P
+>This implies that there is a file <TT
+CLASS="FILENAME"
+>tests/test1.c</TT
+>
+or <TT
+CLASS="FILENAME"
+>tests/test1.cxx</TT
+> in the package's directory.
+The commands that will be used to build the test case will take the
+form:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    $(CC) -c $(INCLUDE_PATH) $(CFLAGS) -o &lt;build path&gt;/test1.o \
+         &lt;source path&gt;/tests/test1.c
+    $(CC) $(LDFLAGS) -o &lt;install path&gt;/tests/test1 &lt;build_path&gt;/test1.o</PRE
+></TD
+></TR
+></TABLE
+><P
+>The variables <TT
+CLASS="LITERAL"
+>$(CC)</TT
+> and so on are determined in the
+same way as for custom build steps. The various paths and the current
+directory will depend on the exact build system being used, and are
+subject to change. As usual the sources in the component repository
+are treated as a read-only resources, intermediate files live in the
+build tree, and the desired executables should end up in the install
+tree. </P
+><P
+>Each test source file must be self-contained. It is not possible at
+present to build a little per-package library that can be used by the
+test cases, or to link together several object files to produce a
+single test executable. In some cases it may be possible to
+<TT
+CLASS="LITERAL"
+>#include</TT
+> source code from a shared file in order to
+avoid unnecessary code replication. There is no support for
+manipulating compiler or linker flags for individual test cases: the
+flags that will be used for all files are <TT
+CLASS="LITERAL"
+>$(CFLAGS)</TT
+>
+and <TT
+CLASS="LITERAL"
+>$(LDFLAGS)</TT
+>, as per custom build steps. Note
+that it is possible for a package to define options of the form
+<TT
+CLASS="VARNAME"
+>CYGPKG_&lt;PACKAGE-NAME&gt;_LDFLAGS_ADD</TT
+> and
+<TT
+CLASS="VARNAME"
+>CYGPKG_&lt;PACKAGE-NAME&gt;_LDFLAGS_REMOVE</TT
+>. These
+will affect test cases, but in the absence of custom build steps they
+will have no other effect on the build.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="build.make.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Building eCos</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="build.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>CDL Language Specification</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

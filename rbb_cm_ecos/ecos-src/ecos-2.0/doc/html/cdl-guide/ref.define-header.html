@@ -1,0 +1,353 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>define_header</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="define_format"
+HREF="ref.define-format.html"><LINK
+REL="NEXT"
+TITLE="define_proc"
+HREF="ref.define-proc.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.define-format.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.define-proc.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.DEFINE-HEADER"><SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4123"
+></A
+><H2
+>Name</H2
+>Property <SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+>&nbsp;--&nbsp;Specify the  configuration header file that
+will be generated for a given package.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4127"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_package &lt;name&gt; {
+    define_header &lt;file name&gt;
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4129"
+></A
+><H2
+>Description</H2
+><P
+>When the configuration tools generate a build tree, one of the steps
+is to output each package's configuration data to a header file. For
+example the kernel's configuration data gets output to
+<TT
+CLASS="FILENAME"
+>pkgconf/kernel.h</TT
+>. This allows
+each package's source code to <TT
+CLASS="LITERAL"
+>#include</TT
+> the
+appropriate header file and adapt to the choices made by the user.</P
+><P
+>By default the configuration tools will synthesize a file name from
+the package name. This involves removing any prefix such as
+<TT
+CLASS="LITERAL"
+>CYGPKG_</TT
+>, up to and including the first underscore,
+and then converting the remainder of the name to lower case. In some
+cases it may be desirable to use a different header file, for example
+an existing package may have been ported to <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> and the source code
+may already <TT
+CLASS="LITERAL"
+>#include</TT
+> a particular file for
+configuration data. In such cases a <SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+> property can be
+used to specify an alternative filename.</P
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+> property can only be used in the body of a
+<TT
+CLASS="LITERAL"
+>cdl_package</TT
+> command. It applies to a package as a whole and cannot
+be used at a finer grain. The name specified in a <SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+>
+property will always be interpreted as relative to the
+<TT
+CLASS="FILENAME"
+>include/pkgconf</TT
+> sub-directory
+of the install tree.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>For hardware-specific packages such as device drivers and HAL
+packages, the current scheme of generating a configuration header file
+name based on the package name may be abandoned. Instead all hardware
+packages would send their configuration data to a single header file,
+<TT
+CLASS="FILENAME"
+>pkgconf/hardware.h</TT
+>. This would
+make it easier for code to obtain details of the current hardware, but
+obviously there are compatibility issues. For now it is recommended
+that all hardware packages specify their configuration header file
+explicitly. </P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4147"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_HAL_ARM {
+    display       "ARM architecture"
+    parent        CYGPKG_HAL
+    hardware
+    include_dir   cyg/hal
+    define_header hal_arm.h
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4150"
+></A
+><H2
+>See Also</H2
+><P
+>Properties <A
+HREF="ref.define.html"
+><SPAN
+CLASS="PROPERTY"
+>define</SPAN
+></A
+>,
+<A
+HREF="ref.define-format.html"
+><SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+></A
+>,
+<A
+HREF="ref.define-proc.html"
+><SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+></A
+>,
+<A
+HREF="ref.if-define.html"
+><SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+></A
+>,
+<A
+HREF="ref.no-define.html"
+><SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+></A
+> and
+<A
+HREF="ref.hardware.html"
+><SPAN
+CLASS="PROPERTY"
+>hardware</SPAN
+></A
+>,</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.define-format.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.define-proc.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

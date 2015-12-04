@@ -1,0 +1,433 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Clocks</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Kernel"
+HREF="kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="Counters"
+HREF="kernel-counters.html"><LINK
+REL="NEXT"
+TITLE="Alarms"
+HREF="kernel-alarms.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="kernel-counters.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="kernel-alarms.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="KERNEL-CLOCKS">Clocks</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN922"
+></A
+><H2
+>Name</H2
+>cyg_clock_create, cyg_clock_delete, cyg_clock_to_counter, cyg_clock_set_resolution, cyg_clock_get_resolution, cyg_real_time_clock, cyg_current_time&nbsp;--&nbsp;Provide system clocks</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN931"><H2
+>Synopsis</H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><A
+NAME="AEN932"><P
+></P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &lt;cyg/kernel/kapi.h&gt;
+        </PRE
+></TD
+></TR
+></TABLE
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_clock_create</CODE
+>(cyg_resolution_t resolution, cyg_handle_t* handle, cyg_clock* clock);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_clock_delete</CODE
+>(cyg_handle_t clock);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_clock_to_counter</CODE
+>(cyg_handle_t clock, cyg_handle_t* counter);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_clock_set_resolution</CODE
+>(cyg_handle_t clock, cyg_resolution_t resolution);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_resolution_t cyg_clock_get_resolution</CODE
+>(cyg_handle_t clock);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_handle_t cyg_real_time_clock</CODE
+>(void);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_tick_count_t cyg_current_time</CODE
+>(void);</CODE
+></P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-CLOCKS-DESCRIPTION"
+></A
+><H2
+>Description</H2
+><P
+>In the eCos kernel clock objects are a special form of <A
+HREF="kernel-counters.html"
+>counter</A
+> objects. They are attached to
+a specific type of hardware, clocks that generate ticks at very
+specific time intervals, whereas counters can be used with any event
+source.
+      </P
+><P
+>In a default configuration the kernel provides a single clock
+instance, the real-time clock. This gets used for timeslicing and for
+operations that involve a timeout, for example
+<TT
+CLASS="FUNCTION"
+>cyg_semaphore_timed_wait</TT
+>. If this functionality
+is not required it can be removed from the system using the
+configuration option <TT
+CLASS="VARNAME"
+>CYGVAR_KERNEL_COUNTERS_CLOCK</TT
+>.
+Otherwise the real-time clock can be accessed by a call to
+<TT
+CLASS="FUNCTION"
+>cyg_real_time_clock</TT
+>, allowing applications to
+attach alarms, and the current counter value can be obtained using
+<TT
+CLASS="FUNCTION"
+>cyg_current_time</TT
+>.
+      </P
+><P
+>Applications can create and destroy additional clocks if desired,
+using <TT
+CLASS="FUNCTION"
+>cyg_clock_create</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_clock_delete</TT
+>. The first argument to
+<TT
+CLASS="FUNCTION"
+>cyg_clock_create</TT
+> specifies the
+<A
+HREF="kernel-clocks.html#KERNEL-CLOCKS-RESOLUTION"
+>resolution</A
+> this clock
+will run at. The second argument is used to return a handle for this
+clock object, and the third argument provides the kernel with the
+memory needed to hold this object. This clock will not actually tick
+by itself. Instead it is the responsibility of application code to
+initialize a suitable hardware timer to generate interrupts at the
+appropriate frequency, install an interrupt handler for this, and
+call <TT
+CLASS="FUNCTION"
+>cyg_counter_tick</TT
+> from inside the DSR.
+Associated with each clock is a kernel counter, a handle for which can
+be obtained using <TT
+CLASS="FUNCTION"
+>cyg_clock_to_counter</TT
+>.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-CLOCKS-RESOLUTION"
+></A
+><H2
+>Clock Resolutions and Ticks</H2
+><P
+>At the kernel level all clock-related operations including delays,
+timeouts and alarms work in units of clock ticks, rather than in units
+of seconds or milliseconds. If the calling code, whether the
+application or some other package, needs to operate using units such
+as milliseconds then it has to convert from these units to clock
+ticks.
+      </P
+><P
+>The main reason for this is that it accurately reflects the
+hardware: calling something like <TT
+CLASS="FUNCTION"
+>nanosleep</TT
+> with a
+delay of ten nanoseconds will not work as intended on any real
+hardware because timer interrupts simply will not happen that
+frequently; instead calling <TT
+CLASS="FUNCTION"
+>cyg_thread_delay</TT
+> with
+the equivalent delay of 0 ticks gives a much clearer indication that
+the application is attempting something inappropriate for the target
+hardware. Similarly, passing a delay of five ticks to
+<TT
+CLASS="FUNCTION"
+>cyg_thread_delay</TT
+> makes it fairly obvious that
+the current thread will be suspended for somewhere between four and
+five clock periods, as opposed to passing 50000000 to
+<TT
+CLASS="FUNCTION"
+>nanosleep</TT
+> which suggests a granularity that is
+not actually provided.
+      </P
+><P
+>A secondary reason is that conversion between clock ticks and units
+such as milliseconds can be somewhat expensive, and whenever possible
+should be done at compile-time or by the application developer rather
+than at run-time. This saves code size and cpu cycles.
+      </P
+><P
+>The information needed to perform these conversions is the clock
+resolution. This is a structure with two fields, a dividend and a
+divisor, and specifies the number of nanoseconds between clock ticks.
+For example a clock that runs at 100Hz will have 10 milliseconds
+between clock ticks, or 10000000 nanoseconds. The ratio between the
+resolution's dividend and divisor will therefore be 10000000 to 1, and
+typical values for these might be 1000000000 and 100. If the clock
+runs at a different frequency, say 60Hz, the numbers could be
+1000000000 and 60 respectively. Given a delay in nanoseconds, this can
+be converted to clock ticks by multiplying with the the divisor and
+then dividing by the dividend. For example a delay of 50 milliseconds
+corresponds to 50000000 nanoseconds, and with a clock frequency of
+100Hz this can be converted to
+((50000000&nbsp;*&nbsp;100)&nbsp;/&nbsp;1000000000)&nbsp;=&nbsp;5
+clock ticks. Given the large numbers involved this arithmetic normally
+has to be done using 64-bit precision and the
+<SPAN
+CLASS="TYPE"
+>long&nbsp;long</SPAN
+> data type, but allows code to run on
+hardware with unusual clock frequencies.
+      </P
+><P
+>The default frequency for the real-time clock on any platform is
+usually about 100Hz, but platform-specific documentation should be
+consulted for this information. Usually it is possible to override
+this default by configuration options, but again this depends on the
+capabilities of the underlying hardware. The resolution for any clock
+can be obtained using <TT
+CLASS="FUNCTION"
+>cyg_clock_get_resolution</TT
+>.
+For clocks created by application code, there is also a function
+<TT
+CLASS="FUNCTION"
+>cyg_clock_set_resolution</TT
+>. This does not affect
+the underlying hardware timer in any way, it merely updates the
+information that will be returned in subsequent calls to
+<TT
+CLASS="FUNCTION"
+>cyg_clock_get_resolution</TT
+>: changing the actual
+underlying clock frequency will require appropriate manipulation of
+the timer hardware.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-CLOCKS-CONTEXT"
+></A
+><H2
+>Valid contexts</H2
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_clock_create</TT
+> is usually only called during
+system initialization (if at all), but may also be called from thread
+context. The same applies to <TT
+CLASS="FUNCTION"
+>cyg_clock_delete</TT
+>.
+The remaining functions may be called during initialization, from
+thread context, or from DSR context, although it should be noted that
+there is no locking between
+<TT
+CLASS="FUNCTION"
+>cyg_clock_get_resolution</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_clock_set_resolution</TT
+> so theoretically it is
+possible that the former returns an inconsistent data structure.
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="kernel-counters.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="kernel-alarms.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Counters</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Alarms</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

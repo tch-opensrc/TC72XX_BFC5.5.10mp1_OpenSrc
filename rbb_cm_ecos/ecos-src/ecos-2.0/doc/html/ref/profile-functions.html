@@ -1,0 +1,286 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Profiling functions</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Application profiling"
+HREF="services-profile-gprof.html"><LINK
+REL="PREVIOUS"
+TITLE="Application profiling"
+HREF="services-profile-gprof.html"><LINK
+REL="NEXT"
+TITLE="eCos Power Management Support"
+HREF="services-power.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="services-profile-gprof.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="services-power.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="PROFILE-FUNCTIONS">Chapter 52. Profiling functions</H1
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SERVICES-PROFILE-API">API</H1
+><P
+>In order for profile data to be gathered for an application, the
+program has to initiate the process.
+Once started, execution histogram data will be collected in a
+dynamic memory buffer.
+This data can be uploaded to a host using <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>TFTP</I
+></SPAN
+>.
+A side effect of the upload of the data is that the histogram
+is reset.
+This is useful, especially for high resolution histograms, since
+the histogram data are collected as 16-bit counters which can be quickly
+saturated.
+For example, if the histogram is being collected at a rate of 10,000
+samples per second, a hot spot in the program could saturate after
+only 6.5 seconds.</P
+><P
+> The API for the application profiling functions can be
+found in the file <TT
+CLASS="FILENAME"
+>&lt;cyg/profile/profile.h&gt;</TT
+>.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="SERVICES-PROFILE-API-PROFILE-ON">profile_on</H2
+><P
+>This function is used to initiate the gathering of the
+runtime execution histogram data.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void profile_on(void *start, void *end, int bucket_size, int resolution);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Calling this function will initiate execution profiling.
+An execution histogram is collected at the rate of
+<TT
+CLASS="PARAMETER"
+><I
+>resolution</I
+></TT
+> times per second.
+The area between <TT
+CLASS="PARAMETER"
+><I
+>start</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>end</I
+></TT
+>
+will be divided up into a number of buckets, each representing 
+<TT
+CLASS="PARAMETER"
+><I
+>bucket_size</I
+></TT
+> 
+program bytes in length.  Using statistical sampling (via a high speed timer), when
+the program counter is found to be within the range 
+<TT
+CLASS="PARAMETER"
+><I
+>start</I
+></TT
+>..<TT
+CLASS="PARAMETER"
+><I
+>end</I
+></TT
+>, the appropriate
+bucket (histogram entry) will be incremented.</P
+><P
+>The choice of <TT
+CLASS="PARAMETER"
+><I
+>resolution</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>bucket_size</I
+></TT
+>
+control how large the data gathered will be, as well as how much overhead is 
+encumbered for gathering the histogram.
+Smaller values for <TT
+CLASS="PARAMETER"
+><I
+>bucket_size</I
+></TT
+> will garner better
+results (<TT
+CLASS="FUNCTION"
+>gprof</TT
+> can more closely align the data with
+actual function names) at the expense of a larger data buffer.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>NOTE: </B
+>The value of <TT
+CLASS="PARAMETER"
+><I
+>bucket_size</I
+></TT
+> will be rounded up to a power of two.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="services-profile-gprof.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="services-power.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Application profiling</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="services-profile-gprof.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>eCos Power Management Support</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

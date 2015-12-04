@@ -1,0 +1,256 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Select</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="File System Support Infrastructure"
+HREF="fileio.html"><LINK
+REL="PREVIOUS"
+TITLE="Sockets"
+HREF="fileio-sockets.html"><LINK
+REL="NEXT"
+TITLE="Devices"
+HREF="fileio-devices.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="fileio-sockets.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="fileio-devices.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="FILEIO-SELECT">Chapter 27. Select</H1
+><P
+>The infrastructure provides support for implementing a select
+mechanism. This is modeled on the mechanism in the BSD kernel, but has
+been modified to make it implementation independent.</P
+><P
+>The main part of the mechanism is the <TT
+CLASS="FUNCTION"
+>select()</TT
+>
+API call. This processes its arguments and calls the
+<TT
+CLASS="FUNCTION"
+>fo_select()</TT
+> function pointer on all file objects
+referenced by the file descriptor sets passed to it. If the same
+descriptor appears in more than one descriptor set, the
+<TT
+CLASS="FUNCTION"
+>fo_select()</TT
+> function will be called separately
+for each appearance.</P
+><P
+>The <TT
+CLASS="PARAMETER"
+><I
+>which</I
+></TT
+> argument of the
+<TT
+CLASS="FUNCTION"
+>fo_select()</TT
+> function will either be
+<TT
+CLASS="LITERAL"
+>CYG_FREAD</TT
+> to test for read conditions,
+<TT
+CLASS="LITERAL"
+>CYG_FWRITE</TT
+> to test for write conditions or zero to
+test for exceptions. For each of these options the function should
+test whether the condition is satisfied and if so return true. If it
+is not satisfied then it should call
+<TT
+CLASS="FUNCTION"
+>cyg_selrecord()</TT
+> with the
+<TT
+CLASS="PARAMETER"
+><I
+>info</I
+></TT
+> argument that was passed to the function
+and a pointer to a <SPAN
+CLASS="STRUCTNAME"
+>cyg_selinfo</SPAN
+> structure.</P
+><P
+>The <SPAN
+CLASS="STRUCTNAME"
+>cyg_selinfo</SPAN
+> structure is used to record information about current
+select operations. Any object that needs to support select must
+contain an instance of this structure.  Separate <SPAN
+CLASS="STRUCTNAME"
+>cyg_selinfo</SPAN
+>
+structures should be kept for each of the options that the object can
+select on - read, write or exception.</P
+><P
+>If none of the file objects report that the select condition is
+satisfied, then the <TT
+CLASS="FUNCTION"
+>select()</TT
+> API function puts
+the calling thread to sleep waiting either for a condition to become
+satisfied, or for the optional timeout to expire.</P
+><P
+>A selectable object must have some asynchronous activity that may
+cause a select condition to become true - either via interrupts or the
+activities of other threads. Whenever a selectable condition is
+satisfied, the object should call <TT
+CLASS="FUNCTION"
+>cyg_selwakeup()</TT
+> with a pointer to
+the appropriate <SPAN
+CLASS="STRUCTNAME"
+>cyg_selinfo</SPAN
+> structure. If the thread is still waiting,
+this will cause it to wake up and repeat its poll of the file
+descriptors. This time around, the object that caused the wakeup
+should indicate that the select condition is satisfied, and the
+<TT
+CLASS="FUNCTION"
+>select()</TT
+> API call will return.</P
+><P
+>Note that <TT
+CLASS="FUNCTION"
+>select()</TT
+> does not exhibit real time
+behaviour: the iterative poll of the descriptors, and the wakeup
+mechanism mitigate against this. If real time response to device or
+socket I/O is required then separate threads should be devoted to each
+device of interest and should use blocking calls to wait for a
+condition to become ready.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="fileio-sockets.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="fileio-devices.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Sockets</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="fileio.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Devices</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

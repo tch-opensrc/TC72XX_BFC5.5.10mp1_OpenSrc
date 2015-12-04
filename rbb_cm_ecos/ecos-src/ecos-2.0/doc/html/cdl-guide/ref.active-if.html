@@ -1,0 +1,428 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>active_if</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="cdl_interface"
+HREF="ref.cdl-interface.html"><LINK
+REL="NEXT"
+TITLE="calculated"
+HREF="ref.calculated.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.cdl-interface.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.calculated.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.ACTIVE-IF"><SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN3662"
+></A
+><H2
+>Name</H2
+>Property <SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+>&nbsp;--&nbsp;Allow additional control over the active state of an
+option or other CDL entity.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN3666"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_option &lt;name&gt; {
+    active_if &lt;condition&gt;
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3668"
+></A
+><H2
+>Description</H2
+><P
+>Configuration options or other entities may be either active or
+inactive. Typically this is controlled by the option's location in the
+overall hierarchy. Consider the option
+<TT
+CLASS="LITERAL"
+>CYGDBG_INFRA_DEBUG_PRECONDITIONS</TT
+>, which exists
+below the component <TT
+CLASS="LITERAL"
+>CYGDBG_USE_ASSERT</TT
+>. If the whole
+component is disabled then the options it contains are inactive: there
+is no point in enabling preconditions unless there is generic
+assertion support; any <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> constraints associated with
+preconditions are irrelevant; any <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> property or other
+build-related property is ignored.</P
+><P
+>In some cases the hierarchy does not provide sufficient control over
+whether or not a particular option should be active. For example, the
+math library could have support for floating point exceptions which
+is only worthwhile if the hardware implements appropriate
+functionality, as specified by the architectural HAL. The relevant
+math library configuration options should remain below the
+<TT
+CLASS="LITERAL"
+>CYGPKG_LIBM</TT
+> package in the overall hierarchy, but
+should be inactive unless there is appropriate hardware support. In
+cases like this an <SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+> property is appropriate.</P
+><P
+>Another common use of <SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+> properties is to avoid excessive
+nesting in the configuration hierarchy. If some option B is only
+relevant if option A is enabled, it is possible to turn A into a
+component that contains B. However adding another level to the
+hierarchy for a component which will contain just one entry may be
+considered excessive. In such cases it is possible for B to have an
+<SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+> dependency on A.</P
+><P
+><SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+> takes a goal expression as argument. For details of goal
+expression syntax see <A
+HREF="language.values.html#LANGUAGE.GOAL-EXPRESSION"
+>the Section called <I
+>Goal Expressions</I
+> in Chapter 3</A
+>. In
+most cases the goal expression will be very simple, often involving
+just one other option, but more complicated expressions can be used
+when appropriate. It is also possible to have multiple <SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+>
+conditions in a single option, in which case all of the conditions
+have to be satisfied if the option is to be active.</P
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+> and <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> properties have certain similarities,
+but they serve a different purpose. Suppose there are two options A
+and B, and option B relies on functionality provided by A. This could
+be expressed as either <TT
+CLASS="LITERAL"
+>active_if&nbsp;A</TT
+> or as
+<TT
+CLASS="LITERAL"
+>requires&nbsp;A</TT
+>. The points to note are:</P
+><P
+></P
+><UL
+><LI
+><P
+>If <TT
+CLASS="LITERAL"
+>active_if&nbsp;A</TT
+> is used and A is disabled or
+inactive, then graphical tools will generally prevent any attempt at
+modifying B. For example the text for B could be grayed out, and the
+associated checkbutton (if B is a boolean option) would be disabled.
+If the user needs the functionality provided by option B then it is
+necessary to go to option A first and manipulate it appropriately.</P
+></LI
+><LI
+><P
+>If <TT
+CLASS="LITERAL"
+>requires&nbsp;A</TT
+> is used and A is disabled or
+inactive, graphical tools will still allow B to be manipulated and
+enabled. This would result in a new conflict which may get resolved
+automatically or which may need user intervention.</P
+></LI
+><LI
+><P
+>If there are hardware dependencies then an <SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+> condition is
+usually the preferred approach. There is no point in allowing the user
+to manipulate a configuration option if the corresponding
+functionality cannot possibly work on the currently-selected hardware.
+Much the same argument applies to coarse-grained dependencies, for
+example if an option depends on the presence of a TCP/IP stack then an
+<TT
+CLASS="LITERAL"
+>active_if&nbsp;CYGPKG_NET</TT
+> condition is appropriate:
+it may be possible to satisfy the condition, but it requires the
+fairly drastic step of loading another package; further more, if the
+user wanted a TCP/IP stack in the configuration then it would probably
+have been loaded already. </P
+></LI
+><LI
+><P
+>If option B exists to provide additional debugging information about
+the functionality provided by A then again an <SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+> constraint
+is appropriate. There is no point in letting users enable extra
+debugging facilities for a feature that is not actually present.</P
+></LI
+><LI
+><P
+>The configuration system's inference engine will cope equally well
+with <SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+> and <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> properties. Suppose there is a
+conflict because some third option depends on B. If B is
+<TT
+CLASS="LITERAL"
+>active_if&nbsp;A</TT
+> then the inference engine will
+attempt to make A active and enabled, and then to enable B if
+necessary. If B <TT
+CLASS="LITERAL"
+>requires&nbsp;A</TT
+> then the inference
+engine will attempt to enable B and resolve the resulting conflict by
+causing A to be both active and enabled. Although the inference occurs
+in a different order, in most cases the effect will be the same.</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3710"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+># Do not provide extra semaphore debugging if there are no semaphores
+cdl_option CYGDBG_KERNEL_INSTRUMENT_BINSEM {
+    active_if CYGPKG_KERNEL_SYNCH
+    &#8230;
+}
+
+# Avoid another level in the configuration hierarchy
+cdl_option CYGSEM_KERNEL_SYNCH_MUTEX_PRIORITY_INHERITANCE_SIMPLE_RELAY {
+    active_if CYGSEM_KERNEL_SYNCH_MUTEX_PRIORITY_INHERITANCE_SIMPLE
+    &#8230;
+}
+
+# Functionality that is only relevant if another package is loaded
+cdl_option CYGSEM_START_UITRON_COMPATIBILITY {
+    active_if CYGPKG_UITRON
+    &#8230;
+}
+
+# Check that the hardware or HAL provide the appropriate functionality
+cdl_option CYGDBG_HAL_DEBUG_GDB_BREAK_SUPPORT {
+    active_if CYGINT_HAL_DEBUG_GDB_STUBS_BREAK
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3713"
+></A
+><H2
+>See Also</H2
+><P
+>Property <A
+HREF="ref.requires.html"
+><SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+></A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.cdl-interface.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.calculated.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><TT
+CLASS="LITERAL"
+>cdl_interface</TT
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,513 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Time Management Functions</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="µITRON API"
+HREF="compat-uitron-microitron-api.html"><LINK
+REL="PREVIOUS"
+TITLE="	  Memory pool Management Functions"
+HREF="compat-uitron-memory-pool-mgmt-functions.html"><LINK
+REL="NEXT"
+TITLE="	  System Management Functions"
+HREF="compat-uitron-system-mgmt-functions.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="compat-uitron-memory-pool-mgmt-functions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 32. &micro;ITRON API</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="compat-uitron-system-mgmt-functions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="COMPAT-UITRON-TIME-MGMT-FUNCTIONS">Time Management Functions</H1
+><P
+>These functions are fully supported in this release: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>set_tim</TT
+>( 
+    SYSTIME *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_tim</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="CAUTION"
+><P
+></P
+><TABLE
+CLASS="CAUTION"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Caution</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>	    Setting the time may cause erroneous operation of the
+	    kernel, for example a task performing a wait with a
+	    time-out may never awaken.</P
+></TD
+></TR
+></TABLE
+></DIV
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>get_tim</TT
+>( 
+    SYSTIME *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_tim</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>dly_tsk</TT
+>( 
+    DLYTIME <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>dlytim</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>def_cyc</TT
+>( 
+    HNO <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>cycno,</I
+></SPAN
+>    T_DCYC *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_dcyc</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>act_cyc</TT
+>( 
+    HNO <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>cycno,</I
+></SPAN
+>    UINT <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>cycact</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>ref_cyc</TT
+>( 
+    T_RCYC *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_rcyc,</I
+></SPAN
+>    HNO <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>cycno</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>def_alm</TT
+>( 
+    HNO <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>almno,</I
+></SPAN
+>    T_DALM *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_dalm</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>ref_alm</TT
+>( 
+    T_RALM *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pk_ralm,</I
+></SPAN
+>    HNO <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>almno</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void <TT
+CLASS="FUNCTION"
+>ret_tmr</TT
+>( void )</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN14010">Error checking</H2
+><P
+>The following conditions are only checked for, and only return
+errors if 
+<TT
+CLASS="LITERAL"
+>CYGSEM_UITRON_BAD_PARAMS_RETURN_ERRORS</TT
+>
+is enabled:</P
+><P
+></P
+><UL
+><LI
+><P
+>invalid handler number; less than 1 or greater than 
+<TT
+CLASS="LITERAL"
+>CYGNUM_UITRON_CYCLICS/ALARMS</TT
+>
+as appropriate, or E_PAR</P
+></LI
+><LI
+><P
+>dispatching is enabled in 
+<TT
+CLASS="FUNCTION"
+>dly_tsk()</TT
+>
+, or E_CTX</P
+></LI
+><LI
+><P
+>dlytim must be positive or zero, otherwise E_PAR</P
+></LI
+><LI
+><P
+>return value pointer in 
+<TT
+CLASS="FUNCTION"
+>ref_xxx()</TT
+>
+ is a valid pointer, or E_PAR</P
+></LI
+><LI
+><P
+>params within pk_dalm and pk_dcyc must
+be valid, or E_PAR</P
+></LI
+><LI
+><P
+>cycact in 
+<TT
+CLASS="FUNCTION"
+>act_cyc()</TT
+>
+ must be valid, or E_PAR</P
+></LI
+><LI
+><P
+>handler must be defined in 
+<TT
+CLASS="FUNCTION"
+>ref_xxx()</TT
+>
+ and 
+<TT
+CLASS="FUNCTION"
+>act_cyc()</TT
+>
+, or E_NOEXS</P
+></LI
+><LI
+><P
+>parameter pointer must be a good pointer in 
+<TT
+CLASS="FUNCTION"
+>get_tim()</TT
+>
+ and 
+<TT
+CLASS="FUNCTION"
+>set_tim()</TT
+>
+, otherwise E_PAR is returned</P
+></LI
+></UL
+><P
+>The following conditions are checked for, and can return
+	  error codes, regardless of the setting of
+<TT
+CLASS="LITERAL"
+>CYGSEM_UITRON_BAD_PARAMS_RETURN_ERRORS</TT
+>
+:</P
+><P
+></P
+><UL
+><LI
+><P
+><TT
+CLASS="FUNCTION"
+>dly_tsk()</TT
+>
+: return code E_RLWAI is returned depending on the reason
+for terminating the sleep</P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="compat-uitron-memory-pool-mgmt-functions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="compat-uitron-system-mgmt-functions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Memory pool Management Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="compat-uitron-microitron-api.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>System Management Functions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

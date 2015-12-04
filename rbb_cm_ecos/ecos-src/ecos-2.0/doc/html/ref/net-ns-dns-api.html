@@ -1,0 +1,290 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>DNS</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="DNS for eCos and RedBoot"
+HREF="net-ns-dns.html"><LINK
+REL="PREVIOUS"
+TITLE="DNS for eCos and RedBoot"
+HREF="net-ns-dns.html"><LINK
+REL="NEXT"
+TITLE="Ethernet Device Drivers"
+HREF="io-eth-drv-generic.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-ns-dns.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="io-eth-drv-generic.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="NET-NS-DNS-API">Chapter 45. DNS</H1
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-NS-DNS-API1">DNS API</H1
+><P
+>The DNS client uses the normal BSD API for performing lookups:
+<TT
+CLASS="FUNCTION"
+>gethostbyname()</TT
+> and
+<TT
+CLASS="FUNCTION"
+>gethostbyaddr()</TT
+>.</P
+><P
+>There are a few restrictions:</P
+><P
+></P
+><UL
+><LI
+><P
+>Only IPv4 is supported, ie IPv6 addresses cannot be looked
+up.</P
+></LI
+><LI
+><P
+>If the DNS server returns multiple authoritive records
+for a host name, the hostent will only contain a record for the
+first entry.</P
+></LI
+><LI
+><P
+>The code has been made thread safe. ie multiple threads
+may call 
+<TT
+CLASS="FUNCTION"
+>gethostbyname()</TT
+>
+ without causing problems to the hostent structure returned. What
+is not safe is one thread using both 
+<TT
+CLASS="FUNCTION"
+>gethostbyname()</TT
+>
+ and 
+<TT
+CLASS="FUNCTION"
+>gethostbyaddr()</TT
+>.
+A call to one will destroy the results from the previous call
+to the other function.</P
+></LI
+></UL
+><P
+>To initialise the DNS client the following function must be
+called:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#include &lt;network.h&gt;
+int cyg_dns_res_init(struct in_addr *dns_server)</PRE
+></TD
+></TR
+></TABLE
+><P
+>where dns_server is the address of the DNS server
+the client should query. On Error this function returns -1, otherwise
+0 for success. If lookups are attemped before this function has
+been called, they will fail and return NULL.</P
+><P
+>A default, hard coded, server may be specified in the CDL option
+<TT
+CLASS="LITERAL"
+>CYGDAT_NS_DNS_DEFAULT_SERVER</TT
+>. The use of this is
+controlled by <TT
+CLASS="LITERAL"
+>CYGPKG_NS_DNS_DEFAULT</TT
+>. If this is
+enabled, <TT
+CLASS="LITERAL"
+>init_all_network_interfaces</TT
+> will
+initialize the resolver with the hard coded address. The DHCP client
+or user code my override this address by calling
+<TT
+CLASS="LITERAL"
+>cyg_dns_res_init</TT
+> again. </P
+><P
+>The DNS client understands the concepts of the target being
+in a domain. By default no domain will be used. Host name lookups
+should be for fully qualified names. The domain name can be set
+and retrieved using the functions:
+<DIV
+CLASS="FUNCSYNOPSIS"
+><A
+NAME="AEN14685"><P
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int getdomainname</CODE
+>(char *name, size_t len);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int setdomainname</CODE
+>(const char *name, size_t len);</CODE
+></P
+><P
+></P
+></DIV
+></P
+><P
+>Alternatively, a hard coded domain name can be set using CDL.
+The boolean <TT
+CLASS="LITERAL"
+>CYGPKG_NS_DNS_DOMAINNAME</TT
+> enables this
+and the domain name is taken from
+<TT
+CLASS="LITERAL"
+>CYGPKG_NS_DNS_DOMAINNAME_NAME</TT
+>.</P
+><P
+>Once set, the DNS client will first perform a lookup with the domain
+name appended. If this fails it will then perform a second lookup
+without the appended domain name. </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-ns-dns.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="io-eth-drv-generic.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>DNS for eCos and RedBoot</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-ns-dns.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Ethernet Device Drivers</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

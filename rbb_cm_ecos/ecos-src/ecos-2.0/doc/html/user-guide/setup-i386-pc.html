@@ -1,0 +1,467 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>i386 PC Hardware Setup</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Target Setup"
+HREF="appendix-target-setup.html"><LINK
+REL="PREVIOUS"
+TITLE="NEC CEB-V850/SB1 Hardware Setup"
+HREF="setup-v850-cebsb1.html"><LINK
+REL="NEXT"
+TITLE="i386/Linux Synthetic Target Setup"
+HREF="setup-synth-i386linux.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="setup-v850-cebsb1.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Target Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="setup-synth-i386linux.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SETUP-I386-PC">i386 PC Hardware Setup</H1
+><P
+>eCos application on the PC can be run in three ways: via RedBoot,
+loaded directly from a floppy disk, or loaded by the GRUB bootloader.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4408">RedBoot Support</H2
+><P
+>For information about setting up the PC to run with RedBoot,
+consult the RedBoot User&quot;s Guide. If using serial debugging,
+the serial line runs at 38400 baud 8-N-1 and should be connected
+to the debug host using a null modem cable. If ethernet debugging
+is required, an i82559 compatible network interface card, such as
+an Intel EtherExpress Pro 10/100,  should be installed
+on the target PC and connected to the development PC running GDB.
+When RedBoot is configured appropriately to have an IP address set,
+then GDB will be able to debug directly over TCP/IP to the
+target PC.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4411">Floppy Disk Support</H2
+><P
+>If an application is built with a startup type of FLOPPY, then it is
+configured to be a self-booting image that must be written onto a
+formatted floppy disk. This will erase any existing file system or
+data that is already on the disk, so proceed
+with caution.</P
+><P
+>To write an application to floppy disk, it must first be converted to
+a pure binary format. This is done with the following command:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ <TT
+CLASS="USERINPUT"
+><B
+>i386-elf-objcopy -O binary app.elf app.bin</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+><P
+>Here <TT
+CLASS="FILENAME"
+>app.elf</TT
+> is the final linked application
+executable, in ELF format (it may not have a <TT
+CLASS="FILENAME"
+>.elf</TT
+>
+extension). The file <TT
+CLASS="FILENAME"
+>app.bin</TT
+> is the resulting
+pure binary file. This must be written to the floppy disk with the
+following command:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ <TT
+CLASS="USERINPUT"
+><B
+>dd conv=sync if=app.bin of=/dev/fd0</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>For NT Cygwin users, this can be done by first ensuring that the raw
+floppy device is mounted as <TT
+CLASS="FILENAME"
+>/dev/fd0</TT
+>. To check if this
+is the case, type the command <B
+CLASS="COMMAND"
+>mount</B
+> at the Cygwin bash
+prompt. If the floppy drive is already mounted, it will be listed as something
+similar to the following line:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  \\.\a: /dev/fd0 user binmode</PRE
+></TD
+></TR
+></TABLE
+><P
+>If this line is not listed, then mount the floppy drive using the command:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ <TT
+CLASS="USERINPUT"
+><B
+>mount -f -b //./a: /dev/fd0</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+><P
+>To actually install the boot image on the floppy, use the command:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ <TT
+CLASS="USERINPUT"
+><B
+>dd conv=sync if=app.bin of=/dev/fd0</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+><P
+>Insert this floppy in the A: drive of the PC to be used as a target
+and ensure that the BIOS is configured to boot from A: by default. On reset,
+the PC will boot from the floppy and the eCos application will load
+itself and execute immediately.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>NOTE: </B
+>Unreliable floppy media may cause the write to silently fail. This
+can be determined if the RedBoot image does not correctly
+boot. In such cases, the floppy should be (unconditionally) reformatted
+using the <B
+CLASS="COMMAND"
+>fdformat</B
+> command on Linux, or
+<B
+CLASS="COMMAND"
+>format a: /u</B
+> on DOS/Windows. If this fails, try a
+different disk.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4439">GRUB Bootloader Support</H2
+><P
+>If an application is built with the GRUB startup type, it is
+configured to be loaded by the GRUB bootloader.</P
+><P
+>GRUB is an open source boot loader that supports many different
+operating systems. It is available from
+<A
+HREF="http://www.gnu.org/software/grub"
+TARGET="_top"
+>http://www.gnu.org/software/grub</A
+>.
+The latest version of GRUB should be downloaded from there and installed.
+In Red Hat Linux version 7.2 and later it is the default bootloader
+for Linux and therefore is already installed.</P
+><P
+>To install GRUB on a floppy disk from Linux you need to execute the
+following commands:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ <TT
+CLASS="USERINPUT"
+><B
+>mformat a:</B
+></TT
+>
+$ <TT
+CLASS="USERINPUT"
+><B
+>mount /mnt/floppy</B
+></TT
+>
+$ <TT
+CLASS="USERINPUT"
+><B
+>grub-install --root-directory=/mnt/floppy '(fd0)'</B
+></TT
+>
+Probing devices to guess BIOS drives. This may take a long time.
+Installation finished. No error reported.
+This is the contents of the device map /mnt/floppy/boot/grub/device.map.
+Check if this is correct or not. If any of the lines is incorrect,
+fix it and re-run the script `grub-install'.
+
+(fd0)	/dev/fd0
+$ <TT
+CLASS="USERINPUT"
+><B
+>cp $ECOS_REPOSITORY/packages/hal/i386/pc/current/misc/menu.lst /mnt/floppy/boot/grub</B
+></TT
+>
+$ <TT
+CLASS="USERINPUT"
+><B
+>umount /mnt/floppy</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+><P
+>The file <TT
+CLASS="FILENAME"
+>menu.lst</TT
+> is an example GRUB menu
+configuration file. It contains menu items to load some of the
+standard eCos tests from floppy or from partition zero of the first
+hard disk. You should, of course, customize this file to load your own
+application. Alternatively you can use the command-line interface of
+GRUB to input commands yourself.</P
+><P
+>Applications can be installed, or updated simply by copying them to
+the floppy disk at the location expected by the
+<TT
+CLASS="FILENAME"
+>menu.lst</TT
+> file. For booting from floppy disks it
+is recommended that the executable be stripped of all debug and symbol
+table information before copying. This reduces the size of the file
+and can make booting faster.</P
+><P
+>To install GRUB on a hard disk, refer to the GRUB documentation. Be
+warned, however, that if you get this wrong it may compromise any
+existing bootloader that exists on the hard disk and may make any
+other operating systems unbootable. Practice on floppy disks or
+sacrificial hard disks first. On machines running Red Hat Linux
+version 7.2 and later, you can just add your own menu items to the
+<TT
+CLASS="FILENAME"
+>/boot/grub/menu.lst</TT
+> file that already exists.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4457">Debugging FLOPPY and GRUB Applications</H2
+><P
+>When RedBoot loads an application it also provides debugging services
+in the form of GDB remote protocol stubs. When an application is
+loaded stand-alone from a floppy disk, or by GRUB, these services are
+not present. To allow these application to be debugged, it is possible
+to include GDB stubs into the application.</P
+><P
+>To do this, set the &quot;Support for GDB stubs&quot;
+(<TT
+CLASS="LITERAL"
+>CYGDBG_HAL_DEBUG_GDB_INCLUDE_STUBS</TT
+>) configuration
+option. Following this any application built will allow GDB to connect
+to the debug serial port (by default serial device 0, also known as
+COM1) whenever the application takes an exception, or if a Control-C
+is typed to the debug port. Ethernet debugging is not supported.</P
+><P
+>The option &quot;Enable initial breakpoint&quot;
+(<TT
+CLASS="LITERAL"
+>CYGDBG_HAL_DEBUG_GDB_INITIAL_BREAK</TT
+>) causes the HAL
+to take a breakpoint immediately before calling cyg_start(). This
+gives the developer a chance to set any breakpoints or inspect the
+system state before it proceeds. The configuration sets this option by
+default if GDB stubs are included, and this is not a RedBoot build. To
+make the application execute immediately either disable this option,
+or disable <TT
+CLASS="LITERAL"
+>CYGDBG_HAL_DEBUG_GDB_INCLUDE_STUBS</TT
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="setup-v850-cebsb1.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="setup-synth-i386linux.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>NEC CEB-V850/SB1 Hardware Setup</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="appendix-target-setup.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>i386/Linux Synthetic Target Setup</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,328 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Coarse-grained Configuration</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Manual Configuration"
+HREF="manual-configuration.html"><LINK
+REL="PREVIOUS"
+TITLE="Packages"
+HREF="ecos-packages.html"><LINK
+REL="NEXT"
+TITLE="Fine-grained Configuration"
+HREF="fine-grained-configuration.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ecos-packages.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 28. Manual Configuration</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="fine-grained-configuration.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="COARSE-GRAINED-CONFIGURATION">Coarse-grained Configuration</H1
+><P
+>Coarse-grained configuration of
+	  an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> system means making configuration changes using the
+	  <B
+CLASS="COMMAND"
+>ecosconfig</B
+> tool. These changes
+	  include: </P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>switching to different target hardware</P
+></LI
+><LI
+><P
+>switching to a different template</P
+></LI
+><LI
+><P
+>adding or removing a package</P
+></LI
+><LI
+><P
+>changing the version of a package</P
+></LI
+></OL
+><P
+>Whenever <B
+CLASS="COMMAND"
+>ecosconfig</B
+> generates or
+	  updates an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> configuration, it generates a configuration
+	  save file.</P
+><P
+>Suppose that the configuration was first created using
+	  the following command line: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ ecosconfig new stdeval1</PRE
+></TD
+></TR
+></TABLE
+><P
+>To change the target hardware to the Cogent CMA28x
+	  PowerPC board, the following command would be needed:
+	</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ ecosconfig target cma28x</PRE
+></TD
+></TR
+></TABLE
+><P
+>To switch to the PowerPC simulator instead: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ ecosconfig target psim</PRE
+></TD
+></TR
+></TABLE
+><P
+>As the hardware changes, hardware-related packages such as
+the HAL packages and device drivers will be added to and removed
+from the configuration as appropriate. </P
+><P
+>To remove any package from the current configuration, use
+the <B
+CLASS="COMMAND"
+>remove</B
+> command: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ ecosconfig remove uitron</PRE
+></TD
+></TR
+></TABLE
+><P
+>You can disable multiple packages using multiple arguments,
+for example: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ ecosconfig remove uitron libm</PRE
+></TD
+></TR
+></TABLE
+><P
+>If this turns out to have been a mistake then you can
+	  re-enable one or more packages with the
+	  <B
+CLASS="COMMAND"
+>add</B
+> command: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ ecosconfig add libm</PRE
+></TD
+></TR
+></TABLE
+><P
+>Changing the desired version for a package is also
+	  straightforward:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ ecosconfig version v2_1 kernel</PRE
+></TD
+></TR
+></TABLE
+><P
+>It is necessary to regenerate the build tree and header
+	  files following any changes to the configuration before
+	  rebuilding <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ ecosconfig tree</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ecos-packages.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="fine-grained-configuration.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Packages</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="manual-configuration.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Fine-grained Configuration</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

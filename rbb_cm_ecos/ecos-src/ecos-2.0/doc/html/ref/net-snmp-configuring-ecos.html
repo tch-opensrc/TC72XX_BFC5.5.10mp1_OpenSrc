@@ -1,0 +1,361 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Configuring eCos</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="SNMP for eCos"
+HREF="net-snmp-ecos-port.html"><LINK
+REL="PREVIOUS"
+TITLE="Starting the SNMP Agent"
+HREF="net-snmp-starting-the-snmp-agent.html"><LINK
+REL="NEXT"
+TITLE="Test cases"
+HREF="net-snmp-test-cases.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-snmp-starting-the-snmp-agent.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 47. SNMP for <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-snmp-test-cases.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-SNMP-CONFIGURING-ECOS">Configuring eCos</H1
+><P
+>To use the SNMP agent, the SNMP library and agent packages must be
+included in your configuration. To incorporate the stack into your
+configuration select the SNMP library and SNMP agent packages in the
+eCos Configuration Tool, or at the command line type:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ <TT
+CLASS="USERINPUT"
+><B
+>ecosconfig add snmplib snmpagent</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>After adding the networking, common ethernet device drivers,
+snmp library and snmp agent packages, there is no configuration
+required. However there are a number of configuration options
+that can be set such as some details for the System MIB, and
+disabling SNMPv3 support (see below).</P
+><P
+>Starting the SNMP agent is not integrated into network
+tests other than <TT
+CLASS="FILENAME"
+>snmpping</TT
+> below, nor is it
+started automatically in normal eCos startup -
+it is up to the application to start the agent when it is ready,
+at least after the network interfaces are both &#8216;up&#8217;.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="NET-SNMP-VERSION-USAGE">Version usage (v1, v2 or v3)</H2
+><P
+>The default build supports all three versions of the SNMP protocol, but without
+any dispatcher functionality (rfc 2571, section 3.1.1.2). This has the
+following implications :</P
+><P
+> 1. There is no community authentication for v1 and v2c.</P
+><P
+>2. Security provided by v3 can be bypassed by using v1/v2c protocol.</P
+><P
+>To provide the dispatcher with rfc 2571 type functionality, it is required to
+set up security models and access profiles. This can be provided in the normal
+Unix style by writing the required configurations in <TT
+CLASS="LITERAL"
+>snmpd.conf</TT
+> 
+file. Application code may setup profiles in <TT
+CLASS="LITERAL"
+>snmpd.conf</TT
+> and 
+optionally set the environment variable <TT
+CLASS="LITERAL"
+>SNMPCONFPATH</TT
+> to 
+point to the file if it is not in the usual location. The whole concept works
+in the usual way as with the standard UCD-SNMP distribution.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="TRAPS">Traps</H2
+><P
+>The support of the <TT
+CLASS="LITERAL"
+>trapsink</TT
+> command in the
+<A
+HREF="net-snmp-agent-manpages-snmpd.conf.html"
+>snmpd.conf</A
+> file is not tested 
+and there may be problems for it working as expected. Moreover, in systems that do not 
+have filesystem support, there is no way to configure a trap-session in the
+conventional way.</P
+><P
+>For reasons mentioned above, applications need to initialize their own trap
+sessions and pass it the details of trap-sink. The following is a small sample
+for initializing a v1 trap session :</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct trap {
+        unsigned char ip [4];
+        unsigned int  port;
+        unsigned char community [256];
+}
+
+trap            trapsink;
+unsinged char   sink [16]; 
+
+...
+...
+
+if (trapsink.ip != 0) {
+        sprintf (sink, "%d.%d.%d.%d",
+                 trapsink[0], trapsink[1], trapsink[2], trapsink[3]);
+        if (create_trap_session (sink,
+                trapsink.port,
+                (char *)trapsink.community,
+                SNMP_VERSION_1,
+                SNMP_MSG_TRAP) == 0) {
+                log_error ("Creation of trap session failed \n");
+        }
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="NET-SNMP-SNMPD-CONF"><TT
+CLASS="LITERAL"
+>snmpd.conf</TT
+> file</H2
+><P
+>Using snmpd.conf requires the inclusion of one of the file-system packages
+(eg. CYGPKG_RAMFS) and CYGPKG_FILEIO. With these two packages included, the
+SNMP sub-system will read the snmpd.conf file from the location specified in
+<TT
+CLASS="LITERAL"
+>SNMPCONFPATH</TT
+>, or the standard builtin locations, and use
+these profiles. Only the profiles specified in the <TT
+CLASS="LITERAL"
+>ACCESS-CONTROL</TT
+>
+section of <A
+HREF="net-snmp-agent-manpages-snmpd.conf.html"
+>snmpd.conf</A
+> file have 
+been tested and shown to work. Other profiles which have been implemented in 
+<TT
+CLASS="LITERAL"
+>UCD-SNMP-4.1.2</TT
+>'s <TT
+CLASS="LITERAL"
+>snmpd.conf</TT
+> may not work
+because the sole purpose of adding support for the snmpd.conf file has been to
+set up <TT
+CLASS="LITERAL"
+>ACCESS-CONTROL</TT
+> models.</P
+><P
+>At startup, the SNMP module tries to look for file <TT
+CLASS="FILENAME"
+>snmp.conf</TT
+>. 
+If this file is not available, the module successively looks for files
+<TT
+CLASS="FILENAME"
+>snmpd.conf</TT
+>, <TT
+CLASS="FILENAME"
+>snmp.local.conf</TT
+> and 
+<TT
+CLASS="FILENAME"
+>snmpd.local.conf</TT
+> at the locations pointed to by <TT
+CLASS="LITERAL"
+>SNMPCONFPATH</TT
+> environment variable. In case <TT
+CLASS="LITERAL"
+>SNMPCONFPATH</TT
+> is not defined, the search sequence is carried out in default directories.
+The default directories are :<TT
+CLASS="FILENAME"
+>/usr/share/snmp</TT
+>, <TT
+CLASS="FILENAME"
+>/usr/local/share/snmp</TT
+> and <TT
+CLASS="FILENAME"
+>$(HOME)/.snmp</TT
+>.
+The configurations read from these files are used to control both, SNMP 
+applications and the SNMP agent; in the usual UNIX fashion.</P
+><P
+>The inclusion of snmpd.conf support is enabled by default when suitable 
+filesystems and FILEIO packages are active.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-snmp-starting-the-snmp-agent.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-snmp-test-cases.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Starting the SNMP Agent</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-snmp-ecos-port.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Test cases</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

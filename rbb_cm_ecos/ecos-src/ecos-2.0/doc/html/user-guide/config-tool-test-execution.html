@@ -1,0 +1,685 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Execution</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="The eCos Configuration Tool"
+HREF="the-ecos-configuration-tool.html"><LINK
+REL="PREVIOUS"
+TITLE="Selecting User Tools"
+HREF="config-tool-selecting-user-tools.html"><LINK
+REL="NEXT"
+TITLE="Creating a Shell"
+HREF="config-tool-creating-a-shell.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="config-tool-selecting-user-tools.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="config-tool-creating-a-shell.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="CONFIG-TOOL-TEST-EXECUTION">Chapter 22. Execution</H1
+><P
+>Test executables that have been linked using the Build/Tests
+operation against the current configuration can be executed by selecting <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Tools</I
+></SPAN
+>-&gt;<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Run
+Tests</I
+></SPAN
+>.</P
+><P
+>When tests are run, the <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+> looks
+for a platform name corresponding to the currently loaded hardware template.
+If no such platform is found, a dialog will be displayed for you
+to define one; this dialog is similar to that displayed by the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Add</I
+></SPAN
+> function
+in the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Tools-&gt;Platforms</I
+></SPAN
+> dialog, but
+in this case the platform name cannot be changed.</P
+><P
+>When a test run is invoked, a property sheet is displayed,
+comprising three tabs: <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Executables</I
+></SPAN
+>, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Output</I
+></SPAN
+> and <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Summary</I
+></SPAN
+>.</P
+><P
+>Note that the property sheet is resizable.</P
+><P
+>Three buttons appear on the property sheet itself: <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Run/Stop</I
+></SPAN
+>, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Close</I
+></SPAN
+> and <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Properties</I
+></SPAN
+>.</P
+><P
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Run</I
+></SPAN
+> button is used to initiate a
+test run. Those tests selected on the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Executables</I
+></SPAN
+> tab
+are run, and the output recorded on the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Output</I
+></SPAN
+> and <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Summary</I
+></SPAN
+> tabs.
+During the course of a run, the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Run</I
+></SPAN
+> button
+changes to &#8220;Stop&#8221;. The button may be used to interrupt
+a test run at any point.</P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CONFIG-TOOL-TEST-PROPERTIES">Properties</H1
+><P
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Properties</I
+></SPAN
+> button is used to change
+the connectivity properties for the test run.</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN1564"><P
+><B
+>Figure 22-1. Properties dialog box</B
+></P
+><P
+><IMG
+SRC="pix/ch-properties-dialog.png"></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN1567">Download Timeout</H2
+><P
+>	    This group of controls serves to set the maximum time that
+	    is allowed for downloading a test to the target board. If
+	    the time is exceeded, the test will be deemed to have
+	    failed for reason of &#8220;Download Timeout&#8221; and
+	    the execution of that particular test will be abandoned.
+	    This option only applies to tests run on hardware, not to
+	    those executed in a simulator. Times are in units of
+	    elapsed seconds.</P
+><P
+>Three options are available using the drop-down
+	    list:</P
+><P
+></P
+><UL
+><LI
+><P
+>Calculated from file size - an estimate of the maximum
+time required for download is made using the (stripped) executable
+size and the currently used baud rate</P
+></LI
+><LI
+><P
+>			Specified - a user-specified value may be entered in
+the adjacent edit box</P
+></LI
+><LI
+><P
+>			None - no maximum download time is to be applied.</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN1578">Run time Timeout</H2
+><P
+>This group of controls serves to set the maximum time
+	    that is allowed for executing a test on the target board
+	    or in a simulator. If the time is exceeded, the test will
+	    be deemed to have failed for reason of
+	    &#8220;Timeout&#8221; and the execution of that particular
+	    test will be abandoned. In the case of hardware, the time
+	    is measured in elapsed seconds: in the case of a simulator
+	    it is in CPU seconds.</P
+><P
+>Three options are available using the drop-down
+	  list:</P
+><P
+></P
+><UL
+><LI
+><P
+>None - no maximum download time is to be
+		applied.</P
+></LI
+><LI
+><P
+>Specified - a user-specified value may be
+		entered in the adjacent edit box</P
+></LI
+><LI
+><P
+>Default - a default value of 30 seconds is
+		used</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN1589">Connection</H2
+><P
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Connection</I
+></SPAN
+> controls may be used
+	    to specify how the target board is to be accessed.</P
+><P
+>If the target board is connected using a serial cable, the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Serial</I
+></SPAN
+> radio
+button should be checked. In this case you can select a port (COM1,
+COM2, &#8230;) and an appropriate baud rate using drop-list boxes.</P
+><P
+>If the target board is accessed remotely using GDB remote
+protocol, the &#8220;TCP/IP&#8221; radio button should
+be checked. In this case you can select a host name and TCP/IP port
+number using edit boxes.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN1596">Executables Tab</H2
+><P
+>This is used to adjust the set of tests available for execution.
+A check box against each executable name indicates whether that
+executable will be included when the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Run</I
+></SPAN
+> button
+is pressed. The <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Check All</I
+></SPAN
+> and <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Uncheck
+All</I
+></SPAN
+> buttons may be used to check or uncheck all items.</P
+><P
+>When the property sheet is first displayed, it will be pre-populated
+with those test executables that have been linked using the Build/Tests
+operation against the current configuration. </P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN1603"><P
+><B
+>Figure 22-2. Run tests </B
+></P
+><P
+><IMG
+SRC="pix/run-tests.png"></P
+></DIV
+><P
+>You can right-click in the window to display a context menu
+containing <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Add</I
+></SPAN
+> and <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Remove</I
+></SPAN
+> items.
+Clicking <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Remove</I
+></SPAN
+>  will remove those executables
+selected. Clicking <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Add</I
+></SPAN
+> will display a dialog
+box that allows you to add to the set of items. Equivalently the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Add</I
+></SPAN
+> button
+may be used to add executables, and the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>DEL</I
+></SPAN
+> key
+may be used to remove them.</P
+><P
+>You can use the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Add from Folder</I
+></SPAN
+> button
+to add a number of executables in a specified folder (optionally
+including subfolders, if you click on <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Yes</I
+></SPAN
+> when
+asked).</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN1616"><P
+><B
+>Figure 22-3. Add files from folder </B
+></P
+><P
+><IMG
+SRC="pix/addfromfolder.png"></P
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN1619">Output Tab</H2
+><P
+>This tab is used to display the output from running tests.
+The output can be saved to a file or cleared by means of the popup
+menu displayed when you right-click in the window.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN1622">Summary Tab</H2
+><P
+>This tab is used to display a record, in summary form, of
+those tests executed. For each execution, the following information
+is displayed:</P
+><P
+></P
+><UL
+><LI
+><P
+>			<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Time</I
+></SPAN
+> - the date and time of execution</P
+></LI
+><LI
+><P
+>			<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Host</I
+></SPAN
+> - the host name of the machine
+from which the test was downloaded</P
+></LI
+><LI
+><P
+>			<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Platform</I
+></SPAN
+> - the platform on which
+the test was executed</P
+></LI
+><LI
+><P
+>			<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Executable</I
+></SPAN
+> - the executable (file
+name) of the test executed</P
+></LI
+><LI
+><P
+>			<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Status</I
+></SPAN
+> - the result of executing
+the test. This will be one of the following:</P
+></LI
+><LI
+><P
+>				Not started</P
+></LI
+><LI
+><P
+>No result</P
+></LI
+><LI
+><P
+>Inapplicable</P
+></LI
+><LI
+><P
+>				Pass</P
+></LI
+><LI
+><P
+>DTimeout</P
+></LI
+><LI
+><P
+>Timeout</P
+></LI
+><LI
+><P
+>Cancelled</P
+></LI
+><LI
+><P
+>				Fail</P
+></LI
+><LI
+><P
+>Assert fail</P
+></LI
+><LI
+><P
+>			<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Size</I
+></SPAN
+> - the size &#0091;stripped/unstripped&#0093; of
+the test executed</P
+></LI
+><LI
+><P
+>			<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Download</I
+></SPAN
+> - the download time &#0091;mm:ss/mm:ss&#0093; used.
+The first of the two times displayed represents the actual time
+used: the second the limit time.</P
+></LI
+><LI
+><P
+>			<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Elapsed</I
+></SPAN
+> - the elapsed time &#0091;mm:ss&#0093; used.</P
+></LI
+><LI
+><P
+>			<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Execution</I
+></SPAN
+> - the execution time
+ &#0091;mm:ss/mm:ss&#0093; used. The first of the
+two times displayed represents the actual time used: the second
+the limit time.</P
+></LI
+></UL
+><P
+>The output can be saved to a file or cleared by means of the
+popup menu displayed when you right-click in the window.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="config-tool-selecting-user-tools.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="config-tool-creating-a-shell.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Selecting User Tools</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="the-ecos-configuration-tool.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Creating a Shell</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,3127 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Values and Expressions</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="The CDL Language"
+HREF="language.html"><LINK
+REL="PREVIOUS"
+TITLE="An Introduction to Tcl"
+HREF="language.tcl.html"><LINK
+REL="NEXT"
+TITLE="Interfaces"
+HREF="language.interface.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.tcl.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. The CDL Language</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.interface.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="LANGUAGE.VALUES">Values and Expressions</H1
+><P
+>It is fairly reasonable to expect that enabling or disabling a
+configuration option such as
+<TT
+CLASS="VARNAME"
+>CYGVAR_KERNEL_THREADS_DATA</TT
+> in some way affects its
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>value</I
+></SPAN
+>. This will have an effect on any
+expressions that reference this option such as
+<TT
+CLASS="LITERAL"
+>requires&nbsp;CYGVAR_KERNEL_THREADS_DATA</TT
+>. It will
+also affect the consequences of that option: how it affects the build
+process and what happens to any constraints that
+<TT
+CLASS="VARNAME"
+>CYGVAR_KERNEL_THREADS_DATA</TT
+> may impose (as opposed
+to constraints on this option imposed by others).</P
+><P
+>In a language like C the handling of variables is relatively
+straightforward. If a variable <TT
+CLASS="VARNAME"
+>x</TT
+> gets referenced in
+an expression such as <TT
+CLASS="LITERAL"
+>if&nbsp;(x&nbsp;!=&nbsp;0)</TT
+>,
+and that variable is not defined anywhere, then the code will fail to
+build, typically with an unresolved error at link-time. Also in C
+a variable <TT
+CLASS="VARNAME"
+>x</TT
+> does not live in any hierarchy, so its
+value for the purposes of expression evaluation is not affected by
+anything else. C variables also have a clear type such as
+<TT
+CLASS="LITERAL"
+>int</TT
+> or <TT
+CLASS="LITERAL"
+>long&nbsp;double</TT
+>. </P
+><P
+>In <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> things are not so straightforward.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LANGUAGE.VALUES.VALUE">Option Values</H2
+><P
+>There are four factors which go into an option's value:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>An option may or may not be loaded.</P
+></LI
+><LI
+><P
+>If the option is loaded, it may or may not be active.</P
+></LI
+><LI
+><P
+>Even if the option is active, it may or may not be enabled.</P
+></LI
+><LI
+><P
+>If the option is loaded, active and enabled then it will have some
+associated data which constitutes its value.</P
+></LI
+></OL
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="LANGUAGE.VALUES.VALUE.LOADED">Is the Option Loaded?</H3
+><P
+>At any one time a configuration will contain only a subset of all
+possible packages. In fact it is impossible to combine certain
+packages in a single configuration. For example architectural HAL
+packages should contain a set of options defining endianness, the
+sizes of basic data types and so on (many of which will of course be
+constant for any given architecture). Any attempt to load two
+architectural HAL packages into a configuration will fail because of
+the resulting name clash. Since <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> expressions can reference
+options in other packages, and often need to do so, it is essential to
+define the resulting behavior.</P
+><P
+>One complication is that the component framework does not know about
+every single option in every single package. Obviously it cannot know
+about packages from arbitrary third parties which have not been
+installed. Even for packages which have been installed, the current
+repository database does not hold details of every option, only of the
+packages themselves. If a <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> expression contains a reference to
+some option <TT
+CLASS="VARNAME"
+>CYGSEM_KERNEL_SCHED_TIMESLICE</TT
+> then the
+component framework will only know about this option if the kernel
+package is actually loaded into the current configuration. If the
+package is not loaded then theoretically the framework might guess
+that the option is somehow related to the kernel by examining the
+option name but this would not be robust: the option could easily be
+part of some other package that violates the naming convention.</P
+><P
+>Assume that the user is building a minimal configuration which does
+not contain the kernel package, but does have other packages which
+contain the following constraints:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    requires CYGPKG_KERNEL
+    requires CYGPKG_KERNEL_THREADS_DATA
+    requires !CYGSEM_KERNEL_SCHED_TIMESLICE</PRE
+></TD
+></TR
+></TABLE
+><P
+>Clearly the first constraint is not satisfied because the kernel is
+not loaded. The second constraint is also not satisfied. The third
+constraint is trivially satisfied: if there is no kernel then the
+kernel's timeslicing support cannot possibly be enabled. </P
+><P
+>Any options which are not in the current configuration are handled as
+follows: </P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Any references to that option will evaluate to <TT
+CLASS="LITERAL"
+>0</TT
+>,
+so <TT
+CLASS="LITERAL"
+>requires&nbsp;!CYGSEM_KERNEL_SCHED_TIMESLICE</TT
+> will
+be satisfied but
+<TT
+CLASS="LITERAL"
+>requires&nbsp;CYGSEM_KERNEL_THREADS_DATA</TT
+> will not
+be satisfied.</P
+></LI
+><LI
+><P
+>An option that is not loaded has no consequences on the build process.
+It cannot directly result in any <TT
+CLASS="LITERAL"
+>#define's</TT
+> in a
+configuration header file, nor in any files being compiled. This is
+only reasonable: if the option is not loaded then the component
+framework has no way of knowing about any <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> or similar
+properties. An option that is not loaded can have indirect
+consequences by being referenced in <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> expressions.</P
+></LI
+><LI
+><P
+>An option that is not loaded cannot impose any constraints on the rest
+of the configuration. Again this is the only reasonable behavior: if
+the option is not loaded then any associated <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> or
+<SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> properties will not be known.</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="LANGUAGE.VALUES.VALUE.ACTIVE">Is the Option Active</H3
+><P
+>The next issue to consider is whether or not a particular option is
+active. Configuration options are organized in a hierarchy of
+components and sub-components. For example the C library package
+contains a component <TT
+CLASS="VARNAME"
+>CYGPKG_LIBC_STDIO</TT
+> containing
+all the options related to standard I/O. If a user disables the
+component as a whole then all the options below it become inactive: it
+makes no sense to disable all stdio functionality and then manipulate
+the buffer sizes.</P
+><P
+>Inactive is not quite the same as disabled, although the effects are
+similar. The value of an inactive option is preserved. If the user
+modifies a buffer size option, then disables the whole stdio
+component, the buffer size value remains in case the stdio component
+is re-enabled later on. Some tools such as the graphical configuration
+tool will treat inactive options specially, for example such options
+may be grayed out.</P
+><P
+>The active or inactive state of an option may affect other packages.
+For example a package may use the <TT
+CLASS="FUNCTION"
+>sprintf</TT
+>
+function and require support for floating point conversions, a
+constraint that is not satisfied if the relevant option is inactive.
+It is necessary to define exactly what it means for an option to be
+inactive:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>An option is inactive if its parent is either inactive or disabled.
+For example if <TT
+CLASS="VARNAME"
+>CYGPKG_LIBC_STDIO</TT
+> is disabled then
+all the options and sub-components become inactive; since
+<TT
+CLASS="VARNAME"
+>CYGPKG_LIBC_STDIO_FLOATING_POINT</TT
+> is now inactive,
+<TT
+CLASS="VARNAME"
+>CYGSEM_LIBC_STDIO_PRINTF_FLOATING_POINT</TT
+> is inactive
+as well.</P
+></LI
+><LI
+><P
+>Options may also be inactive as a result of an <SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+> property.
+This is useful if a particular option is only relevant if two or more
+disjoint sets of conditions need to be satisfied, since the
+hierarchical structure can only cope with at most one such set.</P
+></LI
+><LI
+><P
+>If an option is inactive then any references to that option in <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+>
+expressions will evaluate to <TT
+CLASS="LITERAL"
+>0</TT
+>. Hence a constraint
+of the form
+<TT
+CLASS="LITERAL"
+>requires&nbsp;CYGSEM_LIBC_STDIO_PRINTF_FLOATING_POINT</TT
+>
+is not satisfied if the entire stdio component is disabled.</P
+></LI
+><LI
+><P
+>An option that is inactive has no consequences on the build process.
+No <TT
+CLASS="LITERAL"
+>#define</TT
+> will be generated. Any <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> or
+similar properties will be ignored.</P
+></LI
+><LI
+><P
+>An option that is inactive cannot impose any constraints on the rest
+of the configuration. For example
+<TT
+CLASS="VARNAME"
+>CYGSEM_LIBC_STDIO_PRINTF_FLOATING_POINT</TT
+> has a
+dependency <TT
+CLASS="LITERAL"
+>requires&nbsp;CYGPKG_LIBM</TT
+>, but if all of
+the stdio functionality is disabled then this constraint is ignored
+(although of course there may be other packages which have a
+dependency on <TT
+CLASS="VARNAME"
+>CYGPKG_LIBM</TT
+>.</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="LANGUAGE.VALUES.VALUE.ENABLED">Is the Option Enabled? What is the Data?</H3
+><P
+>The majority of configuration options are boolean in nature, so the
+user can either enable or disable some functionality. Some options are
+different. For example <TT
+CLASS="VARNAME"
+>CYGNUM_LIBC_STDIO_BUFSIZE</TT
+> is
+a number, and <TT
+CLASS="VARNAME"
+>CYGDAT_LIBC_STDIO_DEFAULT_CONSOLE</TT
+> is
+a string corresponding to a device name. A few options like
+<TT
+CLASS="VARNAME"
+>CYGDAT_UITRON_TASK_EXTERNS</TT
+> can get very
+complicated. <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> has to cope with this variety, and define the exact
+behavior of the system in terms of constraints and build-time
+consequences. </P
+><P
+>In <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> the value of an option consists of two parts. There is a
+boolean part, controlling whether or not the option is enabled. There
+is also a data part, providing additional information. For most
+options one of these parts is fixed, as controlled by the option's
+<SPAN
+CLASS="PROPERTY"
+>flavor</SPAN
+> property:</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1413"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Flavor</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Enabled</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Data</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>none</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Always enabled</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>1</TT
+>, not modifiable</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>bool</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>User-modifiable</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>1</TT
+>, not modifiable</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>data</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Always enabled</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>User-modifiable</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>booldata</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>User-modifiable</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>User-modifiable</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+><P
+>The effects of the boolean and data parts are as follows:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>If an option is disabled, in other words if the boolean part is false,
+then any references to that option in <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> expressions will evaluate
+to <TT
+CLASS="LITERAL"
+>0</TT
+>. This is the same behavior as for inactive
+options. The data part is not relevant. The <TT
+CLASS="LITERAL"
+>none</TT
+>
+and <TT
+CLASS="LITERAL"
+>data</TT
+> flavors specify that the option is always
+enabled, in which case this rule is not applicable.</P
+></LI
+><LI
+><P
+>If an option is enabled then any references to that option in <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+>
+expressions will evaluate to the option's data part. For two of the
+flavors, <TT
+CLASS="LITERAL"
+>none</TT
+> and <TT
+CLASS="LITERAL"
+>bool</TT
+>, this
+data part is fixed to the constant <TT
+CLASS="LITERAL"
+>1</TT
+> which
+generally has the expected result.</P
+></LI
+><LI
+><P
+>If a component or package is disabled then all sub-components and
+options immediately below it in the hierarchy are inactive. By a
+process of recursion this will affect all the nodes in the subtree.</P
+></LI
+><LI
+><P
+>If an option is disabled then it can impose no constraints on the rest
+of the configuration, in particular <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> and <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+>
+properties will be ignored. If an option is enabled then its
+constraints should be satisfied, or the component framework will
+report various conflicts. Note that the <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> constraint only
+applies to the data part of the option's value, so it is only useful
+with the <TT
+CLASS="LITERAL"
+>data</TT
+> and <TT
+CLASS="LITERAL"
+>booldata</TT
+>
+flavors. Options with the <TT
+CLASS="LITERAL"
+>none</TT
+> and
+<TT
+CLASS="LITERAL"
+>data</TT
+> flavors are always enabled so their
+constraints always have to be satisfied (assuming the option is
+active). </P
+></LI
+><LI
+><P
+>If an option is disabled then it has no direct consequences at
+build-time: no <TT
+CLASS="LITERAL"
+>#define</TT
+> will be generated, no files
+will get compiled, and so on. If an option is active and enabled then
+all the consequences take effect. The option name and data part are
+used to generate the <TT
+CLASS="LITERAL"
+>#define</TT
+> in the appropriate
+configuration header file, subject to various properties such as
+<SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+>, but the data part has no other effects on the build
+system. </P
+></LI
+></OL
+><P
+>By default all options and components have the <TT
+CLASS="LITERAL"
+>bool</TT
+>
+flavor: most options are boolean in nature, so making this the default
+allows for slightly more compact <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> scripts. Packages have the
+<TT
+CLASS="LITERAL"
+>booldata</TT
+> flavor, where the data part always
+corresponds to the version of the package that is loaded into the
+configuration: changing this value corresponds to unloading the old
+version and loading in a different one.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+><SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> Flavors: </B
+>The concept of <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> flavors tends to result in various discussions
+about why it is unnecessarily complicated, and would it not have been
+easier to do&nbsp;&#8230; However there are very good reasons why CDL
+works the way it does.</P
+><P
+>The first common suggestion is that there is no need to have separate
+flavors <TT
+CLASS="LITERAL"
+>bool</TT
+>, <TT
+CLASS="LITERAL"
+>data</TT
+>, and so on. A
+boolean option could just be handled as a data option with legal
+values <TT
+CLASS="LITERAL"
+>0</TT
+> and <TT
+CLASS="LITERAL"
+>1</TT
+>. The counter
+arguments are as follows:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>It would actually make <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> scripts more verbose. By default all
+options and components have the <TT
+CLASS="LITERAL"
+>bool</TT
+> flavor, since
+most options are boolean in nature. Without a <TT
+CLASS="LITERAL"
+>bool</TT
+>
+flavor it would be necessary to indicate explicitly what the legal
+values are somehow, e.g. with a <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> property.</P
+></LI
+><LI
+><P
+>The boolean part of an option's value has a very different effect from
+the data part. If an option is disabled then it has no consequences at
+build time, and can impose no constraints. A <TT
+CLASS="LITERAL"
+>data</TT
+>
+option always has consequences and can impose constraints. To get the
+desired effect it would be necessary to add <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> data indicating that
+a value of <TT
+CLASS="LITERAL"
+>0</TT
+> should be treated specially. Arguably
+this could be made built-in default behavior, although that would
+complicate options where <TT
+CLASS="LITERAL"
+>0</TT
+> is a perfectly legal
+number, for example
+<TT
+CLASS="VARNAME"
+>CYGNUM_LIBC_TIME_STD_DEFAULT_OFFSET</TT
+>. </P
+></LI
+><LI
+><P
+>There would no replacement for a <TT
+CLASS="LITERAL"
+>booldata</TT
+> option
+for which <TT
+CLASS="LITERAL"
+>0</TT
+> is a valid value. Again some additional
+<SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> syntax would be needed to express such a concept.</P
+></LI
+></OL
+><P
+>Although initially it may seem confusing that an option's value has
+both a boolean and a data part, it is an accurate reflection of how
+configuration options actually work. The various alternatives would
+all make it harder to write <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> scripts.</P
+><P
+>The next common suggestion is that the data part of a value should be
+typed in much the same way as C or C++ data types. For example it
+should be possible to describe
+<TT
+CLASS="VARNAME"
+>CYGNUM_LIBC_STDIO_BUFSIZE</TT
+> as an integer value,
+rather than imposing <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> constraints. Again there are very
+good reasons why this approach was not taken:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>The possible legal values for an integer are rarely correct for a
+<SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> option. A constraint such as
+<TT
+CLASS="LITERAL"
+>1&nbsp;to&nbsp;0x7fffffff</TT
+> is a bit more accurate,
+although if this option indicates a buffer size it is still not
+particularly good&nbsp;&#8212; very few targets will have enough
+memory for such a buffer. Forcing <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> writers to list the
+<SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> constraints explicitly should make them think a bit
+more about what values are actually sensible. For example
+<TT
+CLASS="VARNAME"
+>CYGNUM_LIBC_TIME_DST_DEFAULT_OFFSET</TT
+> has legal
+values in the range <TT
+CLASS="LITERAL"
+>-90000&nbsp;to&nbsp;90000</TT
+>,
+which helps the user to set a sensible value.</P
+></LI
+><LI
+><P
+>Not all options correspond to simple data types such as integers.
+<TT
+CLASS="VARNAME"
+>CYGDAT_LIBC_STDIO_DEFAULT_CONSOLE</TT
+> is a C string,
+and would have to be expressed using something like
+<TT
+CLASS="LITERAL"
+>char&nbsp;[]</TT
+>. This introduces plenty of
+opportunities for confusion, especially since square brackets may get
+processed by the <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> interpreter for command substitution.</P
+></LI
+><LI
+><P
+>Some configuration options can get very complicated indeed, for
+example the default value of
+<TT
+CLASS="VARNAME"
+>CYGDAT_UITRON_TASK_INITIALIZERS</TT
+> is:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>CYG_UIT_TASK( "t1", 1, task1, &amp;stack1, CYGNUM_UITRON_STACK_SIZE ), \
+CYG_UIT_TASK( "t2", 2, task2, &amp;stack2, CYGNUM_UITRON_STACK_SIZE ), \ 
+CYG_UIT_TASK( "t3", 3, task3, &amp;stack3, CYGNUM_UITRON_STACK_SIZE ), \
+CYG_UIT_TASK( "t4", 4, task4, &amp;stack4, CYGNUM_UITRON_STACK_SIZE )</PRE
+></TD
+></TR
+></TABLE
+><P
+>This would require <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> knowing about C macros, structures, arrays,
+static initializers, and so on. Adding such detailed knowledge about
+the C language to the component framework is inappropriate.</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> needs to be usable with languages other than C. At present this
+includes C++, in future it may include languages such as Java. Each
+language adds new data types and related complications, for example
+C++ classes and inheritance. Making <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> support a union of all data
+types in all possible languages is not sensible.</P
+></LI
+></OL
+><P
+>The <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> approach of treating all data as a sequence of characters,
+possibly constrained by a <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> property or other means, has
+the great advantage of simplicity. It also fits in with the <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+>
+language that underlies <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+>.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="LANGUAGE.VALUES.VALUE.EXAMPLES">Some Examples</H3
+><P
+>The following excerpt from the C library's <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> scripts can be used
+to illustrate how values and flavors work in practice:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_component CYGPKG_LIBC_RAND {
+    flavor        none
+    compile       stdlib/rand.cxx
+
+    cdl_option CYGSEM_LIBC_PER_THREAD_RAND {
+        requires      CYGVAR_KERNEL_THREADS_DATA
+        default_value 0
+    }
+
+    cdl_option CYGNUM_LIBC_RAND_SEED {
+        flavor        data
+        legal_values  0 to 0x7fffffff
+        default_value 1
+    }
+
+    cdl_option CYGNUM_LIBC_RAND_TRACE_LEVEL {
+        flavor        data
+        legal_values  0 to 1
+        default_value 0
+    }
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>If the application does not require any C library functionality then
+it is possible to have a configuration where the C library is not
+loaded. This can be achieved by starting with the minimal template, or
+by starting with another template such as the default one and then
+explicitly unloading the C library package. If this package is not
+loaded then any references to the <TT
+CLASS="VARNAME"
+>CYGPKG_LIBC_RAND</TT
+>
+component or any of its options will have a value of
+<TT
+CLASS="LITERAL"
+>0</TT
+> for the purposes of expression evaluation. No
+<TT
+CLASS="LITERAL"
+>#define's</TT
+> will be generated for the component or
+any of its options, and the file <TT
+CLASS="FILENAME"
+>stdlib/rand.cxx</TT
+>
+will not get compiled. There is nothing special about the C library
+here, exactly the same would apply for say a device driver that does
+not correspond to any of the devices on the target hardware.</P
+><P
+>Assuming the C library is loaded, the next thing to consider is
+whether or not the component and its options are active. The component
+is layered immediately below the C library package itself, so if the
+package is loaded then it is safe to assume that the package is also
+enabled. Therefore the parent of <TT
+CLASS="VARNAME"
+>CYGPKG_LIBC_RAND</TT
+>
+is active and enabled, and in the absence of any <SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+>
+properties <TT
+CLASS="VARNAME"
+>CYGPKG_LIBC_RAND</TT
+> will be active as well.</P
+><P
+>The component <TT
+CLASS="VARNAME"
+>CYGPKG_LIBC_RAND</TT
+> has the flavor
+<TT
+CLASS="LITERAL"
+>none</TT
+>. This means the component cannot be disabled.
+Therefore all the options in this component have an active and enabled
+parent, and in the absence of any <SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+> properties they are all
+active as well.</P
+><P
+>The component's flavor <TT
+CLASS="LITERAL"
+>none</TT
+> serves to group
+together all of the configuration options related to random number
+generation. This is particularly useful in the context of the
+graphical configuration tool, but it also helps when it comes to
+naming the options: all of the options begin with
+<TT
+CLASS="LITERAL"
+>CYGxxx_LIBC_RAND</TT
+>, giving a clear hint about both
+the package and the component within that package. The flavor means
+that the component is always enabled and has the value
+<TT
+CLASS="LITERAL"
+>1</TT
+> for the purposes of expression evaluation. There
+will always be a single <TT
+CLASS="LITERAL"
+>#define</TT
+> of the form:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYGPKG_LIBC_RAND 1</PRE
+></TD
+></TR
+></TABLE
+><P
+>In addition the file <TT
+CLASS="FILENAME"
+>stdlib/rand.cxx</TT
+> will always
+get built. If the component had the default <TT
+CLASS="LITERAL"
+>bool</TT
+>
+flavor then users would be able to disable the whole component,
+and one less file would need to be built. However random number
+generation is relatively simple, so the impact on eCos build times are
+small. Furthermore by default the code has no dependencies on other
+parts of the system, so compiling the code has no unexpected side
+effects. Even if it was possible to disable the component, the
+sensible default for most applications would still leave it enabled.
+The net result is that the flavor <TT
+CLASS="LITERAL"
+>none</TT
+> is probably
+the most sensible one for this component. For other components the
+default <TT
+CLASS="LITERAL"
+>bool</TT
+> flavor or one of the other flavors
+might be more appropriate.</P
+><P
+>Next consider option <TT
+CLASS="VARNAME"
+>CYGSEM_LIBC_PER_THREAD_RAND</TT
+>
+which can be used to get a per-thread random number seed, possibly
+useful if the application needs a consistent sequence of random
+numbers. In the absence of a <SPAN
+CLASS="PROPERTY"
+>flavor</SPAN
+> property this option will be
+boolean, and the <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+> property means that it is disabled by
+default&nbsp;&#8212; reasonable since few applications need this
+particular functionality, and it does impose a constraint on the rest
+of the system. If the option is left disabled then no
+<TT
+CLASS="LITERAL"
+>#define</TT
+> will be generated, and if there were any
+<SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> or similar properties these would not take effect. If the
+option is enabled then a <TT
+CLASS="LITERAL"
+>#define</TT
+> will be generated,
+using the option's data part which is fixed at <TT
+CLASS="LITERAL"
+>1</TT
+>:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYGSEM_LIBC_PER_THREAD_RAND 1</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <TT
+CLASS="VARNAME"
+>CYGSEM_LIBC_PER_THREAD_RAND</TT
+> option has a
+<SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> constraint on
+<TT
+CLASS="VARNAME"
+>CYGVAR_KERNEL_THREADS_DATA</TT
+>. If the C library option
+is enabled then the constraint should be satisfied, or else the
+configuration contains a conflict. If the configuration does not
+include the kernel package then
+<TT
+CLASS="VARNAME"
+>CYGVAR_KERNEL_THREADS_DATA</TT
+> will evaluate to
+<TT
+CLASS="LITERAL"
+>0</TT
+> and the constraint is not satisfied. Similarly if
+the option is inactive or disabled the constraint will not be
+satisfied.</P
+><P
+><TT
+CLASS="VARNAME"
+>CYGNUM_LIBC_RAND_SEED</TT
+> and
+<TT
+CLASS="VARNAME"
+>CYGNUM_LIBC_RAND_TRACE_LEVEL</TT
+> both have the
+<TT
+CLASS="LITERAL"
+>data</TT
+> flavor, so they are always enabled and the
+component framework will generate appropriate
+<TT
+CLASS="LITERAL"
+>#define's</TT
+>:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYGNUM_LIBC_RAND_SEED 1
+#define CYGNUM_LIBC_RAND_SEED_1
+#define CYGNUM_LIBC_RAND_TRACE_LEVEL 0
+#define CYGNUM_LIBC_RAND_TRACE_LEVEL_0</PRE
+></TD
+></TR
+></TABLE
+><P
+>Neither option has a <SPAN
+CLASS="PROPERTY"
+>compile</SPAN
+> or similar property, but any such
+properties would take effect. Any references to these options in <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+>
+expressions would evaluate to the data part, so a hypothetical
+constraint of the form
+<TT
+CLASS="LITERAL"
+>{&nbsp;requires&nbsp;CYGNUM_LIBC_RAND_SEED&nbsp;&gt;&nbsp;42&nbsp;}</TT
+>
+would not be satisfied with the default values. Both options use a
+simple constant for the <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+> expression. It would be
+possible to use a more complicated expression, for example the default
+for <TT
+CLASS="VARNAME"
+>CYGNUM_LIBC_RAND_TRACE_LEVEL</TT
+> could be
+determined from some global debugging option or from a debugging
+option that applies to the C library as a whole. Both options also
+have a <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> constraint, which must be satisfied since the
+options are active and enabled. </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>The value <TT
+CLASS="LITERAL"
+>0</TT
+> is legal for both
+<TT
+CLASS="VARNAME"
+>CYGNUM_LIBC_RAND_SEED</TT
+> and
+<TT
+CLASS="VARNAME"
+>CYGNUM_LIBC_RAND_TRACE_LEVEL</TT
+>, so in a <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+>
+expression there is no easy way of distinguishing between the options
+being absent or having that particular value. This will be addressed
+by future enhancements to the expression syntax.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LANGUAGE.EXPRESSION">Ordinary Expressions</H2
+><P
+>Expressions in <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> follow a conventional syntax, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    default_value CYGGLO_CODESIZE &gt; CYGGLO_SPEED
+    default_value { (CYG_HAL_STARTUP == "RAM" &#38;&#38;
+                     !CYGDBG_HAL_DEBUG_GDB_INCLUDE_STUBS &#38;&#38;
+                     !CYGINT_HAL_USE_ROM_MONITOR_UNSUPPORTED &#38;&#38;
+                     !CYGSEM_HAL_POWERPC_COPY_VECTORS) ? 1 : 0 }
+    default_value { "\"/dev/ser0\"" }</PRE
+></TD
+></TR
+></TABLE
+><P
+>However there is a complication in that the various arguments to a
+<SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+> property will first get processed by a <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+>
+interpreter, so special characters like quotes and square brackets may
+get processed. Such problems can be avoided by enclosing non-trivial
+expressions in braces, as in the second example above. The way
+expression parsing actually works is as follows:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>The <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> interpreter splits the line or lines into a command and its
+arguments. In the first <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+> expression above the command
+is <TT
+CLASS="LITERAL"
+>default_value</TT
+> and there are three arguments,
+<TT
+CLASS="LITERAL"
+>CYGGLO_CODESIZE</TT
+>, <TT
+CLASS="LITERAL"
+>&gt;</TT
+> and
+<TT
+CLASS="LITERAL"
+>CYGGLO_SPEED</TT
+>. In the second and third examples
+there is just one argument, courtesy of the braces.</P
+></LI
+><LI
+><P
+>Next option processing takes place, so any initial arguments that
+begin with a hyphen will be interpreted as options. This can cause
+problems if the expression involves a negative number, so the
+special argument <TT
+CLASS="LITERAL"
+>--</TT
+> can be used to prevent option
+processing on the subsequent arguments.</P
+></LI
+><LI
+><P
+>All of the arguments are now concatenated, with a single space in
+between each one. Hence the following two expressions are equivalent,
+even though they will have been processed differently up to this point.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    default_value CYGGLO_CODESIZE &gt; CYGGLO_SPEED
+    default_value {CYGGLO_CODESIZE &gt; CYGGLO_SPEED}</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>The expression parsing code now has a single string to process.</P
+></LI
+></OL
+><P
+><SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> expressions consist of four types of element: references to
+configuration options, constant strings, integers, and floating point
+numbers. These are combined using a conventional set of operators: the
+unary operators <TT
+CLASS="LITERAL"
+>-</TT
+>, <TT
+CLASS="LITERAL"
+>~</TT
+> and
+<TT
+CLASS="LITERAL"
+>!</TT
+>; the arithmetic operators <TT
+CLASS="LITERAL"
+>+</TT
+>,
+<TT
+CLASS="LITERAL"
+>-</TT
+>, <TT
+CLASS="LITERAL"
+>*</TT
+>, <TT
+CLASS="LITERAL"
+>/</TT
+> and
+<TT
+CLASS="LITERAL"
+>%</TT
+>; the shift operators <TT
+CLASS="LITERAL"
+>&lt;&lt;</TT
+>
+and <TT
+CLASS="LITERAL"
+>&gt;&gt;</TT
+>; the comparison operators
+<TT
+CLASS="LITERAL"
+>==</TT
+>, <TT
+CLASS="LITERAL"
+>!=</TT
+>, <TT
+CLASS="LITERAL"
+>&lt;</TT
+>,
+<TT
+CLASS="LITERAL"
+>&lt;=</TT
+>, <TT
+CLASS="LITERAL"
+>&gt;</TT
+> and
+<TT
+CLASS="LITERAL"
+>&gt;=</TT
+>; the bitwise operators
+<TT
+CLASS="LITERAL"
+>&amp;</TT
+>, <TT
+CLASS="LITERAL"
+>^</TT
+> and
+<TT
+CLASS="LITERAL"
+>|</TT
+>; the logical operators <TT
+CLASS="LITERAL"
+>&#38;&#38;</TT
+> and
+<TT
+CLASS="LITERAL"
+>||</TT
+>; the string concatenation operator
+<TT
+CLASS="LITERAL"
+>.</TT
+>; and the ternary conditional operator
+<TT
+CLASS="LITERAL"
+>A&nbsp;?&nbsp;B&nbsp;:&nbsp;C</TT
+>. There is also support for
+some less widely available operators for logical equivalence and
+implication, and for a set of function-style operations. Bracketed
+sub-expressions are supported, and the operators have the usual
+precedence:</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1653"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>Priority</TH
+><TH
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>Operators</TH
+><TH
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>Category</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>16</TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>references, constants</TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>basic elements</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>15</TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>f(a, b, c)</TT
+></TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>function calls</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>14</TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>~</TT
+></TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>bitwise not</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>14</TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>!</TT
+></TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>logical not</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>14</TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>-</TT
+></TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>arithmetic negation</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>13</TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>* / %</TT
+></TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>multiplicative arithmetic</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>12</TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>+ - .</TT
+></TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>additive arithmetic and string concatenation</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>11</TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>&lt;&lt; &gt;&gt;</TT
+></TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>bitwise shifts</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>10</TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>&lt;= &lt; &gt; &gt;=</TT
+></TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>inequality</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>9</TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>== !=</TT
+></TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>comparison</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>8</TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>&#38;</TT
+></TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>bitwise and</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>7</TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>^</TT
+></TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>bitwise xor</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>6</TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>|</TT
+></TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>bitwise or</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>5</TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>&#38;&#38;</TT
+></TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>logical and</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>4</TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>||</TT
+></TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>logical or</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>3</TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>xor, eqv</TT
+></TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>logical equivalance</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>2</TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>implies</TT
+></TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>logical implication</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>1</TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>? :</TT
+></TD
+><TD
+WIDTH="33%"
+ALIGN="CENTER"
+VALIGN="TOP"
+>conditional</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+><P
+>Function calls have the usual format of a name, an opening bracket,
+one or more arguments separated by commas, and a closing bracket. For
+example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    requires { !is_substr(CYGBLD_GLOBAL_CFLAGS, " -fno-rtti") }</PRE
+></TD
+></TR
+></TABLE
+><P
+>Functions will differ in the number of arguments and may impose
+restrictions on some or all of their arguments. For example it may be
+necessary for the first argument to be a reference to a configuration
+option. The available functions are described in <A
+HREF="language.values.html#LANGUAGE.FUNCTIONS"
+>the Section called <I
+>Functions</I
+></A
+>. </P
+><P
+>The logical <TT
+CLASS="LITERAL"
+>xor</TT
+> operator evaluates to true if
+either the left hand side or the right hand side but not both evaluate
+to true The logical <TT
+CLASS="LITERAL"
+>eqv</TT
+> operator evaluates to true
+if both the left and right hand sides evaluate to true, or if both
+evaluate to false. The <TT
+CLASS="LITERAL"
+>implies</TT
+> operator evaluates
+to true either if the left hand side is false or if the right hand
+side is true, in other words <TT
+CLASS="LITERAL"
+>A&nbsp;implies&nbsp;B</TT
+>
+has the same meaning as <TT
+CLASS="LITERAL"
+>!A&nbsp;||&nbsp;B</TT
+>. An
+example use would be:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    requires { is_active(CYGNUM_LIBC_MAIN_DEFAULT_STACK_SIZE) implies
+                   (CYGNUM_LIBC_MAIN_DEFAULT_STACK_SIZE &#62;= (16 * 1024)) }</PRE
+></TD
+></TR
+></TABLE
+><P
+>This constraint would be satisfied if either the support for a main
+stack size is disabled, or if that stack is at least 16K. However if
+such a stack were in use but was too small, a conflict would be raised.</P
+><P
+>A valid <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> identifier in an expression, for example
+<TT
+CLASS="VARNAME"
+>CYGGLO_SPEED</TT
+>, will be interpreted as a reference to
+a configuration option by that name. The option does not have to be
+loaded into the current configuration. When the component framework
+evaluates the expression it will substitute in a suitable value that
+depends on whether or not the option is loaded, active, and enabled.
+The exact rules are described in <A
+HREF="language.values.html#LANGUAGE.VALUES.VALUE"
+>the Section called <I
+>Option Values</I
+></A
+>.</P
+><P
+>A constant string is any sequence of characters enclosed in quotes.
+Care has to be taken that these quotes are not stripped off by the
+<SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> interpreter before the <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> expression parser sees them.
+Consider the following:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    default_value "RAM"</PRE
+></TD
+></TR
+></TABLE
+><P
+>The quote marks will be stripped before the <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> expression parser
+sees the data, so the expression will be interpreted as a reference to
+a configuration option <TT
+CLASS="VARNAME"
+>RAM</TT
+>. There is unlikely to be
+such an option, so the actual default value will be
+<TT
+CLASS="LITERAL"
+>0</TT
+>. Careful use of braces or other <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> quoting
+mechanisms can be used to avoid such problems.</P
+><P
+>		
+String constants consist of the data inside the quotes. If the data
+itself needs to contain quote characters then appropriate quoting is
+again necessary, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    default_value { "\"/dev/ser0\"" }</PRE
+></TD
+></TR
+></TABLE
+><P
+>An integer constant consists of a sequence of digits, optionally
+preceeded with the unary <TT
+CLASS="LITERAL"
+>+</TT
+> or <TT
+CLASS="LITERAL"
+>-</TT
+>
+operators. As usual the sequence <TT
+CLASS="LITERAL"
+>0x</TT
+> or
+<TT
+CLASS="LITERAL"
+>0X</TT
+> can be used for hexadecimal data, and a leading
+<TT
+CLASS="LITERAL"
+>0</TT
+> indicates octal data. Internally the component
+framework uses 64-bit arithmetic for integer data. If a constant is
+too large then double precision arithmetic will be used instead.
+Traditional syntax is also used for double precision numbers, for
+example <TT
+CLASS="LITERAL"
+>3.141592</TT
+> or <TT
+CLASS="LITERAL"
+>-3E6</TT
+>. </P
+><P
+>Of course this is not completely accurate: <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> is not a typed
+language, all data is treated as if it were a string. For example the
+following two lines are equivalent:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    requires CYGNUM_UITRON_SEMAS &#62; 10
+    requires { CYGNUM_UITRON_SEMAS &#62; "10" }</PRE
+></TD
+></TR
+></TABLE
+><P
+>When an expression gets evaluated the operators will attempt
+appropriate conversions. The <TT
+CLASS="LITERAL"
+>&gt;</TT
+> comparison
+operator can be used on either integer or double precision numbers, so
+it will begin by attempting a string to integer conversion of both
+operands. If that fails it will attempt string to double conversions.
+If that fails as well then the component framework will report a
+conflict, an evaluation exception. If the conversions from string to
+integer are successful then the result will be either the string
+<TT
+CLASS="LITERAL"
+>0</TT
+> or the string <TT
+CLASS="LITERAL"
+>1</TT
+>, both of which
+can be converted to integers or doubles as required.</P
+><P
+>It is worth noting that the expression
+<TT
+CLASS="LITERAL"
+>CYGNUM_UITRON_SEMAS&nbsp;&gt;10</TT
+> is not ambiguous.
+<SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> identifiers can never begin with a digit, so it is not possible
+for <TT
+CLASS="LITERAL"
+>10</TT
+> to be misinterpreted as a reference to an
+identifier instead of as a string.</P
+><P
+>Of course the implementation is slightly different again. The <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+>
+language definition is such that all data is treated as if it were a
+string, with conversions to integer, double or boolean as and when
+required. The implementation is allowed to avoid conversions until
+they are necessary. For example, given
+<TT
+CLASS="LITERAL"
+>CYGNUM_UITRON_SEMAS&nbsp;&gt;&nbsp;10</TT
+> the
+expression parsing code will perform an immediate conversion from
+string to integer, storing the integer representation, and there is no
+need for a conversion by the comparison operator when the expression
+gets evaluated. Given
+<TT
+CLASS="LITERAL"
+>{&nbsp;CYGNUM_UITRON_SEMAS&nbsp;&gt;&nbsp;"10"&nbsp;}</TT
+>
+the parsing code will store the string representation and a conversion
+happens the first time the expression is evaluated. All of this is an
+implementation detail, and does not affect the semantics of the
+language. </P
+><P
+>Different operators have different requirements, for example the
+bitwise or operator only makes sense if both operands have an integer
+representation. For operators which can work with either integer or
+double precision numbers, integer arithmetic will be preferred.</P
+><P
+>The following operators only accept integer operands:
+unary <TT
+CLASS="LITERAL"
+>~</TT
+> (bitwise not), the shift operators
+<TT
+CLASS="LITERAL"
+>&lt;&lt;</TT
+> and <TT
+CLASS="LITERAL"
+>&gt;&gt;</TT
+>, and the
+bitwise operators <TT
+CLASS="LITERAL"
+>&#38;</TT
+>, <TT
+CLASS="LITERAL"
+>|</TT
+> and
+<TT
+CLASS="LITERAL"
+>^</TT
+>.</P
+><P
+>The following operators will attempt integer arithmetic first, then
+double precision arithmetic: unary <TT
+CLASS="LITERAL"
+>-</TT
+>,
+the arithmetic operators <TT
+CLASS="LITERAL"
+>+</TT
+>, <TT
+CLASS="LITERAL"
+>-</TT
+>,
+<TT
+CLASS="LITERAL"
+>*</TT
+>, <TT
+CLASS="LITERAL"
+>/</TT
+>, and <TT
+CLASS="LITERAL"
+>%</TT
+>;
+and the comparision operators <TT
+CLASS="LITERAL"
+>&lt;</TT
+>,
+<TT
+CLASS="LITERAL"
+>&lt;=</TT
+>, <TT
+CLASS="LITERAL"
+>&gt;</TT
+> and
+<TT
+CLASS="LITERAL"
+>&gt;=</TT
+>. </P
+><P
+>The equality <TT
+CLASS="LITERAL"
+>==</TT
+> and inequality
+<TT
+CLASS="LITERAL"
+>!=</TT
+> operators will first attempt integer conversion
+and comparison. If that fails then double precision will be attempted
+(although arguably using these operators on double precision data is
+not sensible). As a last resort string comparison will be used.</P
+><P
+>The operators <TT
+CLASS="LITERAL"
+>!</TT
+>, <TT
+CLASS="LITERAL"
+>&#38;&#38;</TT
+> and
+<TT
+CLASS="LITERAL"
+>||</TT
+> all work with boolean data. Any string that can
+be converted to the integer <TT
+CLASS="LITERAL"
+>0</TT
+> or the double
+<TT
+CLASS="LITERAL"
+>0.0</TT
+> is treated as false, as is the empty string or
+the constant string <TT
+CLASS="LITERAL"
+>false</TT
+>. Anything else is
+interpreted as true. The result is either <TT
+CLASS="LITERAL"
+>0</TT
+> or
+<TT
+CLASS="LITERAL"
+>1</TT
+>.</P
+><P
+>The conditional operator <TT
+CLASS="LITERAL"
+>?&nbsp;:</TT
+> will interpret
+its first operand as a boolean. It does not perform any processing on
+the second or third operands.</P
+><P
+>In practice it is rarely necessary to worry about any of these
+details. In nearly every case <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> expressions just work as expected,
+and there is no need to understand the full details.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>The current expression syntax does not meet all the needs of component
+writers. Some future enhancements will definitely be made, others are
+more controversial. The list includes the following:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>An option's value is determined by several different factors: whether
+or not it is loaded, whether or not it is active, whether or not it is
+enabled, and the data part. Currently there is no way of querying
+these individually. This is very significant in the context of options
+with the <TT
+CLASS="LITERAL"
+>bool</TT
+> or <TT
+CLASS="LITERAL"
+>booldata</TT
+>
+flavors, because there is no way of distinguishing between the option
+being absent/inactive/disabled or it being enabled with a data field
+of <TT
+CLASS="LITERAL"
+>0</TT
+>. There should be unary operators that allow
+any of the factors to be checked.</P
+></LI
+><LI
+><P
+>Only the <TT
+CLASS="LITERAL"
+>==</TT
+> and <TT
+CLASS="LITERAL"
+>!=</TT
+> operators can
+be used for string data. More string-related facilities are needed.</P
+></LI
+><LI
+><P
+>An implies operator would be useful for many goal expression, where
+<TT
+CLASS="LITERAL"
+>A&nbsp;implies&nbsp;B</TT
+> is equivalent to
+<TT
+CLASS="LITERAL"
+>!A&nbsp;||B</TT
+>.</P
+></LI
+><LI
+><P
+>Similarly there is inadequate support for lists. On occasion it would
+be useful to write expressions involving say the list of implementors
+of a given CDL interface, for example a sensible default value could
+be the first implementor. Associated with this is a need for an
+indirection operator.</P
+></LI
+><LI
+><P
+>Arguably extending the basic <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> expression syntax with lots of new
+operators is unnecessary, instead expressions should just support
+<SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> command substitution and then component writers could escape
+into <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> scripts for complicated operations. This has some major
+disadvantages. First, the inference engine would no longer have any
+sensible way of interpreting an expression to resolve a conflict.
+Second, the component framework's value propagation code keeps track
+of which options get referenced in which expressions and avoids
+unnecessary re-evaluation of expressions; if expressions can involve
+arbitrary <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> code then there is no simple way to eliminate
+unnecessary recalculations, with a potentially major impact on
+performance.</P
+></LI
+></OL
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>The current implementation of the component framework uses 64 bit
+arithmetic on all host platforms. Although this is adequate for
+current target architectures, it may cause problems in future. At some
+stage it is likely that an arbitrary precision integer arithmetic
+package will be used instead.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LANGUAGE.FUNCTIONS">Functions</H2
+><P
+>CDL expressions can contain calls to a set of built-in functions
+using the usual syntax, for example;</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    requires { !is_substr(CYGBLD_GLOBAL_CFLAGS, "-fno-rtti") }</PRE
+></TD
+></TR
+></TABLE
+><P
+>The available function calls are as follows:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>get_data(option)</TT
+></DT
+><DD
+><P
+>This function can be used to obtain just the data part of a loaded
+configuration option, ignoring other factors such as whether or not
+the option is active and enabled. It takes a single argument which
+should be the name of a configuration option. If the specified option
+is not loaded in the current configuration then the function returns
+0, otherwise it returns the data part. Typically this function will
+only be used in conjunction with <TT
+CLASS="FUNCTION"
+>is_active</TT
+> and
+<TT
+CLASS="FUNCTION"
+>is_enabled</TT
+> for fine-grained control over the
+various factors that make up an option's value.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>is_active(option)</TT
+></DT
+><DD
+><P
+>This function can be used to determine whether or not a particular
+configuration option is active. It takes a single argument which
+should be the name of an option, and returns a boolean. If the
+specified option is not loaded then the function will return false.
+Otherwise it will consider the state of the option's parents and
+evaluate any <SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+> properties, and return the option's current
+active state. A typical use might be:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    requires { is_active(CYGNUM_LIBC_MAIN_DEFAULT_STACK_SIZE) implies
+                   (CYGNUM_LIBC_MAIN_DEFAULT_STACK_SIZE &#62;= (16 * 1024)) }</PRE
+></TD
+></TR
+></TABLE
+><P
+>In other words either the specified configuration option must be
+inactive, for example because the current application does not use
+any related C library or POSIX functionality, or the stack size must
+be at least 16K.</P
+><P
+>The configuration system's inference engine can attempt to satisfy
+constraints involving <TT
+CLASS="FUNCTION"
+>is_active</TT
+> in various
+different ways, for example by enabling or disabling parent
+components, or by examining <SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+> properties and manipulating
+terms in the associated expressions.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>is_enabled(option)</TT
+></DT
+><DD
+><P
+>This function can be used to determine whether or not a particular
+configuration option is enabled. It takes a single argument which
+should be the name of an option, and returns a boolean. If the
+specified option is not loaded then the function will return false.
+Otherwise it will return the current boolean part of the option's
+value. The option's active or inactive state is ignored. Typically
+this function will be used in conjunction with
+<TT
+CLASS="FUNCTION"
+>is_active</TT
+> and possibly
+<TT
+CLASS="FUNCTION"
+>get_data</TT
+> to provide fine-grained control over the
+various factors that make up an option's value.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>is_loaded(option)</TT
+></DT
+><DD
+><P
+>This function can be used to determine whether or not a particular
+configuration option is loaded. It takes a single argument which
+should be the name of an option, and returns a boolean. If the
+argument is a package then the <TT
+CLASS="FUNCTION"
+>is_loaded</TT
+> function
+provides little or no extra information, for example the following two
+constraints are usually equivalent:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    requires { CYGPKG_KERNEL }
+    requires { is_loaded(CYGPKG_KERNEL) }</PRE
+></TD
+></TR
+></TABLE
+><P
+>However if the specified package is loaded but re-parented below a
+disabled component, or inactive as a result of an <SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+>
+property, then the first constraint would not be satisfied but the
+second constraint would. In other words the
+<TT
+CLASS="FUNCTION"
+>is_loaded</TT
+> makes it possible to consider in
+isolation one of the factors that are considered when CDL expressions
+are evaluated.</P
+><P
+>The configuration system's inference engine will not automatically
+load or unload packages to satisfy <TT
+CLASS="FUNCTION"
+>is_loaded</TT
+>
+constraints. </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>is_substr(haystack,&nbsp;needle)</TT
+></DT
+><DD
+><P
+>This can be used to check whether or not a particular string is
+present in another string. It is used mainly for manipulating compiler
+flags. The function takes two arguments, both of which can be
+arbitrary expressions, and returns a boolean.</P
+><P
+><TT
+CLASS="FUNCTION"
+>is_substr</TT
+> has some understanding of word
+boundaries. If the second argument starts with a space character then
+that will match either a real space or the start of the string.
+Similarly if the second argument ends with a space character then that
+will match a real space or the end of the string. For example, all of
+the following conditions are satisfied:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    is_substr("abracadabra", "abra")
+    is_substr("abracadabra", " abra")
+    is_substr("hocus pocus", " pocus")
+    is_substr("abracadabra", "abra ")</PRE
+></TD
+></TR
+></TABLE
+><P
+>The first is an exact match. The second is a match because the leading
+space matches the start of the string. The third is an exact match,
+with the leading space matching an actual space. The fourth is a match
+because the trailing space matches the end of the string. However, the
+following condition is not satisfied.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    is_substr("abracadabra", " abra ")</PRE
+></TD
+></TR
+></TABLE
+><P
+>This fails to match at the start of the string because the trailing
+space is not matched by either a real space or the end of the string.
+Similarly it fails to match at the end of the string.</P
+><P
+>If a constraint involving <TT
+CLASS="FUNCTION"
+>is_substr</TT
+> is not
+satisfied and the first argument is a reference to a configuration
+option, the inference engine will attempt to modify that option's
+value. This can be achieved either by appending the second argument to
+the current value, or by removing all occurrences of that argument
+from the current value.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    requires { !is_substr(CYGBLD_GLOBAL_CFLAGS, " -fno-rtti ") }
+    requires { is_substr(CYGBLD_GLOBAL_CFLAGS, " -frtti ") }</PRE
+></TD
+></TR
+></TABLE
+><P
+>When data is removed the leading and trailing spaces will be left. For
+example, given an initial value of
+&#60;<TT
+CLASS="VARNAME"
+>CYGBLD_GLOBAL_CFLAGS</TT
+> of
+<TT
+CLASS="LITERAL"
+>-g&nbsp;-fno-rtti&nbsp;-O2</TT
+> the result will be
+<TT
+CLASS="LITERAL"
+>-g&nbsp;&nbsp;-O2</TT
+> rather than <TT
+CLASS="LITERAL"
+>-g-O2</TT
+>.</P
+><P
+>If exact matches are needed, the function
+<TT
+CLASS="FUNCTION"
+>is_xsubstr</TT
+> can be used instead.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>is_xsubstr(haystack,&nbsp;needle)</TT
+></DT
+><DD
+><P
+>This function checks whether or not the pattern string is an exact
+substring of the string being searched. It is similar to
+<TT
+CLASS="FUNCTION"
+>is_substr</TT
+> but uses exact matching only. In other
+words, leading or trailing spaces have to match exactly and will not
+match the beginning or end of the string being searched. The function
+takes two arguments, both of which can be arbitrary expressions, and
+returns a boolean. The difference between
+<TT
+CLASS="FUNCTION"
+>is_substr</TT
+> and <TT
+CLASS="FUNCTION"
+>is_xsubstr</TT
+> is
+illustrated by the following examples:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    cdl_option MAGIC {
+        flavor data
+        default_value { "abracadabra" }
+    }
+    &#8230;
+    requires { is_substr(MAGIC,  " abra") }
+    requires { is_xsubstr(MAGIC, " abra") }</PRE
+></TD
+></TR
+></TABLE
+><P
+>The first goal will be satisfied because the leading space in the
+pattern matches the beginning of the string. The second goal will not
+be satisfied initialy because there is no exact match, so the
+inference engine is likely to update the value of
+<TT
+CLASS="VARNAME"
+>MAGIC</TT
+> to <TT
+CLASS="LITERAL"
+>abracadabra abra</TT
+> which
+does give an exact match.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>version_cmp(A,&nbsp;B)</TT
+></DT
+><DD
+><P
+>This function is used primarily to check that a sufficiently recent
+<A
+HREF="package.versions.html"
+>version</A
+> of some other package
+is being used. It takes two arguments, both of which can be arbitrary
+expressions. In practice usually one of the arguments will be a
+reference to a package and the other will be a constant version
+string. The return value is -1 if the first argument is a more recent
+version then the second, 0 if the two arguments correspond to
+identical versions, and 1 if the first argument is an older version.
+For example the following constraint can be used to indicate that the
+current package depends on kernel functionality that only became
+available in version 1.3:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    requires { version_cmp(CYGPKG_KERNEL, "v1.3") &#60;= 0 }</PRE
+></TD
+></TR
+></TABLE
+></DD
+></DL
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>At this time it is not possible to define new functions inside a CDL
+script. Instead functions can only be added at the C++ level, usually
+by extending libcdl itself. This is partly because there is more to
+CDL functions than simple evaluation: associated with most functions
+is support for the inference engine, so that if a constraint involving
+a function is not currently satisfied the system may be able to find a
+solution automatically.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LANGUAGE.GOAL-EXPRESSION">Goal Expressions</H2
+><P
+>The arguments to certain properties, notably <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> and
+<SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+>, constitute a goal expression. As with an ordinary
+expression, all of the arguments get combined and then the expression
+parser takes over. The same care has to be taken with constant strings
+and anything else that may get processed by the Tcl interpreter, so
+often a goal expression is enclosed entirely in braces and the
+expression parsing code sees just a single argument.</P
+><P
+>A goal expression is basically just a sequence of ordinary
+expressions, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    requires { CYGDBG_HAL_DEBUG_GDB_INCLUDE_STUBS
+               !CYGDBG_HAL_DEBUG_GDB_BREAK_SUPPORT
+               !CYGDBG_HAL_DEBUG_GDB_CTRLC_SUPPORT }</PRE
+></TD
+></TR
+></TABLE
+><P
+>This consists of three separate expressions, all of which should
+evaluate to a non-zero result. The same expression could be written
+as: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    requires { CYGDBG_HAL_DEBUG_GDB_INCLUDE_STUBS  &#38;&#38;
+               !CYGDBG_HAL_DEBUG_GDB_BREAK_SUPPORT &#38;&#38;
+               !CYGDBG_HAL_DEBUG_GDB_CTRLC_SUPPORT }</PRE
+></TD
+></TR
+></TABLE
+><P
+>Alternatively the following would have much the same effect:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    requires CYGDBG_HAL_DEBUG_GDB_INCLUDE_STUBS
+    requires !CYGDBG_HAL_DEBUG_GDB_BREAK_SUPPORT
+    requires !CYGDBG_HAL_DEBUG_GDB_CTRLC_SUPPORT</PRE
+></TD
+></TR
+></TABLE
+><P
+>Selecting between these alternatives is largely a stylistic choice.
+The first is slightly more concise than the others. The second is more
+likely to appeal to mathematical purists. The third is more amenable
+to cutting and pasting.</P
+><P
+>The result of evaluating a goal expression is a boolean. If any part
+of the goal expression evaluates to the integer <TT
+CLASS="LITERAL"
+>0</TT
+>
+or an equivalent string then the result is false, otherwise it is
+true. </P
+><P
+>The term &#8220;goal&nbsp;expression&#8221; relates to the component
+framework's inference engine: it is a description of a goal that
+should be satisfied for a conflict-free configuration. If a <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+>
+constraint is not satisfied then the inference engine will examine the
+goal expression: if there is some way of changing the configuration
+that does not introduce new conflicts and that will cause the goal
+expression to evaluate to true, the conflict can be resolved.</P
+><P
+>The inference engine works with one conflict and hence one goal
+expression at a time. This means that there can be slightly different
+behavior if a constraint is specified using a single <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+>
+property or several different ones. Given the above example, suppose
+that none of the three conditions are satisfied. If a single goal
+expression is used then the inference engine might be able to satisfy
+only two of the three parts, but since the conflict as a whole cannot
+be resolved no part of the solution will be applied. Instead the user
+will have to resolve the entire conflict. If three separate goal
+expressions are used then the inference engine might well find
+solutions to two of them, leaving less work for the user. On the other
+hand, if a single goal expression is used then the inference engine
+has a bit more information to work with, and it might well find a
+solution to the entire conflict where it would be unable to find
+separate solutions for the three parts. Things can get very
+complicated, and in general component writers should not worry about
+the subtleties of the inference engine and how to manipulate its
+behavior. </P
+><P
+>It is possible to write ambiguous goal expressions, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    requires CYGNUM_LIBC_RAND_SEED -CYGNUM_LIBC_RAND_TRACE_LEVEL &gt; 5</PRE
+></TD
+></TR
+></TABLE
+><P
+>This could be parsed in two ways:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    requires ((CYGNUM_LIBC_RAND_SEED - CYGNUM_LIBC_RAND_TRACE_LEVEL) &gt; 5)
+    requires CYGNUM_LIBC_RAND_SEED &amp;&amp; ((-CYGNUM_LIBC_RAND_TRACE_LEVEL) &gt; 5)</PRE
+></TD
+></TR
+></TABLE
+><P
+>The goal expression parsing code will always use the largest ordinary
+expression for each goal, so the first interpretation will be used.
+In such cases it is a good idea to use brackets and avoid possible
+confusion. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LANGUAGE.LIST-EXPRESSION">List Expressions</H2
+><P
+>The arguments to the <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> property constitute a goal
+expression. As with an ordinary and goal expressions, all of the
+arguments get combined and then the expression parser takes over. The
+same care has to be taken with constant strings and anything else that
+may get processed by the Tcl interpreter, so often a list expression
+is enclosed entirely in braces and the expression parsing code sees
+just a single argument.</P
+><P
+>Most list expressions take one of two forms:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    legal_values &lt;expr1&gt; &lt;expr2&gt; &lt;expr3&gt; ...
+    legal_values &lt;expr1&gt; to &lt;expr2&gt;</PRE
+></TD
+></TR
+></TABLE
+><P
+><TT
+CLASS="LITERAL"
+>expr1</TT
+>, <TT
+CLASS="LITERAL"
+>expr2</TT
+> and so on are
+ordinary expressions. Often these will be constants or references to
+calculated options in the architectural HAL package, but it is
+possible to use arbitrary expressions when necessary. The first syntax
+indicates a list of possible values, which need not be numerical. The
+second syntax indicates a numerical range: both sides of the
+<TT
+CLASS="LITERAL"
+>to</TT
+> must evaluate to a numerical value; if either
+side involves a floating point number then any floating point number
+in that range is legal; otherwise only integer values are legal;
+ranges are inclusive, so <TT
+CLASS="LITERAL"
+>4</TT
+> is a valid value given a
+list expression <TT
+CLASS="LITERAL"
+>1&nbsp;to&nbsp;</TT
+>; if one or both
+sides of the <TT
+CLASS="LITERAL"
+>to</TT
+> does not evaluate to a numerical
+value then this will result in a run-time conflict. The following
+examples illustrate these possibilities:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    legal_values { "red" "green" "blue" }
+    legal_values 1 2 4 8 16
+    legal_values 1 to CYGARC_MAXINT
+    legal_values 1.0 to 2.0</PRE
+></TD
+></TR
+></TABLE
+><P
+>It is possible to combine the two syntaxes, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    legal_values 1 2 4 to CYGARC_MAXINT -1024 -20.0 to -10</PRE
+></TD
+></TR
+></TABLE
+><P
+>This indicates three legal values <TT
+CLASS="LITERAL"
+>1</TT
+>,
+<TT
+CLASS="LITERAL"
+>2</TT
+> and <TT
+CLASS="LITERAL"
+>-1024</TT
+>, one
+integer range <TT
+CLASS="LITERAL"
+>4&nbsp;to&nbsp;CYGARC_MAXINT</TT
+>, and one
+floating point range <TT
+CLASS="LITERAL"
+>-20.0&nbsp;to&nbsp;-10.0</TT
+>. In
+practice such list expressions are rarely useful.</P
+><P
+>The identifier <TT
+CLASS="VARNAME"
+>to</TT
+> is not reserved, so it is
+possible to have a configuration option with that name (although it
+violates every naming convention). Using that option in a list
+expression may however give unexpected results.</P
+><P
+>The graphical configuration tool uses the <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> list
+expression to determine how best to let users manipulate the option's
+value. Different widgets will be appropriate for different lists, so
+<TT
+CLASS="LITERAL"
+>{&nbsp;"red"&nbsp;"green"&nbsp;"blue"&nbsp;}</TT
+> might
+involve a pull-down option menu, and
+<TT
+CLASS="LITERAL"
+>1&nbsp;to&nbsp;16</TT
+> could involve a spinner. The
+exact way in which <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> lists get mapped on to GUI widgets
+is not defined and is subject to change at any time.</P
+><P
+>As with goal expressions, list expressions can be ambiguous. Consider
+the following hypothetical example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    legal_values CYGNUM_LIBC_RAND_SEED -CYGNUM_LIBC_RAND_TRACE_LEVEL</PRE
+></TD
+></TR
+></TABLE
+><P
+>This could be parsed in two ways:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    legal_values (CYGNUM_LIBC_RAND_SEED - CYGNUM_LIBC_RAND_TRACE_LEVEL)
+    legal_values (CYGNUM_LIBC_RAND_SEED) (-CYGNUM_LIBC_RAND_TRACE_LEVEL)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Both are legal. The list expression parsing code will always use the
+largest ordinary expression for each element, so the first
+interpretation will be used. In cases like this it is a good idea to
+use brackets and avoid possible confusion.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.tcl.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.interface.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>An Introduction to Tcl</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Interfaces</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

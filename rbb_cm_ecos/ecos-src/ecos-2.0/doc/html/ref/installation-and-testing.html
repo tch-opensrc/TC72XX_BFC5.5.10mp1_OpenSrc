@@ -1,0 +1,1245 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Installation and Testing</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="RedBoot&#8482; User's Guide"
+HREF="redboot.html"><LINK
+REL="PREVIOUS"
+TITLE="Updating RedBoot"
+HREF="updating-redboot.html"><LINK
+REL="NEXT"
+TITLE="ARM/ARM7 ARM Evaluator7T"
+HREF="e7t.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="updating-redboot.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="e7t.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="INSTALLATION-AND-TESTING">Chapter 5. Installation and Testing</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="installation-and-testing.html#ASB2305"
+>AM3x/MN103E010 Matsushita MN103E010 (AM33/2.0) ASB2305 Board</A
+></DT
+><DT
+><A
+HREF="e7t.html"
+>ARM/ARM7 ARM Evaluator7T</A
+></DT
+><DT
+><A
+HREF="integrator.html"
+>ARM/ARM7+ARM9 ARM Integrator</A
+></DT
+><DT
+><A
+HREF="pid.html"
+>ARM/ARM7+ARM9 ARM PID Board and EPI Dev7+Dev9</A
+></DT
+><DT
+><A
+HREF="at91.html"
+>ARM/ARM7 Atmel AT91 Evaluation Board (EB40)</A
+></DT
+><DT
+><A
+HREF="edb7xxx.html"
+>ARM/ARM7 Cirrus Logic EP7xxx (EDB7211, EDB7212, EDB7312)</A
+></DT
+><DT
+><A
+HREF="aaed2000.html"
+>ARM/ARM9 Agilent AAED2000</A
+></DT
+><DT
+><A
+HREF="excaliburarm9.html"
+>ARM/ARM9 Altera Excalibur</A
+></DT
+><DT
+><A
+HREF="ebsa285.html"
+>ARM/StrongARM(SA110) Intel EBSA 285</A
+></DT
+><DT
+><A
+HREF="brutus.html"
+>ARM/StrongARM(SA1100) Intel Brutus</A
+></DT
+><DT
+><A
+HREF="sa1100mm.html"
+>ARM/StrongARM(SA1100) Intel SA1100 Multimedia Board</A
+></DT
+><DT
+><A
+HREF="assabet.html"
+>ARM/StrongARM(SA1110) Intel SA1110 (Assabet)</A
+></DT
+><DT
+><A
+HREF="nano.html"
+>ARM/StrongARM(SA11X0) Bright Star Engineering commEngine and nanoEngine</A
+></DT
+><DT
+><A
+HREF="ipaq.html"
+>ARM/StrongARM(SA11X0) Compaq iPAQ PocketPC</A
+></DT
+><DT
+><A
+HREF="cerfcube.html"
+>ARM/StrongARM(SA11X0) Intrinsyc CerfCube</A
+></DT
+><DT
+><A
+HREF="iq80310.html"
+>ARM/Xscale Cyclone IQ80310</A
+></DT
+><DT
+><A
+HREF="iq80321.html"
+>ARM/Xscale Intel IQ80321</A
+></DT
+><DT
+><A
+HREF="calmrisc16.html"
+>CalmRISC/CalmRISC16 Samsung CalmRISC16 Core Evaluation Board</A
+></DT
+><DT
+><A
+HREF="calmrisc32.html"
+>CalmRISC/CalmRISC32 Samsung CalmRISC32 Core Evaluation Board</A
+></DT
+><DT
+><A
+HREF="frv400.html"
+>FRV/FRV400 Fujitsu FR-V 400 (MB-93091)</A
+></DT
+><DT
+><A
+HREF="x86pc.html"
+>IA32/x86 x86-Based PC</A
+></DT
+><DT
+><A
+HREF="atlas.html"
+>MIPS/MIPS32(CoreLV 4Kc)+MIPS64(CoreLV 5Kc) Atlas Board</A
+></DT
+><DT
+><A
+HREF="malta.html"
+>MIPS/MIPS32(CoreLV 4Kc)+MIPS64(CoreLV 5Kc) Malta Board</A
+></DT
+><DT
+><A
+HREF="ocelot.html"
+>MIPS/RM7000 PMC-Sierra Ocelot</A
+></DT
+><DT
+><A
+HREF="vrc4375.html"
+>MIPS/VR4375 NEC DDB-VRC4375</A
+></DT
+><DT
+><A
+HREF="viper.html"
+>PowerPC/MPC860T Analogue &#38; Micro PowerPC 860T</A
+></DT
+><DT
+><A
+HREF="mbx.html"
+>PowerPC/MPC8XX Motorola MBX</A
+></DT
+><DT
+><A
+HREF="edk7708.html"
+>SuperH/SH3(SH7708) Hitachi EDK7708</A
+></DT
+><DT
+><A
+HREF="se7709.html"
+>SuperH/SH3(SH7709) Hitachi Solution Engine 7709</A
+></DT
+><DT
+><A
+HREF="hs7729pci.html"
+>SuperH/SH3(SH7729) Hitachi HS7729PCI</A
+></DT
+><DT
+><A
+HREF="se77x9.html"
+>SuperH/SH3(SH77X9) Hitachi Solution Engine 77X9</A
+></DT
+><DT
+><A
+HREF="se7751.html"
+>SuperH/SH4(SH7751) Hitachi Solution Engine 7751</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="ASB2305">AM3x/MN103E010 Matsushita MN103E010 (AM33/2.0) ASB2305 Board</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4839">Overview</H2
+><P
+>&#13;
+RedBoot supports the debug serial port and the built in ethernet port for communication and
+downloads. The default serial port settings are 115200,8,N,1 with RTS/CTS flow control. RedBoot can
+run from either flash, and can support flash management for either the boot PROM or the system
+flash regions.</P
+><P
+>The following RedBoot configurations are supported:
+
+      <DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4849"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Configuration</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Mode</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>PROM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from the boot PROM and able to
+	      access the system flash.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_ROM.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>FLASH</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from the system flash and able to
+	      access the boot PROM.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_FLASH.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RAM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[RAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM and able to access the
+	      boot PROM.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_RAM.ecm</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4873">Initial Installation</H2
+><P
+>Unless a pre-programmed system flash module is available to be plugged into a new board,
+RedBoot must be installed with the aid of a JTAG interface unit. To achieve this, the RAM mode
+RedBoot must be loaded directly into RAM by JTAG and started, and then <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>that</I
+></SPAN
+>
+must be used to store the ROM mode RedBoot into the boot PROM.</P
+><P
+>These instructions assume that you have binary images of the RAM-based and boot PROM-based
+RedBoot images available.</P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4878">Preparing to program the board</H3
+><P
+>If the board is to be programmed, whether via JTAG or RedBoot, some hardware settings need to
+be changed:</P
+><P
+></P
+><UL
+><LI
+><P
+>Jumper across ST18 on the board to allow write access to the boot PROM.</P
+></LI
+><LI
+><P
+>Set DIP switch S1-3 to OFF to allow RedBoot to write to the system flash.</P
+></LI
+><LI
+><P
+>Set the switch S5 (on the front of the board) to boot from whichever flash is
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> being programmed. Note that the RedBoot image cannot access the flash from
+which it is currently executing (it can only access the other flash).</P
+></LI
+></UL
+><P
+>The RedBoot binary image files should also be copied to the TFTP pickup area on the host providing
+TFTP services if that is how RedBoot should pick up the images it is going to program into the
+flash. Alternatively, the images can be passed by YMODEM over the serial link.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4890">Preparing to use the JTAG debugger</H3
+><P
+>The JTAG debugger will also need setting up:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Install the JTAG debugger software (WICE103E) on a PC running Windows (WinNT is
+probably the best choice for this) in &#8220;C:/PanaX&#8221;.</P
+></LI
+><LI
+><P
+>Install the Matsushita provided &#8220;project&#8221; into the
+&#8220;C:/Panax/wice103e/prj&#8221; directory.</P
+></LI
+><LI
+><P
+>Install the RedBoot image files into the &#8220;C:/Panax/wice103e/prj&#8221;
+directory under the names redboot.ram and redboot.prom.</P
+></LI
+><LI
+><P
+>Make sure the PC's BIOS has the parallel port set to full bidirectional
+mode.</P
+></LI
+><LI
+><P
+>Connect the JTAG debugger to the PC's parallel port.</P
+></LI
+><LI
+><P
+>Connect the JTAG debugger to the board.</P
+></LI
+><LI
+><P
+>Set the switch on the front of the board to boot from &#8220;boot
+PROM&#8221;.</P
+></LI
+><LI
+><P
+>Power up the JTAG debugger and then power up the board.</P
+></LI
+><LI
+><P
+>Connect the board's Debug Serial port to a computer by a null modem cable.</P
+></LI
+><LI
+><P
+>Start minicom or some other serial communication software and set for 115200 baud,
+1-N-8 with hardware (RTS/CTS) flow control.</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4914">Loading the RAM-based RedBoot via JTAG</H3
+><P
+>To perform the first half of the operation, the following steps should be followed:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Start the JTAG debugger software.</P
+></LI
+><LI
+><P
+>Run the following commands at the JTAG debugger's prompt to set up the MMU registers on the
+CPU.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+><TT
+CLASS="USERINPUT"
+><B
+>ed 0xc0002000, 0x12000580</B
+></TT
+>
+
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xd8c00100, 0x8000fe01</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xd8c00200, 0x21111000</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xd8c00204, 0x00100200</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xd8c00208, 0x00000004</B
+></TT
+>
+
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xd8c00110, 0x8400fe01</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xd8c00210, 0x21111000</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xd8c00214, 0x00100200</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xd8c00218, 0x00000004</B
+></TT
+>
+
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xd8c00120, 0x8600ff81</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xd8c00220, 0x21111000</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xd8c00224, 0x00100200</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xd8c00228, 0x00000004</B
+></TT
+>
+
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xd8c00130, 0x8680ff81</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xd8c00230, 0x21111000</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xd8c00234, 0x00100200</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xd8c00238, 0x00000004</B
+></TT
+>
+
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xd8c00140, 0x9800f801</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xd8c00240, 0x00140000</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xd8c00244, 0x11011100</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xd8c00248, 0x01000001</B
+></TT
+>
+
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xda000000, 0x55561645</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xda000004, 0x000003c0</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xda000008, 0x9000fe01</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xda00000c, 0x9200fe01</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ed 0xda000000, 0xa89b0654</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>Run the following commands at the JTAG debugger's prompt to tell it what regions of the CPU's
+address space it can access:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+><TT
+CLASS="USERINPUT"
+><B
+>ex 0x80000000,0x81ffffff,/mexram</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ex 0x84000000,0x85ffffff,/mexram</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ex 0x86000000,0x867fffff,/mexram</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ex 0x86800000,0x87ffffff,/mexram</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ex 0x8c000000,0x8cffffff,/mexram</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>ex 0x90000000,0x93ffffff,/mexram</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>Instruct the debugger to load the RAM RedBoot image into RAM:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+><TT
+CLASS="USERINPUT"
+><B
+>_pc=90000000</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>u_pc</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>rd redboot.ram,90000000</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>Load the boot PROM RedBoot into RAM:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+><TT
+CLASS="USERINPUT"
+><B
+>rd redboot.prom,91020000</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>Start RedBoot in RAM:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+><TT
+CLASS="USERINPUT"
+><B
+>g</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+><P
+>Note that RedBoot may take some time to start up, as it will attempt to query a BOOTP or DHCP
+server to try and automatically get an IP address for the board. Note, however, that it should send
+a plus over the serial port immediately, and the 7-segment LEDs should display &#8220;rh
+8&#8221;.</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4973">Loading the boot PROM-based RedBoot via the RAM mode RedBoot</H3
+><P
+>Once the RAM mode RedBoot is up and running, it can be communicated with by way of the serial
+port. Commands can now be entered directly to RedBoot for flashing the boot PROM.</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Instruct RedBoot to initialise the boot PROM:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fi init</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>Write the previously loaded redboot.prom image into the boot PROM:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fi write -f 0x80000000 -b 0x91020000 -l 0x00020000</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>Check that RedBoot has written the image:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>dump -b 0x91020000</B
+></TT
+>
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>dump -b 0x80000000</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+><P
+>Barring the difference in address, the two dumps should be the same.</P
+></LI
+><LI
+><P
+>Close the JTAG software and power-cycle the board. The RedBoot banners should be
+displayed again over the serial port, followed by the RedBoot prompt. The boot PROM-based RedBoot
+will now be running.</P
+></LI
+><LI
+><P
+>Power off the board and unjumper ST18 to write-protect the contents of the boot
+PROM. Then power the board back up.</P
+></LI
+><LI
+><P
+>Run the following command to initialise the system flash:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fi init</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+><P
+>Then program the system flash based RedBoot into the system flash:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>load -r -b %{FREEMEMLO} redboot_FLASH.bin</B
+></TT
+>
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fi write -f 0x84000000 -b %{FREEMEMLO} -l 0x00020000</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>NOTE: </B
+>RedBoot arranges the flashes on booting such that they always appear at the same addresses,
+no matter which one was booted from.</P
+></BLOCKQUOTE
+></DIV
+></LI
+><LI
+><P
+>A similar sequence of commands can be used to program the boot PROM when RedBoot has been
+booted from an image stored in the system flash.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>load -r -b %{FREEMEMLO} /tftpboot/redboot_ROM.bin</B
+></TT
+>
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fi write -f 0x80000000 -b %{FREEMEMLO} -l 0x00020000</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+><P
+>See <A
+HREF="persistent-state-flash.html"
+>the Section called <I
+>Persistent State Flash-based Configuration and Control</I
+> in Chapter 2</A
+> for details on configuring the RedBoot in
+general, and also <A
+HREF="flash-image-system.html"
+>the Section called <I
+>Flash Image System (FIS)</I
+> in Chapter 2</A
+> for more details on programming the system
+flash.</P
+></LI
+></OL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5014">Additional Commands</H2
+><P
+>The <B
+CLASS="COMMAND"
+>exec</B
+> command which allows the loading and execution of
+Linux kernels, is supported for this architecture (see <A
+HREF="executing-programs.html"
+>the Section called <I
+>Executing Programs from RedBoot</I
+> in Chapter 2</A
+>). The
+<B
+CLASS="COMMAND"
+>exec</B
+> parameters used for ASB2305 board are:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>-w <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;time&#62;</I
+></TT
+></DT
+><DD
+><P
+>Wait time in seconds before starting kernel</P
+></DD
+><DT
+>-c <TT
+CLASS="REPLACEABLE"
+><I
+>"params"</I
+></TT
+></DT
+><DD
+><P
+>Parameters passed to kernel</P
+></DD
+><DT
+><TT
+CLASS="REPLACEABLE"
+><I
+>&lt;addr&#62;</I
+></TT
+></DT
+><DD
+><P
+>Kernel entry point, defaulting to the entry point of the last image
+loaded</P
+></DD
+></DL
+></DIV
+><P
+>The parameter string is stored in the on-chip memory at location 0x8C001000, and is prefixed
+by &#8220;cmdline:&#8221; if it was supplied.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5037">Memory Maps</H2
+><P
+>RedBoot sets up the following memory map on the ASB2305 board.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>NOTE: </B
+>The regions mapped between 0x80000000-0x9FFFFFFF are cached by the CPU. However, all those
+regions can be accessed uncached by adding 0x20000000 to the address.</P
+></BLOCKQUOTE
+></DIV
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Physical Address Range   Description
+-----------------------  -----------
+0x80000000 - 0x9FFFFFFF  Cached Region
+0x80000000 - 0x81FFFFFF  Boot PROM
+0x84000000 - 0x85FFFFFF  System Flash
+0x86000000 - 0x86007FFF  64Kbit Sys Config EEPROM
+0x86F90000 - 0x86F90003  4x 7-segment LEDs
+0x86FA0000 - 0x86FA0003  Software DIP Switches
+0x86FB0000 - 0x86FB001F  PC16550 Debug Serial Port
+0x8C000000 - 0x8FFFFFFF  On-Chip Memory (repeated 16Kb SRAM)
+0x90000000 - 0x93FFFFFF  SDRAM
+0x98000000 - 0x9BFFFFFF  Paged PCI Memory Space (64Mb)
+0x9C000000 - 0x9DFFFFFF  PCI Local SRAM (32Mb)
+0x9E000000 - 0x9E03FFFF  PCI I/O Space
+0x9E040000 - 0x9E0400FF  AM33-PCI Bridge Registers
+0x9FFFFFF4 - 0x9FFFFFF7  PCI Memory Page Register
+0x9FFFFFF8 - 0x9FFFFFFF  PCI Config Registers
+0xA0000000 - 0xBFFFFFFF  Uncached Mirror Region
+0xC0000000 - 0xDFFFFFFF  CPU Control Registers</PRE
+></TD
+></TR
+></TABLE
+><P
+>The ASB2305 HAL makes use of the on-chip memory in the following way:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>0x8C000000 - 0x8C0000FF  hal_vsr_table
+0x8C000100 - 0x8C0001FF  hal_virtual_vector_table
+0x8C001000 -             Linux command line (RedBoot exec command)
+           - 0x8C003FFF  Emergency DoubleFault Exception Stack</PRE
+></TD
+></TR
+></TABLE
+><P
+>Currently the CPU's interrupt table lies at the beginning of the RedBoot image, which must
+therefore be aligned to a 0xFF000000 mask.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5047">Rebuilding RedBoot</H2
+><P
+>These shell variables provide the platform-specific information
+needed for building RedBoot according to the procedure described in
+<A
+HREF="rebuilding-redboot.html"
+>Chapter 3</A
+>:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>export TARGET=asb2305
+export ARCH_DIR=mn10300
+export PLATFORM_DIR=asb2305</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The names of configuration files are listed above with the
+description of the associated modes.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="updating-redboot.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="e7t.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Updating RedBoot</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="redboot.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>ARM/ARM7 ARM Evaluator7T</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

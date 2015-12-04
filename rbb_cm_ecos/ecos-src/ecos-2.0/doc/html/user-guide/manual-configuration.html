@@ -1,0 +1,279 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Manual Configuration</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Configuration and the Package Repository"
+HREF="configuration-and-the-package-repository.html"><LINK
+REL="PREVIOUS"
+TITLE="Configuration and the Package Repository"
+HREF="configuration-and-the-package-repository.html"><LINK
+REL="NEXT"
+TITLE="Creating the Build Tree"
+HREF="creating-build-tree.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="configuration-and-the-package-repository.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="creating-build-tree.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="MANUAL-CONFIGURATION">Chapter 28. Manual Configuration</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="manual-configuration.html#DIRECTORY-TREE-STRUCTURE"
+>Directory Tree Structure</A
+></DT
+><DT
+><A
+HREF="creating-build-tree.html"
+>Creating the Build Tree</A
+></DT
+><DT
+><A
+HREF="conflicts-and-constraints.html"
+>Conflicts and constraints</A
+></DT
+><DT
+><A
+HREF="building-the-system.html"
+>Building the System</A
+></DT
+><DT
+><A
+HREF="ecos-packages.html"
+>Packages</A
+></DT
+><DT
+><A
+HREF="coarse-grained-configuration.html"
+>Coarse-grained Configuration</A
+></DT
+><DT
+><A
+HREF="fine-grained-configuration.html"
+>Fine-grained Configuration</A
+></DT
+><DT
+><A
+HREF="editing-an-ecos-savefile.html"
+>Editing an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Savefile</A
+></DT
+><DT
+><A
+HREF="editing-the-sources.html"
+>Editing the Sources</A
+></DT
+><DT
+><A
+HREF="modifying-the-memory-layout.html"
+>Modifying the Memory Layout</A
+></DT
+></DL
+></DIV
+><P
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> developers will generally use the graphical
+      Configuration Tool for configuring an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> system and building
+      the target library. However, some user prefer to use command
+      line tools. These command line tools can also be used for batch
+      operations on all platforms, for example as part of a nightly
+      rebuild and testing procedure.
+    </P
+><P
+>In the current release of the system the command line tools
+      do not provide exactly the same functionality as the graphical
+      tool. Most importantly, there is no facility to resolve
+      configuration conflicts interactively.</P
+><P
+>The <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> configuration system, both graphical and command
+      line tools, are under constant development and enhancement.
+      Developers should note that the procedures described may change
+      considerably in future releases. </P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="DIRECTORY-TREE-STRUCTURE">Directory Tree Structure</H1
+><P
+>When building <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> there are three main directory trees to
+	consider: the source tree, the build tree, and the install
+	tree.</P
+><P
+>The source tree, also known as the component repository,
+	  is read-only. It is possible to use a single component
+	  repository for any number of different configurations, and
+	  it is also possible to share a component repository between
+	  multiple users by putting it on a network drive.</P
+><P
+>The build tree contains everything that is specific to a
+	  particular configuration, including header and other files
+	  that contain configuration data, and the object files that
+	  result from compiling the system sources for this
+	  configuration. </P
+><P
+>The install tree is usually located in the <TT
+CLASS="FILENAME"
+>install</TT
+> subdirectory
+of the build tree. Once an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> system has been built, the install
+tree contains all the files needed for application development including
+the header files and the target library. By making copies of the
+install tree after a build it is possible to separate application
+development and system configuration, which may be desirable for
+some organizations. </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="configuration-and-the-package-repository.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="creating-build-tree.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Configuration and the Package Repository</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="configuration-and-the-package-repository.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Creating the Build Tree</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,556 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Condition Variables</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Kernel"
+HREF="kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="Mutexes"
+HREF="kernel-mutexes.html"><LINK
+REL="NEXT"
+TITLE="Semaphores"
+HREF="kernel-semaphores.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="kernel-mutexes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="kernel-semaphores.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="KERNEL-CONDITION-VARIABLES">Condition Variables</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN1232"
+></A
+><H2
+>Name</H2
+>cyg_cond_init, cyg_cond_destroy, cyg_cond_wait, cyg_cond_timed_wait, cyg_cond_signal, cyg_cond_broadcast&nbsp;--&nbsp;Synchronization primitive</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN1240"><H2
+>Synopsis</H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><A
+NAME="AEN1241"><P
+></P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &lt;cyg/kernel/kapi.h&gt;
+        </PRE
+></TD
+></TR
+></TABLE
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_cond_init</CODE
+>(cyg_cond_t* cond, cyg_mutex_t* mutex);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_cond_destroy</CODE
+>(cyg_cond_t* cond);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_bool_t cyg_cond_wait</CODE
+>(cyg_cond_t* cond);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_bool_t cyg_cond_timed_wait</CODE
+>(cyg_cond_t* cond, cyg_tick_count_t abstime);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_cond_signal</CODE
+>(cyg_cond_t* cond);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_cond_broadcast</CODE
+>(cyg_cond_t* cond);</CODE
+></P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-CONDITION-VARIABLES-DESCRIPTION"
+></A
+><H2
+>Description</H2
+><P
+>Condition variables are used in conjunction with mutexes to implement
+long-term waits for some condition to become true. For example
+consider a set of functions that control access to a pool of
+resources:
+      </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&#13;cyg_mutex_t res_lock;
+res_t res_pool[RES_MAX];
+int res_count = RES_MAX;
+
+void res_init(void)
+{
+    cyg_mutex_init(&amp;res_lock);
+    &lt;fill pool with resources&gt;
+}
+
+res_t res_allocate(void)
+{
+    res_t res;
+
+    cyg_mutex_lock(&amp;res_lock);               // lock the mutex
+
+    if( res_count == 0 )                     // check for free resource
+        res = RES_NONE;                      // return RES_NONE if none
+    else
+    {
+        res_count--;                         // allocate a resources
+        res = res_pool[res_count];
+    }
+
+    cyg_mutex_unlock(&amp;res_lock);             // unlock the mutex
+
+    return res;
+}
+
+void res_free(res_t res)
+{
+    cyg_mutex_lock(&amp;res_lock);               // lock the mutex
+
+    res_pool[res_count] = res;               // free the resource
+    res_count++;
+
+    cyg_mutex_unlock(&amp;res_lock);             // unlock the mutex
+}
+      </PRE
+></TD
+></TR
+></TABLE
+><P
+>These routines use the variable <TT
+CLASS="VARNAME"
+>res_count</TT
+> to keep
+track of the resources available. If there are none then
+<TT
+CLASS="FUNCTION"
+>res_allocate</TT
+> returns <TT
+CLASS="LITERAL"
+>RES_NONE</TT
+>,
+which the caller must check for and take appropriate error handling
+actions.
+      </P
+><P
+>Now suppose that we do not want to return
+<TT
+CLASS="LITERAL"
+>RES_NONE</TT
+> when there are no resources, but want to
+wait for one to become available. This is where a condition variable
+can be used:
+      </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&#13;cyg_mutex_t res_lock;
+cyg_cond_t res_wait;
+res_t res_pool[RES_MAX];
+int res_count = RES_MAX;
+
+void res_init(void)
+{
+    cyg_mutex_init(&amp;res_lock);
+    cyg_cond_init(&amp;res_wait, &amp;res_lock);
+    &lt;fill pool with resources&gt;
+}
+
+res_t res_allocate(void)
+{
+    res_t res;
+
+    cyg_mutex_lock(&amp;res_lock);               // lock the mutex
+
+    while( res_count == 0 )                  // wait for a resources
+        cyg_cond_wait(&amp;res_wait);
+
+    res_count--;                             // allocate a resource
+    res = res_pool[res_count];
+
+    cyg_mutex_unlock(&amp;res_lock);             // unlock the mutex
+
+    return res;
+}
+
+void res_free(res_t res)
+{
+    cyg_mutex_lock(&amp;res_lock);               // lock the mutex
+
+    res_pool[res_count] = res;               // free the resource
+    res_count++;
+
+    cyg_cond_signal(&amp;res_wait);              // wake up any waiting allocators
+
+    cyg_mutex_unlock(&amp;res_lock);             // unlock the mutex
+}
+      </PRE
+></TD
+></TR
+></TABLE
+><P
+>In this version of the code, when <TT
+CLASS="FUNCTION"
+>res_allocate</TT
+>
+detects that there are no resources it calls
+<TT
+CLASS="FUNCTION"
+>cyg_cond_wait</TT
+>. This does two things: it unlocks
+the mutex, and puts the calling thread to sleep on the condition
+variable. When <TT
+CLASS="FUNCTION"
+>res_free</TT
+> is eventually called, it
+puts a resource back into the pool and calls
+<TT
+CLASS="FUNCTION"
+>cyg_cond_signal</TT
+> to wake up any thread waiting on
+the condition variable. When the waiting thread eventually gets to run again,
+it will re-lock the mutex before returning from
+<TT
+CLASS="FUNCTION"
+>cyg_cond_wait</TT
+>.
+      </P
+><P
+>There are two important things to note about the way in which this
+code works. The first is that the mutex unlock and wait in
+<TT
+CLASS="FUNCTION"
+>cyg_cond_wait</TT
+> are atomic: no other thread can run
+between the unlock and the wait. If this were not the case then a call
+to <TT
+CLASS="FUNCTION"
+>res_free</TT
+> by that thread would release the
+resource but the call to <TT
+CLASS="FUNCTION"
+>cyg_cond_signal</TT
+> would be
+lost, and the first thread would end up waiting when there were
+resources available.
+      </P
+><P
+>The second feature is that the call to
+<TT
+CLASS="FUNCTION"
+>cyg_cond_wait</TT
+> is in a <TT
+CLASS="LITERAL"
+>while</TT
+>
+loop and not a simple <TT
+CLASS="LITERAL"
+>if</TT
+> statement. This is because
+of the need to re-lock the mutex in <TT
+CLASS="FUNCTION"
+>cyg_cond_wait</TT
+>
+when the signalled thread reawakens. If there are other threads
+already queued to claim the lock then this thread must wait. Depending
+on the scheduler and the queue order, many other threads may have
+entered the critical section before this one gets to run. So the
+condition that it was waiting for may have been rendered false. Using
+a loop around all condition variable wait operations is the only way
+to guarantee that the condition being waited for is still true after
+waiting.
+      </P
+><P
+>Before a condition variable can be used it must be initialized with a
+call to <TT
+CLASS="FUNCTION"
+>cyg_cond_init</TT
+>. This requires two
+arguments, memory for the data structure and a pointer to an existing
+mutex. This mutex will not be initialized by
+<TT
+CLASS="FUNCTION"
+>cyg_cond_init</TT
+>, instead a separate call to
+<TT
+CLASS="FUNCTION"
+>cyg_mutex_init</TT
+> is required. If a condition
+variable is no longer required and there are no threads waiting on it
+then <TT
+CLASS="FUNCTION"
+>cyg_cond_destroy</TT
+> can be used.
+      </P
+><P
+>When a thread needs to wait for a condition to be satisfied it can
+call <TT
+CLASS="FUNCTION"
+>cyg_cond_wait</TT
+>. The thread must have already
+locked the mutex that was specified in the
+<TT
+CLASS="FUNCTION"
+>cyg_cond_init</TT
+> call. This mutex will be unlocked
+and the current thread will be suspended in an atomic operation. When
+some other thread performs a signal or broadcast operation the current
+thread will be woken up and automatically reclaim ownership of the mutex
+again, allowing it to examine global state and determine whether or
+not the condition is now satisfied. The kernel supplies a variant of
+this function, <TT
+CLASS="FUNCTION"
+>cyg_cond_timed_wait</TT
+>, which can be
+used to wait on the condition variable or until some number of clock
+ticks have occurred. The mutex will always be reclaimed before
+<TT
+CLASS="FUNCTION"
+>cyg_cond_timed_wait</TT
+> returns, regardless of
+whether it was a result of a signal operation or a timeout.
+      </P
+><P
+>There is no <TT
+CLASS="FUNCTION"
+>cyg_cond_trywait</TT
+> function because
+this would not serve any purpose. If a thread has locked the mutex and
+determined that the condition is satisfied, it can just release the
+mutex and return. There is no need to perform any operation on the
+condition variable.
+      </P
+><P
+>When a thread changes shared state that may affect some other thread
+blocked on a condition variable, it should call either
+<TT
+CLASS="FUNCTION"
+>cyg_cond_signal</TT
+> or
+<TT
+CLASS="FUNCTION"
+>cyg_cond_broadcast</TT
+>. These calls do not require
+ownership of the mutex, but usually the mutex will have been claimed
+before updating the shared state. A signal operation only wakes up the
+first thread that is waiting on the condition variable, while a
+broadcast wakes up all the threads. If there are no threads waiting on
+the condition variable at the time, then the signal or broadcast will
+have no effect: past signals are not counted up or remembered in any
+way. Typically a signal should be used when all threads will check the
+same condition and at most one thread can continue running. A
+broadcast should be used if threads check slightly different
+conditions, or if the change to the global state might allow multiple
+threads to proceed.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-CONDITION-VARIABLES-CONTEXT"
+></A
+><H2
+>Valid contexts</H2
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_cond_init</TT
+> is typically called during system
+initialization but may also be called in thread context. The same
+applies to <TT
+CLASS="FUNCTION"
+>cyg_cond_delete</TT
+>.
+<TT
+CLASS="FUNCTION"
+>cyg_cond_wait</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_cond_timedwait</TT
+> may only be called from thread
+context since they may block. <TT
+CLASS="FUNCTION"
+>cyg_cond_signal</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_cond_broadcast</TT
+> may be called from thread or
+DSR context.
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="kernel-mutexes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="kernel-semaphores.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Mutexes</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Semaphores</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

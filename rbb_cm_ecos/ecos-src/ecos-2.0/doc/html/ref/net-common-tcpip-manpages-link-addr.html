@@ -1,0 +1,220 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>link_addr</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="iso_addr"
+HREF="net-common-tcpip-manpages-iso-addr.html"><LINK
+REL="NEXT"
+TITLE="net_addrcmp"
+HREF="net-common-tcpip-manpages-net-addrcmp.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-iso-addr.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-net-addrcmp.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-LINK-ADDR">link_addr</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>LINK_ADDR(3)            System Library Functions Manual           LINK_ADDR(3)
+
+NAME
+     link_addr, link_ntoa - elementary address specification routines for link
+     level access
+
+SYNOPSIS
+     #include &lt;sys/types.h&#62;
+     #include &lt;sys/socket.h&#62;
+     #include &lt;net/if_dl.h&#62;
+
+     void
+     link_addr(const char *addr, struct sockaddr_dl *sdl);
+
+     char *
+     link_ntoa(const struct sockaddr_dl *sdl);
+
+DESCRIPTION
+     The link_addr() function interprets character strings representing link-
+     level addresses, returning binary information suitable for use in system
+     calls.  link_ntoa() takes a link-level address and returns an ASCII
+     string representing some of the information present, including the link
+     level address itself, and the interface name or number, if present.  This
+     facility is experimental and is still subject to change.
+
+     For link_addr(), the string addr may contain an optional network inter-
+     face identifier of the form ``name unit-number'', suitable for the first
+     argument to ifconfig(8), followed in all cases by a colon and an inter-
+     face address in the form of groups of hexadecimal digits separated by
+     periods.  Each group represents a byte of address; address bytes are
+     filled left to right from low order bytes through high order bytes.
+
+     Thus le0:8.0.9.13.d.30 represents an Ethernet address to be transmitted
+     on the first Lance Ethernet interface.
+
+RETURN VALUES
+     link_ntoa() always returns a null-terminated string.  link_addr() has no
+     return value.  (See BUGS.)
+
+SEE ALSO
+     iso(4), ifconfig(8)
+
+HISTORY
+     The link_addr() and link_ntoa() functions appeared in 4.3BSD-Reno.
+
+BUGS
+     The returned values for link_ntoa reside in a static memory area.
+
+     The function link_addr() should diagnose improperly formed input, and
+     there should be an unambiguous way to recognize this.
+
+     If the sdl_len field of the link socket address sdl is 0, link_ntoa()
+     will not insert a colon before the interface address bytes.  If this
+     translated address is given to link_addr() without inserting an initial
+     colon, the latter will not interpret it correctly.
+
+BSD                              July 28, 1993                             BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-iso-addr.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-net-addrcmp.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>iso_addr</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>net_addrcmp</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

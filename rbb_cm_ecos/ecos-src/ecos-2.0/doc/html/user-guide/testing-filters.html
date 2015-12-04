@@ -1,0 +1,205 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Testing Filters</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Running an eCos Test Case"
+HREF="running-an-ecos-test-case.html"><LINK
+REL="PREVIOUS"
+TITLE="Using the command line"
+HREF="using-commandline-testcase.html"><LINK
+REL="NEXT"
+TITLE="Building and Running Sample Applications"
+HREF="building-and-running-sample-appliations.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="using-commandline-testcase.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 12. Running an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Test Case</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="building-and-running-sample-appliations.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="TESTING-FILTERS">Testing Filters</H1
+><P
+>While most test cases today run solely in the target environment,
+some packages may require external testing infrastructure and/or
+feedback from the external environment to do complete testing.</P
+><P
+>The serial package is an example of this. The network package
+also contains some tests that require programs to be run on a
+host. See the network <I
+CLASS="CITETITLE"
+>Tests and Demonstrations</I
+>
+section in the network documentation in the <I
+CLASS="CITETITLE"
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Reference
+Guide</I
+>. Here we will concentrate on the serial tests since
+these are applicable to more targets.</P
+><P
+>Since the serial line is also used for communication with
+GDB, a  filter is inserted in the communication pathway between
+GDB and the serial device which is connected to the hardware target.
+The filter forwards all communication between the two, but also
+listens for special commands embedded in the data stream from the
+target.</P
+><P
+>When such a command is seen, the filter stops forwarding data
+to GDB from the target and enters a special mode. In this mode
+the test case running on the target is able to control the filter,
+commanding it to run various tests. While these tests run, GDB is
+isolated from the target.</P
+><P
+>As the test completes (or if the filter detects a target crash)
+the communication path between GDB and the hardware target is re-established,
+allowing GDB to resume control.</P
+><P
+>In theory, it is possible to extend the filter to provide
+a generic framework for other target-external testing components,
+thus decoupling the testing infrastructure from the (possibly limited)
+communication means provided by the target (serial, JTAG, Ethernet,
+etc). </P
+><P
+>Another advantage is that the host tools do not need to
+know about the various testing environments required by the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>
+packages, since all contact with the target continues to happen
+via GDB.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="using-commandline-testcase.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="building-and-running-sample-appliations.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Using the command line</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="running-an-ecos-test-case.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Building and Running Sample Applications</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

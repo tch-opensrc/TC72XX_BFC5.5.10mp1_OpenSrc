@@ -1,0 +1,475 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>ARM/ARM7 Atmel AT91 Evaluation Board (EB40)</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Installation and Testing"
+HREF="installation-and-testing.html"><LINK
+REL="PREVIOUS"
+TITLE="ARM/ARM7+ARM9 ARM PID Board and EPI Dev7+Dev9"
+HREF="pid.html"><LINK
+REL="NEXT"
+TITLE="ARM/ARM7 Cirrus Logic EP7xxx (EDB7211, EDB7212, EDB7312) "
+HREF="edb7xxx.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="pid.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Installation and Testing</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="edb7xxx.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="AT91">ARM/ARM7 Atmel AT91 Evaluation Board (EB40)</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5256">Overview</H2
+><P
+>RedBoot supports both serial ports.
+The default serial port settings are 38400,8,N,1. RedBoot
+also supports minimal flash management on the EB40.
+However, since the flash device (AT29LV1024) is so small (only the upper 64K is
+available for general use), only the simple flash write command 'fis
+write' is supported.</P
+><P
+>The following RedBoot configurations are supported:
+
+      <DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5266"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Configuration</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Mode</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>ROM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from the board's flash boot
+	      sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_ROM.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RAM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[RAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM with RedBoot in the
+	      flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_RAM.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>ROMRAM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROMRAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM, but contained in the
+	      board's flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_ROMRAM.ecm</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5290">Initial Installation Method</H2
+><P
+>This development board comes with ARM's debug tool, Angel, installed in flash.
+At this time, Angel will not be replaced.  Rather, RedBoot will be placed in
+the alternate half of flash.  Switch SW1 is used which monitor to boot.  Selecting
+SW1 to "lower mem" will choose Angel.  Select SW1 to "Upper mem" for RedBoot once
+it has been installed.</P
+><P
+>Set SW1 to "lower mem" and connect serial port A to a host computer.  Using GDB
+from the host and Angel on the board, download the RAM mode image of RedBoot
+to the board. SW1 should then be set to "upper mem" just before starting RedBoot using
+the 'cont' command. Once RedBoot is started, the Angel session must be interrupted (on
+Linux this can be done using ^Z).  Follow this by connecting to the board using
+minicom at 38400-8N1.  At this point, RedBoot will be running on the board in
+RAM.  Now, download the ROMRAM mode image and program it to flash.
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+><TT
+CLASS="USERINPUT"
+><B
+>arm-elf-gdb redboot_RAM.elf</B
+></TT
+>
+(gdb) <TT
+CLASS="USERINPUT"
+><B
+>tar rdi s=/dev/ttyS0</B
+></TT
+>
+Angel Debug Monitor (serial) 1.04 (Advanced RISC Machines SDT 2.5) for
+AT91EB40 (2.00)
+Angel Debug Monitor rebuilt on Apr 07 2000 at 12:40:31
+Serial Rate:   9600
+Connected to ARM RDI target.
+(gdb) <TT
+CLASS="USERINPUT"
+><B
+>set $cpsr=0xd3</B
+></TT
+>
+(gdb) <TT
+CLASS="USERINPUT"
+><B
+>load</B
+></TT
+>
+Loading section .rom_vectors, size 0x40 lma 0x2020000
+Loading section .text, size 0x7fd8 lma 0x2020040
+Loading section .rodata, size 0x15a0 lma 0x2028018
+Loading section .data, size 0x2e4 lma 0x20295b8
+Start address 0x2020040 , load size 39068
+Transfer rate: 6250 bits/sec, 500 bytes/write.</PRE
+></TD
+></TR
+></TABLE
+>
+At this point, set SW1 to "upper mem".
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>(gdb) <TT
+CLASS="USERINPUT"
+><B
+>cont</B
+></TT
+>
+Continuing.</PRE
+></TD
+></TR
+></TABLE
+>
+At this point, suspend the GDB session (use Ctrl-Z) and start a
+terminal emulator:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>version</B
+></TT
+>
+
+RedBoot(tm) bootstrap and debug environment [RAM]
+Non-certified release, version UNKNOWN - built 14:09:27, Jul 20 2001
+
+Platform: Atmel AT91/EB40 (ARM7TDMI)
+Copyright (C) 2000, 2001, Red Hat, Inc.
+
+RAM: 0x02000000-0x02080000, 0x020116d8-0x0207fd00 available
+FLASH: 0x01010000 - 0x01020000, 256 blocks of 0x00000100 bytes each.
+
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>load -m ymodem -b %{FREEMEMLO}</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+>
+Use minicom to send the file redboot_ROMRAM.srec via YModem.
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fi wr -f 0x01010000 -b %{FREEMEMLO} -l 0xe100</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+>
+Press the "reset" pushbutton and RedBoot
+should come up on the board.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5306">Special RedBoot Commands</H2
+><P
+>None.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5309">Memory Maps</H2
+><P
+>This processor has no MMU, so the only memory map is for physical addresses.
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Physical Address Range     Description
+-----------------------    ----------------------------------
+0x00000000 - 0x00000fff    On-chip SRAM
+0x01000000 - 0x0101ffff    Flash
+0x02000000 - 0x0207ffff    RAM
+0xffe00000 - 0xffffffff    I/O registers
+
+The flash based RedBoot image occupies virtual addresses 0x01010000 - 0x0101dfff</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5313">Rebuilding RedBoot</H2
+><P
+>These shell variables provide the platform-specific information
+needed for building RedBoot according to the procedure described in
+<A
+HREF="rebuilding-redboot.html"
+>Chapter 3</A
+>:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>export TARGET=eb40
+export ARCH_DIR=arm
+export PLATFORM_DIR=at91</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The names of configuration files are listed above with the
+description of the associated modes.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="pid.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="edb7xxx.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>ARM/ARM7+ARM9 ARM PID Board and EPI Dev7+Dev9</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="installation-and-testing.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>ARM/ARM7 Cirrus Logic EP7xxx (EDB7211, EDB7212, EDB7312)</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

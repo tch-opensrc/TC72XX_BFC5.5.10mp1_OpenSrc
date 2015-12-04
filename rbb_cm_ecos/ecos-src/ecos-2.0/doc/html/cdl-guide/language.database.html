@@ -1,0 +1,408 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Updating the ecos.db database</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="The CDL Language"
+HREF="language.html"><LINK
+REL="PREVIOUS"
+TITLE="Interfaces"
+HREF="language.interface.html"><LINK
+REL="NEXT"
+TITLE="The Build Process"
+HREF="build.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.interface.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. The CDL Language</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="build.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="LANGUAGE.DATABASE">Updating the <SPAN
+CLASS="DATABASE"
+>ecos.db</SPAN
+> database</H1
+><P
+>The current implementation of the component framework requires that
+all packages be present in a single component repository and listed in
+that repository's <SPAN
+CLASS="DATABASE"
+>ecos.db</SPAN
+> database. This is not
+generally a problem for application developers who can consider the
+component repository a read-only resource, except when adding or
+removing packages via the administration tool. However it means that
+component writers need to do their development work inside a
+component repository as well, and update the database with details of
+their new package or packages. Future enhancements to the component
+framework may allow new components to be developed outside a
+repository. </P
+><P
+>Like most files related to the component framework, the
+<SPAN
+CLASS="DATABASE"
+>ecos.db</SPAN
+> database is actually a <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> script.
+Typical package entries would look like this:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>package CYGPKG_LIBC {
+	alias		{ "C library" libc clib clibrary }
+	directory	language/c/libc
+	script		libc.cdl
+        description  "
+This package enables compatibility with the ISO C standard - ISO/IEC
+9899:1990. This allows the user application to use well known standard
+C library functions, and in eCos starts a thread to invoke the user
+function main()"
+}
+
+package CYGPKG_IO_PCI	{
+	alias		{ "PCI configuration library" io_pci }
+	directory	io/pci
+	script		io_pci.cdl
+	hardware
+        description "
+           This package contains the PCI configuration library."
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <TT
+CLASS="LITERAL"
+>package</TT
+> command takes two arguments, a name and
+a body. The name must be the same as in the <TT
+CLASS="LITERAL"
+>cdl_package</TT
+> command in
+the package's top-level <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> script. The body can contain the
+following five commands: <TT
+CLASS="LITERAL"
+>alias</TT
+>,
+<TT
+CLASS="LITERAL"
+>directory</TT
+>, <TT
+CLASS="LITERAL"
+>script</TT
+>,
+<TT
+CLASS="LITERAL"
+>hardware</TT
+> and <TT
+CLASS="LITERAL"
+>description</TT
+>.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>alias</TT
+></DT
+><DD
+><P
+>Each package should have one or more aliases. The first alias is
+typically used when listing the known packages, because a string like
+<TT
+CLASS="LITERAL"
+>C&nbsp;library</TT
+> is a bit easier to read and
+understand than <TT
+CLASS="VARNAME"
+>CYGPKG_LIBC</TT
+>. The other aliases are
+not used for output, but are accepted on input. For example the
+<SPAN
+CLASS="APPLICATION"
+>ecosconfig</SPAN
+> command-line
+tool will accept <TT
+CLASS="LITERAL"
+>add&nbsp;libc</TT
+> as an option, as well
+as <TT
+CLASS="LITERAL"
+>add&nbsp;CYGPKG_LIBC</TT
+>.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>directory</TT
+></DT
+><DD
+><P
+>This is used to specify the location of the package relative to the
+root of the component repository. It should be noted that in the
+current component framework this location cannot be changed in
+subsequent releases of the package: if for some reason it is desirable
+to install a new release elsewhere in the repository, all the old
+versions must first be uninstalled; the database cannot hold two
+separate locations for one package.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>script</TT
+></DT
+><DD
+><P
+>The <TT
+CLASS="LITERAL"
+>script</TT
+> command specifies the location of the
+package's top-level <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> script, in other words the one containing the
+<TT
+CLASS="LITERAL"
+>cdl_package</TT
+> definition. If the package follows the <A
+HREF="package.html#PACKAGE.HIERARCHY"
+>directory layout conventions</A
+> then
+this script will be in the <TT
+CLASS="FILENAME"
+>cdl</TT
+>
+sub-directory, otherwise it will be relative to the package's top-level
+directory. Again once a release has been made this file should not
+change in later releases. In practice the top-level script is generally
+named after the package itself, so changing its name is unlikely to be
+useful. </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>hardware</TT
+></DT
+><DD
+><P
+>Packages which are tied to specific hardware, for example device
+drivers and HAL packages, should indicate this in both the
+<TT
+CLASS="LITERAL"
+>cdl_package</TT
+> command of the <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> script and in the database entry.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>description</TT
+></DT
+><DD
+><P
+>This should give a brief description of the package. Typically the
+text for the <SPAN
+CLASS="PROPERTY"
+>description</SPAN
+> property in the <TT
+CLASS="LITERAL"
+>cdl_package</TT
+> command will
+be re-used.</P
+></DD
+></DL
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Most of the information in the <SPAN
+CLASS="DATABASE"
+>ecos.db</SPAN
+> file could
+be obtained by a relatively simple utility. This would be passed a
+single argument identifying a package's top-level <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> script. The
+directory path relative to the component repository root could be
+determined from the filename. The name, <TT
+CLASS="LITERAL"
+>description</TT
+>
+and <TT
+CLASS="LITERAL"
+>hardware</TT
+> fields could be obtained from the
+script's <TT
+CLASS="LITERAL"
+>cdl_package</TT
+> command. The <SPAN
+CLASS="PROPERTY"
+>display</SPAN
+> property would supply
+the first alias, additional aliases could be obtained by extending the
+syntax of that property or by other means. Something along these lines
+may be provided by a future release of the component framework.</P
+></BLOCKQUOTE
+></DIV
+><P
+>Currently the <SPAN
+CLASS="DATABASE"
+>ecos.db</SPAN
+> database also holds
+information about the various targets. When porting to a new target it
+will be necessary to add information about the target to the database,
+as well as the details of the new platform HAL package and any related
+packages. </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.interface.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="build.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Interfaces</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>The Build Process</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

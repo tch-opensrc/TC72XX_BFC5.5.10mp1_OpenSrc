@@ -1,0 +1,24 @@
+2003-02-24  Jonathan Larmour  <jifl@eCosCentric.com>
+
+	* cdl/httpd.cdl: Add doc link.
+
+2003-02-14  Bob Koninckx  <bob.koninckx@mech.kuleuven.ac.be>
+
+	* include/httpd.h (html_end): fix typo.
+
+2002-12-06  Nick Garnett  <nickg@ecoscentric.com>
+
+	* include/httpd.h: 
+	* src/init.cxx: 
+	* src/httpd.c: 
+	* src/monitor.c: 
+	* doc/httpd.sgml: 
+	* cdl/httpd.cdl: 
+	Created HTTPD package.
+	
+# Copyright (C) 2002 Nick Garnett
+# All Rights Reserved.
+#
+# Permission is granted to use, copy, modify and redistribute this
+# file.
+		

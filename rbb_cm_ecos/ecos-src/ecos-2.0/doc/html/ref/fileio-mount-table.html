@@ -1,0 +1,346 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Mount Table</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="File System Support Infrastructure"
+HREF="fileio.html"><LINK
+REL="PREVIOUS"
+TITLE="File System Table"
+HREF="fileio-fstab.html"><LINK
+REL="NEXT"
+TITLE="File Table"
+HREF="fileio-file-table.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="fileio-fstab.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="fileio-file-table.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="FILEIO-MOUNT-TABLE">Chapter 21. Mount Table</H1
+><P
+>The mount table records the filesystems that are actually active.
+These can be seen as being analogous to mount points in Unix systems.</P
+><P
+>There are two sources of mount table entries. Filesystems (or other
+components) may export static entries to the table using the
+<TT
+CLASS="LITERAL"
+>MTAB_ENTRY()</TT
+> macro. Alternatively, new entries may
+be installed at run time using the <TT
+CLASS="FUNCTION"
+>mount()</TT
+>
+function. Both types of entry may be unmounted with the
+<TT
+CLASS="FUNCTION"
+>umount()</TT
+> function.</P
+><P
+>A mount table entry has the following structure:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct cyg_mtab_entry
+{
+    const char          *name;          // name of mount point
+    const char          *fsname;        // name of implementing filesystem
+    const char          *devname;       // name of hardware device
+    CYG_ADDRWORD        data;           // private data value
+    cyg_bool            valid;          // Valid entry?
+    cyg_fstab_entry     *fs;            // pointer to fstab entry
+    cyg_dir             root;           // root directory pointer
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>name</I
+></TT
+> field identifies the mount
+point. This is used to direct rooted filenames (filenames that
+begin with &quot;/&quot;) to the correct filesystem. When a file
+name that begins with &quot;/&quot; is submitted, it is matched
+against the <TT
+CLASS="STRUCTFIELD"
+><I
+>name</I
+></TT
+> fields of all valid mount
+table entries. The entry that yields the longest match terminating
+before a &quot;/&quot;, or end of string, wins and the appropriate
+function from the filesystem table entry is then passed the remainder
+of the file name together with a pointer to the table entry and the
+value of the <TT
+CLASS="STRUCTFIELD"
+><I
+>root</I
+></TT
+> field as the directory
+pointer.</P
+><P
+>For example, consider a mount table that contains the following
+entries:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>	{ "/",    "msdos", "/dev/hd0", ... }
+	{ "/fd",  "msdos", "/dev/fd0", ... }
+	{ "/rom", "romfs", "", ... }
+	{ "/tmp", "ramfs", "", ... }
+	{ "/dev", "devfs", "", ... }</PRE
+></TD
+></TR
+></TABLE
+><P
+>An attempt to open &quot;/tmp/foo&quot; would be directed to the RAM
+filesystem while an open of &quot;/bar/bundy&quot; would be directed
+to the hard disc MSDOS filesystem. Opening &quot;/dev/tty0&quot; would
+be directed to the device management filesystem for lookup in the
+device table.</P
+><P
+>Unrooted file names (those that do not begin with a '/') are passed
+straight to the filesystem that contains the current directory. The
+current directory is represented by a pair consisting of a mount table
+entry and a directory pointer.</P
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>fsname</I
+></TT
+> field points to a string that
+should match the <TT
+CLASS="STRUCTFIELD"
+><I
+>name</I
+></TT
+> field of the
+implementing filesystem. During initialization the mount table is
+scanned and the <TT
+CLASS="STRUCTFIELD"
+><I
+>fsname</I
+></TT
+> entries looked up in
+the filesystem table. For each match, the filesystem's _mount_
+function is called and if successful the mount table entry is marked
+as valid and the <TT
+CLASS="STRUCTFIELD"
+><I
+>fs</I
+></TT
+> pointer installed.</P
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>devname</I
+></TT
+> field contains the name of the
+device that this filesystem is to use. This may match an entry in the
+device table (see later) or may be a string that is specific to the
+filesystem if it has its own internal device drivers.</P
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>data</I
+></TT
+> field is a private data value. This
+may be installed either statically when the table entry is defined, or
+may be installed during the <TT
+CLASS="FUNCTION"
+>mount()</TT
+> operation.</P
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>valid</I
+></TT
+> field indicates whether this mount
+point has actually been mounted successfully. Entries with a false
+<TT
+CLASS="STRUCTFIELD"
+><I
+>valid</I
+></TT
+> field are ignored when searching for a
+name match.</P
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>fs</I
+></TT
+> field is installed after a successful
+<TT
+CLASS="FUNCTION"
+>mount()</TT
+> operation to point to the implementing
+filesystem.</P
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>root</I
+></TT
+> field contains a directory pointer
+value that the filesystem can interpret as the root of its directory
+tree. This is passed as the <TT
+CLASS="PARAMETER"
+><I
+>dir</I
+></TT
+> argument of
+filesystem functions that operate on rooted filenames. This field must
+be initialized by the filesystem's <TT
+CLASS="FUNCTION"
+>mount()</TT
+>
+function.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="fileio-fstab.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="fileio-file-table.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>File System Table</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="fileio.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>File Table</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

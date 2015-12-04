@@ -1,0 +1,449 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Task-Dependent Synchronization Functions</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="µITRON API"
+HREF="compat-uitron-microitron-api.html"><LINK
+REL="PREVIOUS"
+TITLE="Task Management Functions"
+HREF="compat-uitron-task-management-functions.html"><LINK
+REL="NEXT"
+TITLE="	  Synchronization and Communication Functions"
+HREF="compat-uitron-sync-and-comm-functions.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="compat-uitron-task-management-functions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 32. &micro;ITRON API</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="compat-uitron-sync-and-comm-functions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="COMPAT-UITRON-TASK-DEPENDENT-SYNCH-FUNCTIONS">Task-Dependent Synchronization Functions</H1
+><P
+>These functions are fully supported in this release: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>sus_tsk</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tskid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>rsm_tsk</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tskid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>frsm_tsk</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tskid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>slp_tsk</TT
+>( void )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>tslp_tsk</TT
+>( 
+    TMO <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tmout</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>wup_tsk</TT
+>( 
+    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tskid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ER <TT
+CLASS="FUNCTION"
+>can_wup</TT
+>( 
+    INT *<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>p_wupcnt,</I
+></SPAN
+>    ID <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tskid</I
+></SPAN
+> )</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13571">Error checking</H2
+><P
+>The following conditions are only checked for, and only return
+errors if 
+<TT
+CLASS="LITERAL"
+>CYGSEM_UITRON_BAD_PARAMS_RETURN_ERRORS</TT
+>
+is enabled (see the configuration option &#8220;Return Error Codes for Bad
+Params&#8221;):</P
+><P
+></P
+><UL
+><LI
+><P
+>invalid tskid; less than 1 or greater than 
+<TT
+CLASS="LITERAL"
+>CYGNUM_UITRON_TASKS</TT
+>
+returns E_ID</P
+></LI
+><LI
+><P
+><TT
+CLASS="FUNCTION"
+>wup_tsk()</TT
+>
+, 
+<TT
+CLASS="FUNCTION"
+>sus_tsk()</TT
+>
+, 
+<TT
+CLASS="FUNCTION"
+>rsm_tsk()</TT
+>
+, 
+<TT
+CLASS="FUNCTION"
+>frsm_tsk()</TT
+>
+ on the calling task returns E_OBJ</P
+></LI
+><LI
+><P
+>dispatching is enabled in 
+<TT
+CLASS="FUNCTION"
+>tslp_tsk()</TT
+>
+ and 
+<TT
+CLASS="FUNCTION"
+>slp_tsk()</TT
+>
+, or E_CTX</P
+></LI
+><LI
+><P
+>tmout must be positive, otherwise E_PAR</P
+></LI
+><LI
+><P
+>return value pointer in 
+<TT
+CLASS="FUNCTION"
+>can_wup()</TT
+>
+ is a valid pointer, or E_PAR</P
+></LI
+></UL
+><P
+>The following conditions are checked for, and can
+	    return error codes, regardless of the setting of
+<TT
+CLASS="LITERAL"
+>CYGSEM_UITRON_BAD_PARAMS_RETURN_ERRORS</TT
+>:</P
+><P
+></P
+><UL
+><LI
+><P
+>When create and delete functions 
+<TT
+CLASS="FUNCTION"
+>cre_tsk()</TT
+>
+ and 
+<TT
+CLASS="FUNCTION"
+>del_tsk()</TT
+>
+ are supported, all calls which use a valid task ID number check
+that the task exists; if not, E_NOEXS is returned</P
+></LI
+><LI
+><P
+><TT
+CLASS="FUNCTION"
+>sus_tsk()</TT
+>
+: the task must not be dormant, else E_OBJ</P
+></LI
+><LI
+><P
+><TT
+CLASS="FUNCTION"
+>frsm/rsm_tsk()</TT
+>
+: the task must be suspended, else E_OBJ</P
+></LI
+><LI
+><P
+><TT
+CLASS="FUNCTION"
+>tslp/slp_tsk()</TT
+>
+: return codes E_TMOUT, E_RLWAI and E_DLT
+are returned depending on the reason for terminating the sleep</P
+></LI
+><LI
+><P
+><TT
+CLASS="FUNCTION"
+>wup_tsk()</TT
+>
+ and 
+<TT
+CLASS="FUNCTION"
+>can_wup()</TT
+>
+: the task must not be dormant, or E_OBJ is returned</P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="compat-uitron-task-management-functions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="compat-uitron-sync-and-comm-functions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Task Management Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="compat-uitron-microitron-api.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Synchronization and Communication Functions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

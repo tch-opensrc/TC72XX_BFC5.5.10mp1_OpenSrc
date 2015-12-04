@@ -1,0 +1,402 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Conflicts and constraints</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Manual Configuration"
+HREF="manual-configuration.html"><LINK
+REL="PREVIOUS"
+TITLE="Creating the Build Tree"
+HREF="creating-build-tree.html"><LINK
+REL="NEXT"
+TITLE="Building the System"
+HREF="building-the-system.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="creating-build-tree.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 28. Manual Configuration</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="building-the-system.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CONFLICTS-AND-CONSTRAINTS">Conflicts and constraints</H1
+><P
+>Configuration options are not completely independent. For example
+the C library's <TT
+CLASS="FUNCTION"
+>strtod()</TT
+> and <TT
+CLASS="FUNCTION"
+>atof()</TT
+>
+functions rely on the math library package to provide certain functionality. If the math library package is removed then the C
+library can no longer provide these functions. Each package describes constraints like these in CDL <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>"requires"</I
+></SPAN
+> properties. If a constraint is not satisfied, then the configuration contains a conflict. For any given conflict there can
+be several resolution options. For example, it would be possible to add the math library package back to the
+configuration, or to disable the <TT
+CLASS="FUNCTION"
+>strtod()</TT
+> and <TT
+CLASS="FUNCTION"
+>atof()</TT
+> functions.</P
+><P
+>The <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> configuration tools will report any conflicts in the current configuration. If there are any such conflicts
+then the configuration is usually unsafe and it makes no sense to build and run <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> in such circumstances. In fact,
+any attempt at building <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> is likely to fail. In exceptional cases it is possible to override this by using e.g. the
+<TT
+CLASS="OPTION"
+>--ignore-errors</TT
+> qualifier with ecosconfig. </P
+><P
+>Many constraints are fairly simple in nature, and the configuration tools contain an inference engine which can
+resolve the associated conflicts automatically. For example, if the math library package is removed then the
+inference engine can resolve the resulting conflict by disabling the configuration option for <TT
+CLASS="FUNCTION"
+>strtod()</TT
+> and <TT
+CLASS="FUNCTION"
+>atof()</TT
+>. All
+such changes will be reported. Sometimes the inference engine cannot resolve a conflict, for example it is not
+allowed to override a change that has been made explicitly by the user. Sometimes it will find a solution which does
+not match the application's requirements. </P
+><P
+>A typical session involving conflicts would look something like this: 
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ ecosconfig new pid</PRE
+></TD
+></TR
+></TABLE
+>This creates a new configuration with the default template. For most targets this will not result in any conflicts,
+because the default settings for the various options meet the requirements of the default template.</P
+><P
+> For some targets
+there may be conflicts and the inference engine would come into play. 
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ ecosconfig remove libm 
+U CYGSEM_LIBC_STDIO_SCANF_FLOATING_POINT, new inferred value 0 
+U CYGFUN_LIBC_strtod, new inferred value 0 
+U CYGSEM_LIBC_STDIO_PRINTF_FLOATING_POINT, new inferred value 0 </PRE
+></TD
+></TR
+></TABLE
+>
+ecosconfig reports that this change caused three conflicts, all in the C library. The inference engine was able to
+resolve all the conflicts and update the relevant configuration options accordingly. </P
+><P
+>To suppress the inference engine <TT
+CLASS="OPTION"
+>--no-resolve</TT
+> can be used: 
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ ecosconfig new pid
+$ ecosconfig --no-resolve remove libm 
+C CYGSEM_LIBC_STDIO_SCANF_FLOATING_POINT, "requires" constraint not satisfied:      CYGPKG_LIBM 
+C CYGSEM_LIBC_STDIO_PRINTF_FLOATING_POINT, "requires" constraint not satisfied:      CYGPKG_LIBM 
+C CYGFUN_LIBC_strtod, "requires" constraint not satisfied: CYGPKG_LIBM </PRE
+></TD
+></TR
+></TABLE
+>
+Three unresolved conflicts are reported.</P
+><P
+>The <B
+CLASS="COMMAND"
+>check</B
+> command can be used to get the current state of the
+configuration, and the <TT
+CLASS="OPTION"
+>--verbose</TT
+> qualifier will provide additional information: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ ecosconfig --srcdir /home/bartv/ecc/ecc --verbose check 
+Target: pid 
+Template: default 
+Removed:
+ CYGPKG_LIBM 
+3 conflict(s): 
+C CYGFUN_LIBC_strtod, "requires" constraint not satisfied: CYGPKG_LIBM
+ Possible solution: 
+    CYGFUN_LIBC_strtod -&#62; 0 
+    CYGSEM_LIBC_STDIO_SCANF_FLOATING_POINT -&#62; 0 
+C CYGSEM_LIBC_STDIO_PRINTF_FLOATING_POINT, "requires" constraint not satisfied:      CYGPKG_LIBM 
+ Possible solution: 
+    CYGSEM_LIBC_STDIO_PRINTF_FLOATING_POINT -&#62; 0 
+C CYGSEM_LIBC_STDIO_SCANF_FLOATING_POINT, "requires" constraint not satisfied:      CYGPKG_LIBM 
+ Possible solution: 
+    CYGSEM_LIBC_STDIO_SCANF_FLOATING_POINT -&#62; 0 </PRE
+></TD
+></TR
+></TABLE
+><P
+>If the proposed solutions are acceptable, the resolve command can be used to apply them: 
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ ecosconfig resolve 
+U CYGSEM_LIBC_STDIO_SCANF_FLOATING_POINT, new inferred value 0 
+U CYGFUN_LIBC_strtod, new inferred value 0 
+U CYGSEM_LIBC_STDIO_PRINTF_FLOATING_POINT, new inferred value 0 </PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The current configuration is again conflict-free and it is possible to generate a build tree. The <TT
+CLASS="OPTION"
+>--quiet</TT
+> qualifier can
+be used to suppress the change messages, if desired.</P
+><P
+>When changing individual configuration options by editing the ecos.ecc file (as described below), the resulting
+system should be checked and any problems should be resolved. For example, if CYGFUN_LIBC_strtod is
+explicitly enabled in the savefile:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ edit ecos.ecc
+$ ecosconfig check 
+Target: pid 
+Template: default 
+Removed: 
+    CYGPKG_LIBM 
+1 conflict(s): 
+C CYGFUN_LIBC_strtod, "requires" constraint not satisfied: CYGPKG_LIBM 
+$ ecosconfig resolve 
+C CYGFUN_LIBC_strtod, "requires" constraint not satisfied: CYGPKG_LIBM </PRE
+></TD
+></TR
+></TABLE
+>
+In this case the inference engine cannot resolve the conflict automatically because that would involve changing a
+user setting. Any attempt to generate a build tree will fail: 
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ ecosconfig --srcdir /home/bartv/ecc/ecc tree 
+C CYGFUN_LIBC_strtod, "requires" constraint not satisfied: CYGPKG_LIBM
+Unable to generate build tree, this configuration still contains conflicts.
+Either resolve the conflicts or use --ignore-errors </PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>It is still possible to generate a build tree: 
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ ecosconfig --srcdir /home/bartv/ecc/ecc --ignore-errors tree 
+C CYGFUN_LIBC_strtod, "requires" constraint not satisfied: CYGPKG_LIBM 
+$ make </PRE
+></TD
+></TR
+></TABLE
+>
+In this case <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> will fail to build. In other cases of unresolved conflicts <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> may build, but may not run. In
+general all conflicts should be resolved by editing the <TT
+CLASS="FILENAME"
+>ecos.ecc</TT
+> file, by letting the inference engine make appropriate
+changes, or by other means, before any attempt is made to build or run <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>. </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="creating-build-tree.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="building-the-system.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Creating the Build Tree</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="manual-configuration.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Building the System</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,629 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Making a Package Distribution</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="Package Organization"
+HREF="package.html"><LINK
+REL="PREVIOUS"
+TITLE="Package Contents and Layout"
+HREF="package.contents.html"><LINK
+REL="NEXT"
+TITLE="The CDL Language"
+HREF="language.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="package.contents.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. Package Organization</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="PACKAGE.DISTRIB">Making a Package Distribution</H1
+><P
+>Developers of new <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> packages are advised to distribute their
+packages in the form of <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> package distribution files. Packages
+distributed in this format may be added to existing <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> component
+repositories in a robust manner using the Package Administration Tool.
+This chapter describes the format of package distribution files and
+details how to prepare an eCos package for distribution in this format.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="PACKAGE.DISTRIB.FORMAT">The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> package distribution file format</H2
+><P
+>eCos package distribution files are gzipped GNU tar archives which
+contain both the source code for one or more <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> packages and a
+data file containing package information to be added to the component
+repository database. The distribution files are subject to the
+following rules:</P
+><P
+></P
+><OL
+TYPE="a"
+><LI
+><P
+>The data file must be named <TT
+CLASS="FILENAME"
+>pkgadd.db</TT
+> and must be
+located in the root of the tar archive. It must contain data in a
+format suitable for appending to the eCos repository database
+(<SPAN
+CLASS="DATABASE"
+>ecos.db</SPAN
+>). <A
+HREF="language.database.html"
+>the Section called <I
+>Updating the <SPAN
+CLASS="DATABASE"
+>ecos.db</SPAN
+> database</I
+> in Chapter 3</A
+>
+describes this data format. Note that a database consistency check is
+performed by the <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Administration Tool when
+<TT
+CLASS="FILENAME"
+>pkgadd.db</TT
+> has been appended to the database. Any
+new target entries which refer to unknown packages will be removed at
+this stage.</P
+></LI
+><LI
+><P
+>The package source code must be placed in one or more <TT
+CLASS="FILENAME"
+>&lt;package-path&gt;/&lt;version&gt;</TT
+>
+directories in the tar archive, where each &lt;package-path&gt;
+directory path is specified as the directory attribute of one of the
+packages entries in <TT
+CLASS="FILENAME"
+>pkgadd.db</TT
+>.</P
+></LI
+><LI
+><P
+>An optional license agreement file named
+<TT
+CLASS="FILENAME"
+>pkgadd.txt</TT
+> may be placed in the root of the tar
+archive. It should contain text with a maximum line length of 79
+characters. If this file exists, the contents will be presented to the
+user during installation of the package. The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Package
+Administration Tool will then prompt the user with the question
+<TT
+CLASS="PROMPT"
+>"Do you accept all the terms of the preceding license
+agreement?"</TT
+>. The user must respond
+<TT
+CLASS="USERINPUT"
+><B
+>"yes"</B
+></TT
+> to this prompt in order to proceed with
+the installation.</P
+></LI
+><LI
+><P
+>Optional template files may be placed in one or more <TT
+CLASS="FILENAME"
+>templates/&lt;template_name&gt;</TT
+>
+directories in the tar archive. Note that such template files would be
+appropriate only where the packages to be distributed have a complex
+dependency relationship with other packages. Typically, a third party
+package can be simply added to an eCos configuration based on an
+existing core template and the provision of new templates would not be
+appropriate. <A
+HREF="advanced.html#ADVANCED.TEMPLATES"
+>the Section called <I
+>Templates</I
+> in Chapter 6</A
+> contains more
+information on templates.</P
+></LI
+><LI
+><P
+>The distribution file must be given a <TT
+CLASS="FILENAME"
+>.epk</TT
+> (not
+<TT
+CLASS="FILENAME"
+>.tar.gz</TT
+>) file extension. The
+<TT
+CLASS="FILENAME"
+>.epk</TT
+> file extension serves to distinguish <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+>
+package distributions files from generic gzipped GNU tar archives. It
+also discourages users from attempting to extract the package from the
+archive manually. The file browsing dialog of the <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Package
+Administration Tool lists only those files which have a
+<TT
+CLASS="FILENAME"
+>.epk</TT
+> extension.</P
+></LI
+><LI
+><P
+>No other files should be present in the archive.</P
+></LI
+><LI
+><P
+>Files in the tar archive may use <TT
+CLASS="LITERAL"
+>LF</TT
+> or
+<TT
+CLASS="LITERAL"
+>CRLF</TT
+> line endings interchangably. The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+>
+Administration Tool ensures that the installed files are given the
+appropriate host-specific line endings.</P
+></LI
+><LI
+><P
+>Binary files may be placed in the archive, but the distribution of
+object code is not recommended. All binary files must be given a
+<TT
+CLASS="LITERAL"
+>.bin</TT
+> suffix in addition to any file extension they
+may already have. For example, the GIF image file
+<TT
+CLASS="FILENAME"
+>myfile.gif</TT
+> must be named
+<TT
+CLASS="FILENAME"
+>myfile.gif.bin</TT
+> in the archive. The
+<TT
+CLASS="FILENAME"
+>.bin</TT
+> suffix is removed during file extraction and
+is used to inhibit the manipulation of line endings by the <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+>
+Administration Tool.</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="PACKAGE.DISTRIB.PREPARE">Preparing eCos packages for distribution</H2
+><P
+>Development of new <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> packages or new versions of existing <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+>
+packages will take place in the context of an existing <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+>
+component repository. This section details the steps involved in
+extracting new packages from a repository and generating a
+corresponding <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> package distribution file for distribution of the
+packages to other <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> users. The steps required are as follows:</P
+><P
+></P
+><OL
+TYPE="a"
+><LI
+><P
+>Create a temporary directory <TT
+CLASS="FILENAME"
+>$PKGTMP</TT
+> for manipulation of the package
+distribution file contents and copy the source files of the new
+packages into this directory, preserving the relative path to the
+package. In the case of a new package at <TT
+CLASS="FILENAME"
+>mypkg/current</TT
+> in the repository:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>    $ mkdir -p $PKGTMP/mypkg
+    $ cp -p -R $ECOS_REPOSITORY/mypkg/current $PKGTMP/mypkg</PRE
+></TD
+></TR
+></TABLE
+><P
+>Where more than one package is to be distributed in a single package
+distribution file, copy each package in the above manner. Note that
+multiple packages distributed in a single package distribution file
+cannot be installed separately. Where such flexibility is required,
+distribution of each new package in separate package distribution files
+is recommended.</P
+></LI
+><LI
+><P
+>Copy any template files associated with the distributed packages into
+the temporary directory, preserving the relative path to the template.
+For example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>    $ mkdir -p $PKGTMP/templates
+    $ cp -p -R $ECOS_REPOSITORY/templates/mytemplate $PKGTMP/templates</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>Remove any files from the temporary directory hierarchy which you do
+not want to distribute with the packages (eg object files, <TT
+CLASS="FILENAME"
+>CVS</TT
+> directories).</P
+></LI
+><LI
+><P
+>Add a <TT
+CLASS="FILENAME"
+>.bin</TT
+> suffix to the name of any binary
+files. For example, if the packages contains GIF image files (*.gif)
+for documentation purposes, such files must be renamed to *.gif.bin as
+follows:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>   $ find $PKGTMP -type f -name '*.gif' -exec mv {} {}.bin ';'</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <TT
+CLASS="FILENAME"
+>.bin</TT
+> suffix is removed during file extraction
+and is used to inhibit the manipulation of line endings by the eCos
+Package Administration Tool.</P
+></LI
+><LI
+><P
+>Extract the package records for the new packages from the package
+database file at <SPAN
+CLASS="DATABASE"
+>$ECOS_REPOSITORY/ecos.db</SPAN
+> and
+create a new file containing these records at
+<TT
+CLASS="FILENAME"
+>$PKGTMP/pkgadd.db</TT
+> (in the root of the temporary
+directory hierarchy). Any target records which reference the
+distributed packages must also be provided in pkgadd.db.</P
+></LI
+><LI
+><P
+>Rename the version directories under <TT
+CLASS="FILENAME"
+>$PKGTMP</TT
+> (typically <TT
+CLASS="FILENAME"
+>current</TT
+> during development) to reflect
+the versions of the packages you are distributing. For example,
+version 1.0 of a package may use the version directory name <TT
+CLASS="FILENAME"
+>v1_0</TT
+>:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>    $ cd $PKGTMP/mypkg
+    $ mv current v1_0</PRE
+></TD
+></TR
+></TABLE
+><P
+><A
+HREF="package.versions.html"
+>the Section called <I
+>Package Versioning</I
+></A
+> describes the version naming
+conventions.</P
+></LI
+><LI
+><P
+>Rename any template files under <TT
+CLASS="FILENAME"
+>$PKGTMP</TT
+> (typically
+<TT
+CLASS="FILENAME"
+>current.ect</TT
+> during development) to reflect the
+version of the template you are distributing. For example, version 1.0
+of a template may use the filename <TT
+CLASS="FILENAME"
+>v1_0.ect</TT
+>:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>    $ cd $PKGTMP/templates/mytemplate
+    $ mv current.ect v1_0.ect</PRE
+></TD
+></TR
+></TABLE
+><P
+>It is also important to edit the contents of the template file, changing
+the version of each referenced package to match that of the packages you
+are distributing. This step will eliminate version warnings during the
+subsequent loading of the template.</P
+></LI
+><LI
+><P
+>Optionally create a licence agreement file at
+<TT
+CLASS="FILENAME"
+>$PKGTMP/pkgadd.txt</TT
+> containing the licensing terms
+under which you are distributing the new packages. Limit each line in
+this file to a maximum of 79 characters.</P
+></LI
+><LI
+><P
+>Create a GNU tar archive of the temporary directory hierarchy. By
+convention, this archive would have a name of the form
+<TT
+CLASS="FILENAME"
+>&lt;package_name&gt;-&lt;version&gt;</TT
+>:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>    $ cd $PKGTMP
+    $ tar cf mypkg-1.0.tar *</PRE
+></TD
+></TR
+></TABLE
+><P
+>Note that non-GNU version of tar may create archive files which exhibit
+subtle incompatibilities with GNU tar. For this reason, always use GNU
+tar to create the archive file.</P
+></LI
+><LI
+><P
+>Compress the archive using gzip and give the resulting file a
+<TT
+CLASS="FILENAME"
+>.epk</TT
+> file extension:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>    $ gzip mypkg-1.0.tar
+    $ mv mypkg-1.0.tar.gz mypkg-1.0.epk</PRE
+></TD
+></TR
+></TABLE
+><P
+>The resulting eCos package distribution file (*.epk) is in a compressed
+format and may be distributed without further compression.</P
+></LI
+></OL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="package.contents.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Package Contents and Layout</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="package.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>The CDL Language</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

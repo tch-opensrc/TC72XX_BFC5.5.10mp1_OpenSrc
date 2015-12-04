@@ -1,0 +1,602 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Updating RedBoot</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="RedBoot&#8482; User's Guide"
+HREF="redboot.html"><LINK
+REL="PREVIOUS"
+TITLE="Rebuilding RedBoot"
+HREF="rebuilding-redboot.html"><LINK
+REL="NEXT"
+TITLE="Installation and Testing"
+HREF="installation-and-testing.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="rebuilding-redboot.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="installation-and-testing.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="UPDATING-REDBOOT">Chapter 4. Updating RedBoot</H1
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="AEN4752">Introduction</H1
+><P
+>RedBoot
+normally resides in an EPROM or, more common these days, a flash 
+on the board. In the former case, updating RedBoot necessitates
+physically removing the part and
+reprogramming a new RedBoot image into it using prommer hardware. In
+the latter case, it is often possible to update RedBoot in situ using
+Redboot's flash management commands.</P
+><P
+>The process of updating RedBoot in situ is documented in this
+section. For this process, it is assumed that the target is connected
+to a host system and that there is a serial connection giving access
+to the RedBoot CLI. For platforms with a ROMRAM mode RedBoot, skip to
+<A
+HREF="updating-redboot.html#UPDATE-PRIMARY-IMAGE"
+>the Section called <I
+>Update the primary RedBoot flash image</I
+></A
+>.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>The addresses and sizes included in the below are examples
+only, and will differ from those you will see. This is normal and
+should not cause concern.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DIFFERENT-VERSION-FROM-RAM">Load and start a RedBoot RAM instance</H2
+><P
+>There are a number of choices here. The basic case is where a RAM
+mode image has been stored in the FIS (flash Image System). To load and
+execute this image, use the commands: <TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fis load RedBoot[RAM]</B
+></TT
+>
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>go</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+>
+If this image is not available, or does not work,
+then an alternate RAM mode image must be loaded:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>load redboot_RAM.img</B
+></TT
+>
+Entry point: 0x060213c0, address range: 0x06020000-0x060369c8                   
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>go</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+>
+
+<DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>This command loads the RedBoot image using the TFTP
+protocol via a network connection. Other methods of loading are
+available, refer to the <B
+CLASS="COMMAND"
+><A
+HREF="download-command.html"
+>load</A
+></B
+> command for more
+details. </P
+></BLOCKQUOTE
+></DIV
+>
+
+<DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>If you expect to be doing this more than once, it is a
+good idea to program the RAM mode image into the flash. You do this
+using the <B
+CLASS="COMMAND"
+>fis create</B
+> command after having
+downloaded the RAM mode image, but before you start it.</P
+><P
+>Some platforms support locking (write protecting) certain regions of
+the flash, while others do not. If your platform does not support
+locking, simply ignore the <B
+CLASS="COMMAND"
+>fis unlock</B
+> and
+<B
+CLASS="COMMAND"
+>fis lock</B
+> steps (the commands will not be
+recognized by RedBoot).</P
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fis unlock RedBoot[RAM]</B
+></TT
+>
+  ... Unlock from 0x00000000-0x00020000: ..
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fis create RedBoot[RAM]</B
+></TT
+>
+An image named 'RedBoot[RAM]' exists - continue (y/n)? <TT
+CLASS="USERINPUT"
+><B
+>y</B
+></TT
+>
+* CAUTION * about to program 'RedBoot[RAM]'
+            at 0x00020000..0x000369c7 from 0x06020000 - continue (y/n)?<TT
+CLASS="USERINPUT"
+><B
+>y</B
+></TT
+>
+... Erase from 0x00020000-0x00040000: ..                                        
+... Program from 0x06020000-0x060369c8 at 0x00020000: ..                        
+... Erase from 0x00070000-0x00080000: .                                         
+... Program from 0x0606f000-0x0607f000 at 0x00070000: .                         
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fis lock RedBoot[RAM]</B
+></TT
+>
+  ... Lock from 0x00000000-0x00020000: ..</PRE
+></TD
+></TR
+></TABLE
+></P
+></BLOCKQUOTE
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="UPDATE-PRIMARY-IMAGE">Update the primary RedBoot flash image</H2
+><P
+>An
+instance of RedBoot should now be running on the target from RAM. This
+can be verified by looking for the mode identifier in the banner. It
+should be either [RAM] or [ROMRAM].</P
+><P
+>If this is the first time RedBoot is running on the board or if
+the flash contents has been damaged, initialize the FIS directory:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fis init -f</B
+></TT
+>
+About to initialize [format] FLASH image system - continue (y/n)? <TT
+CLASS="USERINPUT"
+><B
+>y</B
+></TT
+>
+*** Initialize FLASH Image System
+... Erase from 0x00020000-0x00070000: .....
+... Erase from 0x00080000-0x00080000:
+... Erase from 0x00070000-0x00080000: .
+... Program from 0x0606f000-0x0607f000 at 0x00070000: .</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>It is important to understand that the presence of a correctly
+initialized FIS directory allows RedBoot to automatically determine
+the flash parameters. Additionally, executing the steps below as
+stated without loading other data or using other flash commands (than
+possibly <B
+CLASS="COMMAND"
+>fis list</B
+>) allows RedBoot to automatically
+determine the image location and size parameters. This greatly reduces
+the risk of potential critical mistakes due to typographical errors. It is
+still always possible to explicitly specify parameters, and indeed
+override these, but it is not advised.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>If the new RedBoot image has grown beyond the slot in
+flash reserved for it, it is necessary to change the RedBoot
+configuration option CYGBLD_REDBOOT_MIN_IMAGE_SIZE so the FIS is
+created with adequate space reserved for RedBoot images. In this case,
+it is necessary to re-initialize the FIS directory as described above,
+using a RAM mode RedBoot compiled with the updated
+configuration.</P
+></BLOCKQUOTE
+></DIV
+><P
+>Using the <B
+CLASS="COMMAND"
+>load</B
+> command, download the
+new flash based image from the host, relocating the image to RAM::
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>load -r -b %{FREEMEMLO} redboot_ROM.bin</B
+></TT
+>
+Raw file loaded 0x06046800-0x06062fe8, assumed entry at 0x06046800</PRE
+></TD
+></TR
+></TABLE
+>
+
+<DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>This command loads the RedBoot image using the TFTP
+protocol via a network connection. Other methods of loading are
+available, refer to the <A
+HREF="download-command.html"
+>load</A
+> command for
+more details. </P
+></BLOCKQUOTE
+></DIV
+>
+
+<DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Note that the binary version of the image is being
+downloaded. This is to ensure that the memory after the image is
+loaded should match the contents of the file on the host. Loading SREC
+or ELF versions of the image does not guarantee this since these
+formats may contain holes, leaving bytes in these holes in an unknown
+state after the load, and thus causing a likely cksum difference. It
+is possible to use these, but then the step verifying the cksum below
+may fail.</P
+></BLOCKQUOTE
+></DIV
+></P
+><P
+>Once the image is loaded into RAM, it should be checksummed,
+thus verifying that the image on the target is indeed the image
+intended to be loaded, and that no corruption of the image has
+happened. This is done using the <A
+HREF="cksum-command.html"
+>cksum</A
+>
+command:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>cksum</B
+></TT
+>
+Computing cksum for area 0x06046800-0x06062fe8                                  
+POSIX cksum = 2535322412 116712 (0x971df32c 0x0001c7e8)                         </PRE
+></TD
+></TR
+></TABLE
+>
+Compare the numbers with those for the binary version of the image on
+the host. If they do not match, try downloading the image again.</P
+><P
+>Assuming the cksum matches, the next step is programming the
+image into flash using the FIS commands.</P
+><P
+>Some platforms support locking (write protecting) certain
+regions of the flash, while others do not. If your platform does not
+support locking, simply ignore the <B
+CLASS="COMMAND"
+>fis unlock</B
+> and
+<B
+CLASS="COMMAND"
+>fis lock</B
+> steps (the commands will not be recognized
+by RedBoot).</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fis unlock RedBoot</B
+></TT
+>
+  ... Unlock from 0x00000000-0x00020000: ..
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fis create RedBoot</B
+></TT
+>
+An image named 'RedBoot' exists - continue (y/n)? <TT
+CLASS="USERINPUT"
+><B
+>y</B
+></TT
+>
+* CAUTION * about to program 'RedBoot'
+            at 0x00000000..0x0001c7e7 from 0x06046800 - continue (y/n)? <TT
+CLASS="USERINPUT"
+><B
+>y</B
+></TT
+>
+... Erase from 0x00000000-0x00020000: ..
+... Program from 0x06046800-0x06062fe8 at 0x00000000: ..
+... Erase from 0x00070000-0x00080000: .
+... Program from 0x0606f000-0x0607f000 at 0x00070000: .
+RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fis lock RedBoot</B
+></TT
+>
+  ... Lock from 0x00000000-0x00020000: ..</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4824">Reboot; run the new RedBoot image</H2
+><P
+>Once the image has been successfully written into the flash, simply
+reset the target and the new version of RedBoot should be running. </P
+><P
+>When installing RedBoot for the first time, or after updating to
+a newer RedBoot with different configuration keys, it is necessary to
+update the configuration directory in the flash using the
+<B
+CLASS="COMMAND"
+>fconfig</B
+> command. See <A
+HREF="persistent-state-flash.html"
+>the Section called <I
+>Persistent State Flash-based Configuration and Control</I
+> in Chapter 2</A
+>.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="rebuilding-redboot.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="installation-and-testing.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Rebuilding RedBoot</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="redboot.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Installation and Testing</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,422 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Thread control</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Kernel"
+HREF="kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="Thread information"
+HREF="kernel-thread-info.html"><LINK
+REL="NEXT"
+TITLE="Thread termination"
+HREF="kernel-thread-termination.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="kernel-thread-info.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="kernel-thread-termination.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="KERNEL-THREAD-CONTROL">Thread control</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN482"
+></A
+><H2
+>Name</H2
+>cyg_thread_yield, cyg_thread_delay, cyg_thread_suspend, cyg_thread_resume, cyg_thread_release&nbsp;--&nbsp;Control whether or not a thread is running</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN489"><H2
+>Synopsis</H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><A
+NAME="AEN490"><P
+></P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &lt;cyg/kernel/kapi.h&gt;
+        </PRE
+></TD
+></TR
+></TABLE
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_thread_yield</CODE
+>(void);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_thread_delay</CODE
+>(cyg_tick_count_t delay);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_thread_suspend</CODE
+>(cyg_handle_t thread);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_thread_resume</CODE
+>(cyg_handle_t thread);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_thread_release</CODE
+>(cyg_handle_t thread);</CODE
+></P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN516"
+></A
+><H2
+>Description</H2
+><P
+>These functions provide some control over whether or not a particular
+thread can run. Apart from the required use of
+<TT
+CLASS="FUNCTION"
+>cyg_thread_resume</TT
+> to start a newly-created
+thread, application code should normally use proper synchronization
+primitives such as condition variables or mail boxes.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN520"
+></A
+><H2
+>Yield</H2
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_thread_yield</TT
+> allows a thread to relinquish
+control of the processor to some other runnable thread which has the
+same priority. This can have no effect on any higher-priority thread
+since, if such a thread were runnable, the current thread would have
+been preempted in its favour. Similarly it can have no effect on any
+lower-priority thread because the current thread will always be run in
+preference to those. As a consequence this function is only useful
+in configurations with a scheduler that allows multiple threads to run
+at the same priority, for example the mlqueue scheduler. If instead
+the bitmap scheduler was being used then
+<TT
+CLASS="FUNCTION"
+>cyg_thread_yield()</TT
+> would serve no purpose.
+      </P
+><P
+>Even if a suitable scheduler such as the mlqueue scheduler has been
+configured, <TT
+CLASS="FUNCTION"
+>cyg_thread_yield</TT
+> will still rarely
+prove useful: instead timeslicing will be used to ensure that all
+threads of a given priority get a fair slice of the available
+processor time. However it is possible to disable timeslicing via the
+configuration option <TT
+CLASS="VARNAME"
+>CYGSEM_KERNEL_SCHED_TIMESLICE</TT
+>,
+in which case <TT
+CLASS="FUNCTION"
+>cyg_thread_yield</TT
+> can be used to
+implement a form of cooperative multitasking.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN529"
+></A
+><H2
+>Delay</H2
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_thread_delay</TT
+> allows a thread to suspend until
+the specified number of clock ticks have occurred. For example, if a
+value of 1 is used and the system clock runs at a frequency of 100Hz
+then the thread will sleep for up to 10 milliseconds. This
+functionality depends on the presence of a real-time system clock, as
+controlled by the configuration option
+<TT
+CLASS="VARNAME"
+>CYGVAR_KERNEL_COUNTERS_CLOCK</TT
+>.
+      </P
+><P
+>If the application requires delays measured in milliseconds or similar
+units rather than in clock ticks, some calculations are needed to
+convert between these units as described in <A
+HREF="kernel-clocks.html"
+>Clocks</A
+>. Usually these calculations can be done by
+the application developer, or at compile-time. Performing such
+calculations prior to every call to
+<TT
+CLASS="FUNCTION"
+>cyg_thread_delay</TT
+> adds unnecessary overhead to the
+system. 
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN537"
+></A
+><H2
+>Suspend and Resume</H2
+><P
+>Associated with each thread is a suspend counter. When a thread is
+first created this counter is initialized to 1.
+<TT
+CLASS="FUNCTION"
+>cyg_thread_suspend</TT
+> can be used to increment the
+suspend counter, and <TT
+CLASS="FUNCTION"
+>cyg_thread_resume</TT
+> decrements
+it. The scheduler will never run a thread with a non-zero suspend
+counter. Therefore a newly created thread will not run until it has
+been resumed.
+      </P
+><P
+>An occasional problem with the use of suspend and resume functionality
+is that a thread gets suspended more times than it is resumed and
+hence never becomes runnable again. This can lead to very confusing
+behaviour. To help with debugging such problems the kernel provides a
+configuration option
+<TT
+CLASS="VARNAME"
+>CYGNUM_KERNEL_MAX_SUSPEND_COUNT_ASSERT</TT
+> which
+imposes an upper bound on the number of suspend calls without matching
+resumes, with a reasonable default value. This functionality depends
+on infrastructure assertions being enabled.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN544"
+></A
+><H2
+>Releasing a Blocked Thread</H2
+><P
+>When a thread is blocked on a synchronization primitive such as a
+semaphore or a mutex, or when it is waiting for an alarm to trigger,
+it can be forcibly woken up using
+<TT
+CLASS="FUNCTION"
+>cyg_thread_release</TT
+>. Typically this will call the
+affected synchronization primitive to return false, indicating that
+the operation was not completed successfully. This function has to be
+used with great care, and in particular it should only be used on
+threads that have been designed appropriately and check all return
+codes. If instead it were to be used on, say, an arbitrary thread that
+is attempting to claim a mutex then that thread might not bother to
+check the result of the mutex lock operation - usually there would be
+no reason to do so. Therefore the thread will now continue running in
+the false belief that it has successfully claimed a mutex lock, and
+the resulting behaviour is undefined. If the system has been built
+with assertions enabled then it is possible that an assertion will
+trigger when the thread tries to release the mutex it does not
+actually own.
+      </P
+><P
+>The main use of <TT
+CLASS="FUNCTION"
+>cyg_thread_release</TT
+> is in the
+POSIX compatibility layer, where it is used in the implementation of
+per-thread signals and cancellation handlers.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-THREAD-CONTROL-CONTEXT"
+></A
+><H2
+>Valid contexts</H2
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_thread_yield</TT
+> can only be called from thread
+context, A DSR must always run to completion and cannot yield the
+processor to some thread. <TT
+CLASS="FUNCTION"
+>cyg_thread_suspend</TT
+>,
+<TT
+CLASS="FUNCTION"
+>cyg_thread_resume</TT
+>, and
+<TT
+CLASS="FUNCTION"
+>cyg_thread_release</TT
+> may be called from thread or
+DSR context. 
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="kernel-thread-info.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="kernel-thread-termination.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Thread information</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Thread termination</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

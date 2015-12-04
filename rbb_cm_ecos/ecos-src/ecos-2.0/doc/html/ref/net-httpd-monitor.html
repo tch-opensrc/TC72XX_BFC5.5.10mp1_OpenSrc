@@ -1,0 +1,177 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>System Monitor</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Embedded HTTP Server"
+HREF="net-httpd-chapter.html"><LINK
+REL="PREVIOUS"
+TITLE="Support Functions and Macros"
+HREF="net-httpd-html.html"><LINK
+REL="NEXT"
+TITLE="FTP Client for eCos TCP/IP Stack"
+HREF="net-ftpclient.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-httpd-html.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 48. Embedded HTTP Server</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-ftpclient.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-HTTPD-MONITOR">System Monitor</H1
+><P
+>Included in the HTTPD package is a simple System Monitor that is
+intended to act as a test and an example of how to produce servers.
+It is also hoped that it might be of some use in and of itself.</P
+><P
+>The System Monitor is intended to work in the background of any
+application. Adding the network stack and the HTTPD package to any
+configuration will enable the monitor by default. It may be disabled
+by disabling the <TT
+CLASS="LITERAL"
+>CYGPKG_HTTPD_MONITOR</TT
+> option.</P
+><P
+>The monitor is intended to be simple and self-explanatory in use. It
+consists of four main pages. The thread monitor page presents a table
+of all current threads showing such things as id, state, priority,
+name and stack dimensions. Clicking on the thread ID will link to a
+thread edit page where the thread's state and priority may be
+manipulated. The interrupt monitor just shows a table of the current
+interrupts and indicates which are active. The memory monitor shows a
+256 byte page of memory, with controls to change the base address and
+display element size. The network monitor page shows
+information extracted from the active network interfaces and
+protocols. Finally, if kernel instrumentation is enabled, the
+instrumentation page provides some controls over the instrumentation
+mechanism, and displays the instrumentation buffer.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-httpd-html.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-ftpclient.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Support Functions and Macros</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-httpd-chapter.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>FTP Client for eCos TCP/IP Stack</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

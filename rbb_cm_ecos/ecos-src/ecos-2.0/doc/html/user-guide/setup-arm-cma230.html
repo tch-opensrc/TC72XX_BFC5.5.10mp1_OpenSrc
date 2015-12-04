@@ -1,0 +1,341 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>ARM Cogent CMA230 Hardware Setup</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Target Setup"
+HREF="appendix-target-setup.html"><LINK
+REL="PREVIOUS"
+TITLE="ARM AEB-1 Hardware Setup"
+HREF="setup-arm-aeb1.html"><LINK
+REL="NEXT"
+TITLE="Cirrus Logic ARM EP7211 Development
+Board Hardware Setup"
+HREF="setup-arm-ep7211.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="setup-arm-aeb1.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Target Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="setup-arm-ep7211.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SETUP-ARM-CMA230">ARM Cogent CMA230 Hardware Setup</H1
+><P
+>The eCos Developer's Kit package comes with an EPROM
+which provides GDB support for the Cogent evaluation board. An image
+of this EPROM is also provided at loaders/arm-cma230/gdbload.bin
+under the root of your eCos installation. </P
+><P
+>The EPROM is installed to socket U3 on the board. Attention
+should be paid to the correct orientation of the EPROM during installation.</P
+><P
+>If you are going to burn a new EPROM using the binary image,
+be careful to get the byte order correct. It needs to be little-endian,
+which is usually the default in PC based programmer software.</P
+><P
+>If the GDB stub EPROM you burn does not work, try reversing
+the byte-order, even if you think you have it the right way around.
+At least one DOS-based EPROM burner program is known to have the
+byte-order upside down.</P
+><P
+>The GDB stub in the EPROM allows communication with GDB using
+the serial port at connector P12 (CMA101) or P3 (CMA102). The communication parameters
+are fixed at 38400 baud, 8 data bits, no parity bit and 1 stop bit
+(8-N-1).  No flow control is employed. Connection to the host computer
+should be made using a dedicated serial cable as specified in the
+Cogent CMA manual.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3778">Building the GDB Stub FLASH ROM images</H2
+><P
+>Pre-built GDB stubs images are provided in the directory loaders/arm-cma230 relative
+to the root of your eCos installation, but here are instructions
+on how to rebuild them if you should ever need to.</P
+><P
+>CygMon images are prefixed with the name 'cygmon' and
+GDB stub ROM images</P
+><P
+>are given the prefix 'gdb_module'.
+Images may be provided in a number of formats including ELF (.img
+extension), binary (.bin extension) and SREC (.srec extension). </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3783">Building the GDB Stubs with the eCos Configuration Tool</H2
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>1. Start with a new document - selecting the File-&#62;New
+menu item if necessary to do this.</P
+></LI
+><LI
+><P
+>Choose the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build</I
+></SPAN
+>-&#62;<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Templates</I
+></SPAN
+>
+ menu item, and then select the ARM CMA230 hardware.</P
+></LI
+><LI
+><P
+>While still displaying the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build</I
+></SPAN
+>
+-&#62;
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Templates</I
+></SPAN
+>
+ dialog box, select the "stubs" package template to build a GDB
+stub image. Click 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>OK</I
+></SPAN
+>.</P
+></LI
+><LI
+><P
+>Build eCos using 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build</I
+></SPAN
+>
+-&#62;
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Library</I
+></SPAN
+></P
+></LI
+><LI
+><P
+>When the build completes, the image files can be found
+in the bin/ subdirectory of the install tree. The GDB stub
+ROM images have the prefix "gdb_module".</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3803">Building the GDB Stub ROMs with ecosconfig</H2
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>1. Make an empty directory to contain the build tree,
+and cd into it.</P
+></LI
+><LI
+><P
+>To build a GDB stub ROM image, enter the command:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig new cma230 stubs</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>Enter the commands:
+ 
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig tree
+$ make</PRE
+></TD
+></TR
+></TABLE
+></P
+></LI
+><LI
+><P
+>When the build completes, the image files can be found
+in the bin/ subdirectory of the install tree. The GDB stub
+ROM images have the prefix "gdb_module".</P
+></LI
+></OL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="setup-arm-aeb1.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="setup-arm-ep7211.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>ARM AEB-1 Hardware Setup</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="appendix-target-setup.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Cirrus Logic ARM EP7211 Development
+Board Hardware Setup</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

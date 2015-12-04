@@ -1,0 +1,357 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>HAL I/O</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="HAL Interfaces"
+HREF="hal-interfaces.html"><LINK
+REL="PREVIOUS"
+TITLE="Interrupt Handling"
+HREF="hal-interrupt-handling.html"><LINK
+REL="NEXT"
+TITLE="Cache Control"
+HREF="hal-cache-control.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="hal-interrupt-handling.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. HAL Interfaces</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="hal-cache-control.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="HAL-INPUT-AND-OUTPUT">HAL I/O</H1
+><P
+>This section contains definitions for supporting access
+to device control registers in an architecture neutral
+fashion.</P
+><P
+>These definitions are normally found in the header file
+<TT
+CLASS="FILENAME"
+>cyg/hal/hal_io.h</TT
+>.  This file itself contains
+macros that are generic to the architecture. If there are variant or
+platform specific IO access macros then these will be found in
+<TT
+CLASS="FILENAME"
+>cyg/hal/var_io.h</TT
+> and
+<TT
+CLASS="FILENAME"
+>cyg/hal/plf_io.h</TT
+> in the variant or platform HALs
+respectively. These files are include automatically by this header, so
+need not be included explicitly.</P
+><P
+>This header (or more likely <TT
+CLASS="FILENAME"
+>cyg/hal/plf_io.h</TT
+>) also
+defines the PCI access macros. For more information on these see <A
+HREF="pci-library-reference.html"
+>the Section called <I
+>PCI Library reference</I
+> in Chapter 30</A
+>.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN8057">Register address</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>HAL_IO_REGISTER</PRE
+></TD
+></TR
+></TABLE
+><P
+>This type is used to store the address of an I/O register. It will
+normally be a memory address, an integer port address or an offset
+into an I/O space. More complex architectures may need to code an
+address space plus offset pair into a single word, or may represent it
+as a structure.</P
+><P
+>Values of variables and constants of this type will usually be
+supplied by configuration mechanisms or in target specific headers.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN8062">Register read</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>HAL_READ_XXX( register, value )
+HAL_READ_XXX_VECTOR( register, buffer, count, stride )</PRE
+></TD
+></TR
+></TABLE
+><P
+>These macros support the reading of I/O registers in various
+sizes. The <TT
+CLASS="REPLACEABLE"
+><I
+>XXX</I
+></TT
+> component of the name may be
+<TT
+CLASS="LITERAL"
+>UINT8</TT
+>, <TT
+CLASS="LITERAL"
+>UINT16</TT
+>,
+<TT
+CLASS="LITERAL"
+>UINT32</TT
+>.</P
+><P
+><TT
+CLASS="FUNCTION"
+>HAL_READ_XXX()</TT
+> reads the appropriately sized
+value from the register and stores it in the variable passed as the
+second argument.</P
+><P
+><TT
+CLASS="FUNCTION"
+>HAL_READ_XXX_VECTOR()</TT
+> reads
+<TT
+CLASS="PARAMETER"
+><I
+>count</I
+></TT
+> values of the appropriate size into
+<TT
+CLASS="PARAMETER"
+><I
+>buffer</I
+></TT
+>. The <TT
+CLASS="PARAMETER"
+><I
+>stride</I
+></TT
+>
+controls how the pointer advances through the register space. A stride
+of zero will read the same register repeatedly, and a stride of one
+will read adjacent registers of the given size. Greater strides will
+step by larger amounts, to allow for sparsely mapped registers for
+example.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN8077">Register write</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>HAL_WRITE_XXX( register, value )
+HAL_WRITE_XXX_VECTOR( register, buffer,count, stride )</PRE
+></TD
+></TR
+></TABLE
+><P
+>These macros support the writing of I/O registers in various
+sizes. The <TT
+CLASS="REPLACEABLE"
+><I
+>XXX</I
+></TT
+> component of the name may be
+<TT
+CLASS="LITERAL"
+>UINT8</TT
+>, <TT
+CLASS="LITERAL"
+>UINT16</TT
+>,
+<TT
+CLASS="LITERAL"
+>UINT32</TT
+>.</P
+><P
+><TT
+CLASS="FUNCTION"
+>HAL_WRITE_XXX()</TT
+> writes
+the appropriately sized value from the variable passed as the second argument
+stored it in the register.</P
+><P
+><TT
+CLASS="FUNCTION"
+>HAL_WRITE_XXX_VECTOR()</TT
+> writes
+<TT
+CLASS="PARAMETER"
+><I
+>count</I
+></TT
+> values of the appropriate size from <TT
+CLASS="PARAMETER"
+><I
+>buffer</I
+></TT
+>. The <TT
+CLASS="PARAMETER"
+><I
+>stride</I
+></TT
+> controls
+how the pointer advances through the register space. A stride of
+zero will write the same register repeatedly, and a stride of one
+will write adjacent registers of the given size. Greater strides
+will step by larger amounts, to allow for sparsely mapped registers
+for example.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="hal-interrupt-handling.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="hal-cache-control.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Interrupt Handling</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="hal-interfaces.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Cache Control</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,307 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Building the System</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Manual Configuration"
+HREF="manual-configuration.html"><LINK
+REL="PREVIOUS"
+TITLE="Conflicts and constraints"
+HREF="conflicts-and-constraints.html"><LINK
+REL="NEXT"
+TITLE="Packages"
+HREF="ecos-packages.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="conflicts-and-constraints.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 28. Manual Configuration</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ecos-packages.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="BUILDING-THE-SYSTEM">Building the System</H1
+><P
+>Once a build tree has been generated with
+	  <B
+CLASS="COMMAND"
+>ecosconfig</B
+>, building <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> is straightforward:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ make</PRE
+></TD
+></TR
+></TABLE
+><P
+>The build tree contains the subdirectories, makefiles,
+	  and everything else that is needed to generate the default
+	  configuration for the selected architecture and platform.
+	  The only requirement is that the tools needed for that
+	  architecture, for example
+	  <B
+CLASS="COMMAND"
+>powerpc-eabi-g++</B
+>,
+	  are available using the standard search path. If this is not
+	  the case then the <B
+CLASS="COMMAND"
+>make</B
+> will
+	  fail with an error message. If you have a multiprocessor
+	  system then it may be more efficient to use:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ make -j <TT
+CLASS="REPLACEABLE"
+><I
+>n</I
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+><P
+>where <TT
+CLASS="REPLACEABLE"
+><I
+>n</I
+></TT
+> is equal to the
+	  number of processors on your system.</P
+><P
+>Once the <B
+CLASS="COMMAND"
+>make</B
+> process
+	  has completed, the install tree will contain the header
+	  files and the target library that are needed for application
+	  development. </P
+><P
+>It is also possible to build the system&#8217;s test cases
+for the current configuration:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ make tests</PRE
+></TD
+></TR
+></TABLE
+><P
+>The resulting test executables will end up in a
+	  <TT
+CLASS="FILENAME"
+>tests</TT
+> subdirectory of the
+	  install tree. </P
+><P
+>If disk space is scarce then it is possible to make the copy
+of the install tree for application development purposes, and then
+use: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ make clean</PRE
+></TD
+></TR
+></TABLE
+><P
+>The build tree will now use up a minimum of disk space &#8212; the
+bulk of what is left consists of configuration header files that
+you may have edited and hence should not be deleted automatically.
+However, it is possible to rebuild the system at any time without
+re-invoking <B
+CLASS="COMMAND"
+>ecosconfig</B
+>, just by
+running <B
+CLASS="COMMAND"
+>make</B
+> again. </P
+><P
+>Under exceptional circumstances it may be necessary to run <B
+CLASS="COMMAND"
+>make
+clean</B
+> for other reasons, such as when a new release
+of the toolchain is installed. The toolchain includes a number of
+header files which are closely tied to the compiler, for example <TT
+CLASS="FILENAME"
+>limits.h</TT
+>,
+and these header files are not and should not be duplicated by <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>.
+The makefiles perform header file dependency analysis, so that when
+a header file is changed all affected sources will be rebuilt during
+the next <B
+CLASS="COMMAND"
+>make</B
+>. This is very useful
+when the configuration header files are changed, but it also means
+that a build tree containing information about the locations of
+header files must be rebuilt. If a new version of the toolchain
+is installed and the old version is removed then this location information
+is no longer accurate, and <B
+CLASS="COMMAND"
+>make</B
+> will
+complain that certain dependencies cannot be satisfied. Under such circumstances
+it is necessary to do a <B
+CLASS="COMMAND"
+>make clean</B
+> first. </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="conflicts-and-constraints.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ecos-packages.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Conflicts and constraints</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="manual-configuration.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Packages</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

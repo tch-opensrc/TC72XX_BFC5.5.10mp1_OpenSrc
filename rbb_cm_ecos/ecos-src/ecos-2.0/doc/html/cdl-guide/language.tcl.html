@@ -1,0 +1,927 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>An Introduction to Tcl</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="The CDL Language"
+HREF="language.html"><LINK
+REL="PREVIOUS"
+TITLE="Option Naming Convention"
+HREF="language.naming.html"><LINK
+REL="NEXT"
+TITLE="Values and Expressions"
+HREF="language.values.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="language.naming.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. The CDL Language</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="language.values.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="LANGUAGE.TCL">An Introduction to Tcl</H1
+><P
+>All <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> scripts are implemented as <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> scripts, and are read in by
+running the data through a standard <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> interpreter, extended with a
+small number of additional commands such as
+<TT
+CLASS="LITERAL"
+>cdl_option</TT
+> and <TT
+CLASS="LITERAL"
+>cdl_component</TT
+>.
+Often it is not necessary to know the full details of <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> syntax.
+Instead it is possible to copy an existing script, perform some copy
+and paste operations, and make appropriate changes to names and to
+various properties. However there are also cases where an
+understanding of <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> syntax is very desirable, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYGDAT_UITRON_MEMPOOLFIXED_EXTERNS {
+    display       "Externs for initialization"
+    flavor        data
+    default_value {"static char fpool1[ 2000 ], \\\n\
+	                        fpool2[ 2000 ], \\\n\
+	                        fpool3[ 2000 ];"}
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>This causes the <TT
+CLASS="LITERAL"
+>cdl_option</TT
+> command to be executed, which in turn
+evaluates its body in a recursive invocation of the <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> interpreter.
+When the <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+> property is encountered the braces around the
+value part are processed by the interpreter, stopping it from doing
+further processing of the braced contents (except for backslash
+processing at the end of a line, that is special). In particular it
+prevents command substitution for
+<TT
+CLASS="LITERAL"
+>[&nbsp;2000&nbsp;]</TT
+>. A single argument will be
+passed to the <SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+> command which expects a <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+>
+expression, so the expression parsing code is passed the following:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>"static char fpool1[ 2000 ], \\\n fpool2[ 2000 ], \\\n fpool3[ 2000 ];"</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> expression parsing code will treat this as a simple string
+constant, as opposed to a more complicated expression involving other
+options and various operators. The string parsing code will perform
+the usual backslash substitutions so the actual default value will be:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>static char fpool1[ 2000 ], \
+ fpool2[ 2000 ], \
+ fpool3[ 2000 ];</PRE
+></TD
+></TR
+></TABLE
+><P
+>If the user does not modify the option's value then the following
+will be generated in the appropriate configuration header file:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYGDAT_UITRON_MEMPOOLFIXED_EXTERNS static char fpool1[ 2000 ], \
+ fpool2[ 2000 ], \
+ fpool3[ 2000 ];</PRE
+></TD
+></TR
+></TABLE
+><P
+>Getting this desired result usually requires an understanding of both
+<SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> syntax and <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> expression syntax. Sometimes it is possible to
+substitute a certain amount of trial and error instead, but this may
+prove frustrating. It is also worth pointing out that many <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+>
+scripts do not involve this level of complexity. On the other hand,
+some of the more advanced features of the <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> language involve
+fragments of <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> code, for example the <SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+> property. To
+use these component writers will need to know about the full <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+>
+language as well as the syntax.</P
+><P
+>Although the current example may seem to suggest that <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> is rather
+complicated, it is actually a very simple yet powerful scripting
+language: the syntax is defined by just eleven rules. On occasion this
+simplicity means that Tcl's behavior is subtly different from other
+languages, which can confuse newcomers.</P
+><P
+>When the Tcl interpreter is passed some data such as
+<TT
+CLASS="LITERAL"
+>puts&nbsp;Hello</TT
+>, it splits this data into a command
+and its arguments. The command will be terminated by a newline or by a
+semicolon, unless one of the quoting mechanisms is used. The command
+and each of its arguments are separated by white space. So in the
+following example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>puts Hello
+set x 42</PRE
+></TD
+></TR
+></TABLE
+><P
+>This will result in two separate commands being executed. The first
+command is <TT
+CLASS="LITERAL"
+>puts</TT
+> and is passed a single argument,
+<TT
+CLASS="LITERAL"
+>Hello</TT
+>. The second command is <TT
+CLASS="LITERAL"
+>set</TT
+>
+and is passed two arguments, <TT
+CLASS="LITERAL"
+>x</TT
+> and
+<TT
+CLASS="LITERAL"
+>42</TT
+>. The intervening newline character serves to
+terminate the first command, and a semi-colon separator could be used
+instead: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>puts Hello;set x 42</PRE
+></TD
+></TR
+></TABLE
+><P
+>Any white space surrounding the semicolon is just ignored because it
+does not serve to separate arguments.</P
+><P
+>Now consider the following:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>set x Hello world</PRE
+></TD
+></TR
+></TABLE
+><P
+>This is not valid <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+>. It is an attempt to invoke the
+<TT
+CLASS="LITERAL"
+>set</TT
+> command with three arguments:
+<TT
+CLASS="LITERAL"
+>x</TT
+>, <TT
+CLASS="LITERAL"
+>Hello</TT
+>, and
+<TT
+CLASS="LITERAL"
+>world</TT
+>. The <TT
+CLASS="LITERAL"
+>set</TT
+> only takes two
+arguments, a variable name and a value, so it is necessary to combine
+the data into a single argument by quoting:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>set x "Hello world"</PRE
+></TD
+></TR
+></TABLE
+><P
+>When the <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> interpreter encounters the first quote character it
+treats all subsequent data up to but not including the closing quote
+as part of the current argument. The quote marks are removed by the
+interpreter, so the second argument passed to the
+<TT
+CLASS="LITERAL"
+>set</TT
+> command is just <TT
+CLASS="LITERAL"
+>Hello world</TT
+>
+without the quote characters. This can be significant in the context
+of <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> scripts. For example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYG_HAL_STARTUP {
+    &#8230;
+    default_value "RAM"
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> interpreter strips off the quote marks so the <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+>
+expression parsing code sees <TT
+CLASS="LITERAL"
+>RAM</TT
+> instead of
+<TT
+CLASS="LITERAL"
+>"RAM"</TT
+>. It will treat this as a reference to
+some unknown option <TT
+CLASS="VARNAME"
+>RAM</TT
+> rather than as a string
+constant, and the expression evaluation code will use a value of
+<TT
+CLASS="LITERAL"
+>0</TT
+> when it encounters an option that is not
+currently loaded. Therefore the option
+<TT
+CLASS="VARNAME"
+>CYG_HAL_STARTUP</TT
+> ends up with a default value of
+<TT
+CLASS="LITERAL"
+>0</TT
+>. Either braces or backslashes should be used to
+avoid this, for example
+<TT
+CLASS="LITERAL"
+>default_value&nbsp;{&nbsp;"RAM"&nbsp;}</TT
+>. </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>There are long-term plans to implement some sort of <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> validation
+utility <SPAN
+CLASS="APPLICATION"
+>cdllint</SPAN
+> which
+could catch common errors like this one.</P
+></BLOCKQUOTE
+></DIV
+><P
+>A quoted argument continues until the closing quote character is
+encountered, which means that it can span multiple lines. Newline or
+semicolon characters do not terminate the current command in such
+cases. <SPAN
+CLASS="PROPERTY"
+>description</SPAN
+> properties usually make use of this:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_package CYGPKG_ERROR {
+    description   "
+        This package contains the common list of error and
+        status codes. It is held centrally to allow
+        packages to interchange error codes and status
+        codes in a common way, rather than each package
+        having its own conventions for error/status
+        reporting. The error codes are modelled on the
+        POSIX style naming e.g. EINVAL etc. This package
+        also provides the standard strerror() function to
+        convert error codes to textual representation."
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> interpreter supports much the same forms of backslash
+substitution as other common programming languages. Some backslash
+sequences such as <TT
+CLASS="LITERAL"
+>\n</TT
+> will be replaced by the
+appropriate character. The sequence <TT
+CLASS="LITERAL"
+>\\</TT
+> will be
+replaced by a single backslash. A backslash at the very end of a line
+will cause that backslash, the newline character, and any white space
+at the start of the next line to be replaced by a single space. Hence
+the following two Tcl commands are equivalent:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>puts  "Hello\nworld\n"
+puts \
+"Hello
+world
+"</PRE
+></TD
+></TR
+></TABLE
+><P
+>If a <SPAN
+CLASS="PROPERTY"
+>description</SPAN
+> string needs to contain quote marks or other
+special characters then backslash escapes can be used. In addition to
+quote and backslash characters, the Tcl interpreter treats square
+brackets, the <TT
+CLASS="LITERAL"
+>$</TT
+> character, and braces specially.
+Square brackets are used for command substitution, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>puts "The answer is [expr 6 * 9]"</PRE
+></TD
+></TR
+></TABLE
+><P
+>When the Tcl interpreter encounters the square brackets it will treat
+the contents as another command that should be executed first, and the
+result of executing that is used when continuing to process the
+script. In this case the Tcl interpreter will execute the command
+<TT
+CLASS="LITERAL"
+>expr 6 * 9</TT
+>, yielding a result of 42
+<A
+NAME="AEN1270"
+HREF="#FTN.AEN1270"
+>[1]</A
+>
+and then the
+Tcl interpreter will execute <TT
+CLASS="LITERAL"
+>puts "The answer is 42"</TT
+>.
+It should be noted that the interpreter performs only one level
+of substitution: if the result of performing command substitution
+performs further special characters such as square brackets then these
+will not be treated specially.</P
+><P
+>Command substitution will not prove useful for many <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> scripts,
+except for e.g. a <SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+> property which involves a fragment of
+<SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> code. Potentially there are some interesting uses, for example
+to internationalize <SPAN
+CLASS="PROPERTY"
+>display</SPAN
+> strings. However care does have to be
+taken to avoid unexpected command substitution, for example if an
+option description involves square brackets then typically these would
+require backslash-escapes.</P
+><P
+>The <TT
+CLASS="LITERAL"
+>$</TT
+> character is used in Tcl scripts to perform
+variable substitution:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>set x [expr 6 * 9]
+puts "The answer is $x"</PRE
+></TD
+></TR
+></TABLE
+><P
+>Variable substitution, like command substitution, is unlikely to
+prove useful for many <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> scripts except in the context of
+<SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> fragments. If it is necessary to have a <TT
+CLASS="LITERAL"
+>$</TT
+>
+character then a backslash escape may have to be used.</P
+><P
+>Braces are used to collect a sequence of characters into a single
+argument, just like quotes. The difference is that variable, command
+and backslash substitution do not occur inside braces (with the
+sole exception of backslash substitution at the end of a line).
+Therefore given a line in a <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> script such as:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>default_value {"RAM"}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The braces are stripped off by the <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> interpreter, leaving
+<TT
+CLASS="LITERAL"
+>"RAM"</TT
+> which will be handled as a string constant by
+the expression parsing code. The same effect could be achieved using
+one of the following:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>default_value \"RAM\"
+default_value "\"RAM\""</PRE
+></TD
+></TR
+></TABLE
+><P
+>Generally the use of braces is less confusing. At this stage it is
+worth noting that the basic format of <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> data makes use of
+braces:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option &lt;name&gt; {
+     &#8230;
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <TT
+CLASS="LITERAL"
+>cdl_option</TT
+> command is passed two arguments, a name and a body,
+where the body consists of everything inside the braces but not the
+braces themselves. This body can then be executed in a recursive
+invocation of the <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+> interpreter. If a <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> script contains
+mismatched braces then the interpreter is likely to get rather
+confused and the resulting diagnostics may be difficult to understand. </P
+><P
+>Comments in Tcl scripts are introduced by a hash character
+<TT
+CLASS="LITERAL"
+>#</TT
+>. However, a hash character only introduces a
+comment if it occurs where a command is expected. Consider the
+following:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+># This is a comment
+puts "Hello" # world</PRE
+></TD
+></TR
+></TABLE
+><P
+>The first line is a valid comment, since the hash character occurs
+right at the start where a command name is expected. The second line
+does not contain a comment. Instead it is an attempt to invoke the
+<TT
+CLASS="LITERAL"
+>puts</TT
+> command with three arguments:
+<TT
+CLASS="LITERAL"
+>Hello</TT
+>, <TT
+CLASS="LITERAL"
+>#</TT
+> and
+<TT
+CLASS="LITERAL"
+>world</TT
+>. These are not valid arguments for the
+<TT
+CLASS="LITERAL"
+>puts</TT
+> command so an error will be raised.
+If the second line was rewritten as:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>puts "Hello"; # world</PRE
+></TD
+></TR
+></TABLE
+><P
+>then this is a valid Tcl script. The semicolon identifies the end of
+the current command, so the hash character occurs at a point where the
+next command would start and hence it is interpreted as the start of a
+comment.</P
+><P
+>This handling of comments can lead to subtle behavior. Consider the
+following:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option WHATEVER {
+# This is a comment }
+    default_value 0
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>Consider the way the Tcl interpreter processes this. The command name
+and the first argument do not pose any special difficulties. The
+opening brace is interpreted as the start of the next argument, which
+continues until a closing brace is encountered. In this case the
+closing brace occurs on the second line, so the second argument passed
+to <TT
+CLASS="LITERAL"
+>cdl_option</TT
+> is
+<TT
+CLASS="LITERAL"
+>\n&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;This&nbsp;is&nbsp;a&nbsp;comment</TT
+>. This second argument is processed in a recursive
+invocation of the Tcl interpreter and does not contain any commands,
+just a comment. Top-level script processing then resumes, and the next
+command that is encountered is <TT
+CLASS="LITERAL"
+>default_value</TT
+>. Since
+the parser is not currently processing a configuration option this is
+an error. Later on the Tcl interpreter would encounter a closing brace
+by itself, which is also an error.</P
+><P
+>For component writers who need more information about <SPAN
+CLASS="APPLICATION"
+>Tcl</SPAN
+>,
+especially about the language rather than the syntax, various
+resources are available. A reasonable starting point is the
+<A
+HREF="http://www.tcl.tk/scripting/"
+TARGET="_top"
+>Scriptics developer
+web site</A
+>.</P
+></DIV
+><H3
+CLASS="FOOTNOTES"
+>Notes</H3
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN1270"
+HREF="language.tcl.html#AEN1270"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>It is possible that some versions of the Tcl interpreter will instead
+produce a result of 54 when asked to multiply six by nine. Appropriate
+<A
+HREF="http://www.douglasadams.com/creations/hhgg.html"
+TARGET="_top"
+>reference
+documentation</A
+> should be consulted for more information on why
+42 is in fact the correct answer.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="language.naming.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="language.values.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Option Naming Convention</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="language.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Values and Expressions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

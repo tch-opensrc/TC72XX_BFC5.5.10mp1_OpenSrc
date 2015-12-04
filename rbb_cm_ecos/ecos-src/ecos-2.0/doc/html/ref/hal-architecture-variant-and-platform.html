@@ -1,0 +1,202 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Architecture, Variant and Platform</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Hardware Abstraction Layer (HAL)"
+HREF="the-ecos-hardware-abstraction-layer.html"><LINK
+REL="PREVIOUS"
+TITLE="Introduction"
+HREF="hal-introduction.html"><LINK
+REL="NEXT"
+TITLE="General principles"
+HREF="hal-general-principles.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="hal-introduction.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="hal-general-principles.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="HAL-ARCHITECTURE-VARIANT-AND-PLATFORM">Chapter 7. Architecture, Variant and Platform</H1
+><P
+>We have identified three levels at which the HAL must operate.</P
+><P
+></P
+><UL
+><LI
+><P
+>    The <I
+CLASS="FIRSTTERM"
+>architecture
+    HAL</I
+> abstracts the basic CPU architecture and includes
+    things like interrupt delivery, context switching, CPU startup
+    etc.
+    </P
+></LI
+><LI
+><P
+>    The  <I
+CLASS="FIRSTTERM"
+>variant HAL</I
+>
+    encapsulates features of the CPU variant such as caches, MMU and
+    FPU features. It also deals with any on-chip peripherals such as
+    memory and interrupt controllers. For architectural variations,
+    the actual implementation of the variation is often in the
+    architectural HAL, and the variant HAL simply provides the correct
+    configuration definitions.
+    </P
+></LI
+><LI
+><P
+>    The <I
+CLASS="FIRSTTERM"
+>platform HAL</I
+>
+    abstracts the properties of the current platform and includes
+    things like platform startup, timer devices, I/O register access
+    and interrupt controllers.
+    </P
+></LI
+></UL
+><P
+>The boundaries between these three HAL levels are necessarily blurred
+since functionality shifts between levels on a target-by-target basis.
+For example caches and MMU may be either an architecture feature or a
+variant feature. Similarly, memory and interrupt controllers may be
+on-chip and in the variant HAL, or off-chip and in the platform HAL.</P
+><P
+>Generally there is a separate package for each of the architecture,
+variant and package HALs for a target. For some of the older targets,
+or where it would be essentially empty, the variant HAL is omitted.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="hal-introduction.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="hal-general-principles.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Introduction</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="the-ecos-hardware-abstraction-layer.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>General principles</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

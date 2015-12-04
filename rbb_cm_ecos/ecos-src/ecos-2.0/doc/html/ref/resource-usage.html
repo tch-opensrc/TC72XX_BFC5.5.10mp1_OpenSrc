@@ -1,0 +1,330 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>RedBoot Resource Usage</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Getting Started with RedBoot"
+HREF="getting-started-with-redboot.html"><LINK
+REL="PREVIOUS"
+TITLE="RedBoot Startup Mode"
+HREF="startup-mode.html"><LINK
+REL="NEXT"
+TITLE="Configuring the RedBoot Environment"
+HREF="configuring-the-redboot-environment.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="startup-mode.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Getting Started with RedBoot</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="configuring-the-redboot-environment.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RESOURCE-USAGE">RedBoot Resource Usage</H1
+><P
+>  </P
+><P
+>RedBoot takes up both flash and RAM resources depending on its
+startup mode and number of enabled features. There are also other
+resources used by RedBoot, such as timers. Platform-specific resources
+used by RedBoot are listed in the platform specific parts of this
+manual.</P
+><P
+>Both flash and RAM resources used by RedBoot depend to some
+degree on the features enabled in the RedBoot configuration. It is
+possible to reduce in particular the RAM resources used by RedBoot by
+removing features that are not needed. Flash resources can also be
+reduced, but due to the granularity of the flash (the block sizes),
+reductions in feature size do not always result in flash resource
+savings.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2631">Flash Resources</H2
+><P
+>On many platforms, a ROM mode RedBoot image resides in the first
+flash sectors, working as the board's primary boot monitor. On these
+platforms, it is also normal to reserve a similar amount of flash for
+a secondary RAM mode image, which is used when updating the primary
+ROM mode image.</P
+><P
+>On other platforms, a ROMRAM mode RedBoot image is used as the
+primary boot monitor. On these platforms there is not normally
+reserved space for a RAM mode RedBoot image, since the ROMRAM mode
+RedBoot is capable of updating the primary boot monitor image.</P
+><P
+>Most platforms also contain a FIS directory (keeping track of
+available flash space) and a RedBoot config block (containing RedBoot
+board configuration data).</P
+><P
+>To see the amount of reserved flash memory, run the <B
+CLASS="COMMAND"
+>fis
+list</B
+> command:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>fis list</B
+></TT
+>
+Name              FLASH addr  Mem addr    Length      Entry point
+RedBoot           0x00000000  0x00000000  0x00020000  0x00000000
+RedBoot[RAM]      0x00020000  0x06020000  0x00020000  0x060213C0
+RedBoot config    0x0007F000  0x0007F000  0x00001000  0x00000000
+FIS directory     0x00070000  0x00070000  0x0000F000  0x00000000</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>To save flash resources, use a ROMRAM mode RedBoot, or if using
+a ROM mode RedBoot, avoid reserving space for the RedBoot[RAM] image
+(this is done by changing the RedBoot configuration) and download the
+RAM mode RedBoot whenever it is needed. If the RedBoot image takes up
+a fraction of an extra flash block, it may be possible to reduce the
+image size enough to free this block by removing some features.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2641">RAM Resources</H2
+><P
+>RedBoot reserves RAM space for its run-time data, and such
+things as CPU exception/interrupt tables. It normally does so at the
+bottom of the memory map. It may also reserve space at the top of the
+memory map for configurable RedBoot features such as the net stack
+and zlib decompression support.</P
+><P
+>To see the actual amount of reserved space, issue the
+<B
+CLASS="COMMAND"
+>version</B
+> command, which prints the RedBoot banner,
+including the RAM usage:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>version</B
+></TT
+>
+
+RedBoot(tm) bootstrap and debug environment [ROM]
+Non-certified release, version UNKNOWN - built 13:31:57, May 17 2002
+
+Platform: FooBar (SH 7615)
+Copyright (C) 2000, 2001, 2002, Red Hat, Inc.
+
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>RAM: 0x06000000-0x06080000, 0x06012498-0x06061000 available</I
+></SPAN
+>
+FLASH: 0x00000000 - 0x00080000, 8 blocks of 0x00010000 bytes each.</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>To simplify operations that temporarily need data in free
+memory, the limits of free RAM are also available as aliases (aligned
+to the nearest kilo-byte limit). These are named
+FREEMEMLO and
+FREEMEMHI, and can
+be used in commands like any user defined alias:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>load -r -b %{FREEMEMLO} file</B
+></TT
+>
+Raw file loaded 0x06012800-0x06013e53, assumed entry at 0x06012800</PRE
+></TD
+></TR
+></TABLE
+>
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>x -b %{FREEMEMHI}</B
+></TT
+>
+06061000: 86 F5 EB D8 3D 11 51 F2  96 F4 B2 DC 76 76 8F 77  |....=.Q.....vv.w|
+06061010: E6 55 DD DB F3 75 5D 15  E0 F3 FC D9 C8 73 1D DA  |.U...u]......s..|</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>To reduce RedBoot's RAM resource usage, use a ROM mode
+RedBoot. The RedBoot features that use most RAM are the net stack, the
+flash support and the gunzip support. These, and other features, can
+be disabled to reduce the RAM footprint, but obviously at the cost of
+lost functionality.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="startup-mode.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="configuring-the-redboot-environment.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>RedBoot Startup Mode</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="getting-started-with-redboot.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Configuring the RedBoot Environment</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

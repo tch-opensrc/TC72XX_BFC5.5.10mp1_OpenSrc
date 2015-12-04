@@ -1,0 +1,544 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>define</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="default_value"
+HREF="ref.default-value.html"><LINK
+REL="NEXT"
+TITLE="define_format"
+HREF="ref.define-format.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.default-value.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.define-format.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.DEFINE"><SPAN
+CLASS="PROPERTY"
+>define</SPAN
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN3980"
+></A
+><H2
+>Name</H2
+>Property <SPAN
+CLASS="PROPERTY"
+>define</SPAN
+>&nbsp;--&nbsp;Specify additional <TT
+CLASS="LITERAL"
+>#define</TT
+> symbols that
+should go into the owning package's configuration header file.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN3985"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_option &lt;name&gt; {
+    define [-file=&lt;filename&gt;] [-format=&lt;format&gt;] &lt;symbol&gt;
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3987"
+></A
+><H2
+>Description</H2
+><P
+>Normally the configuration system generates a single
+<TT
+CLASS="LITERAL"
+>#define</TT
+> for each option that is active and enabled,
+with the defined symbol being the name of the option. These
+<TT
+CLASS="LITERAL"
+>#define's</TT
+> go to the package's own configuration
+header file, for example <TT
+CLASS="FILENAME"
+>pkgconf/kernel.h</TT
+>
+for kernel configuration options. For the majority of options this is
+sufficient. Sometimes it is useful to have more control over which
+<TT
+CLASS="LITERAL"
+>#define's</TT
+> get generated.</P
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>define</SPAN
+> property can be used to generate an addition
+<TT
+CLASS="LITERAL"
+>#define</TT
+> if the option is both active and enabled,
+for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYGNUM_LIBC_STDIO_FOPEN_MAX {
+    &#8230;
+    define FOPEN_MAX
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>If this option is given the value 40 then the following
+<TT
+CLASS="LITERAL"
+>#define's</TT
+> will be generated in the configuration
+header <TT
+CLASS="FILENAME"
+>pkgconf/libc.h</TT
+>:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>#define CYGNUM_LIBC_STDIO_FOPEN_MAX 40
+#define FOPEN_MAX 40</PRE
+></TD
+></TR
+></TABLE
+><P
+>The default <TT
+CLASS="LITERAL"
+>#define</TT
+> can be suppressed if desired
+using the <SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+> property. This is useful if the symbol should
+only be defined in
+<TT
+CLASS="FILENAME"
+>pkgconf/system.h</TT
+> and not in
+the package's own configuration header file. The value that will be
+used for this <TT
+CLASS="LITERAL"
+>#define</TT
+> is the same as for the
+default one, and depends on the option's flavor as follows:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>flavor none</TT
+></DT
+><DD
+><P
+>Options with this flavor are always enabled and have no value, so the
+constant <TT
+CLASS="LITERAL"
+>1</TT
+> will be used.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>flavor bool</TT
+></DT
+><DD
+><P
+>If the option is disabled then no <TT
+CLASS="LITERAL"
+>#define</TT
+> will be
+generated. Otherwise the constant <TT
+CLASS="LITERAL"
+>1</TT
+> will be used.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>flavor booldata</TT
+></DT
+><DD
+><P
+>If the option is disabled then no <TT
+CLASS="LITERAL"
+>#define</TT
+> will be
+generated. Otherwise the option's current value will be used.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>flavor data</TT
+></DT
+><DD
+><P
+>The option's current value will be used.</P
+></DD
+></DL
+></DIV
+><P
+>For active options with the <TT
+CLASS="LITERAL"
+>data</TT
+> flavor, and for
+active and enabled options with the <TT
+CLASS="LITERAL"
+>booldata</TT
+>
+flavor, either one or two <TT
+CLASS="LITERAL"
+>#define's</TT
+> will be
+generated. These take the following forms:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define &lt;symbol&gt; &lt;value&gt;
+#define &lt;symbol&gt;_&lt;value&gt;</PRE
+></TD
+></TR
+></TABLE
+><P
+>For the first <TT
+CLASS="LITERAL"
+>#define</TT
+> it is possible to control the
+format used for the value using a
+<TT
+CLASS="LITERAL"
+>-format=&lt;format&gt;</TT
+> option. For example, the
+following can be used to output some configuration data as a C string:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option &lt;name&gt; {
+    &#8230;
+    define -format="\\\"%s\\\"" &lt;symbol&gt;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The implementation of this facility involves concatenating the
+Tcl command <TT
+CLASS="LITERAL"
+>format</TT
+>, the format string, and the
+string representation of the option's value, and evaluating this in a
+Tcl interpreter. Therefore the format string will be processed twice
+by a Tcl parser, and appropriate care has to be taken with quoting.</P
+><P
+>The second <TT
+CLASS="LITERAL"
+>#define</TT
+> will be generated only if is a
+valid C preprocessor macro symbol. By default the symbols generated by
+<SPAN
+CLASS="PROPERTY"
+>define</SPAN
+> properties will end up in the package's own configuration
+header file. The <TT
+CLASS="LITERAL"
+>-file</TT
+> option can be used to
+specify an alternative destination. At the time of writing the only
+valid alternative definition is <TT
+CLASS="LITERAL"
+>-file=system.h</TT
+>,
+which will send the output to the global configuration header file
+<TT
+CLASS="FILENAME"
+>pkgconf/system.h</TT
+>.</P
+><DIV
+CLASS="CAUTION"
+><P
+></P
+><TABLE
+CLASS="CAUTION"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Caution</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>Care has to be taken with the <TT
+CLASS="LITERAL"
+>-format</TT
+> option.
+Because the Tcl interpreter's <TT
+CLASS="LITERAL"
+>format</TT
+> command is
+used, this property is subject to any problems with the implementation
+of this in the Tcl library. Generally there should be no problems with
+string data or with integers up to 32 bits, but there may well be
+problems if 64-bit data is involved. This issue may be addressed in a
+future release.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4053"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_component CYG_HAL_STARTUP {
+    display       "Startup type"
+    flavor        data
+    legal_values  {"RAM" "ROM" }
+    default_value {"RAM"}
+    no_define
+    define -file=system.h CYG_HAL_STARTUP
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4056"
+></A
+><H2
+>See Also</H2
+><P
+>Properties <A
+HREF="ref.define-format.html"
+><SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+></A
+>,
+<A
+HREF="ref.define-header.html"
+><SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+></A
+>,
+<A
+HREF="ref.define-proc.html"
+><SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+></A
+>,
+<A
+HREF="ref.if-define.html"
+><SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+></A
+> and
+<A
+HREF="ref.no-define.html"
+><SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+></A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.default-value.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.define-format.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

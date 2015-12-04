@@ -1,0 +1,386 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>ARM/ARM7 Cirrus Logic EP7xxx (EDB7211, EDB7212, EDB7312) </TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Installation and Testing"
+HREF="installation-and-testing.html"><LINK
+REL="PREVIOUS"
+TITLE="ARM/ARM7 Atmel AT91 Evaluation Board (EB40)"
+HREF="at91.html"><LINK
+REL="NEXT"
+TITLE="ARM/ARM9 Agilent AAED2000"
+HREF="aaed2000.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="at91.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Installation and Testing</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="aaed2000.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="EDB7XXX">ARM/ARM7 Cirrus Logic EP7xxx (EDB7211, EDB7212, EDB7312)</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5321">Overview</H2
+><P
+>RedBoot supports both serial ports on the board and
+the ethernet port. The default serial port settings are 38400,8,N,1. RedBoot
+also supports flash management on the EDB7xxx for the NOR flash
+only.</P
+><P
+>The following RedBoot configurations are supported:
+
+      <DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5331"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Configuration</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Mode</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>ROM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from the board's flash boot
+	      sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_ROM.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RAM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[RAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM with RedBoot in the
+	      flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_RAM.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>ROMRAM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROMRAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM, but contained in the
+	      board's flash boot sector (EDB7312 only).</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_ROMRAM.ecm</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5355">Initial Installation Method</H2
+><P
+>A Windows or Linux utility is used to program flash using serial port
+#1 via on-chip programming firmware. See board documentation for details on
+in situ flash programming. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5358">Special RedBoot Commands</H2
+><P
+>None.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5361">Memory Maps</H2
+><P
+>The MMU page tables and LCD display buffer, if enabled, are located
+at the end of DRAM. <DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>NOTE: </B
+>The virtual memory maps in this section use a C and B column to indicate
+whether or not the region is cached (C) or buffered (B).</P
+></BLOCKQUOTE
+></DIV
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Physical Address Range     Description
+-----------------------    ----------------------------------
+0x00000000 - 0x01ffffff    NOR Flash (EDB7211, EDB7212)
+0x00000000 - 0x00ffffff    NOR Flash (EDB7312)
+0x10000000 - 0x11ffffff    NAND Flash
+0x20000000 - 0x2fffffff    Expansion 2
+0x30000000 - 0x3fffffff    Expansion 3
+0x40000000 - 0x4fffffff    PCMCIA 0
+0x50000000 - 0x5fffffff    PCMCIA 1
+0x60000000 - 0x600007ff    On-chip SRAM
+0x80000000 - 0x8fffffff    I/O registers
+0xc0000000 - 0xc1ffffff    DRAM (EDB7211, EDB7212)
+0xc0000000 - 0xc0ffffff    DRAM (EDB7312)
+
+Virtual Address Range    C B  Description
+-----------------------  - -  ----------------------------------
+0x00000000 - 0x01ffffff  Y Y  DRAM 
+0x00000000 - 0x00fcffff  Y Y  DRAM (EDB7312)
+0x20000000 - 0x2fffffff  N N  Expansion 2
+0x30000000 - 0x3fffffff  N N  Expansion 3
+0x40000000 - 0x4fffffff  N N  PCMCIA 0
+0x50000000 - 0x5fffffff  N N  PCMCIA 1
+0x60000000 - 0x600007ff  Y Y  On-chip SRAM
+0x80000000 - 0x8fffffff  N N  I/O registers
+0xc0000000 - 0xc001ffff  N Y  LCD buffer (if configured)
+0xe0000000 - 0xe1ffffff  Y Y  NOR Flash (EDB7211, EDB7212)
+0xe0000000 - 0xe0ffffff  Y Y  NOR Flash (EDB7312)
+0xf0000000 - 0xf1ffffff  Y Y  NAND Flash
+
+The flash based RedBoot image occupies virtual addresses 0xe0000000 - 0xe003ffff.</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5368">Platform Resource Usage</H2
+><P
+>The EP7xxx timer #2 is used as a polled timer to provide timeout support
+for network and XModem file transfers.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5371">Rebuilding RedBoot</H2
+><P
+>These shell variables provide the platform-specific information
+needed for building RedBoot according to the procedure described in
+<A
+HREF="rebuilding-redboot.html"
+>Chapter 3</A
+>:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>export TARGET=edb7211
+export TARGET=edb7212
+export TARGET=edb7312
+export ARCH_DIR=arm
+export PLATFORM_DIR=edb7xxx</PRE
+></TD
+></TR
+></TABLE
+>
+
+Use one of the TARGET settings only.</P
+><P
+>The names of configuration files are listed above with the
+description of the associated modes.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="at91.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="aaed2000.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>ARM/ARM7 Atmel AT91 Evaluation Board (EB40)</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="installation-and-testing.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>ARM/ARM9 Agilent AAED2000</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,614 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>ARM AEB-1 Hardware Setup</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Target Setup"
+HREF="appendix-target-setup.html"><LINK
+REL="PREVIOUS"
+TITLE="ARM PID Hardware Setup"
+HREF="setup-arm-pid.html"><LINK
+REL="NEXT"
+TITLE="ARM Cogent CMA230 Hardware Setup"
+HREF="setup-arm-cma230.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="setup-arm-pid.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Target Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="setup-arm-cma230.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SETUP-ARM-AEB1">ARM AEB-1 Hardware Setup</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3686">Overview</H2
+><P
+>The ARM AEB-1 comes with tools in ROM. These include a simple
+FLASH management tool and the Angel&reg; monitor. eCos for
+the ARM AEB-1 comes with GDB stubs suitable for programming into
+the onboard FLASH. GDB is the preferred debug environment for GDB,
+and while Angel provides a subset of the features in the eCos GDB
+stub, Angel is unsupported.</P
+><P
+>Both eCos and the stubs support both Revision B and Revision
+C of the AEB-1 board. Stub ROM images for both types of board can
+be found in the loaders/arm-aeb directory under the root
+of your eCos installation. You can select which board you are using
+by selecting either the aeb or aebC platform by selecting the appropriate
+platform HAL in the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos Configuration Tool</I
+></SPAN
+>.</P
+><P
+>The GDB stub can be downloaded to the board for programming
+in the FLASH using the board's on-board ROM monitor:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>talk to the AEB-1 board with a terminal emulator (or
+a real terminal!)</P
+></LI
+><LI
+><P
+>use the board's rom menu to download a UU-encoded
+version of the GDB stubs which will act as a ROM monitor</P
+></LI
+><LI
+><P
+>tell the board to use this new monitor, and then hook
+GDB up to it for real debugging</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3699">Talking to the Board</H2
+><P
+>Connect a terminal or computer's serial port to the
+ARM AEB-1. On a PC with a 9-pin serial port, you can use the cable
+shipped by ARM with no modification. </P
+><P
+>Set the terminal or terminal emulator to 9600N1 (9600 baud,
+no parity, 1 stop bit). </P
+><P
+>Reset the board by pressing the little reset button on the
+top. You will see the following text: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>	ARM Evaluation Board Boot Monitor 0.01 (19 APR 1998)
+	Press ENTER within 2 seconds to stop autoboot</PRE
+></TD
+></TR
+></TABLE
+><P
+>Press ENTER quickly, and you will get the boot prompt: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>	Boot:</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3707">Downloading the Stubs via the Rom Menu</H2
+><P
+>Using the AEB-1 rom menu to download the GDB stubs from the
+provided ".UU" file.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>This is an annotated 'terminal' session
+with the AEB-1 monitor:</P
+></BLOCKQUOTE
+></DIV
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>+Boot: help
+Module is BootStrap       1.00 (14 Aug 1998)</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Help is available on:</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Help          Modules       ROMModules    UnPlug        PlugIn
+Kill          SetEnv        UnSetEnv      PrintEnv      DownLoad
+Go            GoS           Boot          PC            FlashWrite
+FlashLoad     FlashErase</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Boot: download c000
+Ready to download. Use 'transmit' option on terminal
+emulator to download file.</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>... at this point, download the ASCII file "loaders/arm-aeb/
+    gdb_module.img.UU". The details of this operation differ
+    depending on which terminal emulator is used. It may be
+    necessary to enter "^D" (control+D) when the download completes
+   to get the monitor to return to command mode. </PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Loaded file gdb_module.img.bin at address
+0000c000, size = 19392 </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3718">Activating the GDB Stubs</H2
+><P
+>Commit the GDB stubs module to FLASH: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>	Boot: flashwrite 4018000 C000 8000
+    </PRE
+></TD
+></TR
+></TABLE
+><P
+>Verify that the eCos/"GDB stubs" module is now added
+in the list of modules in the board: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>	Boot: rommodules
+    </PRE
+></TD
+></TR
+></TABLE
+><P
+>You should see output similar to the following: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>	Header   Base     Limit
+	04000004 04000000 040034a8 BootStrap       1.00 (14 Aug 1998) 
+	04003a74 04003800 04003bc0 Production Test 1.00 (13 Aug 1998) 
+	0400e4f4 04004000 0400e60f Angel           1.02 (12 MAY 1998) 
+	0401c810 04018000 0401cbc0 eCos              1.3  (27 Jan 2000)
+GDB stubs
+    </PRE
+></TD
+></TR
+></TABLE
+><P
+>Now make the eCos/"GDB stubs" module be the default
+monitor: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>	Boot: plugin eCos
+    </PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Since the GDB stubs are always linked at the same address
+(0x4018000), the operation of writing to the FLASH and selecting
+the stubs as default monitor is an idempotent operation. You can
+download a new set of stubs following the same procedure - you do
+not have to unregister or delete anything.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3730">Building the GDB Stub FLASH ROM Images</H2
+><P
+>Pre-built GDB stubs images are provided in the directory loaders/arm-aeb
+relative to the root of your eCos installation, but here are instructions
+on how to rebuild them if you should ever need to.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3733">Building the GDB Stubs with the eCos Configuration Tool</H2
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Start with a new document - selecting the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>File</I
+></SPAN
+>
+-&#62;
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>New</I
+></SPAN
+>
+ menu item if necessary to do this.</P
+></LI
+><LI
+><P
+>Choose the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build</I
+></SPAN
+>
+-&#62;
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Templates</I
+></SPAN
+>
+ menu item, and then select the ARM AEB-1 hardware.</P
+></LI
+><LI
+><P
+>While still displaying the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build-&#62;Templates</I
+></SPAN
+>
+ dialog box, select the "stubs" package template to build a GDB
+stub image. Click 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>OK</I
+></SPAN
+>.</P
+></LI
+><LI
+><P
+>If applicable, set the "AEB board revision" option to
+"C" from "B" depending on the board revision being used.</P
+></LI
+><LI
+><P
+>Build eCos using 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build</I
+></SPAN
+>
+-&#62;
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Library.</I
+></SPAN
+></P
+></LI
+><LI
+><P
+>When the build completes, the image files can be found
+in the bin/ subdirectory of the install tree. The GDB stub
+ROM images have the prefix "gdb_module".</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3756">Building the GDB Stub ROMs with ecosconfig</H2
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Make an empty directory to contain the build tree,
+and cd into it.</P
+></LI
+><LI
+><P
+>To build a GDB stub ROM image, enter the command:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig new aeb stubs</PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>If applicable, edit ecos.ecc and set the AEB board revision. (CYGHWR_HAL_ARM_AEB_REVISION)
+from the default "B" to "C" by uncommenting the user_value
+property and setting it to "C".</P
+></LI
+><LI
+><P
+>Enter the commands
+ 
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ ecosconfig tree
+$ make</PRE
+></TD
+></TR
+></TABLE
+></P
+></LI
+><LI
+><P
+>When the build completes, the image files can be found
+in the bin/ subdirectory of the install tree. The GDB stub
+ROM images have the prefix "gdb_module".</P
+></LI
+></OL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="setup-arm-pid.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="setup-arm-cma230.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>ARM PID Hardware Setup</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="appendix-target-setup.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>ARM Cogent CMA230 Hardware Setup</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

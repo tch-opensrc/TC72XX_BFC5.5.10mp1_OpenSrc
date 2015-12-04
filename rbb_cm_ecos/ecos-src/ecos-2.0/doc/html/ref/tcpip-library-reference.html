@@ -1,0 +1,410 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>TCP/IP Library Reference</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Stack Support for eCos"
+HREF="net-common-tcpip.html"><LINK
+REL="PREVIOUS"
+TITLE="DHCP"
+HREF="net-common-dhcp.html"><LINK
+REL="NEXT"
+TITLE="gethostname"
+HREF="net-common-tcpip-manpages-gethostname.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-dhcp.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-gethostname.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="TCPIP-LIBRARY-REFERENCE">Chapter 38. TCP/IP Library Reference</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="tcpip-library-reference.html#NET-COMMON-TCPIP-MANPAGES-GETDOMAINNAME"
+>getdomainname</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-gethostname.html"
+>gethostname</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-byteorder.html"
+>byteorder</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-ethers.html"
+>ethers</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-getaddrinfo.html"
+>getaddrinfo</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-gethostbyname.html"
+>gethostbyname</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-getifaddrs.html"
+>getifaddrs</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-getnameinfo.html"
+>getnameinfo</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-getnetent.html"
+>getnetent</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-getprotoent.html"
+>getprotoent</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-getrrsetbyname.html"
+>getrrsetbyname</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-getservent.html"
+>getservent</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-if-nametoindex.html"
+>if_nametoindex</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-inet.html"
+>inet</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-inet6-option-space.html"
+>inet6_option_space</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-inet6-rthdr-space.html"
+>inet6_rthdr_space</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-inet-net.html"
+>inet_net</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-ipx.html"
+>ipx</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-iso-addr.html"
+>iso_addr</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-link-addr.html"
+>link_addr</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-net-addrcmp.html"
+>net_addrcmp</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-ns.html"
+>ns</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-resolver.html"
+>resolver</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-accept.html"
+>accept</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-bind.html"
+>bind</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-connect.html"
+>connect</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-getpeername.html"
+>getpeername</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-getsockname.html"
+>getsockname</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-getsockopt.html"
+>getsockopt</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-ioctl.html"
+>ioctl</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-poll.html"
+>poll</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-select.html"
+>select</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-send.html"
+>send</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-shutdown.html"
+>shutdown</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-socket.html"
+>socket</A
+></DT
+><DT
+><A
+HREF="net-common-tcpip-manpages-socketpair.html"
+>socketpair</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-GETDOMAINNAME">getdomainname</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>GETDOMAINNAME(3)        System Library Functions Manual       GETDOMAINNAME(3)
+
+NAME
+     getdomainname, setdomainname - get/set YP domain name of current host
+
+SYNOPSIS
+     #include &lt;unistd.h&#62;
+
+     int
+     getdomainname(char *name, size_t namelen);
+
+     int
+     setdomainname(const char *name, size_t namelen);
+
+DESCRIPTION
+     The getdomainname() function returns the YP domain name for the current
+     processor, as previously set by setdomainname().  The parameter namelen
+     specifies the size of the name array.  If insufficient space is provided,
+     the returned name is truncated.  The returned name is always null termi-
+     nated.
+
+     setdomainname() sets the domain name of the host machine to be name,
+     which has length namelen.  This call is restricted to the superuser and
+     is normally used only when the system is bootstrapped.
+
+RETURN VALUES
+     If the call succeeds a value of 0 is returned.  If the call fails, a
+     value of -1 is returned and an error code is placed in the global vari-
+     able errno.
+
+ERRORS
+     The following errors may be returned by these calls:
+
+     [EFAULT]           The name or namelen parameter gave an invalid address.
+
+     [EPERM]            The caller tried to set the domain name and was not
+                        the superuser.
+
+SEE ALSO
+     domainname(1), gethostid(3), gethostname(3), sysctl(3), sysctl(8), yp(8)
+
+BUGS
+     Domain names are limited to MAXHOSTNAMELEN (from &lt;sys/param.h&#62;) charac-
+     ters, currently 256.  This includes the terminating NUL character.
+
+     If the buffer passed to getdomainname() is too small, other operating
+     systems may not guarantee termination with NUL.
+
+HISTORY
+     The getdomainname function call appeared in SunOS 3.x.
+
+BSD                               May 6, 1994                              BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-dhcp.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-gethostname.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>DHCP</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-common-tcpip.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>gethostname</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

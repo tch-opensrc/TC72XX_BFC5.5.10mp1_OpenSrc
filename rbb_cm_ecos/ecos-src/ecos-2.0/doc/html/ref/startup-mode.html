@@ -1,0 +1,257 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>RedBoot Startup Mode</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Getting Started with RedBoot"
+HREF="getting-started-with-redboot.html"><LINK
+REL="PREVIOUS"
+TITLE="RedBoot Editing Commands"
+HREF="redboot-editing-commands.html"><LINK
+REL="NEXT"
+TITLE="RedBoot Resource Usage"
+HREF="resource-usage.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="redboot-editing-commands.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Getting Started with RedBoot</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="resource-usage.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="STARTUP-MODE">RedBoot Startup Mode</H1
+><P
+>  
+  </P
+><P
+>RedBoot can normally be configured to run in a number of startup
+modes (or just "modes" for short), determining its location of
+residence and execution:
+<P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>ROM mode</DT
+><DD
+><P
+>In this mode, RedBoot both resides and executes from
+ ROM memory (flash or EPROM). This mode is used when there are limited
+ RAM resources. The flash commands cannot update the region of flash
+ where the RedBoot image resides. In order to update the RedBoot image
+ in flash, it is necessary to run a RAM mode instance of
+ RedBoot.</P
+></DD
+><DT
+>ROMRAM mode</DT
+><DD
+><P
+>In this mode, RedBoot resides in ROM memory (flash or
+ EPROM), but is copied to RAM memory before it starts executing. The
+ RAM footprint is larger than for ROM mode, but there are two
+ advantages to make up for this: it normally runs faster (relevant
+ only on slower boards) and it is able to update the flash region
+ where the image resides.</P
+></DD
+><DT
+>RAM mode</DT
+><DD
+><P
+>In this mode, RedBoot both resides and executes from
+ RAM memory. This is used for updating a primary ROM
+ mode image in situ and sometimes as part of the RedBoot installation
+ on the board when there's already an existing (non-RedBoot) boot
+ monitor available.</P
+><P
+> You can only use ROM and ROMRAM mode images for booting a
+ board - a RAM mode image cannot run unless loaded by another ROM
+ monitor. There is no need for this startup mode if a RedBoot ROMRAM
+ mode image is the primary boot monitor.  When this startup mode is
+ programmed into flash (as a convenience as it's fast to load from
+ flash) it will generally be named as "RedBoot[RAM]" in the FIS
+ directory.  </P
+></DD
+></DL
+></DIV
+>
+
+The chosen mode has influence on flash and RAM resource usage (see
+<A
+HREF="resource-usage.html"
+>the Section called <I
+>RedBoot Resource Usage</I
+></A
+>) and the procedure of an in situ update
+of RedBoot in flash (see <A
+HREF="updating-redboot.html"
+>Chapter 4</A
+>).</P
+><P
+>The startup mode is controlled by the option CYG_HAL_STARTUP
+which resides in the platform HAL. Some platforms provide only some of
+the RAM, ROM, and ROMRAM modes, others provide additional
+modes.</P
+><P
+>To see mode of a currently executing RedBoot, issue the
+<B
+CLASS="COMMAND"
+>version</B
+> command, which prints the RedBoot banner,
+including the startup mode (here ROM):
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62;<TT
+CLASS="USERINPUT"
+><B
+>version</B
+></TT
+>
+
+RedBoot(tm) bootstrap and debug environment <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[ROM]</I
+></SPAN
+>
+Non-certified release, version UNKNOWN - built 13:31:57, May 17 2002</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="redboot-editing-commands.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="resource-usage.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>RedBoot Editing Commands</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="getting-started-with-redboot.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>RedBoot Resource Usage</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

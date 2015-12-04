@@ -1,0 +1,285 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Board: NEC VR4373</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Real-time characterization"
+HREF="real-time-characterization.html"><LINK
+REL="PREVIOUS"
+TITLE="Board: Cogent CMA MPC860 (PowerPC) Evaluation "
+HREF="rt-ppc-cogent.html"><LINK
+REL="NEXT"
+TITLE="Board: Intel SA1110 (Assabet)"
+HREF="rt-arm-assabet.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="rt-ppc-cogent.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix B. Real-time characterization</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="rt-arm-assabet.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RT-VR4300-VRC4373">Board: NEC VR4373</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="LITERALLAYOUT"
+>&#13;Board: NEC VR4373
+
+CPU  : NEC VR4300 133MHz
+
+
+Startup, main stack             : stack used  1304 size  3576
+Startup              :  Interrupt stack used   980 size  4096
+Startup              : Idlethread stack used   494 size  2552
+
+eCos Kernel Timings
+Notes: all times are in microseconds (.000001) unless otherwise stated
+
+Reading the hardware clock takes 3 `ticks' overhead
+... this value will be factored out of all other measurements
+Clock interrupt took    6.49 microseconds (431 raw clock ticks)
+
+Testing parameters:
+   Clock samples:          32
+   Threads:                16
+   Thread switches:       128
+   Mutexes:                32
+   Mailboxes:              32
+   Semaphores:             32
+   Scheduler operations:  128
+   Counters:               32
+   Alarms:                 32
+
+
+                                 Confidence
+     Ave     Min     Max     Var  Ave  Min  Function
+  ======  ======  ======  ====== ========== ========
+   17.21   16.18   22.14    0.88   75%  68% Create thread
+    0.84    0.78    1.29    0.10   81%  81% Yield thread [all suspended]
+    0.90    0.62    3.20    0.35   87%  87% Suspend [suspended] thread
+    0.74    0.65    1.16    0.12   81%  68% Resume thread
+    1.11    0.90    1.70    0.25   75%  68% Set priority
+    0.11    0.05    0.35    0.09   75%  75% Get priority
+    2.93    2.24    8.27    0.78   93%  75% Kill [suspended] thread
+    0.88    0.78    1.92    0.16   93%  81% Yield [no other] thread
+    1.82    1.20    4.71    0.62   87%  62% Resume [suspended low prio] thread
+    0.70    0.63    0.86    0.09   68%  68% Resume [runnable low prio] thread
+    1.21    1.07    1.61    0.13   81%  68% Suspend [runnable] thread
+    0.86    0.78    1.58    0.13   81%  81% Yield [only low prio] thread
+    0.69    0.62    0.84    0.09   68%  68% Suspend [runnable-&#62;not runnable]
+    2.64    2.24    4.35    0.43   81%  62% Kill [runnable] thread
+    1.50    1.07    5.82    0.56   93%  87% Destroy [dead] thread
+    3.66    2.75    7.74    0.82   50%  56% Destroy [runnable] thread
+   13.65    8.33   27.88    3.70   50%  43% Resume [high priority] thread
+    2.04    1.89    3.32    0.15   46%  49% Thread switch
+
+    0.19    0.05    0.83    0.13   48%  44% Scheduler lock
+    0.50    0.41    1.59    0.13   89%  73% Scheduler unlock [0 threads]
+    0.52    0.41    1.29    0.14   89%  64% Scheduler unlock [1 suspended]
+    0.56    0.41    1.49    0.15   42%  47% Scheduler unlock [many suspended]
+    0.56    0.41    1.41    0.15   43%  47% Scheduler unlock [many low prio]
+
+    0.57    0.20    2.33    0.27   65%  50% Init mutex
+    0.89    0.75    3.35    0.20   96%  75% Lock [unlocked] mutex
+    0.90    0.74    4.38    0.25   96%  93% Unlock [locked] mutex
+    0.77    0.65    2.63    0.17   96%  75% Trylock [unlocked] mutex
+    0.66    0.59    1.16    0.10   75%  75% Trylock [locked] mutex
+    0.07    0.00    0.45    0.09   75%  75% Destroy mutex
+    7.95    7.71    9.49    0.19   50%  46% Unlock/Lock mutex
+
+    1.04    0.81    3.44    0.27   93%  68% Create mbox
+    0.10    0.02    0.57    0.11   71%  68% Peek [empty] mbox
+    1.15    0.83    4.71    0.31   53%  71% Put [first] mbox
+    0.10    0.02    0.57    0.12   68%  68% Peek [1 msg] mbox
+    1.01    0.83    3.83    0.22   93%  75% Put [second] mbox
+    0.09    0.02    0.57    0.10   71%  71% Peek [2 msgs] mbox
+    1.03    0.81    5.02    0.27   96%  87% Get [first] mbox
+    0.93    0.81    1.61    0.14   84%  62% Get [second] mbox
+    1.07    0.77    4.18    0.23   68%  50% Tryput [first] mbox
+    0.89    0.72    3.49    0.21   93%  71% Peek item [non-empty] mbox
+    1.04    0.83    4.09    0.26   90%  81% Tryget [non-empty] mbox
+    0.79    0.68    1.97    0.15   87%  68% Peek item [empty] mbox
+    0.84    0.72    2.36    0.17   93%  68% Tryget [empty] mbox
+    0.13    0.02    0.59    0.13   87%  62% Waiting to get mbox
+    0.13    0.02    0.90    0.13   90%  62% Waiting to put mbox
+    0.93    0.77    3.23    0.21   90%  71% Delete mbox
+    4.74    4.51    8.80    0.32   93%  78% Put/Get mbox
+
+    0.50    0.21    1.95    0.29   90%  50% Init semaphore
+    0.86    0.57    2.87    0.29   93%  56% Post [0] semaphore
+    1.01    0.74    3.62    0.28   93%  56% Wait [1] semaphore
+    0.87    0.60    3.17    0.28   90%  59% Trywait [0] semaphore
+    0.74    0.62    1.70    0.14   93%  56% Trywait [1] semaphore
+    0.36    0.11    1.11    0.26   65%  56% Peek semaphore
+    0.25    0.12    1.19    0.14   93%  56% Destroy semaphore
+    7.85    7.52    8.93    0.21   62%  43% Post/Wait semaphore
+
+    0.90    0.44    3.08    0.29   65%  28% Create counter
+    0.07    0.05    0.89    0.05   96%  96% Get counter value
+    0.06    0.05    0.33    0.02   96%  96% Set counter value
+    0.88    0.86    1.62    0.05   96%  96% Tick counter
+    0.13    0.12    0.41    0.02   96%  96% Delete counter
+
+    1.37    0.81    2.95    0.27   62%  25% Create alarm
+    1.35    1.17    6.03    0.31   96%  93% Initialize alarm
+    0.11    0.08    0.65    0.05   90%  90% Disable alarm
+    1.23    1.14    3.05    0.15   93%  87% Enable alarm
+    0.21    0.18    0.47    0.04   90%  90% Delete alarm
+    1.03    0.99    2.11    0.07   96%  96% Tick counter [1 alarm]
+    4.96    4.96    4.96    0.00  100% 100% Tick counter [many alarms]
+    1.70    1.67    2.51    0.05   96%  96% Tick &#38; fire counter [1 alarm]
+   26.39   26.38   26.71    0.02   96%  96% Tick &#38; fire counters [&#62;1 together]
+    5.65    5.64    5.91    0.02   96%  96% Tick &#38; fire counters [&#62;1 separately]
+    2.55    2.38    9.86    0.19   96%  54% Alarm latency [0 threads]
+    5.37    3.80    9.73    0.95   50%  34% Alarm latency [2 threads]
+    8.79    5.83   16.12    1.29   57%  14% Alarm latency [many threads]
+
+    5.85    2.26   16.24    0.00            Clock/interrupt latency
+
+ 1540    1536    1544  (main stack:  1664)  Thread stack used (2552 total)
+All done, main stack            : stack used  1664 size  3576
+All done             :  Interrupt stack used   312 size  4096
+All done             : Idlethread stack used  1440 size  2552
+
+Timing complete - 23810 ms total
+
+PASS:&lt;Basic timing OK&#62;
+EXIT:&lt;done&#62;
+	</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="rt-ppc-cogent.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="rt-arm-assabet.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Board: Cogent CMA MPC860 (PowerPC) Evaluation</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="real-time-characterization.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Board: Intel SA1110 (Assabet)</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

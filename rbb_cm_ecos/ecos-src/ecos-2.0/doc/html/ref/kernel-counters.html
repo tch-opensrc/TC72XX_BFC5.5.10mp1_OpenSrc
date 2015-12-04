@@ -1,0 +1,349 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Counters</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Kernel"
+HREF="kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="Exception handling"
+HREF="kernel-exceptions.html"><LINK
+REL="NEXT"
+TITLE="Clocks"
+HREF="kernel-clocks.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="kernel-exceptions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="kernel-clocks.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="KERNEL-COUNTERS">Counters</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN854"
+></A
+><H2
+>Name</H2
+>cyg_counter_create, cyg_counter_delete, cyg_counter_current_value, cyg_counter_set_value, cyg_counter_tick&nbsp;--&nbsp;Count event occurrences</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN861"><H2
+>Synopsis</H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><A
+NAME="AEN862"><P
+></P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &lt;cyg/kernel/kapi.h&gt;
+        </PRE
+></TD
+></TR
+></TABLE
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_counter_create</CODE
+>(cyg_handle_t* handle, cyg_counter* counter);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_counter_delete</CODE
+>(cyg_handle_t counter);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_tick_count_t cyg_counter_current_value</CODE
+>(cyg_handle_t counter);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_counter_set_value</CODE
+>(cyg_handle_t counter, cyg_tick_count_t new_value);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_counter_tick</CODE
+>(cyg_handle_t counter);</CODE
+></P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-COUNTERS-DESCRIPTION"
+></A
+><H2
+>Description</H2
+><P
+>Kernel counters can be used to keep track of how many times a
+particular event has occurred. Usually this event is an external
+signal of some sort. The most common use of counters is in the
+implementation of clocks, but they can be useful with other event
+sources as well. Application code can attach <A
+HREF="kernel-alarms.html"
+>alarms</A
+> to counters, causing a function
+to be called when some number of events have occurred.
+      </P
+><P
+>A new counter is initialized by a call to
+<TT
+CLASS="FUNCTION"
+>cyg_counter_create</TT
+>. The first argument is used to
+return a handle to the new counter which can be used for subsequent
+operations. The second argument allows the application to provide the
+memory needed for the object, thus eliminating any need for dynamic
+memory allocation within the kernel. If a counter is no longer
+required and does not have any alarms attached then
+<TT
+CLASS="FUNCTION"
+>cyg_counter_delete</TT
+> can be used to release the
+resources, allowing the <SPAN
+CLASS="STRUCTNAME"
+>cyg_counter</SPAN
+> data
+structure to be re-used.
+      </P
+><P
+>Initializing a counter does not automatically attach it to any source
+of events. Instead some other code needs to call
+<TT
+CLASS="FUNCTION"
+>cyg_counter_tick</TT
+> whenever a suitable event
+occurs, which will cause the counter to be incremented and may cause
+alarms to trigger. The current value associated with the counter can
+be retrieved using <TT
+CLASS="FUNCTION"
+>cyg_counter_current_value</TT
+> and
+modified with <TT
+CLASS="FUNCTION"
+>cyg_counter_set_value</TT
+>. Typically
+the latter function is only used during initialization, for example to
+set a clock to wallclock time, but it can be used to reset a counter
+if necessary. However <TT
+CLASS="FUNCTION"
+>cyg_counter_set_value</TT
+> will
+never trigger any alarms. A newly initialized counter has a starting
+value of 0.
+      </P
+><P
+>The kernel provides two different implementations of counters. The
+default is <TT
+CLASS="VARNAME"
+>CYGIMP_KERNEL_COUNTERS_SINGLE_LIST</TT
+> which
+stores all alarms attached to the counter on a single list. This is
+simple and usually efficient. However when a tick occurs the kernel
+code has to traverse this list, typically at DSR level, so if there
+are a significant number of alarms attached to a single counter this
+will affect the system's dispatch latency. The alternative
+implementation, <TT
+CLASS="VARNAME"
+>CYGIMP_KERNEL_COUNTERS_MULTI_LIST</TT
+>,
+stores each alarm in one of an array of lists such that at most one of
+the lists needs to be searched per clock tick. This involves extra
+code and data, but can improve real-time responsiveness in some
+circumstances. Another configuration option that is relevant here
+is <TT
+CLASS="VARNAME"
+>CYGIMP_KERNEL_COUNTERS_SORT_LIST</TT
+>, which is
+disabled by default. This provides a trade off between doing work
+whenever a new alarm is added to a counter and doing work whenever a
+tick occurs. It is application-dependent which of these is more
+appropriate.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-COUNTERS-CONTEXT"
+></A
+><H2
+>Valid contexts</H2
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_counter_create</TT
+> is typically called during
+system initialization but may also be called in thread context.
+Similarly <TT
+CLASS="FUNCTION"
+>cyg_counter_delete</TT
+> may be called during
+initialization or in thread context.
+<TT
+CLASS="FUNCTION"
+>cyg_counter_current_value</TT
+>,
+<TT
+CLASS="FUNCTION"
+>cyg_counter_set_value</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_counter_tick</TT
+> may be called during
+initialization or from thread or DSR context. In fact,
+<TT
+CLASS="FUNCTION"
+>cyg_counter_tick</TT
+> is usually called from inside a
+DSR in response to an external event of some sort.
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="kernel-exceptions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="kernel-clocks.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Exception handling</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Clocks</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

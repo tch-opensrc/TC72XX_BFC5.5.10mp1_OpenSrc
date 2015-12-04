@@ -1,0 +1,209 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Cirrus Logic ARM EP7312 Development Board
+Hardware Setup</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Target Setup"
+HREF="appendix-target-setup.html"><LINK
+REL="PREVIOUS"
+TITLE="Cirrus Logic ARM EP7212 Development Board
+Hardware Setup"
+HREF="setup-arm-ep7212.html"><LINK
+REL="NEXT"
+TITLE="Cirrus Logic ARM EP7209 Development Board Hardware Setup"
+HREF="setup-arm-ep7209.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="setup-arm-ep7212.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Target Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="setup-arm-ep7209.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SETUP-ARM-EP7312">Cirrus Logic ARM EP7312 Development Board
+Hardware Setup</H1
+><P
+>The Cirrus Logic EP7312 Development Board is similar
+to the EP7212 Development Board from a hardware setup viewpoint,
+and is based on the same port of eCos.</P
+><P
+>When rebuilding the RedBoot ROM image or an eCos application,
+change the "Cirrus Logic processor variant" option
+(CYGHWR_HAL_ARM_EDB7XXX_VARIANT)
+from the EP7211 to the EP7312. This can be selected in the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos Configuration Tool</I
+></SPAN
+>
+, or if using ecosconfig, can be set by uncommenting the user_value
+property of this option in ecos.ecc and setting it to "EP7312".</P
+><P
+>See the RedBoot documentation for building and installing RedBoot for this
+target.  Only RedBoot is supported as a boot image; ROMRAM startup is
+recommended.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="EP7312-90MHZ-OPERATION">90MHz Operation</H2
+><P
+>The EP7xxx targets offer a choice of clock speeds, from 18MHz to a maximum,
+normally, of 72MHz.  These are described as kHz values 18432 36864 49152
+and 73728 within the configuration tool.  If you have a release which
+supports it, you will also see 90317 as an available option here, for 90MHz
+operation.</P
+><P
+>This option only applies to certain EP7312 hardware, not all EP7312 boards
+support it.  Do not select 90MHz when building RedBoot or your eCos
+application unless you are absolutely sure that your board supports it.</P
+><P
+>If you do have a 90MHz board and wish to execute at 90MHz, it is in fact
+not necessary to build RedBoot specially, if you build your eCos
+application configured for 90MHz.  RedBoot will run at 72MHz and your
+application will run at 90MHz.  If you do install a 90MHz RedBoot, then you
+must build eCos for 90MHz or timing and baud rates on serial I/O will be
+wrong.</P
+><P
+>In other words, code (either eCos app or RedBoot) built for 90MHz will
+&#8220;change up a gear&#8221; when it starts up; but code built for 72MHz,
+because it needs to run correctly on boards without the
+&#8220;gearbox&#8221; does not change back down, so if you mix the two,
+unexpected timing can result.  To run a non-eCos application without any
+hardware initialization code at 90MHz, you must install a specially-built
+RedBoot.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="setup-arm-ep7212.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="setup-arm-ep7209.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Cirrus Logic ARM EP7212 Development Board
+Hardware Setup</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="appendix-target-setup.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Cirrus Logic ARM EP7209 Development Board Hardware Setup</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

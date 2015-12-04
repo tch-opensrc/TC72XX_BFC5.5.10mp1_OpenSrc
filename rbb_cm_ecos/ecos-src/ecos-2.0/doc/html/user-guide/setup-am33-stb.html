@@ -1,0 +1,409 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>AM33 STB Hardware Setup</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Target Setup"
+HREF="appendix-target-setup.html"><LINK
+REL="PREVIOUS"
+TITLE="MN10300 Architectural Simulator Setup"
+HREF="setup-mn10300-sim.html"><LINK
+REL="NEXT"
+TITLE="TX39 Hardware Setup"
+HREF="setup-tx39-jmr3904.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="setup-mn10300-sim.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Target Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="setup-tx39-jmr3904.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SETUP-AM33-STB">AM33 STB Hardware Setup</H1
+><P
+>The Matsushita AM33 STB System Reference Board may be used
+in two modes: via a JTAG debugger, or by means of a GDB stub ROM.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3223">Use with GDB Stub ROM</H2
+><P
+>The eCos Developer&#8217;s Kit package comes with a ROM
+image which provides GDB support for
+the Matsushita(R) AM33 STB System Reference Board. To install the
+GDB stub ROM requires the use of the JTAG debugger and the Flash ROM
+programming code available from Matsushita. An image of this ROM
+is also provided at <TT
+CLASS="FILENAME"
+>loaders/am33-stb/gdbload.bin</TT
+> under
+the root of your eCos installation.</P
+><P
+>Ensure that there is a Flash ROM card in MAIN MEMORY SLOT &lt;0&#62;.
+Follow the directions for programming a Flash ROM supplied with
+the programming software.</P
+><P
+>The final programming of the ROM will need to be done with
+a command similar to the following:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>fdown "gdbload.bin",0x80000000,16,1</PRE
+></TD
+></TR
+></TABLE
+><P
+>Once the ROM has been programmed, close down the JTAG debugger,
+turn the STB off, and disconnect the JTAG cable. Ensure that the
+hardware switches are in the following configuration:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>U U D D D U D D
+
+D = lower part of rocker switch pushed in
+U = upper part of rocker switch pushed in</PRE
+></TD
+></TR
+></TABLE
+><P
+>This is also the configuration required by the Flash programming
+code, so it should not be necessary to change these.</P
+><P
+>Restart the STB and the stub ROM will now be able to communicate
+with <SPAN
+CLASS="PRODUCTNAME"
+>GDB</SPAN
+>. eCos programs should be built
+with RAM startup.</P
+><P
+>Programs can then be downloaded via a standard RS232 null
+modem serial cable connected to the SERIAL1 connector on the STB
+front panel (the AM33&quot;s serial port 0). This line is programmed
+to run at 38400 baud, 8 data bits, no parity and 1 stop bit (8-N-1)
+with no flow control. A gender changer may also be required. Diagnostic
+output will be output to GDB using the same connection.</P
+><P
+>This procedure also applies for programming ROM startup eCos
+programs into ROM, given a binary format image of the program from<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+> mn10300-elf-objcopy.</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3238">Use with the JTAG debugger</H2
+><P
+>To use eCos from the JTAG debugger, executables must be built
+with ROM startup and then downloaded via the JTAG debugger. For
+this to work there must be an SDRAM memory card in SUB MEMORY SLOT &lt;0&#62; and
+the hardware switches on the front panel set to the following: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>D U D D D U D D
+
+D = lower part of rocker switch pushed in
+U = upper part of rocker switch pushed in</PRE
+></TD
+></TR
+></TABLE
+><P
+>Connect the JTAG unit and run the debugger as described in
+the documentation that comes with it.</P
+><P
+>eCos executables should be renamed to have a &#8220;.out&#8221; extension
+and may then be loaded using the debugger&quot;s &#8220;l&#8221; or &#8220;lp&#8221; commands.</P
+><P
+>Diagnostic output generated by the program will be sent out
+of the AM33&quot;s serial port 0 which is connected to the SERIAL1
+connector on the STB front panel. This line is programmed to run
+at 38400 baud, 8 data bits, no parity, and one stop bit (8-N-1)
+with no flow control. Connection to the host computer should be
+using a standard RS232 null modem serial cable. A gender changer
+may also be required.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3245">Building the GDB stub ROM image</H2
+><P
+>eCos comes with a pre-built GDB stub ROM image for the AM33-STB
+platform. This can be found at <TT
+CLASS="FILENAME"
+>loaders/am33-stb/gdbload.bin</TT
+> relative
+to the eCos installation directory.</P
+><P
+>If necessary, the ROM image can be re-built as follows:</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>		On Windows hosts, open a Bash session using 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Start-&#62;Programs-&#62;Red Hat eCos-&#62;eCos
+Development Environment</I
+></SPAN
+></P
+></LI
+><LI
+><P
+>Create a build directory and cd into it</P
+></LI
+><LI
+><P
+>Run (all as one line):
+
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cygtclsh80 BASE_DIR/packages/pkgconf.tcl                          \
+  --target=mn10300_am33 --platform stb --startup rom              \
+  --disable-kernel --disable-uitron --disable-libc --disable-libm \
+  --disable-io --disable-io_serial --disable-wallclock
+--disable-watchdog</PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+><P
+>where BASE_DIR is the path to the eCos installation
+directory.</P
+></LI
+><LI
+><P
+>Edit the configuration file 
+<TT
+CLASS="FILENAME"
+>pkgconf/hal.h</TT
+>
+ in the build directory tree by ensuring the following configuration
+options are set as follows:
+
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYGDBG_HAL_DEBUG_GDB_INCLUDE_STUBS
+#define CYGDBG_HAL_DEBUG_GDB_BREAK_SUPPORT
+#undef  CYGDBG_HAL_DEBUG_GDB_CTRLC_SUPPORT
+#define CYGDBG_HAL_DEBUG_GDB_THREAD_SUPPORT
+#define CYG_HAL_ROM_MONITOR</PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+></LI
+><LI
+><P
+>Run: make</P
+></LI
+><LI
+><P
+>Run: make -C hal/common/current/current/src/stubrom</P
+></LI
+><LI
+><P
+>The file 
+<TT
+CLASS="FILENAME"
+>hal/common/current/src/stubrom</TT
+>
+ will be an ELF format executable of the ROM image. Use mn10300-elf-objcopy to
+convert this to the appropriate format for loading into the Matsushita
+FLASH ROM programmer, mode &#8220;binary&#8221; in this case: 
+
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>$ mn10300-elf-objcopy -O binary hal/common/current/src/stubrom/ \
+  stubrom stubrom.img</PRE
+></TD
+></TR
+></TABLE
+></P
+></LI
+></OL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="setup-mn10300-sim.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="setup-tx39-jmr3904.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>MN10300 Architectural Simulator Setup</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="appendix-target-setup.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>TX39 Hardware Setup</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

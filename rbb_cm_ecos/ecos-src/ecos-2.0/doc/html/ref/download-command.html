@@ -1,0 +1,741 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>load</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Common Commands"
+HREF="common-commands.html"><LINK
+REL="PREVIOUS"
+TITLE="ip_address"
+HREF="ip-address-command.html"><LINK
+REL="NEXT"
+TITLE="mcmp"
+HREF="mcmp-command.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ip-address-command.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="mcmp-command.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="DOWNLOAD-COMMAND">load</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN3433"
+></A
+><H2
+>Name</H2
+>load&nbsp;--&nbsp;Download programs or data to the RedBoot platform</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN3436"><H2
+>Synopsis</H2
+><P
+><B
+CLASS="COMMAND"
+>load</B
+>  [-v ] [-d ] [-r ] [-m
+           [[xmodem | ymodem] | tftp | disk]
+        ] [-h <TT
+CLASS="REPLACEABLE"
+><I
+> server_IP_address</I
+></TT
+>] [-b <TT
+CLASS="REPLACEABLE"
+><I
+> location</I
+></TT
+>] [-c <TT
+CLASS="REPLACEABLE"
+><I
+> channel</I
+></TT
+>] [<TT
+CLASS="REPLACEABLE"
+><I
+>file_name</I
+></TT
+>]</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3458"
+></A
+><H2
+>Arguments</H2
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3460"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Name</TH
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Type</TH
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Default</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-v</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Boolean</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Display a small spinner (indicator)
+while the download is in  progress. This is just for feedback, especially
+during long loads. Note that the option has no effect when using a
+serial download method since it would interfere with the protocol.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>quiet</I
+></SPAN
+></TD
+></TR
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-d</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Boolean</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Decompress data stream (gzip data)</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>non-compressed data</I
+></SPAN
+></TD
+></TR
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-r</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Boolean</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Raw (or binary) data</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>formatted (S-records, ELF image, etc)</I
+></SPAN
+></TD
+></TR
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-m tftp</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Transfer data via the network using <SPAN
+CLASS="ACRONYM"
+>TFTP</SPAN
+> protocol.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="ACRONYM"
+>TFTP</SPAN
+></TD
+></TR
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-m http</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Transfer data via the network using <SPAN
+CLASS="ACRONYM"
+>HTTP</SPAN
+> protocol.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="ACRONYM"
+>TFTP</SPAN
+></TD
+></TR
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-m xmodem</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Transfer data using <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>X-modem</I
+></SPAN
+> protocol.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="ACRONYM"
+>TFTP</SPAN
+></TD
+></TR
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-m ymodem</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Transfer data using <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Y-modem</I
+></SPAN
+> protocol.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="ACRONYM"
+>TFTP</SPAN
+></TD
+></TR
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-m disk</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Transfer data from a local disk.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="ACRONYM"
+>TFTP</SPAN
+></TD
+></TR
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-h <TT
+CLASS="REPLACEABLE"
+><I
+>server_IP_address</I
+></TT
+></TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Numeric IP or DNS name</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>The IP address of the <SPAN
+CLASS="ACRONYM"
+>TFTP</SPAN
+> or <SPAN
+CLASS="ACRONYM"
+>HTTP</SPAN
+> server.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Value set by <B
+CLASS="COMMAND"
+>ip_address</B
+></TD
+></TR
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-b <TT
+CLASS="REPLACEABLE"
+><I
+>location</I
+></TT
+></TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Number</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Address in memory to load the data.  Formatted data streams will have
+an implied load address which this option may override.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Depends on data format</I
+></SPAN
+></TD
+></TR
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>-c <TT
+CLASS="REPLACEABLE"
+><I
+>channel</I
+></TT
+></TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Number</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Specify which I/O channel to
+use for download.  This option is only supported when using either
+xmodem or ymodem protocol.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Depends on data format</I
+></SPAN
+></TD
+></TR
+><TR
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="REPLACEABLE"
+><I
+>file_name</I
+></TT
+></TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>String</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>The name of the file on the <SPAN
+CLASS="ACRONYM"
+>TFTP</SPAN
+> or <SPAN
+CLASS="ACRONYM"
+>HTTP</SPAN
+>
+server or the local disk. Details of how this is specified for <SPAN
+CLASS="ACRONYM"
+>TFTP</SPAN
+> are
+host-specific. For local disk files, the name must be in <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>disk</I
+></SPAN
+>:
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>filename</I
+></SPAN
+> format. The disk portion must match one of the disk
+names listed by the <B
+CLASS="COMMAND"
+>disks</B
+> command.</TD
+><TD
+WIDTH="25%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>None</I
+></SPAN
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3561"
+></A
+><H2
+>Description</H2
+><P
+>The <B
+CLASS="COMMAND"
+>load</B
+> command is used to download
+data into the target system. Data can be loaded via a network connection,
+using either the <SPAN
+CLASS="ACRONYM"
+>TFTP</SPAN
+> or <SPAN
+CLASS="ACRONYM"
+>HTTP</SPAN
+> protocols, or the console serial connection using the
+X/Y modem protocol. Files may also be loaded directly from local filesystems
+on disk. Files to be downloaded may either be executable images in 
+ELF executable program format,
+Motorola S-record (SREC)
+format or raw data.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3567"
+></A
+><H2
+>Examples</H2
+><P
+>Download a Motorola S-record (or ELF) image, using <SPAN
+CLASS="ACRONYM"
+>TFTP</SPAN
+>, specifying the 
+base memory address.
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>load redboot.ROM -b 0x8c400000</B
+></TT
+>
+Address offset = 0x0c400000
+Entry point: 0x80000000, address range: 0x80000000-0x8000fe80</PRE
+></TD
+></TR
+></TABLE
+> 
+      </P
+><P
+>Download a Motorola S-record (or ELF) image, using <SPAN
+CLASS="ACRONYM"
+>HTTP</SPAN
+>, specifying the
+host [server] address.
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>load /redboot.ROM -m HTTP -h 192.168.1.104</B
+></TT
+>
+Address offset = 0x0c400000
+Entry point: 0x80000000, address range: 0x80000000-0x8000fe80</PRE
+></TD
+></TR
+></TABLE
+> 
+      </P
+><P
+>Load an ELF file from /dev/hda1 which should be an EXT2 partition:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&#62; <TT
+CLASS="USERINPUT"
+><B
+>load -mode disk hda1:hello.elf</B
+></TT
+>
+Entry point: 0x00020000, address range: 0x00020000-0x0002fd70</PRE
+></TD
+></TR
+></TABLE
+>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ip-address-command.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="mcmp-command.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>ip_address</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="common-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>mcmp</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,570 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Thread information</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Kernel"
+HREF="kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="Thread creation"
+HREF="kernel-thread-create.html"><LINK
+REL="NEXT"
+TITLE="Thread control"
+HREF="kernel-thread-control.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="kernel-thread-create.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="kernel-thread-control.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="KERNEL-THREAD-INFO">Thread information</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN356"
+></A
+><H2
+>Name</H2
+>cyg_thread_self, cyg_thread_idle_thread, cyg_thread_get_stack_base, cyg_thread_get_stack_size, cyg_thread_measure_stack_usage, cyg_thread_get_next, cyg_thread_get_info, cyg_thread_find&nbsp;--&nbsp;Get basic thread information</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN366"><H2
+>Synopsis</H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><A
+NAME="AEN367"><P
+></P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &lt;cyg/kernel/kapi.h&gt;    
+	</PRE
+></TD
+></TR
+></TABLE
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_handle_t cyg_thread_self</CODE
+>(void);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_handle_t cyg_thread_idle_thread</CODE
+>(void);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_addrword_t cyg_thread_get_stack_base</CODE
+>(cyg_handle_t thread);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_uint32 cyg_thread_get_stack_size</CODE
+>(cyg_handle_t thread);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_uint32 cyg_thread_measure_stack_usage</CODE
+>(cyg_handle_t thread);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_bool cyg_thread_get_next</CODE
+>(cyg_handle_t *thread, cyg_uint16 *id);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_bool cyg_thread_get_info</CODE
+>(cyg_handle_t thread, cyg_uint16 id, cyg_thread_info *info);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_handle_t cyg_thread_find</CODE
+>(cyg_uint16 id);</CODE
+></P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-THREAD-INFO-DESCRIPTION"
+></A
+><H2
+>Description</H2
+><P
+>These functions can be used to obtain some basic information about
+various threads in the system. Typically they serve little or no
+purpose in real applications, but they can be useful during debugging.
+      </P
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_thread_self</TT
+> returns a handle corresponding
+to the current thread. It will be the same as the value filled in by
+<TT
+CLASS="FUNCTION"
+>cyg_thread_create</TT
+> when the current thread was
+created. This handle can then be passed to other functions such as
+<TT
+CLASS="FUNCTION"
+>cyg_thread_get_priority</TT
+>.
+      </P
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_thread_idle_thread</TT
+> returns the handle
+corresponding to the idle thread. This thread is created automatically
+by the kernel, so application-code has no other way of getting hold of
+this information.
+      </P
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_thread_get_stack_base</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_thread_get_stack_size</TT
+> return information
+about a specific thread's stack. The values returned will match the
+values passed to <TT
+CLASS="FUNCTION"
+>cyg_thread_create</TT
+> when this
+thread was created.
+      </P
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_thread_measure_stack_usage</TT
+> is only available
+if the configuration option
+<TT
+CLASS="VARNAME"
+>CYGFUN_KERNEL_THREADS_STACK_MEASUREMENT</TT
+> is enabled.
+The return value is the maximum number of bytes of stack space used so
+far by the specified thread. Note that this should not be considered a
+true upper bound, for example it is possible that in the current test
+run the specified thread has not yet been interrupted at the deepest
+point in the function call graph. Never the less the value returned
+can give some useful indication of the thread's stack requirements.
+      </P
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_thread_get_next</TT
+> is used to enumerate all the
+current threads in the system. It should be called initially with the
+locations pointed to by <TT
+CLASS="PARAMETER"
+><I
+>thread</I
+></TT
+> and
+<TT
+CLASS="PARAMETER"
+><I
+>id</I
+></TT
+> set to zero. On return these will be set to
+the handle and ID of the first thread. On subsequent calls, these
+parameters should be left set to the values returned by the previous
+call.  The handle and ID of the next thread in the system will be
+installed each time, until a <TT
+CLASS="LITERAL"
+>false</TT
+> return value
+indicates the end of the list.
+      </P
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_thread_get_info</TT
+> fills in the
+<SPAN
+CLASS="TYPE"
+>cyg_thread_info</SPAN
+> structure with information about the
+thread described by the <TT
+CLASS="PARAMETER"
+><I
+>thread</I
+></TT
+> and
+<TT
+CLASS="PARAMETER"
+><I
+>id</I
+></TT
+> arguments. The information returned includes
+the thread's handle and id, its state and name, priorities and stack
+parameters. If the thread does not exist the function returns
+<TT
+CLASS="LITERAL"
+>false</TT
+>.
+    </P
+><P
+>The <SPAN
+CLASS="TYPE"
+>cyg_thread_info</SPAN
+> structure is defined as follows by
+&lt;<TT
+CLASS="FILENAME"
+>cyg/kernel/kapi.h</TT
+>&gt;, but may
+be extended in future with additional members, and so its size should
+not be relied upon:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct
+{
+    <SPAN
+CLASS="TYPE"
+>cyg_handle_t</SPAN
+>        <TT
+CLASS="STRUCTFIELD"
+><I
+>handle</I
+></TT
+>;
+    <SPAN
+CLASS="TYPE"
+>cyg_uint16</SPAN
+>          <TT
+CLASS="STRUCTFIELD"
+><I
+>id</I
+></TT
+>;
+    <SPAN
+CLASS="TYPE"
+>cyg_uint32</SPAN
+>          <TT
+CLASS="STRUCTFIELD"
+><I
+>state</I
+></TT
+>;
+    <SPAN
+CLASS="TYPE"
+>char</SPAN
+>                <TT
+CLASS="STRUCTFIELD"
+><I
+>*name</I
+></TT
+>;
+    <SPAN
+CLASS="TYPE"
+>cyg_priority_t</SPAN
+>      <TT
+CLASS="STRUCTFIELD"
+><I
+>set_pri</I
+></TT
+>;
+    <SPAN
+CLASS="TYPE"
+>cyg_priority_t</SPAN
+>      <TT
+CLASS="STRUCTFIELD"
+><I
+>cur_pri</I
+></TT
+>;
+    <SPAN
+CLASS="TYPE"
+>cyg_addrword_t</SPAN
+>      <TT
+CLASS="STRUCTFIELD"
+><I
+>stack_base</I
+></TT
+>;
+    <SPAN
+CLASS="TYPE"
+>cyg_uint32</SPAN
+>          <TT
+CLASS="STRUCTFIELD"
+><I
+>stack_size</I
+></TT
+>;
+    <SPAN
+CLASS="TYPE"
+>cyg_uint32</SPAN
+>          <TT
+CLASS="STRUCTFIELD"
+><I
+>stack_used</I
+></TT
+>;
+} cyg_thread_info;</PRE
+></TD
+></TR
+></TABLE
+>
+    </P
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_thread_find</TT
+> returns a handle for the thread
+whose ID is <TT
+CLASS="PARAMETER"
+><I
+>id</I
+></TT
+>. If no such thread exists, a
+zero handle is returned.
+    </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-THREAD-INFO-CONTEXT"
+></A
+><H2
+>Valid contexts</H2
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_thread_self</TT
+> may only be called from thread
+context. <TT
+CLASS="FUNCTION"
+>cyg_thread_idle_thread</TT
+> may be called
+from thread or DSR context, but only after the system has been
+initialized. <TT
+CLASS="FUNCTION"
+>cyg_thread_get_stack_base</TT
+>,
+<TT
+CLASS="FUNCTION"
+>cyg_thread_get_stack_size</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_thread_measure_stack_usage</TT
+> may be called
+any time after the specified thread has been created, but measuring
+stack usage involves looping over at least part of the thread's stack
+so this should normally only be done from thread context.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-THREAD-INFO-EXAMPLES"
+></A
+><H2
+>Examples</H2
+><P
+>A simple example of the use of the
+<TT
+CLASS="FUNCTION"
+>cyg_thread_get_next</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_thread_get_info</TT
+> follows:      
+      </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&#13;#include &lt;cyg/kernel/kapi.h&gt;
+#include &lt;stdio.h&gt;
+
+void show_threads(void)
+{
+    cyg_handle_t thread = 0;
+    cyg_uint16 id = 0;
+
+    while( cyg_thread_get_next( &amp;thread, &amp;id ) )
+    {
+        cyg_thread_info info;
+
+        if( !cyg_thread_get_info( thread, id, &amp;info ) )
+            break;
+
+        printf("ID: %04x name: %10s pri: %d\n",
+                info.id, info.name?info.name:"----", info.set_pri );
+    }
+}
+
+      </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="kernel-thread-create.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="kernel-thread-control.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Thread creation</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Thread control</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,530 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Rebuilding RedBoot</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="RedBoot&#8482; User's Guide"
+HREF="redboot.html"><LINK
+REL="PREVIOUS"
+TITLE="exec"
+HREF="exec-command.html"><LINK
+REL="NEXT"
+TITLE="Updating RedBoot"
+HREF="updating-redboot.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="exec-command.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="updating-redboot.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="REBUILDING-REDBOOT">Chapter 3. Rebuilding RedBoot</H1
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="AEN4673">Introduction</H1
+><P
+>&#13;RedBoot is built as an application on top of eCos. The makefile rules
+for building RedBoot are part of the eCos CDL package, so it's
+possible to build eCos from the <SPAN
+CLASS="APPLICATION"
+>Configuration
+Tool</SPAN
+>, as well as from the command line using
+<SPAN
+CLASS="APPLICATION"
+>ecosconfig</SPAN
+>.</P
+><P
+>Building RedBoot requires only a few steps: selecting the
+platform and the RedBoot template, importing a platform specific
+configuration file, and finally starting the build.</P
+><P
+>The platform specific configuration file makes sure the settings
+are correct for building RedBoot on the given platform. Each platform
+should provide at least two of these configuration files:
+<TT
+CLASS="FILENAME"
+>redboot_RAM.ecm</TT
+> for a RAM mode RedBoot
+configuration and <TT
+CLASS="FILENAME"
+>redboot_ROM.ecm</TT
+> or
+<TT
+CLASS="FILENAME"
+>redboot_ROMRAM.ecm</TT
+> for a ROM or ROMRAM mode
+RedBoot configuration. There may be additional
+configuration files according to the requirements of the particular
+platform.</P
+><P
+>The RedBoot build process results in a number of files in the
+install <TT
+CLASS="FILENAME"
+>bin</TT
+> directory. The ELF
+file <TT
+CLASS="FILENAME"
+>redboot.elf</TT
+> is the pricipal
+result. Depending on the platform CDL, there will also be generated
+versions of RedBoot in other file formats, such as
+<TT
+CLASS="FILENAME"
+>redboot.bin</TT
+> (binary format, good when doing an
+update of a primary RedBoot image, see <A
+HREF="updating-redboot.html#UPDATE-PRIMARY-IMAGE"
+>the Section called <I
+>Update the primary RedBoot flash image</I
+> in Chapter 4</A
+>), <TT
+CLASS="FILENAME"
+>redboot.srec</TT
+>
+(Motorola S-record format, good when downloading a RAM mode image for
+execution), and <TT
+CLASS="FILENAME"
+>redboot.img</TT
+> (stripped ELF format,
+good when downloading a RAM mode image for execution, smaller than the
+.srec file). Some platforms may provide additional file formats and
+also relocate some of these files to a
+particular address making them more suitable for downloading using a
+different boot monitor or flash programming tools.</P
+><P
+>The platform specific information in <A
+HREF="installation-and-testing.html"
+>Chapter 5</A
+> should be consulted, as there may
+be other special instructions required to build RedBoot for particular
+platforms.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4697">Rebuilding RedBoot using <SPAN
+CLASS="APPLICATION"
+>ecosconfig</SPAN
+></H2
+><P
+>To rebuild RedBoot using the
+<SPAN
+CLASS="APPLICATION"
+>ecosconfig</SPAN
+> tool, create a temporary
+directory for building RedBoot, name it according to the desired
+configuration of RedBoot, here RAM:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ <TT
+CLASS="USERINPUT"
+><B
+>mkdir /tmp/redboot_RAM</B
+></TT
+>
+$ <TT
+CLASS="USERINPUT"
+><B
+>cd /tmp/redboot_RAM</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>Create the build tree according to the chosen platform, here
+using the Hitachi Solution Engine 7751 board as
+an example:
+<DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>It is assumed that the environment variable
+ECOS_REPOSITORY points to the eCos/RedBoot source tree.</P
+></BLOCKQUOTE
+></DIV
+>
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ <TT
+CLASS="USERINPUT"
+><B
+>ecosconfig new se7751 redboot</B
+></TT
+>
+U CYGPKG_HAL_SH_7750, new inferred value 0
+U CYGPKG_HAL_SH_7751, new inferred value 1
+U CYGHWR_HAL_SH_IRQ_USE_IRQLVL, new inferred value 1
+U CYGSEM_HAL_USE_ROM_MONITOR, new inferred value 0
+U CYGDBG_HAL_COMMON_CONTEXT_SAVE_MINIMUM, new inferred value 0
+U CYGDBG_HAL_DEBUG_GDB_INCLUDE_STUBS, new inferred value 1
+U CYGFUN_LIBC_STRING_BSD_FUNCS, new inferred value 0
+U CYGPKG_NS_DNS_BUILD, new inferred value 0</PRE
+></TD
+></TR
+></TABLE
+>
+Replace the platform name ("se7751") with the appropriate name for the
+chosen platform.</P
+><P
+>Then import the appropriate platform RedBoot configuration file,
+here for RAM configuration:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ <TT
+CLASS="USERINPUT"
+><B
+>ecosconfig import <TT
+CLASS="FILENAME"
+>${ECOS_REPOSITORY}/hal/sh/se7751/<TT
+CLASS="REPLACEABLE"
+><I
+>VERSION</I
+></TT
+>/misc/redboot_RAM.ecm</TT
+></B
+></TT
+>
+$ <TT
+CLASS="USERINPUT"
+><B
+>ecosconfig tree</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+>
+Replace architecture ("sh"), platform ("se7751") and version
+("<TT
+CLASS="REPLACEABLE"
+><I
+>VERSION</I
+></TT
+>") with those appropriate for the
+chosen platform and the version number of its HAL package. Also
+replace the configuration name ("redboot_RAM.ecm") with that of the
+appropriate configuration file.</P
+><P
+>RedBoot can now be built:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ <TT
+CLASS="USERINPUT"
+><B
+>make</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The resulting RedBoot files will be in the associated
+install directory, in this example, <TT
+CLASS="FILENAME"
+>./install/bin</TT
+>.</P
+><P
+>In <A
+HREF="installation-and-testing.html"
+>Chapter 5</A
+> each platform's
+details are described in the form of shell variables. Using those,
+the steps to build RedBoot are:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>export REDBOOT_CFG=redboot_ROM
+export VERSION=<TT
+CLASS="REPLACEABLE"
+><I
+>VERSION</I
+></TT
+>
+mkdir /tmp/${REDBOOT_CFG}
+cd /tmp/${REDBOOT_CFG}
+ecosconfig new ${TARGET} redboot
+ecosconfig import ${ECOS_REPOSITORY}/hal/${ARCH_DIR}/${PLATFORM_DIR}/${VERSION}/misc/${REDBOOT_CFG}.ecm
+ecosconfig tree
+make</PRE
+></TD
+></TR
+></TABLE
+>
+To build for another configuration, simply change the
+<TT
+CLASS="REPLACEABLE"
+><I
+>REDBOOT_CFG</I
+></TT
+> definition accordingly. Also
+make sure the <TT
+CLASS="REPLACEABLE"
+><I
+>VERSION</I
+></TT
+> variable matches the
+version of the platform package.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4728">Rebuilding RedBoot from the <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+></H2
+><P
+>To rebuild RedBoot from the <SPAN
+CLASS="APPLICATION"
+>Configuration
+Tool</SPAN
+>, open the template window (<SPAN
+CLASS="GUIMENUITEM"
+>Build-&#62;Templates</SPAN
+>) and
+select the appropriate Hardware target and in Packages select
+"redboot". Then press OK. Depending on the platform, a number of
+conflicts may need to be resolved before the build can be started;
+select "Continue".</P
+><P
+>Import the desired RedBoot configuration file from the platform HAL
+(<SPAN
+CLASS="GUIMENUITEM"
+>File-&#62;Import...</SPAN
+>).  Depending on the platform, a number of
+conflicts may need to be resolved before the build can be started;
+select "Continue". For example, if the platform selected is Hitachi
+SE7751 board and the RAM configuration RedBoot should be built, import
+the file
+<TT
+CLASS="FILENAME"
+>hal/sh/se7751/<TT
+CLASS="REPLACEABLE"
+><I
+>VERSION</I
+></TT
+>/misc/redboot_RAM.ecm</TT
+>.</P
+><P
+>Save the configuration somewhere suitable with enough disk space
+for building RedBoot (<SPAN
+CLASS="GUIMENUITEM"
+>File-&#62;Save...</SPAN
+>). Choose the name according to
+the RedBoot configuration, for example
+<TT
+CLASS="FILENAME"
+>redboot_RAM.ecc</TT
+>.</P
+><P
+>Then start the build (<SPAN
+CLASS="GUIMENUITEM"
+>Build-&#62;Library</SPAN
+>) and wait for it to
+complete. The resulting RedBoot files will be in the associated
+install directory, for the example this would be <TT
+CLASS="FILENAME"
+>redboot_RAM_install/bin</TT
+>.</P
+><P
+>As noted above, each platform's details are described in <A
+HREF="installation-and-testing.html"
+>Chapter 5</A
+>. Use the information provided in
+the shell variables to find the configuration file - the path to it is
+<TT
+CLASS="FILENAME"
+>${ECOS_REPOSITORY}/hal/${ARCH_DIR}/${PLATFORM_DIR}/${VERSION}/misc/${REDBOOT_CFG}.ecm</TT
+>,
+where <TT
+CLASS="REPLACEABLE"
+><I
+>ECOS_REPOSITORY</I
+></TT
+> points to the
+eCos/RedBoot sources, <TT
+CLASS="REPLACEABLE"
+><I
+>VERSION</I
+></TT
+> is the
+version of the package (usually "current") and
+<TT
+CLASS="REPLACEABLE"
+><I
+>REDBOOT_CFG</I
+></TT
+> is the desired configuration,
+e.g. redboot_RAM.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="exec-command.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="updating-redboot.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>exec</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="redboot.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Updating RedBoot</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

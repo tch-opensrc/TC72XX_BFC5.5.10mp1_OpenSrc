@@ -1,0 +1,449 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>C and math library overview</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The ISO Standard C and Math Libraries"
+HREF="libc.html"><LINK
+REL="PREVIOUS"
+TITLE="The ISO Standard C and Math Libraries"
+HREF="libc.html"><LINK
+REL="NEXT"
+TITLE="Math library compatibility modes"
+HREF="math-library-compatibility-modes.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="libc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="math-library-compatibility-modes.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="C-AND-MATH-LIBRARY-OVERVIEW">Chapter 13. C and math library overview</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="c-and-math-library-overview.html#INCLUDE-NON-ISO-FUNCTIONS"
+>Included non-ISO functions</A
+></DT
+><DT
+><A
+HREF="math-library-compatibility-modes.html"
+>Math library compatibility modes</A
+></DT
+><DT
+><A
+HREF="libc-implementation-details.html"
+>Some implementation details</A
+></DT
+><DT
+><A
+HREF="libc-thread-safety.html"
+>Thread safety</A
+></DT
+><DT
+><A
+HREF="c-library-startup.html"
+>C library startup</A
+></DT
+></DL
+></DIV
+><A
+NAME="ISO-C-AND-MATH-LIBRARIES"
+></A
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+> provides compatibility with the
+	ISO 9899:1990 specification for the standard C library, which
+	is essentially the same as the better-known ANSI C3.159-1989
+	specification (C-89).</P
+><P
+>There are three aspects of this compatibility supplied by <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+>.
+First there is a <I
+CLASS="FIRSTTERM"
+>C library</I
+> which
+implements the functions defined by the ISO standard, except for the
+mathematical functions. This is provided by the eCos C library
+packages. </P
+><P
+>Then <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+> provides a math
+library, which implements the mathematical functions from the ISO
+C library. This distinction between C and math libraries is frequently
+drawn &#8212; most standard C library implementations provide
+separate linkable files for the two, and the math library contains
+all the functions from the <TT
+CLASS="FILENAME"
+>math.h</TT
+> header
+file.</P
+><P
+>There is a third element to the ISO C library, which is the
+environment in which applications run when they use the standard
+C library. This environment is set up by the C library startup procedure
+(<A
+HREF="c-library-startup.html"
+>the Section called <I
+>C library startup</I
+></A
+>)
+and it provides (among other things) a <TT
+CLASS="FUNCTION"
+>main()</TT
+> entry
+point function, an <TT
+CLASS="FUNCTION"
+>exit()</TT
+> function that
+does the cleanup required by the standard (including handlers registered
+using the <TT
+CLASS="FUNCTION"
+>atexit()</TT
+> function), and an environment
+that can be read with <TT
+CLASS="FUNCTION"
+>getenv()</TT
+>. </P
+><P
+>The description in this manual focuses on the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+>-specific
+aspects of the C library (mostly related to <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+>'s
+configurability) as well as mentioning the omissions from the standard
+in this release. We do not attempt to define the semantics of each
+function, since that information can be found in the ISO, ANSI,
+POSIX and IEEE standards, and the many good books that have been
+written about the standard C library, that cover usage of these
+functions in a more general and useful way.</P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="INCLUDE-NON-ISO-FUNCTIONS">Included non-ISO functions</H1
+><P
+>The following functions from the POSIX specification
+are included for convenience: </P
+><P
+>	<TT
+CLASS="LITERAL"
+>extern char **</TT
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>environ</I
+></SPAN
+> variable
+(for setting up the environment for use with <TT
+CLASS="FUNCTION"
+>getenv()</TT
+>)</P
+><P
+>	<TT
+CLASS="FUNCTION"
+>_exit()</TT
+> </P
+><P
+>	<TT
+CLASS="FUNCTION"
+>strtok_r()</TT
+> </P
+><P
+>	<TT
+CLASS="FUNCTION"
+>rand_r()</TT
+> </P
+><P
+>	<TT
+CLASS="FUNCTION"
+>asctime_r()</TT
+> </P
+><P
+>	<TT
+CLASS="FUNCTION"
+>ctime_r()</TT
+> </P
+><P
+>	<TT
+CLASS="FUNCTION"
+>localtime_r()</TT
+> </P
+><P
+>	<TT
+CLASS="FUNCTION"
+>gmtime_r()</TT
+> </P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+> provides the following additional
+implementation-specific functions within the standard C library
+to adjust the date and time settings:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void <TT
+CLASS="FUNCTION"
+>cyg_libc_time_setdst</TT
+>( 
+  cyg_libc_time_dst state
+);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function sets the state of Daylight Savings Time. The
+values for state are:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>CYG_LIBC_TIME_DSTNA   unknown
+CYG_LIBC_TIME_DSTOFF  off
+CYG_LIBC_TIME_DSTON   on</PRE
+></TD
+></TR
+></TABLE
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void <TT
+CLASS="FUNCTION"
+>cyg_libc_time_setzoneoffsets</TT
+>( 
+  time_t stdoffset, time_t dstoffset
+);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function sets the offsets from UTC used when Daylight
+Savings Time is enabled or disabled. The offsets are in time_t&#8217;s,
+which are seconds in the current inplementation.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><TT
+CLASS="FUNCTION"
+>Cyg_libc_time_dst cyg_libc_time_getzoneoffsets</TT
+>( 
+  time_t *stdoffset, time_t *dstoffset
+);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function retrieves the current setting for Daylight Savings
+Time along with the offsets used for both STD and DST. The offsets
+are both in time_t&#8217;s, which are seconds in the
+current implementation.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><TT
+CLASS="FUNCTION"
+>cyg_bool cyg_libc_time_settime</TT
+>( 
+  time_t utctime
+);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function sets the current time for the system The time
+is specified as a <SPAN
+CLASS="TYPE"
+>time_t</SPAN
+> in UTC.
+It returns non-zero on error.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="libc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="math-library-compatibility-modes.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>The ISO Standard C and Math Libraries</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="libc.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Math library compatibility modes</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

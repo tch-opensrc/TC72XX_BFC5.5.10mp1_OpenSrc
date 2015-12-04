@@ -1,0 +1,303 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>SNMP for eCos</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="SNMP"
+HREF="net-snmp.html"><LINK
+REL="PREVIOUS"
+TITLE="SNMP"
+HREF="net-snmp.html"><LINK
+REL="NEXT"
+TITLE="SNMP packages in the eCos source repository"
+HREF="net-snmp-package-contents.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-snmp.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-snmp-package-contents.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="NET-SNMP-ECOS-PORT">Chapter 47. SNMP for <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+></H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="net-snmp-ecos-port.html#NET-SNMP-VERSION"
+>Version</A
+></DT
+><DT
+><A
+HREF="net-snmp-package-contents.html"
+>SNMP packages in the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+> source repository</A
+></DT
+><DT
+><A
+HREF="net-snmp-mibs-supported.html"
+>MIBs supported</A
+></DT
+><DT
+><A
+HREF="net-snmp-ecos-changes.html"
+>Changes to eCos sources</A
+></DT
+><DT
+><A
+HREF="net-snmp-starting-the-snmp-agent.html"
+>Starting the SNMP Agent</A
+></DT
+><DT
+><A
+HREF="net-snmp-configuring-ecos.html"
+>Configuring eCos</A
+></DT
+><DT
+><A
+HREF="net-snmp-test-cases.html"
+>Test cases</A
+></DT
+><DT
+><A
+HREF="net-snmp-clients-and-package-use.html"
+>SNMP clients and package use</A
+></DT
+><DT
+><A
+HREF="net-snmp-unimplemented-features.html"
+>Unimplemented features</A
+></DT
+><DT
+><A
+HREF="net-snmp-mib-compiler.html"
+>MIB Compiler</A
+></DT
+><DT
+><A
+HREF="net-snmp-agent-manpages-snmpd.conf.html"
+>snmpd.conf</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-SNMP-VERSION">Version</H1
+><P
+>This is a port of UCD-SNMP-4.1.2</P
+><P
+>Originally this document said: See
+<A
+HREF="http://ucd-snmp.ucdavis.edu/"
+TARGET="_top"
+>http://ucd-snmp.ucdavis.edu/</A
+>
+for details.  And send them a postcard.</P
+><P
+>The project has since been renamed &#8220;net-snmp&#8221; and re-homed at
+<A
+HREF="http://net-snmp.sourceforge.net/"
+TARGET="_top"
+>            http://net-snmp.sourceforge.net/</A
+>
+where various new releases (of the original, not <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+>
+ports) are available.</P
+><P
+>The original source base from which we worked to create the
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+> port is available from various archive sites such
+as
+<A
+HREF="ftp://ftp.freesnmp.com/mirrors/net-snmp/"
+TARGET="_top"
+>            ftp://ftp.freesnmp.com/mirrors/net-snmp/</A
+>
+or
+<A
+HREF="ftp://sunsite.cnlab-switch.ch/mirror/ucd-snmp/"
+TARGET="_top"
+>            ftp://sunsite.cnlab-switch.ch/mirror/ucd-snmp/</A
+>
+generally with this filename and details:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+><A
+HREF="ftp://ftp.freesnmp.com/mirrors/net-snmp/ucd-snmp-4.1.2.tar.gz"
+TARGET="_top"
+>ucd-snmp-4.1.2.tar.gz. . . . . . Nov  2  2000   1164k</A
+></PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-snmp.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-snmp-package-contents.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SNMP</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-snmp.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SNMP packages in the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+> source repository</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

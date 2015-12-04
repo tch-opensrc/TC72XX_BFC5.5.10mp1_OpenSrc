@@ -1,0 +1,522 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>ARM/ARM9 Altera Excalibur</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Installation and Testing"
+HREF="installation-and-testing.html"><LINK
+REL="PREVIOUS"
+TITLE="ARM/ARM9 Agilent AAED2000"
+HREF="aaed2000.html"><LINK
+REL="NEXT"
+TITLE="ARM/StrongARM(SA110) Intel EBSA 285"
+HREF="ebsa285.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="aaed2000.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Installation and Testing</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ebsa285.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="EXCALIBURARM9">ARM/ARM9 Altera Excalibur</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5486">Overview</H2
+><P
+>RedBoot supports the serial port labelled
+P2 on the board. The default serial port settings are 57600,8,N,1. RedBoot
+also supports flash management on the Excalibur.</P
+><P
+>The following RedBoot configurations are supported:
+
+      <DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5496"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Configuration</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Mode</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>ROMRAM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROMRAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM, but contained in the
+              board's flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_ROMRAM.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RAM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[RAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM with RedBoot in the
+              flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_RAM.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>REDBOOT</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROMRAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from top of RAM, but contained in
+              the board's flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_REDBOOT.ecm</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>NOTE: </B
+>RedBoot is currently hardwired to use a 128MB SDRAM SIMM module.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5523">Initial Installation Method</H2
+><P
+>A Windows utility
+(<SPAN
+CLASS="APPLICATION"
+>exc_flash_programmer.exe</SPAN
+>) is used to
+program flash using the ByteBlasterMV JTAG unit.
+See board documentation for details on
+in situ flash programming. </P
+><P
+>For ethernet to work (under Linux) the following jumper
+settings should be used on a REV 2 board: <P
+CLASS="LITERALLAYOUT"
+>SW2-9&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;OFF<br>
+U179&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;2-3<br>
+JP14-18&nbsp;&nbsp;:&nbsp;OPEN<br>
+JP40-41&nbsp;&nbsp;:&nbsp;2-3<br>
+JP51-55&nbsp;&nbsp;:&nbsp;2-3</P
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5529">Flash management</H2
+><P
+>The ROMRAM and REDBOOT configurations supported on this platform
+differ only in the memory layout (ROMRAM configuration runs RedBoot from
+0x00008000 while REDBOOT configuration runs RedBoot from 0x07f80000). The
+REDBOOT configuration allows applications to be loaded and run from
+address 0x00008000.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5532">Special RedBoot Commands</H2
+><P
+>The <B
+CLASS="COMMAND"
+>exec</B
+> command which allows the loading
+and execution of Linux kernels,
+is supported for this board (see <A
+HREF="executing-programs.html"
+>the Section called <I
+>Executing Programs from RedBoot</I
+> in Chapter 2</A
+>). The <B
+CLASS="COMMAND"
+>exec</B
+> parameters used for the Excalibur are:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>-b <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;addr&#62;</I
+></TT
+></DT
+><DD
+><P
+>Location Linux kernel was loaded to</P
+></DD
+><DT
+>-l <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;len&#62;</I
+></TT
+></DT
+><DD
+><P
+>Length of kernel</P
+></DD
+><DT
+>-c <TT
+CLASS="REPLACEABLE"
+><I
+>"params"</I
+></TT
+></DT
+><DD
+><P
+>Parameters passed to kernel</P
+></DD
+><DT
+>-r <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;addr&#62;</I
+></TT
+></DT
+><DD
+><P
+>'initrd' ramdisk location</P
+></DD
+><DT
+>-s <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;len&#62;</I
+></TT
+></DT
+><DD
+><P
+>Length of initrd ramdisk</P
+></DD
+></DL
+></DIV
+><P
+>The parameters for kernel image base and size are automatically
+set after a load operation. So one way of starting the kernel would
+be:
+
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&gt; <TT
+CLASS="USERINPUT"
+><B
+>load -r -b 0x100000 zImage</B
+></TT
+>
+Raw file loaded 0x00100000-0x001a3d6c
+RedBoot&gt; <TT
+CLASS="USERINPUT"
+><B
+>exec -c "console=ttyUA0,57600"</B
+></TT
+>
+Using base address 0x00100000 and length 0x000a3d6c
+Uncompressing Linux.....</PRE
+></TD
+></TR
+></TABLE
+>
+
+An image could also be put in flash and started directly:
+
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>RedBoot&gt; <TT
+CLASS="USERINPUT"
+><B
+>exec -b 0x40400000 -l 0xc0000 -c "console=ttyUA0,57600"</B
+></TT
+>
+Uncompressing Linux.....</PRE
+></TD
+></TR
+></TABLE
+>&#13;</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5570">Memory Maps</H2
+><P
+>The MMU page tables are located at 0x4000. <DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>NOTE: </B
+>The virtual memory maps in this section use a C and B column to indicate
+whether or not the region is cached (C) or buffered (B).</P
+></BLOCKQUOTE
+></DIV
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Physical Address Range     Description
+-----------------------    ----------------------------------
+0x00000000 - 0x07ffffff    SDRAM
+0x08000000 - 0x0805ffff    On-chip SRAM
+0x40000000 - 0x40ffffff    Flash
+0x7fffc000 - 0x7fffffff    I/O registers
+0x80000000 - 0x8001ffff    PLD
+
+Virtual Address Range    C B  Description
+-----------------------  - -  ----------------------------------
+0x00000000 - 0x07ffffff  Y Y  SDRAM
+0x08000000 - 0x0805ffff  Y Y  On-chip SRAM
+0x40000000 - 0x403fffff  N Y  Flash
+0x7fffc000 - 0x7fffffff  N N  I/O registers
+0x80000000 - 0x8001ffff  N N  PLD</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5577">Rebuilding RedBoot</H2
+><P
+>These shell variables provide the platform-specific information
+needed for building RedBoot according to the procedure described in
+<A
+HREF="rebuilding-redboot.html"
+>Chapter 3</A
+>:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>export TARGET=excalibur_arm9
+export ARCH_DIR=arm
+export PLATFORM_DIR=arm9/excalibur</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The names of configuration files are listed above with the
+description of the associated modes.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="aaed2000.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ebsa285.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>ARM/ARM9 Agilent AAED2000</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="installation-and-testing.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>ARM/StrongARM(SA110) Intel EBSA 285</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

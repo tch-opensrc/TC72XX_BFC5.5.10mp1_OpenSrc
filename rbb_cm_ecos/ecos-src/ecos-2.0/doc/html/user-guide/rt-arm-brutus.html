@@ -1,0 +1,289 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Board: Intel SA1100 (Brutus)</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Real-time characterization"
+HREF="real-time-characterization.html"><LINK
+REL="PREVIOUS"
+TITLE="Board: Intel SA1110 (Assabet)"
+HREF="rt-arm-assabet.html"><LINK
+REL="NEXT"
+TITLE="Board: Motorola MBX"
+HREF="rt-ppc-mbx860.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="rt-arm-assabet.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix B. Real-time characterization</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="rt-ppc-mbx860.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RT-ARM-BRUTUS">Board: Intel SA1100 (Brutus)</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="LITERALLAYOUT"
+>Board: Intel SA1100 (Brutus)
+
+CPU :  StrongARM 221.2 MHz
+
+Microseconds for one run through Dhrystone:     3.3 
+Dhrystones per Second:                        306748.5 
+VAX MIPS rating =    174.586 
+
+Startup, main stack             : stack used   404 size  2400
+Startup              :  Interrupt stack used   136 size  4096
+Startup              : Idlethread stack used    87 size  2048
+
+eCos Kernel Timings
+Notes: all times are in microseconds (.000001) unless otherwise stated
+
+Reading the hardware clock takes 0 `ticks' overhead
+... this value will be factored out of all other measurements
+Clock interrupt took    3.09 microseconds (11 raw clock ticks)
+
+Testing parameters:
+   Clock samples:            32
+   Threads:                  64
+   Thread switches:         128
+   Mutexes:                  32
+   Mailboxes:                32
+   Semaphores:               32
+   Scheduler operations:    128
+   Counters:                 32
+   Alarms:                   32
+
+
+                                 Confidence
+     Ave     Min     Max     Var  Ave  Min  Function
+  ======  ======  ======  ====== ========== ========
+    6.63    5.43   18.99    0.77   70%  37% Create thread
+    0.83    0.81    2.17    0.04   98%  98% Yield thread [all suspended]
+    1.27    0.81    5.15    0.30   68%  73% Suspend [suspended] thread
+    1.25    0.81    5.15    0.25   82%   1% Resume thread
+    1.52    1.09    7.87    0.30   78%  75% Set priority
+    0.97    0.54    2.71    0.28   64%  51% Get priority
+    3.45    2.71   19.53    0.66   84%  76% Kill [suspended] thread
+    0.90    0.81    6.24    0.17   98%  98% Yield [no other] thread
+    1.86    1.36    6.24    0.33   68%  50% Resume [suspended low prio] thread
+    1.25    0.81    5.15    0.25   82%   1% Resume [runnable low prio] thread
+    2.01    1.63   10.04    0.32   70%  84% Suspend [runnable] thread
+    0.90    0.81    6.24    0.17   98%  98% Yield [only low prio] thread
+    1.25    0.81    5.15    0.24   84%   1% Suspend [runnable-&#62;not runnable]
+    2.92    1.90   18.72    0.57   85%  43% Kill [runnable] thread
+    2.45    1.90   10.31    0.33   95%  54% Destroy [dead] thread
+    3.95    2.71   23.60    0.89   68%  54% Destroy [runnable] thread
+    8.55    6.24   19.53    1.15   60%  23% Resume [high priority] thread
+    1.85    1.63   11.94    0.21   49%  49% Thread switch
+
+    0.25    0.00    1.63    0.05   89%  10% Scheduler lock
+    0.52    0.27    1.90    0.07   85%  13% Scheduler unlock [0 threads]
+    0.51    0.27    1.36    0.06   85%  13% Scheduler unlock [1 suspended]
+    0.51    0.27    1.36    0.06   85%  13% Scheduler unlock [many suspended]
+    0.51    0.27    1.63    0.06   85%  13% Scheduler unlock [many low prio]
+
+    0.58    0.27    3.53    0.20   71%  21% Init mutex
+    1.07    0.54    5.70    0.35   87%  59% Lock [unlocked] mutex
+    1.14    0.81    6.51    0.40   96%  81% Unlock [locked] mutex
+    0.96    0.54    5.15    0.34   68%  65% Trylock [unlocked] mutex
+    0.94    0.54    4.88    0.34   65%  65% Trylock [locked] mutex
+    0.33    0.27    2.17    0.11   96%  96% Destroy mutex
+    4.21    3.80   10.85    0.41   71%  96% Unlock/Lock mutex
+    0.76    0.54    4.07    0.25   96%  56% Create mbox
+    0.75    0.54    1.90    0.20   84%  50% Peek [empty] mbox
+    1.56    1.09    6.78    0.39   68%  59% Put [first] mbox
+    0.75    0.54    1.90    0.20   84%  50% Peek [1 msg] mbox
+    1.55    1.09    6.78    0.40   68%  62% Put [second] mbox
+    0.77    0.54    1.63    0.17   46%  37% Peek [2 msgs] mbox
+    1.67    1.09    6.24    0.31   87%  34% Get [first] mbox
+    1.63    1.09    6.24    0.31   75%  34% Get [second] mbox
+    1.50    1.09    6.51    0.40   56%  62% Tryput [first] mbox
+    1.58    1.09    5.43    0.37   68%  53% Peek item [non-empty] mbox
+    1.79    1.09    7.05    0.43   71%  25% Tryget [non-empty] mbox
+    1.29    1.09    5.15    0.32   87%  87% Peek item [empty] mbox
+    1.33    1.09    5.97    0.37   96%  84% Tryget [empty] mbox
+    0.73    0.54    1.90    0.21   84%  56% Waiting to get mbox
+    0.76    0.54    1.90    0.19   40%  43% Waiting to put mbox
+    1.47    1.09    6.78    0.39   59%  84% Delete mbox
+    2.70    2.17   12.75    0.63   96%  96% Put/Get mbox
+
+    0.47    0.27    2.71    0.20   96%  50% Init semaphore
+    0.89    0.54    4.88    0.33   56%  75% Post [0] semaphore
+    0.96    0.54    5.15    0.33   71%  75% Wait [1] semaphore
+    0.86    0.54    4.88    0.32   96%  81% Trywait [0] semaphore
+    0.69    0.54    3.26    0.22   96%  75% Trywait [1] semaphore
+    0.49    0.27    3.26    0.28   84%  84% Peek semaphore
+    0.39    0.27    2.44    0.19   96%  78% Destroy semaphore
+    2.83    2.44   11.66    0.55   96%  96% Post/Wait semaphore
+
+    0.52    0.27    3.26    0.20   56%  40% Create counter
+    0.59    0.00    2.71    0.34   81%  46% Get counter value
+    0.36    0.00    2.44    0.21   81%   9% Set counter value
+    1.13    0.81    2.98    0.26   59%  37% Tick counter
+    0.39    0.27    1.90    0.19   90%  78% Delete counter
+
+    0.86    0.54    4.07    0.24   65%  31% Create alarm
+    1.86    1.36    9.77    0.54   96%  90% Initialize alarm
+    0.77    0.54    2.71    0.23   84%  50% Disable alarm
+    1.86    1.36    9.22    0.51   96%  75% Enable alarm
+    0.89    0.54    3.26    0.25   65%  21% Delete alarm
+    0.99    0.81    3.26    0.21   96%  59% Tick counter [1 alarm]
+    4.22    4.07    6.78    0.22   96%  71% Tick counter [many alarms]
+    1.51    1.36    4.61    0.24   96%  78% Tick &#38; fire counter [1 alarm]
+   20.29   20.07   23.33    0.23   96%  53% Tick &#38; fire counters [&#62;1 together]
+    4.71    4.61    7.87    0.20   96%  96% Tick &#38; fire counters [&#62;1 separately]
+    2.88    2.71   23.87    0.33   99%  99% Alarm latency [0 threads]
+    3.24    2.71   17.36    0.40   79%  58% Alarm latency [2 threads]
+   15.71   12.48   27.40    1.47   53%  17% Alarm latency [many threads]
+    5.95    5.43   64.56    1.02   97%  97% Alarm -&#62; thread resume latency
+
+    3.25    0.81   14.11    0.00            Clock/interrupt latency
+
+    2.68    1.09   12.75    0.00            Clock DSR latency
+
+   29       0     316  (main stack:   764)  Thread stack used (1120 total)
+All done, main stack            : stack used   764 size  2400
+All done             :  Interrupt stack used   288 size  4096
+All done             : Idlethread stack used   260 size  2048
+
+
+Timing complete - 30280 ms total
+
+	</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="rt-arm-assabet.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="rt-ppc-mbx860.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Board: Intel SA1110 (Assabet)</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="real-time-characterization.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Board: Motorola MBX</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

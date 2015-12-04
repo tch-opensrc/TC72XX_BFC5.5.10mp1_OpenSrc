@@ -1,0 +1,229 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Device Driver Models</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Device Driver Interface to the Kernel"
+HREF="devapi-device-driver-interface-to-the-kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="SMP Support"
+HREF="devapi-smp-support.html"><LINK
+REL="NEXT"
+TITLE="Synchronization Levels"
+HREF="devapi-synchronization-levels.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="devapi-smp-support.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 18. Device Driver Interface to the Kernel</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="devapi-synchronization-levels.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="DEVAPI-DEVICE-DRIVER-MODELS">Device Driver Models</H1
+><P
+>There are several ways in which device drivers
+may be built. The exact model chosen will depend on the properties of
+the device and the behavior desired. There are three basic models that
+may be adopted.</P
+><P
+>The first model is to do all device processing in the ISR.  When it is
+invoked the ISR programs the device hardware directly and accesses
+data to be transferred directly in memory. The ISR should also call
+<TT
+CLASS="FUNCTION"
+>cyg_drv_interrupt_acknowledge()</TT
+>.  When it is
+finished it may optionally request that its DSR be invoked.  The DSR
+does nothing but call <TT
+CLASS="FUNCTION"
+>cyg_drv_cond_signal()</TT
+> to
+cause a thread to be woken up. Thread level code must call
+<TT
+CLASS="FUNCTION"
+>cyg_drv_isr_lock()</TT
+>, or
+<TT
+CLASS="FUNCTION"
+>cyg_drv_interrupt_mask()</TT
+> to prevent ISRs running
+while it manipulates shared memory.</P
+><P
+>The second model is to defer device processing to the DSR.  The ISR
+simply prevents further delivery of interrupts by either programming
+the device, or by calling
+<TT
+CLASS="FUNCTION"
+>cyg_drv_interrupt_mask()</TT
+>.  It must then call
+<TT
+CLASS="FUNCTION"
+>cyg_drv_interrupt_acknowledge()</TT
+> to allow other
+interrupts to be delivered and then request that its DSR be
+called. When the DSR runs it does the majority of the device handling,
+optionally signals a condition variable to wake a thread, and finishes
+by calling <TT
+CLASS="FUNCTION"
+>cyg_drv_interrupt_unmask()</TT
+> to re-allow
+device interrupts. Thread level code uses
+<TT
+CLASS="FUNCTION"
+>cyg_drv_dsr_lock()</TT
+> to prevent DSRs running while
+it manipulates shared memory.  The eCos serial device drivers use this
+approach.</P
+><P
+>The third model is to defer device processing even further to a
+thread. The ISR behaves exactly as in the previous model and simply
+blocks and acknowledges the interrupt before request that the DSR
+run. The DSR itself only calls
+<TT
+CLASS="FUNCTION"
+>cyg_drv_cond_signal()</TT
+> to wake the thread. When
+the thread awakens it performs all device processing, and has full
+access to all kernel facilities while it does so. It should finish by
+calling <TT
+CLASS="FUNCTION"
+>cyg_drv_interrupt_unmask()</TT
+> to re-allow
+device interrupts.  The eCos ethernet device drivers are written to
+this model.</P
+><P
+>The first model is good for devices that need immediate processing and
+interact infrequently with thread level. The second model trades a
+little latency in dealing with the device for a less intrusive
+synchronization mechanism. The last model allows device processing to
+be scheduled with other threads and permits more complex device
+handling.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="devapi-smp-support.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="devapi-synchronization-levels.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SMP Support</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="devapi-device-driver-interface-to-the-kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Synchronization Levels</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

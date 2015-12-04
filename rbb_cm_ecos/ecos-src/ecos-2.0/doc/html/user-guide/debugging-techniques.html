@@ -1,0 +1,350 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Debugging Techniques</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="eCos Programming Concepts and Techniques"
+HREF="ecos-programming-concepts-and-techniques.html"><LINK
+REL="PREVIOUS"
+TITLE="Compiling a C++ Application"
+HREF="compiling-cpp-app.html"><LINK
+REL="NEXT"
+TITLE="Kernel Instrumentation"
+HREF="kernel-instrumentation.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="compiling-cpp-app.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="kernel-instrumentation.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="DEBUGGING-TECHNIQUES">Chapter 27. Debugging Techniques</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="debugging-techniques.html#TRACING"
+>Tracing</A
+></DT
+><DT
+><A
+HREF="kernel-instrumentation.html"
+>Kernel Instrumentation</A
+></DT
+></DL
+></DIV
+><P
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> applications and components can be debugged in
+	traditional ways, with printing statements and debugger
+	single-stepping, but there are situations in which these
+	techniques cannot be used. One example of this is when a
+	program is getting data at a high rate from a real-time
+	source, and cannot be slowed down or interrupted.</P
+><P
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>&#8217;s infrastructure module provides a
+	<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tracing</I
+></SPAN
+> formalism, allowing the
+	kernel&#8217;s tracing macros to be configured in many useful
+	ways. <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>&#8217;s kernel provides <I
+CLASS="FIRSTTERM"
+>instrumentation
+	  buffers</I
+> which also collect specific
+	(configurable) data about the system&#8217;s history and
+	performance.</P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="TRACING">Tracing</H1
+><P
+>To use <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>&#8217;s tracing facilities you must first
+	  configure your system to use <I
+CLASS="FIRSTTERM"
+>tracing</I
+>.
+	  You should enable the Asserts and Tracing component
+	  (<TT
+CLASS="OPTION"
+>CYGPKG_INFRA_DEBUG</TT
+>) and the
+	  <TT
+CLASS="OPTION"
+>Use tracing</TT
+> component within it
+	  (<TT
+CLASS="OPTION"
+>CYGDBG_USE_TRACING</TT
+>). These
+	  options can be enabled with the <SPAN
+CLASS="APPLICATION"
+>Configuration
+	    Tool</SPAN
+> or by editing the file
+	  <TT
+CLASS="FILENAME"
+><TT
+CLASS="REPLACEABLE"
+><I
+>BUILD_DIR</I
+></TT
+>/pkgconf/infra.h 
+	  </TT
+> manually.</P
+><P
+>You should then examine all the tracing-related options in
+the <I
+CLASS="CITETITLE"
+>Package: Infrastructure</I
+> chapter of the <I
+CLASS="CITETITLE"
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Reference
+Manual</I
+>. One useful set of configuration options are: <TT
+CLASS="LITERAL"
+>CYGDBG_INFRA_DEBUG_FUNCTION_REPORTS</TT
+> and <TT
+CLASS="LITERAL"
+>CYGDBG_INFRA_DEBUG_TRACE_MESSAGE</TT
+>,
+which are both enabled by default when tracing is enabled.</P
+><P
+>The following &#8220;Hello world with tracing&#8221; shows
+the output from running the hello world program (from <A
+HREF="building-and-running-sample-appliations.html#ECOS-HELLO-WORLD"
+>the Section called <I
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Hello World</I
+> in Chapter 13</A
+>) that was
+built with tracing enabled: </P
+><DIV
+CLASS="EXAMPLE"
+><A
+NAME="AEN2289"><P
+><B
+>Example 27-1. Hello world with tracing</B
+></P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>$ mips-tx39-elf-run --board=jmr3904  hello
+Hello, eCos world!
+ASSERT FAIL: &lt;2&gt;cyg_trac.h          [ 623] Cyg_TraceFunction_Report_::set_exitvoid()                                                            exitvoid used in typed function
+TRACE: &lt;1&gt;mlqueue.cxx         [ 395] Cyg_ThreadQueue_Implementation::enqueue()                                                            {{enter
+TRACE: &lt;1&gt;mlqueue.cxx         [ 395] Cyg_ThreadQueue_Implementation::enqueue()                                                            }}RETURNING UNSET!
+TRACE: &lt;1&gt;mlqueue.cxx         [ 126] Cyg_Scheduler_Implementation::add_thread()                                                           }}RETURNING UNSET!
+TRACE: &lt;1&gt;thread.cxx          [ 654] Cyg_Thread::resume()                                                                                 }}return void
+TRACE: &lt;1&gt;cstartup.cxx        [ 160] cyg_iso_c_start()                                                                                    }}return void
+TRACE: &lt;1&gt;startup.cxx         [ 142] cyg_package_start()                                                                                  }}return void
+TRACE: &lt;1&gt;startup.cxx         [ 150] cyg_user_start()                                                                                     {{enter
+TRACE: &lt;1&gt;startup.cxx         [ 150] cyg_user_start()                                                                                     (((void)))
+TRACE: &lt;1&gt;startup.cxx         [ 153] cyg_user_start()                                                                                     'This is the system default cyg_user_start()'
+TRACE: &lt;1&gt;startup.cxx         [ 157] cyg_user_start()                                                                                     }}return void
+TRACE: &lt;1&gt;sched.cxx           [ 212] Cyg_Scheduler::start()                                                                               {{enter
+TRACE: &lt;1&gt;mlqueue.cxx         [ 102] Cyg_Scheduler_Implementation::schedule()                                                             {{enter
+TRACE: &lt;1&gt;mlqueue.cxx         [ 437] Cyg_ThreadQueue_Implementation::highpri()                                                            {{enter
+TRACE: &lt;1&gt;mlqueue.cxx         [ 437] Cyg_ThreadQueue_Implementation::highpri()                                                            }}RETURNING UNSET!
+TRACE: &lt;1&gt;mlqueue.cxx         [ 102] Cyg_Scheduler_Implementation::schedule()                                                             }}RETURNING UNSET!
+TRACE: &lt;2&gt;intr.cxx            [ 450] Cyg_Interrupt::enable_interrupts()                                                                   {{enter
+TRACE: &lt;2&gt;intr.cxx            [ 450] Cyg_Interrupt::enable_interrupts()                                                                   }}RETURNING UNSET!
+TRACE: &lt;2&gt;thread.cxx          [  69] Cyg_HardwareThread::thread_entry()                                                                   {{enter
+TRACE: &lt;2&gt;cstartup.cxx        [ 127] invoke_main()                                                                                        {{enter
+TRACE: &lt;2&gt;cstartup.cxx        [ 127] invoke_main()                                                                                        ((argument is ignored))
+TRACE: &lt;2&gt;dummyxxmain.cxx     [  60] __main()                                                                                             {{enter
+TRACE: &lt;2&gt;dummyxxmain.cxx     [  60] __main()                                                                                             (((void)))
+TRACE: &lt;2&gt;dummyxxmain.cxx     [  63] __main()                                                                                             'This is the system default __main()'
+TRACE: &lt;2&gt;dummyxxmain.cxx     [  67] __main()                                                                                             }}return void
+TRACE: &lt;2&gt;memcpy.c            [ 112] _memcpy()                                                                                            {{enter
+TRACE: &lt;2&gt;memcpy.c            [ 112] _memcpy()                                                                                            ((dst=80002804, src=BFC14E58, n=19))
+TRACE: &lt;2&gt;memcpy.c            [ 164] _memcpy()                                                                                            }}returning 80002804
+TRACE: &lt;2&gt;cstartup.cxx        [ 137] invoke_main()                                                                                        'main() has returned with code 0. Calling exit()'
+TRACE: &lt;2&gt;exit.cxx            [  71] __libc_exit()                                                                                        {{enter
+TRACE: &lt;2&gt;exit.cxx            [  71] __libc_exit()                                                                                        ((status=0 ))
+TRACE: &lt;2&gt;atexit.cxx          [  84] cyg_libc_invoke_atexit_handlers()                                                                    {{enter
+TRACE: &lt;2&gt;atexit.cxx          [  84] cyg_libc_invoke_atexit_handlers()                                                                      (((void)))
+
+Scheduler:
+
+Lock:                0
+Current Thread:      &lt;null&gt;
+
+Threads:
+
+Idle Thread          pri =  31 state = R      id =   1
+                     stack base = 800021F0 ptr = 80002510 size = 00000400
+                     sleep reason NONE     wake reason NONE    
+                     queue = 80000C54      wait info = 00000000
+
+&lt;null&gt;               pri =   0 state = R      id =   2
+                     stack base = 80002A48 ptr = 8000A968 size = 00008000
+                     sleep reason NONE     wake reason NONE    
+                     queue = 80000BD8      wait info = 00000000
+	  </PRE
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="compiling-cpp-app.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="kernel-instrumentation.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Compiling a C++ Application</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-programming-concepts-and-techniques.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Kernel Instrumentation</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

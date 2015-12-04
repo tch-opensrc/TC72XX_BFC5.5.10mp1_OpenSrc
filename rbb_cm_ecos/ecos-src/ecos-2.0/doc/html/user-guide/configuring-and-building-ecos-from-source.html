@@ -1,0 +1,409 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Configuring and Building eCos from Source</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Programming With eCos"
+HREF="user-guide-programming.html"><LINK
+REL="PREVIOUS"
+TITLE="Programming With eCos"
+HREF="programming-with-ecos.html"><LINK
+REL="NEXT"
+TITLE="Configuration Tool on Windows and Linux Quick Start"
+HREF="using-configtool-windows-linux.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="programming-with-ecos.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="using-configtool-windows-linux.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="CONFIGURING-AND-BUILDING-ECOS-FROM-SOURCE">Chapter 11. Configuring and Building <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> from Source</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="configuring-and-building-ecos-from-source.html#ECOS-STARTUP-CONFIGS"
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Start-up Configurations</A
+></DT
+><DT
+><A
+HREF="using-configtool-windows-linux.html"
+>Configuration Tool on Windows and Linux Quick Start</A
+></DT
+><DT
+><A
+HREF="using-ecosconfig-on-linux.html"
+>Ecosconfig on Windows and Linux Quick Start</A
+></DT
+></DL
+></DIV
+><P
+>This chapter documents the configuration of <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>. The process is
+the same for any of the supported targets: you may select a
+hardware target (if you have a board available), any one of the
+simulators, or a synthetic target (if your host platform has synthetic
+target support).</P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="ECOS-STARTUP-CONFIGS"><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Start-up Configurations</H1
+><P
+>There are various ways to download an executable image to a
+target board, and these involve different ways of preparing the
+executable image. In the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Hardware Abstraction Layer (HAL package)
+there are configuration options to support the different download
+methods. <A
+HREF="configuring-and-building-ecos-from-source.html#USER-GUIDE-DOWNLOAD-METHODS"
+>Table 11-1</A
+> summarizes the
+ways in which an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> image can be prepared for different types of
+download. This is not an exhaustive list, some targets define
+additional start-up types of their own. Where a ROM Monitor is
+mentioned, this will usually be RedBoot, although on some older, or
+low resource, targets you may need to use CygMon or the GDB stubs ROM,
+see the target documentation for details.</P
+><DIV
+CLASS="TABLE"
+><A
+NAME="USER-GUIDE-DOWNLOAD-METHODS"><P
+><B
+>Table 11-1. Configuration for various download methods</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Download method</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>HAL configuration</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Burn hardware ROM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;ROM or ROMRAM start-up</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Download to ROM emulator</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;ROM or ROMRAM start-up</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Download to board with ROM Monitor</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;RAM start-up</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Download to simulator without ROM Monitor</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;ROM start-up</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Download to simulator with ROM Monitor</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;RAM start-up</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Download to simulator ignoring devices</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;SIM configuration</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>Run synthetic target</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;RAM start-up</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="CAUTION"
+><P
+></P
+><TABLE
+CLASS="CAUTION"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Caution</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>You cannot run an application configured for RAM start-up
+on the simulator directly: it will fail during start-up. You can
+only download it to the simulator if
+you are already running RedBoot in the simulator,
+as described in the toolchain documentation
+or you load through the 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>SID </I
+></SPAN
+>
+GDB debugging component.  This is not the same as the simulated
+stub, since it does not require a target program to be running to
+get GDB to talk to it.  It can be done before letting the simulator
+run
+or you use the ELF loader component to get a program into memory.</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Configuring <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>' HAL package for simulation should
+rarely be needed for real development; binaries built with such
+a kernel will not run on target boards at all,
+and the MN10300 and
+TX39 simulators can run binaries built for stdeval1 and jmr3904
+target boards.
+The main use for a ``simulation'' configuration
+is if you are trying to work around problems with the device drivers
+or with the simulator.  Also note that when using a TX39 system configured
+for simulator start-up you should then invoke the simulator with 
+the <TT
+CLASS="OPTION"
+>--board=jmr3904pal</TT
+>
+option instead of 
+<TT
+CLASS="OPTION"
+>--board=jmr3904</TT
+></P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>If your chosen architecture does not have simulator support,
+then the combinations above that refer to the simulator do not apply.
+Similarly, if your chosen platform does not have RedBoot
+ROM support, the combinations listed above that use 
+RedBoot do not apply.</P
+></BLOCKQUOTE
+></DIV
+><P
+>The debugging environment for most developers will be either
+a hardware board or the simulator, in which case they will be able
+to select a single HAL configuration.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="programming-with-ecos.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="using-configtool-windows-linux.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Programming With <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="user-guide-programming.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Configuration Tool on Windows and Linux Quick Start</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

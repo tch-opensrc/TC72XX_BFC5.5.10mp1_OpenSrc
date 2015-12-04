@@ -1,0 +1,123 @@
+# ====================================================================
+#
+#      jffs2.cdl
+#
+#      JFFS2 Filesystem configuration data
+#
+# ====================================================================
+#####ECOSGPLCOPYRIGHTBEGIN####
+## -------------------------------------------
+## This file is part of eCos, the Embedded Configurable Operating System.
+## Copyright (C) 1998, 1999, 2000, 2001, 2002 Red Hat, Inc.
+##
+## eCos is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free
+## Software Foundation; either version 2 or (at your option) any later version.
+##
+## eCos is distributed in the hope that it will be useful, but WITHOUT ANY
+## WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+## for more details.
+##
+## You should have received a copy of the GNU General Public License along
+## with eCos; if not, write to the Free Software Foundation, Inc.,
+## 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+##
+## As a special exception, if other files instantiate templates or use macros
+## or inline functions from this file, or you compile this file and link it
+## with other works to produce a work based on this file, this file does not
+## by itself cause the resulting work to be covered by the GNU General Public
+## License. However the source code for this file must still be made available
+## in accordance with section (3) of the GNU General Public License.
+##
+## This exception does not invalidate any other reasons why a work based on
+## this file might be covered by the GNU General Public License.
+##
+## Alternative licenses for eCos may be arranged by contacting Red Hat, Inc.
+## at http://sources.redhat.com/ecos/ecos-license/
+## -------------------------------------------
+#####ECOSGPLCOPYRIGHTEND####
+# ====================================================================
+######DESCRIPTIONBEGIN####
+#
+# Author(s):      David Woodhouse, Dominic Ostrowski
+# Original data:  ported from JFFS2 by David Woodhouse
+# Contributors:   dominic.ostrowski@3glab.com
+# Date:           2000-08-28
+#
+#####DESCRIPTIONEND####
+#
+# ====================================================================
+
+cdl_package CYGPKG_FS_JFFS2 {
+    display        "JFFS2 filesystem"
+    doc            ref/fileio.html
+    include_dir    ""
+
+    requires       CYGPKG_IO_FILEIO
+    requires       CYGPKG_IO_FLASH
+    requires       CYGPKG_COMPRESS_ZLIB
+    requires       CYGINT_ISO_MALLOC
+
+    requires       CYGPKG_ISOINFRA
+    requires       CYGPKG_ERROR
+    requires       CYGINT_ISO_ERRNO
+    requires       CYGINT_ISO_ERRNO_CODES
+    requires       CYGPKG_IO_FLASH_BLOCK_DEVICE
+    requires       CYGPKG_IO_FILEIO_INODE
+    requires       CYGPKG_LINUX_COMPAT
+    requires       CYGPKG_CRC
+
+    implements     CYGINT_IO_FILEIO_FS      
+
+    compile        -library=libextras.a fs-ecos.c
+    compile        build.c scan.c malloc-ecos.c nodelist.c nodemgmt.c readinode.c erase.c dir-ecos.c write.c gc.c read.c compr.c compr_zlib.c compr_rtime.c compr_rubin.c file-ecos.c
+
+    cdl_option CYGPKG_FS_JFFS2_CFLAGS_ADD {
+	display "Additional compiler flags"
+	flavor  data
+	no_define
+	# We add -D__ECOS to trigger eCos-specific code in places.
+	# We add -Werror because I find it useful.
+	default_value { "-D__ECOS -nostdinc -iwithprefix include -Werror" }
+	description   "
+	    This option modifies the set of compiler flags for
+            building the JFFS2 package.
+            These flags are used in addition
+            to the set of global flags."
+        }
+
+    cdl_option CYGPKG_FS_JFFS2_CFLAGS_REMOVE {
+	display "Suppressed compiler flags"
+	flavor  data
+	no_define
+	# We remove -Wpointer-arith so that some of the hacky Linux-compat code 
+	# (in file.c) compiled. We can probably remove it when that's replaced
+	# properly.
+	default_value { "-Wpointer-arith" }
+	description   "
+	    This option modifies the set of compiler flags for
+            building the JFFS2 package. These flags are removed from
+            the set of global flags if present."
+        }
+
+    # ----------------------------------------------------------------
+    # Tests
+
+    cdl_option CYGPKG_FS_JFFS2_TESTS {
+	display "JFFS2 FS tests"
+	flavor  data
+	no_define
+	calculated { "tests/fileio1.c" }
+            description   "
+                This option specifies the set of tests for the JFFS2 FS package."
+        }
+    
+}
+
+# End of jffs2.cdl
+
+
+
+
+

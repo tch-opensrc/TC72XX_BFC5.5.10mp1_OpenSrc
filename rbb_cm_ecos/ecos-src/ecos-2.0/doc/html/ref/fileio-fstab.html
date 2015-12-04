@@ -1,0 +1,287 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>File System Table</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="File System Support Infrastructure"
+HREF="fileio.html"><LINK
+REL="PREVIOUS"
+TITLE="Introduction"
+HREF="fileio-intro.html"><LINK
+REL="NEXT"
+TITLE="Mount Table"
+HREF="fileio-mount-table.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="fileio-intro.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="fileio-mount-table.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="FILEIO-FSTAB">Chapter 20. File System Table</H1
+><P
+>The filesystem table is an array of entries that describe each
+filesystem implementation that is part of the system image. Each
+resident filesystem should export an entry to this table using the
+<TT
+CLASS="LITERAL"
+>FSTAB_ENTRY()</TT
+> macro.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>At present we do not support dynamic addition or removal of table
+entries. However, an API similar to <TT
+CLASS="FUNCTION"
+>mount()</TT
+> would
+allow new entries to be added to the table.</P
+></BLOCKQUOTE
+></DIV
+><P
+>The table entries are described by the following structure:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct cyg_fstab_entry
+{
+    const char          *name;          // filesystem name
+    CYG_ADDRWORD        data;           // private data value
+    cyg_uint32          syncmode;       // synchronization mode
+    
+    int     (*mount)    ( cyg_fstab_entry *fste, cyg_mtab_entry *mte );
+    int     (*umount)   ( cyg_mtab_entry *mte );
+    int     (*open)     ( cyg_mtab_entry *mte, cyg_dir dir, const char *name,
+                          int mode,  cyg_file *fte );
+    int     (*unlink)   ( cyg_mtab_entry *mte, cyg_dir dir, const char *name );
+    int     (*mkdir)    ( cyg_mtab_entry *mte, cyg_dir dir, const char *name );
+    int     (*rmdir)    ( cyg_mtab_entry *mte, cyg_dir dir, const char *name );
+    int     (*rename)   ( cyg_mtab_entry *mte, cyg_dir dir1, const char *name1,
+                          cyg_dir dir2, const char *name2 );
+    int     (*link)     ( cyg_mtab_entry *mte, cyg_dir dir1, const char *name1,
+                          cyg_dir dir2, const char *name2, int type );
+    int     (*opendir)  ( cyg_mtab_entry *mte, cyg_dir dir, const char *name,
+                          cyg_file *fte );
+    int     (*chdir)    ( cyg_mtab_entry *mte, cyg_dir dir, const char *name,
+                          cyg_dir *dir_out );
+    int     (*stat)     ( cyg_mtab_entry *mte, cyg_dir dir, const char *name,
+                          struct stat *buf);
+    int     (*getinfo)  ( cyg_mtab_entry *mte, cyg_dir dir, const char *name,
+                          int key, char *buf, int len );
+    int     (*setinfo)  ( cyg_mtab_entry *mte, cyg_dir dir, const char *name,
+                          int key, char *buf, int len );
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>name</I
+></TT
+> field points to a string that
+identifies this filesystem implementation. Typical values might be
+&quot;romfs&quot;, &quot;msdos&quot;, &quot;ext2&quot; etc.</P
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>data</I
+></TT
+> field contains any private data
+that the filesystem needs, perhaps the root of its data structures.</P
+><P
+>The <TT
+CLASS="STRUCTFIELD"
+><I
+>syncmode</I
+></TT
+> field contains a description of
+the locking protocol to be used when accessing this filesystem. It
+will be described in more detail in <A
+HREF="fileio-synchronization.html"
+>Chapter 24</A
+>.</P
+><P
+>The remaining fields are pointers to functions that implement
+filesystem operations that apply to files and directories as whole
+objects. The operation implemented by each function should be obvious
+from the names, with a few exceptions:</P
+><P
+>The <TT
+CLASS="FUNCTION"
+>opendir()</TT
+> function pointer opens a directory
+for reading. See <A
+HREF="fileio-directories.html"
+>Chapter 23</A
+> for details.</P
+><P
+>The <TT
+CLASS="FUNCTION"
+>getinfo()</TT
+> and
+<TT
+CLASS="FUNCTION"
+>setinfo()</TT
+> function pointers provide support for
+various minor control and information functions such as
+<TT
+CLASS="FUNCTION"
+>pathconf()</TT
+> and <TT
+CLASS="FUNCTION"
+>access()</TT
+>.</P
+><P
+>With the exception of the <TT
+CLASS="FUNCTION"
+>mount()</TT
+> and
+<TT
+CLASS="FUNCTION"
+>umount()</TT
+> functions, all of these functions
+take three standard arguments, a pointer to a mount table entry (see
+later) a directory pointer (also see later) and a file name relative
+to the directory. These should be used by the filesystem to locate the
+object of interest.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="fileio-intro.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="fileio-mount-table.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Introduction</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="fileio.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Mount Table</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

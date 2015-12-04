@@ -1,0 +1,260 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>connect</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="bind"
+HREF="net-common-tcpip-manpages-bind.html"><LINK
+REL="NEXT"
+TITLE="getpeername"
+HREF="net-common-tcpip-manpages-getpeername.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-bind.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-getpeername.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-CONNECT">connect</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>CONNECT(2)                    System Calls Manual                   CONNECT(2)
+
+NAME
+     connect - initiate a connection on a socket
+
+SYNOPSIS
+     #include &lt;sys/types.h&#62;
+     #include &lt;sys/socket.h&#62;
+
+     int
+     connect(int s, const struct sockaddr *name, socklen_t namelen);
+
+DESCRIPTION
+     The parameter s is a socket.  If it is of type SOCK_DGRAM, this call
+     specifies the peer with which the socket is to be associated; this
+     address is that to which datagrams are to be sent, and the only address
+     from which datagrams are to be received.  If the socket is of type
+     SOCK_STREAM, this call attempts to make a connection to another socket.
+     The other socket is specified by name, which is an address in the commu-
+     nications space of the socket.  Each communications space interprets the
+     name parameter in its own way.  Generally, stream sockets may success-
+     fully connect() only once; datagram sockets may use connect() multiple
+     times to change their association.  Datagram sockets may dissolve the
+     association by connecting to an invalid address, such as a null address.
+
+RETURN VALUES
+     If the connection or binding succeeds, 0 is returned.  Otherwise a -1 is
+     returned, and a more specific error code is stored in errno.
+
+ERRORS
+     The connect() call fails if:
+
+     [EBADF]            S is not a valid descriptor.
+
+     [ENOTSOCK]         S is a descriptor for a file, not a socket.
+
+     [EADDRNOTAVAIL]    The specified address is not available on this
+                        machine.
+
+     [EAFNOSUPPORT]     Addresses in the specified address family cannot be
+                        used with this socket.
+
+     [EISCONN]          The socket is already connected.
+
+     [ETIMEDOUT]        Connection establishment timed out without establish-
+                        ing a connection.
+
+     [EINVAL]           A TCP connection with a local broadcast, the all-ones
+                        or a multicast address as the peer was attempted.
+
+     [ECONNREFUSED]     The attempt to connect was forcefully rejected.
+
+     [EINTR]            A connect was interrupted before it succeeded by the
+                        delivery of a signal.
+
+     [ENETUNREACH]      The network isn't reachable from this host.
+
+     [EADDRINUSE]       The address is already in use.
+
+     [EFAULT]           The name parameter specifies an area outside the pro-
+                        cess address space.
+
+     [EINPROGRESS]      The socket is non-blocking and the connection cannot
+                        be completed immediately.  It is possible to select(2)
+                        or poll(2) for completion by selecting the socket for
+                        writing, and also use getsockopt(2) with SO_ERROR to
+                        check for error conditions.
+
+     [EALREADY]         The socket is non-blocking and a previous connection
+                        attempt has not yet been completed.
+
+     The following errors are specific to connecting names in the UNIX domain.
+     These errors may not apply in future versions of the UNIX IPC domain.
+
+     [ENOTDIR]          A component of the path prefix is not a directory.
+
+     [ENAMETOOLONG]     A component of a pathname exceeded {NAME_MAX} charac-
+                        ters, or an entire path name exceeded {PATH_MAX} char-
+                        acters.
+
+     [ENOENT]           The named socket does not exist.
+
+     [EACCES]           Search permission is denied for a component of the
+                        path prefix.
+
+     [EACCES]           Write access to the named socket is denied.
+
+     [ELOOP]            Too many symbolic links were encountered in translat-
+                        ing the pathname.
+
+SEE ALSO
+     accept(2), getsockname(2), getsockopt(2), poll(2), select(2), socket(2)
+
+HISTORY
+     The connect() function call appeared in 4.2BSD.
+
+BSD                            February 15, 1999                           BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-bind.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-getpeername.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>bind</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>getpeername</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

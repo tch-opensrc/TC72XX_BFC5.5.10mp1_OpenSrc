@@ -1,0 +1,274 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>The Component Repository</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Getting Started"
+HREF="config-tool-getting-started.html"><LINK
+REL="PREVIOUS"
+TITLE="Invoking the eCos Configuration Tool"
+HREF="config-tool-invoking.html"><LINK
+REL="NEXT"
+TITLE="eCos Configuration Tool Documents"
+HREF="config-tool-documents.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="config-tool-invoking.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 15. Getting Started</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="config-tool-documents.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CONFIG-TOOL-COMPONENT-REPOSITORY">The Component Repository</H1
+><P
+>When you invoke the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+>, it accesses the Component
+	  Repository, a read-only location of configuration
+	  information. For an explanation of &#8220;Component
+	  Repository&#8221; see <A
+HREF="cdl-concepts.html"
+>Chapter 24</A
+>.</P
+><P
+>The <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+> will look
+	  for a component repository using (in descending order of preference):</P
+><P
+></P
+><UL
+><LI
+><P
+>A location specified on the command line</P
+></LI
+><LI
+><P
+>The component repository most recently used by the
+current user</P
+></LI
+><LI
+><P
+>An <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> distribution under <TT
+CLASS="FILENAME"
+>/opt/ecos</TT
+> (under
+Linux) or a default location set by the installation procedure (under
+Windows)</P
+></LI
+><LI
+><P
+>User input</P
+></LI
+></UL
+><P
+>The final case above will normally only occur if the previous
+	  repository has been moved or (under Windows) installation information stored in
+	  the Windows registry has been modified; it will result in a dialog box
+being displayed that allows you to specify the repository location:</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN1047"><P
+><B
+>Figure 15-2. Repository relocation dialog box</B
+></P
+><P
+><IMG
+SRC="pix/repos-relocate.png"></P
+></DIV
+><P
+>Note that in order to use the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+> you are obliged to provide a
+	  valid repository location. </P
+><P
+>In the rare event that you subsequently wish to change
+	  the component location, select
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Build</I
+></SPAN
+>-&gt;<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Repository</I
+></SPAN
+> 
+	  and the above dialog box will then be displayed.</P
+><P
+>You can check the location of the current repository, the current save file
+path, and the current hardware template and default package,
+by selecting <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Help</I
+></SPAN
+>-&gt;<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Repository Information...</I
+></SPAN
+>.
+A summary will be displayed.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="config-tool-invoking.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="config-tool-documents.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Invoking the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="config-tool-getting-started.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+> Documents</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

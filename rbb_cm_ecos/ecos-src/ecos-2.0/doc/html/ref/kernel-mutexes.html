@@ -1,0 +1,748 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Mutexes</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Kernel"
+HREF="kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="Alarms"
+HREF="kernel-alarms.html"><LINK
+REL="NEXT"
+TITLE="Condition Variables"
+HREF="kernel-condition-variables.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="kernel-alarms.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="kernel-condition-variables.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="KERNEL-MUTEXES">Mutexes</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN1098"
+></A
+><H2
+>Name</H2
+>cyg_mutex_init, cyg_mutex_destroy, cyg_mutex_lock, cyg_mutex_trylock, cyg_mutex_unlock, cyg_mutex_release, cyg_mutex_set_ceiling, cyg_mutex_set_protocol&nbsp;--&nbsp;Synchronization primitive</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN1108"><H2
+>Synopsis</H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><A
+NAME="AEN1109"><P
+></P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &lt;cyg/kernel/kapi.h&gt;
+        </PRE
+></TD
+></TR
+></TABLE
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_mutex_init</CODE
+>(cyg_mutex_t* mutex);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_mutex_destroy</CODE
+>(cyg_mutex_t* mutex);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_bool_t cyg_mutex_lock</CODE
+>(cyg_mutex_t* mutex);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_bool_t cyg_mutex_trylock</CODE
+>(cyg_mutex_t* mutex);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_mutex_unlock</CODE
+>(cyg_mutex_t* mutex);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_mutex_release</CODE
+>(cyg_mutex_t* mutex);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_mutex_set_ceiling</CODE
+>(cyg_mutex_t* mutex, cyg_priority_t priority);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void cyg_mutex_set_protocol</CODE
+>(cyg_mutex_t* mutex, enum cyg_mutex_protocol protocol/);</CODE
+></P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-MUTEXES-DESCRIPTION"
+></A
+><H2
+>Description</H2
+><P
+>The purpose of mutexes is to let threads share resources safely. If
+two or more threads attempt to manipulate a data structure with no
+locking between them then the system may run for quite some time
+without apparent problems, but sooner or later the data structure will
+become inconsistent and the application will start behaving strangely
+and is quite likely to crash. The same can apply even when
+manipulating a single variable or some other resource. For example,
+consider:
+      </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>static volatile int counter = 0;
+
+void
+process_event(void)
+{
+    &#8230;
+
+    counter++;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>Assume that after a certain period of time <TT
+CLASS="VARNAME"
+>counter</TT
+>
+has a value of 42, and two threads A and B running at the same
+priority call <TT
+CLASS="FUNCTION"
+>process_event</TT
+>. Typically thread A
+will read the value of <TT
+CLASS="VARNAME"
+>counter</TT
+> into a register,
+increment this register to 43, and write this updated value back to
+memory. Thread B will do the same, so usually
+<TT
+CLASS="VARNAME"
+>counter</TT
+> will end up with a value of 44. However if
+thread A is timesliced after reading the old value 42 but before
+writing back 43, thread B will still read back the old value and will
+also write back 43. The net result is that the counter only gets
+incremented once, not twice, which depending on the application may
+prove disastrous.
+      </P
+><P
+>Sections of code like the above which involve manipulating shared data
+are generally known as critical regions. Code should claim a lock
+before entering a critical region and release the lock when leaving.
+Mutexes provide an appropriate synchronization primitive for this.
+      </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>static volatile int counter = 0;
+static cyg_mutex_t  lock;
+
+void
+process_event(void)
+{
+    &#8230;
+
+    cyg_mutex_lock(&amp;lock);
+    counter++;
+    cyg_mutex_unlock(&amp;lock);
+}
+      </PRE
+></TD
+></TR
+></TABLE
+><P
+>A mutex must be initialized before it can be used, by calling
+<TT
+CLASS="FUNCTION"
+>cyg_mutex_init</TT
+>. This takes a pointer to a
+<SPAN
+CLASS="STRUCTNAME"
+>cyg_mutex_t</SPAN
+> data structure which is typically
+statically allocated, and may be part of a larger data structure. If a
+mutex is no longer required and there are no threads waiting on it
+then <TT
+CLASS="FUNCTION"
+>cyg_mutex_destroy</TT
+> can be used.
+      </P
+><P
+>The main functions for using a mutex are
+<TT
+CLASS="FUNCTION"
+>cyg_mutex_lock</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_mutex_unlock</TT
+>. In normal operation
+<TT
+CLASS="FUNCTION"
+>cyg_mutex_lock</TT
+> will return success after claiming
+the mutex lock, blocking if another thread currently owns the mutex.
+However the lock operation may fail if other code calls
+<TT
+CLASS="FUNCTION"
+>cyg_mutex_release</TT
+> or
+<TT
+CLASS="FUNCTION"
+>cyg_thread_release</TT
+>, so if these functions may get
+used then it is important to check the return value. The current owner
+of a mutex should call <TT
+CLASS="FUNCTION"
+>cyg_mutex_unlock</TT
+> when a
+lock is no longer required. This operation must be performed by the
+owner, not by another thread.
+      </P
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_mutex_trylock</TT
+> is a variant of
+<TT
+CLASS="FUNCTION"
+>cyg_mutex_lock</TT
+> that will always return
+immediately, returning success or failure as appropriate. This
+function is rarely useful. Typical code locks a mutex just before
+entering a critical region, so if the lock cannot be claimed then
+there may be nothing else for the current thread to do. Use of this
+function may also cause a form of priority inversion if the owner
+owner runs at a lower priority, because the priority inheritance code
+will not be triggered. Instead the current thread continues running,
+preventing the owner from getting any cpu time, completing the
+critical region, and releasing the mutex.
+      </P
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_mutex_release</TT
+> can be used to wake up all
+threads that are currently blocked inside a call to
+<TT
+CLASS="FUNCTION"
+>cyg_mutex_lock</TT
+> for a specific mutex. These lock
+calls will return failure. The current mutex owner is not affected.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-MUTEXES-PRIORITY-INVERSION"
+></A
+><H2
+>Priority Inversion</H2
+><P
+>The use of mutexes gives rise to a problem known as priority
+inversion. In a typical scenario this requires three threads A, B, and
+C, running at high, medium and low priority respectively. Thread A and
+thread B are temporarily blocked waiting for some event, so thread C
+gets a chance to run, needs to enter a critical region, and locks
+a mutex. At this point threads A and B are woken up - the exact order
+does not matter. Thread A needs to claim the same mutex but has to
+wait until C has left the critical region and can release the mutex.
+Meanwhile thread B works on something completely different and can
+continue running without problems. Because thread C is running a lower
+priority than B it will not get a chance to run until B blocks for
+some reason, and hence thread A cannot run either. The overall effect
+is that a high-priority thread A cannot proceed because of a lower
+priority thread B, and priority inversion has occurred.
+      </P
+><P
+>In simple applications it may be possible to arrange the code such
+that priority inversion cannot occur, for example by ensuring that a
+given mutex is never shared by threads running at different priority
+levels. However this may not always be possible even at the
+application level. In addition mutexes may be used internally by
+underlying code, for example the memory allocation package, so careful
+analysis of the whole system would be needed to be sure that priority
+inversion cannot occur. Instead it is common practice to use one of
+two techniques: priority ceilings and priority inheritance.
+      </P
+><P
+>Priority ceilings involve associating a priority with each mutex.
+Usually this will match the highest priority thread that will ever
+lock the mutex. When a thread running at a lower priority makes a
+successful call to <TT
+CLASS="FUNCTION"
+>cyg_mutex_lock</TT
+> or
+<TT
+CLASS="FUNCTION"
+>cyg_mutex_trylock</TT
+> its priority will be boosted to
+that of the mutex. For example, given the previous example the
+priority associated with the mutex would be that of thread A, so for
+as long as it owns the mutex thread C will run in preference to thread
+B. When C releases the mutex its priority drops to the normal value
+again, allowing A to run and claim the mutex. Setting the
+priority for a mutex involves a call to
+<TT
+CLASS="FUNCTION"
+>cyg_mutex_set_ceiling</TT
+>, which is typically called
+during initialization. It is possible to change the ceiling
+dynamically but this will only affect subsequent lock operations, not
+the current owner of the mutex.
+      </P
+><P
+>Priority ceilings are very suitable for simple applications, where for
+every thread in the system it is possible to work out which mutexes
+will be accessed. For more complicated applications this may prove
+difficult, especially if thread priorities change at run-time. An
+additional problem occurs for any mutexes outside the application, for
+example used internally within eCos packages. A typical eCos package
+will be unaware of the details of the various threads in the system,
+so it will have no way of setting suitable ceilings for its internal
+mutexes. If those mutexes are not exported to application code then 
+using priority ceilings may not be viable. The kernel does provide a
+configuration option
+<TT
+CLASS="VARNAME"
+>CYGSEM_KERNEL_SYNCH_MUTEX_PRIORITY_INVERSION_PROTOCOL_DEFAULT_PRIORITY</TT
+>
+that can be used to set the default priority ceiling for all mutexes,
+which may prove sufficient.
+      </P
+><P
+>The alternative approach is to use priority inheritance: if a thread
+calls <TT
+CLASS="FUNCTION"
+>cyg_mutex_lock</TT
+> for a mutex that it
+currently owned by a lower-priority thread, then the owner will have
+its priority raised to that of the current thread. Often this is more
+efficient than priority ceilings because priority boosting only
+happens when necessary, not for every lock operation, and the required
+priority is determined at run-time rather than by static analysis.
+However there are complications when multiple threads running at
+different priorities try to lock a single mutex, or when the current
+owner of a mutex then tries to lock additional mutexes, and this makes
+the implementation significantly more complicated than priority
+ceilings. 
+      </P
+><P
+>There are a number of configuration options associated with priority
+inversion. First, if after careful analysis it is known that priority
+inversion cannot arise then the component
+<TT
+CLASS="FUNCTION"
+>CYGSEM_KERNEL_SYNCH_MUTEX_PRIORITY_INVERSION_PROTOCOL</TT
+>
+can be disabled. More commonly this component will be enabled, and one
+of either
+<TT
+CLASS="VARNAME"
+>CYGSEM_KERNEL_SYNCH_MUTEX_PRIORITY_INVERSION_PROTOCOL_INHERIT</TT
+>
+or
+<TT
+CLASS="VARNAME"
+>CYGSEM_KERNEL_SYNCH_MUTEX_PRIORITY_INVERSION_PROTOCOL_CEILING</TT
+>
+will be selected, so that one of the two protocols is available for
+all mutexes. It is possible to select multiple protocols, so that some
+mutexes can have priority ceilings while others use priority
+inheritance or no priority inversion protection at all. Obviously this
+flexibility will add to the code size and to the cost of mutex
+operations. The default for all mutexes will be controlled by
+<TT
+CLASS="VARNAME"
+>CYGSEM_KERNEL_SYNCH_MUTEX_PRIORITY_INVERSION_PROTOCOL_DEFAULT</TT
+>,
+and can be changed at run-time using
+<TT
+CLASS="FUNCTION"
+>cyg_mutex_set_protocol</TT
+>. 
+      </P
+><P
+>Priority inversion problems can also occur with other synchronization
+primitives such as semaphores. For example there could be a situation
+where a high-priority thread A is waiting on a semaphore, a
+low-priority thread C needs to do just a little bit more work before
+posting the semaphore, but a medium priority thread B is running and
+preventing C from making progress. However a semaphore does not have
+the concept of an owner, so there is no way for the system to know
+that it is thread C which would next post to the semaphore. Hence
+there is no way for the system to boost the priority of C
+automatically and prevent the priority inversion. Instead situations
+like this have to be detected by application developers and
+appropriate precautions have to be taken, for example making sure that
+all the threads run at suitable priorities at all times.
+      </P
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>The current implementation of priority inheritance within the eCos
+kernel does not handle certain exceptional circumstances completely
+correctly. Problems will only arise if a thread owns one mutex,
+then attempts to claim another mutex, and there are other threads
+attempting to lock these same mutexes. Although the system will
+continue running, the current owners of the various mutexes involved
+may not run at the priority they should. This situation never arises
+in typical code because a mutex will only be locked for a small
+critical region, and there is no need to manipulate other shared resources
+inside this region. A more complicated implementation of priority
+inheritance is possible but would add significant overhead and certain
+operations would no longer be deterministic.
+      </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>Support for priority ceilings and priority inheritance is not
+implemented for all schedulers. In particular neither priority
+ceilings nor priority inheritance are currently available for the
+bitmap scheduler.
+      </P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-MUTEXES-ALTERNATIVES"
+></A
+><H2
+>Alternatives</H2
+><P
+>In nearly all circumstances, if two or more threads need to share some
+data then protecting this data with a mutex is the correct thing to
+do. Mutexes are the only primitive that combine a locking mechanism
+and protection against priority inversion problems. However this
+functionality is achieved at a cost, and in exceptional circumstances
+such as an application's most critical inner loop it may be desirable
+to use some other means of locking.
+      </P
+><P
+>When a critical region is very very small it is possible to lock the
+scheduler, thus ensuring that no other thread can run until the
+scheduler is unlocked again. This is achieved with calls to <A
+HREF="kernel-schedcontrol.html"
+><TT
+CLASS="FUNCTION"
+>cyg_scheduler_lock</TT
+></A
+>
+and <TT
+CLASS="FUNCTION"
+>cyg_scheduler_unlock</TT
+>. If the critical region
+is sufficiently small then this can actually improve both performance
+and dispatch latency because <TT
+CLASS="FUNCTION"
+>cyg_mutex_lock</TT
+> also
+locks the scheduler for a brief period of time. This approach will not
+work on SMP systems because another thread may already be running on a
+different processor and accessing the critical region.
+      </P
+><P
+>Another way of avoiding the use of mutexes is to make sure that all
+threads that access a particular critical region run at the same
+priority and configure the system with timeslicing disabled
+(<TT
+CLASS="VARNAME"
+>CYGSEM_KERNEL_SCHED_TIMESLICE</TT
+>). Without
+timeslicing a thread can only be preempted by a higher-priority one,
+or if it performs some operation that can block. This approach
+requires that none of the operations in the critical region can block,
+so for example it is not legal to call
+<TT
+CLASS="FUNCTION"
+>cyg_semaphore_wait</TT
+>. It is also vulnerable to
+any changes in the configuration or to the various thread priorities:
+any such changes may now have unexpected side effects. It will not
+work on SMP systems.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-MUTEXES-RECURSIVE"
+></A
+><H2
+>Recursive Mutexes</H2
+><P
+>The implementation of mutexes within the eCos kernel does not support
+recursive locks. If a thread has locked a mutex and then attempts to
+lock the mutex again, typically as a result of some recursive call in
+a complicated call graph, then either an assertion failure will be
+reported or the thread will deadlock. This behaviour is deliberate.
+When a thread has just locked a mutex associated with some data
+structure, it can assume that that data structure is in a consistent
+state. Before unlocking the mutex again it must ensure that the data
+structure is again in a consistent state. Recursive mutexes allow a
+thread to make arbitrary changes to a data structure, then in a
+recursive call lock the mutex again while the data structure is still
+inconsistent. The net result is that code can no longer make any
+assumptions about data structure consistency, which defeats the
+purpose of using mutexes.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-MUTEXES-CONTEXT"
+></A
+><H2
+>Valid contexts</H2
+><P
+><TT
+CLASS="FUNCTION"
+>cyg_mutex_init</TT
+>,
+<TT
+CLASS="FUNCTION"
+>cyg_mutex_set_ceiling</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_mutex_set_protocol</TT
+> are normally called during
+initialization but may also be called from thread context. The
+remaining functions should only be called from thread context. Mutexes
+serve as a mutual exclusion mechanism between threads, and cannot be
+used to synchronize between threads and the interrupt handling
+subsystem. If a critical region is shared between a thread and a DSR
+then it must be protected using <A
+HREF="kernel-schedcontrol.html"
+><TT
+CLASS="FUNCTION"
+>cyg_scheduler_lock</TT
+></A
+>
+and <TT
+CLASS="FUNCTION"
+>cyg_scheduler_unlock</TT
+>. If a critical region is
+shared between a thread and an ISR, it must be protected by disabling
+or masking interrupts. Obviously these operations must be used with
+care because they can affect dispatch and interrupt latencies.
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="kernel-alarms.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="kernel-condition-variables.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Alarms</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Condition Variables</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

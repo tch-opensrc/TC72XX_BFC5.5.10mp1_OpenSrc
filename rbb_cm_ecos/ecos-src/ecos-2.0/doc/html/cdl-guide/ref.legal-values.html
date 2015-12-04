@@ -1,0 +1,397 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>legal_values</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="include_files"
+HREF="ref.include-files.html"><LINK
+REL="NEXT"
+TITLE="library"
+HREF="ref.library.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.include-files.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.library.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.LEGAL-VALUES"><SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4615"
+></A
+><H2
+>Name</H2
+>Property <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+>&nbsp;--&nbsp;Impose constraints on the possible values for an option.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4619"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_option &lt;name&gt; {
+    legal_values &lt;list expression&gt;
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4621"
+></A
+><H2
+>Description</H2
+><P
+>Options with the <TT
+CLASS="LITERAL"
+>data</TT
+> or
+<TT
+CLASS="LITERAL"
+>booldata</TT
+> flavors can have an arbitrary sequence of
+characters as their data. In nearly all cases some restrictions have
+to be imposed, for example the data should correspond to a number
+within a certain range, or it should be one of a small number of
+constants. The <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> property can be used to impose such
+constraints. The arguments to the property should be a <SPAN
+CLASS="APPLICATION"
+>CDL</SPAN
+> list
+expression, see <A
+HREF="language.values.html#LANGUAGE.LIST-EXPRESSION"
+>the Section called <I
+>List Expressions</I
+> in Chapter 3</A
+> for the
+syntactic details. Common examples include:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>    legal_values 0 to 0x7fff
+    legal_values 9600 19200 38400
+    legal_values { "RAM" "ROM" }</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> property can only be used for options with the
+<TT
+CLASS="LITERAL"
+>data</TT
+> or <TT
+CLASS="LITERAL"
+>booldata</TT
+> flavors, since
+it makes little sense to further constrain the legal values of a
+boolean option. An option can have at most one <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+>
+property.</P
+><DIV
+CLASS="TIP"
+><BLOCKQUOTE
+CLASS="TIP"
+><P
+><B
+>Tip: </B
+>If the first entry in a <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> list expression is a negative
+number, for example
+<TT
+CLASS="LITERAL"
+>legal_values&nbsp;-1&nbsp;to&nbsp;1</TT
+>  then this can
+be misinterpreted as an option instead of as part of the expression.
+Currently the <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> property does not take any options, but
+this may change in future. Option processing halts at the sequence
+<TT
+CLASS="LITERAL"
+>--</TT
+>, so the desired range can be expressed safely
+using <TT
+CLASS="LITERAL"
+>legal_values&nbsp;--&nbsp;-1&nbsp;to&nbsp;1</TT
+></P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Architectural HAL packages should provide constants which can be used
+in <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> list expressions. For example it should be possible
+to specify a numeric range such as
+<TT
+CLASS="LITERAL"
+>0&nbsp;to&nbsp;CYGARC_MAXINT</TT
+>, rather than
+hard-wiring numbers such as <TT
+CLASS="LITERAL"
+>0x7fffffff</TT
+> which may
+not be valid on all targets. Current HAL packages do not define such
+constants. </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>The <SPAN
+CLASS="PROPERTY"
+>legal_values</SPAN
+> property is restricted mainly to numerical ranges
+and simple enumerations, and cannot cope with more complicated data
+items. Future versions of the configuration system will provide
+additional data validation facilities, for example a
+<TT
+CLASS="LITERAL"
+>check_proc</TT
+> property which specifies a Tcl script
+that can be used to perform the validation.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4651"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYGNUM_LIBC_TIME_STD_DEFAULT_OFFSET {
+    display       "Default Standard Time offset"
+    flavor        data
+    legal_values  -- -90000 to 90000
+    default_value -- 0
+    description   "
+        This option controls the offset from UTC in
+        seconds when in local Standard Time. This
+        value can be positive or negative. It
+        can also be set at run time using the
+        cyg_libc_time_setzoneoffsets() function."
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4654"
+></A
+><H2
+>See Also</H2
+><P
+>Properties <A
+HREF="ref.calculated.html"
+><SPAN
+CLASS="PROPERTY"
+>calculated</SPAN
+></A
+>,
+<A
+HREF="ref.default-value.html"
+><SPAN
+CLASS="PROPERTY"
+>default_value</SPAN
+></A
+>, and
+<A
+HREF="ref.flavor.html"
+><SPAN
+CLASS="PROPERTY"
+>flavor</SPAN
+></A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.include-files.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.library.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>include_files</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>library</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

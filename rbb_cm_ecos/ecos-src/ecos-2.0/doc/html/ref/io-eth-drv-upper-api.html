@@ -1,0 +1,326 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Upper Layer Functions</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Generic Ethernet Device Driver"
+HREF="io-eth-drv-generic1.html"><LINK
+REL="PREVIOUS"
+TITLE="Review of the functions"
+HREF="io-eth-drv-api-funcs.html"><LINK
+REL="NEXT"
+TITLE="Calling graph for Transmission and Reception"
+HREF="io-eth-call-graph.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="io-eth-drv-api-funcs.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 46. Generic Ethernet Device Driver</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="io-eth-call-graph.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="IO-ETH-DRV-UPPER-API">Upper Layer Functions</H1
+><P
+>Upper layer functions are called by drivers to deliver received packets
+or transmission completion status back up into the network stack.</P
+><P
+>These functions are defined by the hardware independent upper layers of
+the networking driver support.  They are present to hide the interfaces
+to the actual networking stack so that the hardware drivers may
+be used by different network stack implementations without change.</P
+><P
+>These functions require a pointer to a <SPAN
+CLASS="TYPE"
+>struct eth_drv_sc</SPAN
+>
+which describes the interface at a logical level.  It is assumed that the
+low level hardware driver will keep track of this pointer so
+it may be passed &#8220;up&#8221; as appropriate.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="IO-ETH-DRV-UPPER-INIT">Callback Init function</H2
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void (sc-&#62;funs-&#62;eth_drv-&#62;init)(
+		struct eth_drv_sc *sc, unsigned char *enaddr)</PRE
+></TD
+></TR
+></TABLE
+>
+This function establishes the device at initialization time.
+It should be called once per device instance only, from the
+initialization function, if all is well
+(see <A
+HREF="io-eth-drv-api-funcs.html#IO-ETH-DRV-API-INIT"
+>the Section called <I
+>Init function</I
+></A
+>).
+The hardware should be totally initialized
+(<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> &#8220;started&#8221;)
+when this function is called.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="IO-ETH-DRV-TX-DONE">Callback Tx-Done function</H2
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void (sc-&#62;funs-&#62;eth_drv-&#62;tx_done)(
+		struct eth_drv_sc *sc,
+		unsigned long key, int status)</PRE
+></TD
+></TR
+></TABLE
+>
+This function is called when a packet completes transmission on the
+interface.  The <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>
+value must be one of the keys provided to
+<TT
+CLASS="FUNCTION"
+><TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_send()</TT
+>
+above.  The value <TT
+CLASS="PARAMETER"
+><I
+>status</I
+></TT
+> should be non-zero
+(details currently undefined) to indicate that an error occurred during the
+transmission, and zero if all was well.</P
+><P
+>It should be called from the deliver function
+(see <A
+HREF="io-eth-drv-api-funcs.html#IO-ETH-DRV-API-DELIVER"
+>the Section called <I
+>Deliver function</I
+></A
+>)
+or poll function
+(see <A
+HREF="io-eth-drv-api-funcs.html#IO-ETH-DRV-API-POLL"
+>the Section called <I
+>Poll function</I
+></A
+>).</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="IO-ETH-DRV-UPPER-RECV">Callback Receive function</H2
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void (sc-&#62;funs-&#62;eth_drv-&#62;recv)(struct eth_drv_sc *sc, int len)</PRE
+></TD
+></TR
+></TABLE
+>
+This function is called to indicate that a packet of length
+<TT
+CLASS="PARAMETER"
+><I
+>len</I
+></TT
+> has
+arrived at the interface.
+The callback
+<TT
+CLASS="FUNCTION"
+><TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_recv()</TT
+> function
+described above will be used to actually unload the data from the
+interface into buffers used by the device independent layers.</P
+><P
+>It should be called from the deliver function
+(see <A
+HREF="io-eth-drv-api-funcs.html#IO-ETH-DRV-API-DELIVER"
+>the Section called <I
+>Deliver function</I
+></A
+>)
+or poll function
+(see <A
+HREF="io-eth-drv-api-funcs.html#IO-ETH-DRV-API-POLL"
+>the Section called <I
+>Poll function</I
+></A
+>).</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="io-eth-drv-api-funcs.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="io-eth-call-graph.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Review of the functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="io-eth-drv-generic1.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Calling graph for Transmission and Reception</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

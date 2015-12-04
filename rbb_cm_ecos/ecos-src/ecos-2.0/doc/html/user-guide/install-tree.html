@@ -1,0 +1,316 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Install Tree</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="The Component Repository and Working Directories"
+HREF="component-repo-and-working-dirs.html"><LINK
+REL="PREVIOUS"
+TITLE="Build Tree"
+HREF="build-tree.html"><LINK
+REL="NEXT"
+TITLE="Application Build Tree"
+HREF="repository-app-build-tree.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="build-tree.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 25. The Component Repository and Working Directories</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="repository-app-build-tree.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="INSTALL-TREE">Install Tree</H1
+><P
+>The <I
+CLASS="FIRSTTERM"
+>install tree</I
+> is the location
+	  for all files needed for application development. The
+	  <TT
+CLASS="FILENAME"
+>libtarget.a</TT
+> library, which contains the
+	    custom-built <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> kernel and other components, is placed
+	    in the install tree, along with all packages&#8217; public
+	    header files. If you build the tests, the test executable
+	    programs will also be placed in the install
+	    tree. </P
+><P
+>By default, the install tree is created by
+	  <B
+CLASS="COMMAND"
+>ecosconfig</B
+> in a subdirectory of the build
+	  tree called <TT
+CLASS="FILENAME"
+>install</TT
+>. This can be
+	  modified with the <TT
+CLASS="OPTION"
+>--prefix</TT
+> option (see
+	  <A
+HREF="manual-configuration.html"
+>Chapter 28</A
+>).
+	</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2130">Purpose</H2
+><P
+>The install tree is where the custom-built
+	    <TT
+CLASS="FILENAME"
+>libtarget.a</TT
+> library, which contains
+	    the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> kernel and other components, is located. The
+	    install tree is also the location for all the header files
+	    that are part of a published interface for their
+	    component. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2135">How is it modified?</H2
+><P
+>Recompiling can replace
+	    <TT
+CLASS="FILENAME"
+>libtarget.a</TT
+> and the test
+	    executables. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2139">When is it edited manually?</H2
+><P
+>Where a memory layout requires modification without
+	    use of the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+>, the memory layout
+	    files must be edited directly in the install tree. These
+	    files are located at
+	    <TT
+CLASS="FILENAME"
+>install/include/pkgconf/mlt_*.*</TT
+>. 
+	    Note that subsequent modification of the install tree
+	    using the Configuration Tool will result in such manual
+	    edits being lost.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2145">User applications</H2
+><P
+>User application source or binary code should
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> go in the install tree. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2149">Examples of files in this hierarchy</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="FILENAME"
+>install/lib/libtarget.a</TT
+></DT
+><DD
+><P
+>The library containing the kernel and other components.</P
+></DD
+><DT
+><TT
+CLASS="FILENAME"
+>install/include/cyg/kernel/kapi.h</TT
+></DT
+><DD
+><P
+>The header file for the kernel C language API.</P
+></DD
+><DT
+><TT
+CLASS="FILENAME"
+>install/include/pkgconf/mlt_arm_pid_ram.ldi</TT
+></DT
+><DD
+><P
+>The linker script fragment describing the memory
+		  layout for linking applications intended for
+		  execution on an ARM PID development board using RAM
+		  startup.</P
+></DD
+><DT
+><TT
+CLASS="FILENAME"
+>install/include/stdio.h</TT
+></DT
+><DD
+><P
+>The C library header file for standard I/O. </P
+></DD
+></DL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="build-tree.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="repository-app-build-tree.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Build Tree</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="component-repo-and-working-dirs.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Application Build Tree</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

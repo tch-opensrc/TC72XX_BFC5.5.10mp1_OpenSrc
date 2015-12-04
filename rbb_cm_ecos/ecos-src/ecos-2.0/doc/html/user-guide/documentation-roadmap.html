@@ -1,0 +1,469 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Documentation Roadmap</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Introduction"
+HREF="user-guide-introduction.html"><LINK
+REL="PREVIOUS"
+TITLE="Version Conventions"
+HREF="version-conventions.html"><LINK
+REL="NEXT"
+TITLE="Installing eCos"
+HREF="user-guide-installation.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="version-conventions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="user-guide-installation.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="DOCUMENTATION-ROADMAP">Chapter 5. Documentation Roadmap</H1
+><P
+>The <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> documentation is divided into a
+three main parts:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>User Guide</I
+></SPAN
+></DT
+><DD
+><P
+>This document. It includes the following sections:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Installing <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+></DT
+><DD
+><P
+>  This section describes how to install the
+  <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> software, how to set up your
+  hardware and how to test that it is all working.
+  </P
+></DD
+><DT
+>Programming Under <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+></DT
+><DD
+><P
+>  This section describes how to write programs that run under
+  <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> by running through some examples.
+  </P
+></DD
+><DT
+>The <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+></DT
+><DD
+><P
+>  This section describes the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> graphical
+  configuration tool and how to use it to change how
+  <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> behaves.</P
+></DD
+><DT
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Programming Concepts and Techniques</DT
+><DD
+><P
+>An explanation of the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> programming
+	    cycle, and a description of some debugging facilities that
+	    <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> offers.
+  </P
+></DD
+><DT
+>Configuration and the Package
+              Repository</DT
+><DD
+><P
+>Information on how to configure <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>
+              manually, including a reference on the
+              <B
+CLASS="COMMAND"
+>ecosconfig</B
+> command, memory layouts,
+              and information on how to manage a package repository
+              using the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Package Administration
+              Tool.
+            </P
+></DD
+></DL
+></DIV
+></DD
+><DT
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Reference Guide</I
+></SPAN
+></DT
+><DD
+><P
+>The Reference Guide provides detailed documentation on various
+aspects of <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>. This document is being
+constantly updated, so the following list just mentions the more
+important sections, take a look at the guide itself for the full
+story.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>The <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Kernel</DT
+><DD
+><P
+>In-depth description of <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>&quot;s
+              native C kernel API Important considerations are given
+              for programming the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>
+              kernel. The semantics for each kernel function are
+              described, including how they are affected by
+              configuration. </P
+></DD
+><DT
+>POSIX and &micro;ITRON APIs</DT
+><DD
+><P
+>A description of the POSIX and &micro;ITRON APIs and how they
+  are supported under <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>.
+  </P
+></DD
+><DT
+>The <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Hardware Abstraction Layer (HAL)</DT
+><DD
+><P
+>A description of the structure and functionality of the
+  <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> HAL. This section also includes a
+  porting guide to help moving <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> to
+  different platforms.
+  </P
+></DD
+><DT
+>Device Drivers</DT
+><DD
+><P
+>A description of the philosophy behind
+              <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> device drivers, as well as a
+              presentation of the C language APIs for using the current
+              device drivers. </P
+><P
+>    Device driver support includes serial, ethernet and FLASH devices,
+    and support for PCI, PCMCIA and USB interconnects.
+  </P
+></DD
+><DT
+>RedBoot User's Guide</DT
+><DD
+><P
+>This describes RedBoot, which provides a complete bootstrap
+        environment for a range of embedded operating systems, such as
+        embedded Linux and <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>, and
+        includes facilities such as network downloading and
+        debugging. It also provides a simple flash file system for
+        boot images.
+  </P
+></DD
+><DT
+>TCP/IP Stack Support</DT
+><DD
+><P
+>This describes the Common Networking for
+        <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> package, which provides
+        support for a complete TCP/IP networking stack. The design
+        allows for the actual stack to be modular and at the current
+        time two different implementations, one based on OpenBSD from
+        2000 and a new version based on FreeBSD, are available.
+  </P
+><P
+>Other components related to networking, including support for
+        SNMP, DNS, HTTP and FTP, are also described.
+  </P
+></DD
+></DL
+></DIV
+></DD
+><DT
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Component Writer's Guide</I
+></SPAN
+></DT
+><DD
+><P
+>The Component Writer's Guide is intended for developers who need
+to add or modify parts of <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> itself. It
+describes the following things:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Overview</DT
+><DD
+><P
+>An explanation of the configuration technology used in
+  <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>, why it is done this way, how it
+  works and the terminology used.
+  </P
+></DD
+><DT
+>Package Organization</DT
+><DD
+><P
+>A description of the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> package
+  repository, how it is organized and how packages themselves are
+  organized.
+  </P
+></DD
+><DT
+>The CDL Language</DT
+><DD
+><P
+>A description of the CDL language and how it is used to
+  control the configuration of <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>
+  components. The document also contains a complete specification of
+  the language.
+  </P
+></DD
+><DT
+>The Build Process</DT
+><DD
+><P
+>A description of what happens once a configuration has been
+  created and must be built into a set of executables.
+  </P
+></DD
+></DL
+></DIV
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="version-conventions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="user-guide-installation.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Version Conventions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="user-guide-introduction.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Installing <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

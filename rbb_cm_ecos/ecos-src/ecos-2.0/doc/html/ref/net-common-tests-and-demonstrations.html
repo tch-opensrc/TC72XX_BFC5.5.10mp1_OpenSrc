@@ -1,0 +1,248 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Tests and Demonstrations</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Stack Support for eCos"
+HREF="net-common-tcpip.html"><LINK
+REL="PREVIOUS"
+TITLE="Configuring IP Addresses"
+HREF="net-common-configuring-ip-addresses.html"><LINK
+REL="NEXT"
+TITLE="Building the Network Tests"
+HREF="net-common-building-the-network-tests.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-configuring-ip-addresses.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-building-the-network-tests.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="NET-COMMON-TESTS-AND-DEMONSTRATIONS">Chapter 36. Tests and Demonstrations</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="net-common-tests-and-demonstrations.html#NET-COMMON-LOOPBACK-TESTS"
+>Loopback tests</A
+></DT
+><DT
+><A
+HREF="net-common-building-the-network-tests.html"
+>Building the Network Tests</A
+></DT
+><DT
+><A
+HREF="net-common-standalone-tests.html"
+>Standalone Tests</A
+></DT
+><DT
+><A
+HREF="net-common-performance-test.html"
+>Performance Test</A
+></DT
+><DT
+><A
+HREF="net-common-interactive-tests.html"
+>Interactive Tests</A
+></DT
+><DT
+><A
+HREF="net-common-maintenance-tools.html"
+>Maintenance Tools</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-LOOPBACK-TESTS">Loopback tests</H1
+><P
+>By default, only tests which can execute on any target
+	  will be built. These therefore do not actually use external
+	  network interfaces (though they may configure and initialize
+	  them) but are limited to testing via the loopback
+	  interface.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ping_lo_test</I
+></SPAN
+> - ping test of the loopback address 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tcp_lo_select</I
+></SPAN
+> - simple test of select with TCP via loopback 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tcp_lo_test</I
+></SPAN
+> - trivial TCP test via loopback 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>udp_lo_test</I
+></SPAN
+> - trivial UDP test via loopback 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>multi_lo_select</I
+></SPAN
+> - test of multiple select() calls simultaneously</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-configuring-ip-addresses.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-building-the-network-tests.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Configuring IP Addresses</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-common-tcpip.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Building the Network Tests</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

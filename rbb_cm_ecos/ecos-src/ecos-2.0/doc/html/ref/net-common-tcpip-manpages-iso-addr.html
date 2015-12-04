@@ -1,0 +1,217 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>iso_addr</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="ipx"
+HREF="net-common-tcpip-manpages-ipx.html"><LINK
+REL="NEXT"
+TITLE="link_addr"
+HREF="net-common-tcpip-manpages-link-addr.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-ipx.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-link-addr.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-ISO-ADDR">iso_addr</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>ISO_ADDR(3)             System Library Functions Manual            ISO_ADDR(3)
+
+NAME
+     iso_addr, iso_ntoa - network address conversion routines for Open System
+     Interconnection
+
+SYNOPSIS
+     #include &lt;sys/types.h&#62;
+     #include &lt;netiso/iso.h&#62;
+
+     struct iso_addr *
+     iso_addr(char *cp);
+
+     char *
+     iso_ntoa(struct iso_addr *isoa);
+
+DESCRIPTION
+     The routine iso_addr() interprets character strings representing OSI
+     addresses, returning binary information suitable for use in system calls.
+     The routine iso_ntoa() takes OSI addresses and returns ASCII strings rep-
+     resenting NSAPs (network service access points) in a notation inverse to
+     that accepted by iso_addr().
+
+     Unfortunately, no universal standard exists for representing OSI network
+     addresses.
+
+     The format employed by iso_addr() is a sequence of hexadecimal ``digits''
+     (optionally separated by periods), of the form:
+
+           &lt;hex digits&#62;.&lt;hex digits&#62;.&lt;hex digits&#62;
+
+     Each pair of hexadecimal digits represents a byte with the leading digit
+     indicating the higher-ordered bits.  A period following an even number of
+     bytes has no effect (but may be used to increase legibility).  A period
+     following an odd number of bytes has the effect of causing the byte of
+     address being translated to have its higher order bits filled with zeros.
+
+RETURN VALUES
+     iso_ntoa() always returns a null terminated string.  iso_addr() always
+     returns a pointer to a struct iso_addr.  (See BUGS.)
+
+SEE ALSO
+     iso(4)
+
+HISTORY
+     The iso_addr() and iso_ntoa() functions appeared in 4.3BSD-Reno.
+
+BUGS
+     The returned values reside in a static memory area.
+
+     The function iso_addr() should diagnose improperly formed input, and
+     there should be an unambiguous way to recognize this.
+
+BSD                              June 4, 1993                              BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-ipx.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-link-addr.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>ipx</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>link_addr</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

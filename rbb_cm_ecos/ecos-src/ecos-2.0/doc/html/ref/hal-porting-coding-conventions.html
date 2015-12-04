@@ -1,0 +1,377 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>HAL Coding Conventions</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="	Porting Guide"
+HREF="hal-porting-guide.html"><LINK
+REL="PREVIOUS"
+TITLE="Virtual Vectors (eCos/ROM Monitor Calling Interface)"
+HREF="hal-calling-if.html"><LINK
+REL="NEXT"
+TITLE="Platform HAL Porting"
+HREF="hal-porting-platform.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="hal-calling-if.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 11. Porting Guide</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="hal-porting-platform.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="HAL-PORTING-CODING-CONVENTIONS">HAL Coding Conventions</H1
+><P
+>To get changes and larger submissions included into the eCos source
+repository, we ask that you adhere to a set of coding conventions.
+The conventions are defined as an attempt to make a consistent
+tree. Consistency makes it easier for people to read, understand and
+maintain the code, which is important when many people work on the
+same project.</P
+><P
+>The below is only a brief, and probably incomplete, summary of the
+rules. Please look through files in the area where you are making
+changes to get a feel for any additional conventions. Also feel free
+to ask on the list if you have specific questions.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN9361">Implementation issues</H2
+><P
+>There are a few implementation issues that should be kept in mind:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>HALs</DT
+><DD
+><P
+>HALs must be written in C and assembly only. C++ must not
+	be used. This is in part to keep the HALs simple since this is
+	usually the first part of eCos a newcomer will see, and in
+	part to maintain the existing de facto standard.</P
+></DD
+><DT
+>IO access</DT
+><DD
+><P
+>Use HAL IO access macros for code that might be reused on
+	different platforms than the one you are writing it for.</P
+></DD
+><DT
+>MMU</DT
+><DD
+><P
+>If it is necessary to use the MMU (e.g., to prevent
+	caching of IO areas), use a simple 1-1 mapping of memory if
+	possible. On most platforms where using the MMU is necessary,
+	it will be possible to achieve the 1-1 mapping using the MMU's
+	provision for mapping large continuous areas (hardwired TLBs or
+	BATs). This reduces the footprint (no MMU table) and avoids
+	execution overhead (no MMU-related exceptions).</P
+></DD
+><DT
+>Assertions</DT
+><DD
+><P
+>The code should contain assertions to validate argument
+	values, state information and any assumptions the code may be
+	making. Assertions are not enabled in production builds, so
+	liberally sprinkling assertions throughout the code is
+	good.</P
+></DD
+><DT
+>Testing</DT
+><DD
+><P
+>The ability to test your code is very important. In
+	general, do not add new code to the eCos runtime unless you
+	also add a new test to exercise that code. The test also
+	serves as an example of how to use the new code.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN9385">Source code details</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Line length</DT
+><DD
+><P
+>Keep line length below 78 columns whenever possible.</P
+></DD
+><DT
+>Comments</DT
+><DD
+><P
+>Whenever possible, use // comments instead of /**/.</P
+></DD
+><DT
+>Indentation</DT
+><DD
+><P
+>Use spaces instead of TABs. Indentation level is 4. Braces
+	start on the same line as the expression. See below for emacs
+	mode details.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>;;=================================================================
+;; eCos C/C++ mode Setup.
+;;
+;; bsd mode: indent = 4
+;; tail comments are at col 40.
+;; uses spaces not tabs in C
+
+(defun ecos-c-mode ()
+  "C mode with adjusted defaults for use with the eCos sources."
+  (interactive)
+  (c++-mode)
+  (c-set-style "bsd")
+  (setq comment-column 40)
+  (setq indent-tabs-mode nil)
+  (show-paren-mode 1)
+  (setq c-basic-offset 4)
+
+  (set-variable 'add-log-full-name "Your Name")
+  (set-variable 'add-log-mailing-address "Your email address"))
+
+(defun ecos-asm-mode ()
+  "ASM mode with adjusted defaults for use with the eCos sources."
+  (interactive)
+  (setq comment-column 40)
+  (setq indent-tabs-mode nil)
+  (asm-mode)
+  (setq c-basic-offset 4)
+
+  (set-variable 'add-log-full-name "Your Name")
+  (set-variable 'add-log-mailing-address "Your email address"))
+
+(setq auto-mode-alist
+      (append '(("/local/ecc/.*\\.C$"   . ecos-c-mode)
+                ("/local/ecc/.*\\.cc$"  . ecos-c-mode)
+                ("/local/ecc/.*\\.cpp$" . ecos-c-mode)
+                ("/local/ecc/.*\\.inl$" . ecos-c-mode)
+                ("/local/ecc/.*\\.c$"   . ecos-c-mode)
+                ("/local/ecc/.*\\.h$"   . ecos-c-mode)
+		("/local/ecc/.*\\.S$"   . ecos-asm-mode) 
+		("/local/ecc/.*\\.inc$" . ecos-asm-mode)
+		("/local/ecc/.*\\.cdl$" . tcl-mode)
+                ) auto-mode-alist))</PRE
+></TD
+></TR
+></TABLE
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN9401">Nested Headers</H2
+><P
+>In order to allow platforms to define all necessary details, while
+still maintaining the ability to share code between common platforms,
+all HAL headers are included in a nested fashion.</P
+><P
+>The architecture header (usually <TT
+CLASS="FILENAME"
+>hal_XXX.h</TT
+>) includes the
+variant equivalent of the header (<TT
+CLASS="FILENAME"
+>var_XXX.h</TT
+>) which in turn
+includes the platform equivalent of the header
+(<TT
+CLASS="FILENAME"
+>plf_XXX.h</TT
+>).</P
+><P
+>All definitions that may need to be overridden by a platform are
+then only conditionally defined, depending on whether a lower layer
+has already made the definition:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>hal_intr.h:     #include &lt;var_intr.h&gt;
+
+                #ifndef MACRO_DEFINED
+                # define MACRO ...
+                # define MACRO_DEFINED
+                #endif
+
+
+
+var_intr.h:     #include &lt;plf_intr.h&gt;
+
+                #ifndef MACRO_DEFINED
+                # define MACRO ...
+                # define MACRO_DEFINED
+                #endif
+
+
+plf_intr.h:
+
+                # define MACRO ...
+                # define MACRO_DEFINED</PRE
+></TD
+></TR
+></TABLE
+><P
+>This means a platform can opt to rely on the variant or
+architecture implementation of a feature, or implement it itself.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="hal-calling-if.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="hal-porting-platform.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Virtual Vectors (eCos/ROM Monitor Calling Interface)</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="hal-porting-guide.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Platform HAL Porting</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

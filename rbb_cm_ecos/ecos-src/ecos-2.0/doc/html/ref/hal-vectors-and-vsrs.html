@@ -1,0 +1,328 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Vectors and VSRs</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Exception Handling"
+HREF="hal-exception-handling.html"><LINK
+REL="PREVIOUS"
+TITLE="Exception Handling"
+HREF="hal-exception-handling.html"><LINK
+REL="NEXT"
+TITLE="Default Synchronous Exception Handling"
+HREF="hal-default-synchronous-exception-handling.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="hal-exception-handling.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 10. Exception Handling</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="hal-default-synchronous-exception-handling.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="HAL-VECTORS-AND-VSRS">Vectors and VSRs</H1
+><P
+>The CPU delivers all  exceptions, whether
+synchronous faults or asynchronous interrupts, to a set of hardware
+defined vectors. Depending on the architecture, these may be
+implemented in a number of different ways. Examples of existing
+mechanisms are:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>PowerPC</DT
+><DD
+><P
+>      Exceptions are vectored to locations 256 bytes apart starting at
+      either zero or <TT
+CLASS="LITERAL"
+>0xFFF00000</TT
+>. There are 16 such
+      vectors defined by the basic architecture and extra vectors may
+      be defined by specific variants. One of the base vectors is for
+      all external interrupts, and another is for the architecture
+      defined timer.
+      </P
+></DD
+><DT
+>MIPS</DT
+><DD
+><P
+>      Most exceptions and all interrupts are vectored to a single
+      address at either <TT
+CLASS="LITERAL"
+>0x80000000</TT
+> or
+      <TT
+CLASS="LITERAL"
+>0xBFC00180</TT
+>. Software is responsible for
+      reading the exception code from the CPU <TT
+CLASS="LITERAL"
+>cause</TT
+>
+      register to discover its true source. Some TLB and debug
+      exceptions are delivered to different vector addresses, but
+      these are not used currently by eCos. One of the exception codes
+      in the <TT
+CLASS="LITERAL"
+>cause</TT
+> register indicates an external
+      interrupt. Additional bits in the <TT
+CLASS="LITERAL"
+>cause</TT
+>
+      register provide a first-level decode for the interrupt source,
+      one of which represents an architecture defined timer.
+      </P
+></DD
+><DT
+>IA32</DT
+><DD
+><P
+>      Exceptions are delivered via an Interrupt Descriptor Table (IDT)
+      which is essentially an indirection table indexed by exception
+      number. The IDT may be placed anywhere in memory. In PC hardware
+      the standard interrupt controller can be programmed to deliver
+      the external interrupts to a block of 16 vectors at any offset
+      in the IDT. There is no hardware supplied mechanism for
+      determining the vector taken, other than from the address jumped
+      to.
+      </P
+></DD
+><DT
+>ARM</DT
+><DD
+><P
+>      All exceptions, including the FIQ and IRQ interrupts, are
+      vectored to locations four bytes apart starting at zero. There
+      is only room for one instruction here, which must immediately
+      jump out to handling code higher in memory. Interrupt sources
+      have to be decoded entirely from the interrupt controller.
+      </P
+></DD
+></DL
+></DIV
+><P
+>With such a wide variety of hardware approaches, it is not possible to
+provide a generic mechanism for the substitution of exception vectors
+directly. Therefore, eCos translates all of these mechanisms in to a
+common approach that can be used by portable code on all platforms.</P
+><P
+>The mechanism implemented is to attach to each hardware vector a short
+piece of trampoline code that makes an indirect jump via a table to
+the actual handler for the exception. This handler is called the
+Vector Service Routine (VSR) and the table is called the VSR table.</P
+><P
+>The trampoline code performs the absolute minimum processing necessary
+to identify the exception source, and jump to the VSR. The VSR is then
+responsible for saving the CPU state and taking the necessary actions
+to handle the exception or interrupt. The entry conditions for the VSR
+are as close to the raw hardware exception entry state as possible -
+although on some platforms the trampoline will have had to move or
+reorganize some registers to do its job.</P
+><P
+>To make this more concrete, consider how the trampoline code operates
+in each of the architectures described above:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>PowerPC</DT
+><DD
+><P
+>      A separate trampoline is contained in each of the vector
+      locations. This code saves a few work registers away to the
+      special purposes registers available, loads the exception number
+      into a register and then uses that to index the VSR table and
+      jump to the VSR. The VSR is entered with some registers move to
+      the SPRs, and one of the data register containing the number of
+      the vector taken.
+      </P
+></DD
+><DT
+>MIPS</DT
+><DD
+><P
+>      A single trampoline routine attached to the common vector reads
+      the exception code out of the <TT
+CLASS="LITERAL"
+>cause</TT
+> register
+      and uses that value to index the VSR table and jump to the VSR.
+      The trampoline uses the two registers defined in the ABI for
+      kernel use to do this, one of these will contain the exception
+      vector number for the VSR.
+      </P
+></DD
+><DT
+>IA32</DT
+><DD
+><P
+>      There is a separate 3 or 4 instruction trampoline pointed to by
+      each active IDT table entry. The trampoline for exceptions that
+      also have an error code pop it from the stack and put it into a
+      memory location. Trampolines for non-error-code exceptions just
+      zero the memory location. Then all trampolines push an
+      interrupt/exception number onto the stack, and take an indirect
+      jump through a precalculated offset in the VSR table. This is
+      all done without saving any registers, using memory-only
+      operations. The VSR is entered with the vector number pushed
+      onto the stack on top of the standard hardware saved state.
+      </P
+></DD
+><DT
+>ARM</DT
+><DD
+><P
+>      The trampoline consists solely of the single instruction at the
+      exception entry point. This is an indirect jump via a location
+      32 bytes higher in memory. These locations, from
+      <TT
+CLASS="LITERAL"
+>0x20</TT
+> up, form the VSR table. Since each VSR
+      is entered in a different CPU mode
+      (<TT
+CLASS="LITERAL"
+>SVC,UNDEF,ABORT,IRQ or FIQ</TT
+>) there has to be a
+      different VSR for each exception that knows how to save the CPU
+      state correctly.
+      </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="hal-exception-handling.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="hal-default-synchronous-exception-handling.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Exception Handling</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="hal-exception-handling.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Default Synchronous Exception Handling</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

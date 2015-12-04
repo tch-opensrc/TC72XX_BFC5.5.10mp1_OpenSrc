@@ -1,0 +1,433 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Package Versioning</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="Package Organization"
+HREF="package.html"><LINK
+REL="PREVIOUS"
+TITLE="Package Organization"
+HREF="package.html"><LINK
+REL="NEXT"
+TITLE="Package Contents and Layout"
+HREF="package.contents.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="package.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. Package Organization</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="package.contents.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="PACKAGE.VERSIONS">Package Versioning</H1
+><P
+>Below each package directory there can be one or more version
+sub-directories, named after the versions. This is a requirement of
+the component framework: it must be possible for users to install
+multiple versions of a package and select which one to use for any
+given application. This has a number of advantages to users: most
+importantly it allows a single component repository to be shared
+between multiple users and multiple projects, as required; also it
+facilitates experiments, for example it is relatively easy to try out
+the latest version of some package and see if it makes any difference.
+There is a potential disadvantage in terms of disk space. However
+since <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> packages generally consist of source code intended for
+small embedded systems, and given typical modern disk sizes, keeping a
+number of different versions of a package installed will usually be
+acceptable. The administration tool can be used to remove versions
+that are no longer required.</P
+><DIV
+CLASS="INFORMALFIGURE"
+><A
+NAME="AEN217"><P
+></P
+><DIV
+CLASS="MEDIAOBJECT"
+><P
+><IMG
+SRC="version.png"
+ALIGN="CENTER"></P
+></DIV
+><P
+></P
+></DIV
+><P
+>The version <TT
+CLASS="FILENAME"
+>current</TT
+> is special. Typically it
+corresponds to the very latest version of the sources, obtained by
+anonymous <SPAN
+CLASS="APPLICATION"
+>CVS</SPAN
+>. These sources may change frequently, unlike full
+releases which do not change (or only when patches are produced).
+Component writers may also want to work on the
+<TT
+CLASS="FILENAME"
+>current</TT
+> version.</P
+><P
+>All other subdirectories of a package correspond to specific releases
+of that package. The component framework allows users to select the
+particular version of a package they want to use, but by default the
+most recent one will be used. This requires some rules for ordering
+version numbers, a difficult task because of the wide variety of ways
+in which versions can be identified.</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>The version <TT
+CLASS="FILENAME"
+>current</TT
+> is always considered to be
+the most recent version.</P
+></LI
+><LI
+><P
+>If the first character of both strings are either <TT
+CLASS="LITERAL"
+>v</TT
+>
+or <TT
+CLASS="LITERAL"
+>V</TT
+>, these are skipped because it makes little
+sense to enforce case sensitivity here. Potentially this could result
+in ambiguity if there are two version directories
+<TT
+CLASS="LITERAL"
+>V1.0</TT
+> and <TT
+CLASS="LITERAL"
+>v1.0</TT
+>, but this will
+match the confusion experienced by any users of such a package.
+However if two subsequent releases are called <TT
+CLASS="LITERAL"
+>V1.0</TT
+>
+and <TT
+CLASS="LITERAL"
+>v1.1</TT
+>, e.g. because of a minor mix-up when
+making the distribution file, then the case difference is ignored.</P
+></LI
+><LI
+><P
+>Next the two version strings are compared one character at a time.
+If both strings are currently at a digit then a string to number
+conversion takes place, and the resulting numbers are compared.
+For example <TT
+CLASS="LITERAL"
+>v10</TT
+> is a more recent release than
+<TT
+CLASS="LITERAL"
+>v2</TT
+>. If the two numbers are the same then processing
+continues, so for <TT
+CLASS="LITERAL"
+>v2b</TT
+> and <TT
+CLASS="LITERAL"
+>v2c</TT
+>
+the version comparison code would move on to <TT
+CLASS="LITERAL"
+>b</TT
+> and
+<TT
+CLASS="LITERAL"
+>c</TT
+>. </P
+></LI
+><LI
+><P
+>The characters dot <TT
+CLASS="LITERAL"
+>.</TT
+>, hyphen <TT
+CLASS="LITERAL"
+>-</TT
+>
+and underscore <TT
+CLASS="LITERAL"
+>_</TT
+> are treated as equivalent
+separators, so if one release goes out as <TT
+CLASS="LITERAL"
+>v1_1</TT
+> and
+the next goes out as <TT
+CLASS="LITERAL"
+>v1.2</TT
+> the separator has no
+effect.</P
+></LI
+><LI
+><P
+>If neither string has yet terminated but the characters are different,
+ASCII comparison is used. For example <TT
+CLASS="LITERAL"
+>V1.1b</TT
+> is
+more recent than <TT
+CLASS="LITERAL"
+>v1.1alpha</TT
+>.</P
+></LI
+><LI
+><P
+>If one version string terminates before the other, the current
+character determines which is the more recent. If the other string is
+currently at a separator character, for example
+<TT
+CLASS="LITERAL"
+>v1.3.1</TT
+> and <TT
+CLASS="LITERAL"
+>v1.3</TT
+>, then the former
+is assumed to be a minor release and hence more recent than the
+latter. If the other string is not at a separator character, for
+example <TT
+CLASS="LITERAL"
+>v1.3beta</TT
+>, then it is treated as an
+experimental version of the <TT
+CLASS="LITERAL"
+>v1.3</TT
+> release and hence
+older. </P
+></LI
+><LI
+><P
+>There is no special processing of dates, so with two versions
+<TT
+CLASS="LITERAL"
+>ss-20000316</TT
+> and <TT
+CLASS="LITERAL"
+>ss-20001111</TT
+>
+the numerical values <TT
+CLASS="LITERAL"
+>20001111</TT
+> and
+<TT
+CLASS="LITERAL"
+>20000316</TT
+> determine the result: larger values are
+more recent. It is suggested that the full year be used in such cases
+rather than a shorthand like <TT
+CLASS="LITERAL"
+>00</TT
+>, to avoid
+Y2100 problems.</P
+></LI
+><LI
+><P
+>There is no limit on how many levels of versioning are used, so
+there could in theory be a <TT
+CLASS="LITERAL"
+>v3.1.4.1.5.9.2.7</TT
+> release
+of a package. However this is unlikely to be of benefit to typical
+users of a package.</P
+></LI
+></OL
+><P
+>The version comparison rules of the component framework may not be
+suitable for every version numbering scheme in existence, but they
+should cope with many common cases.</P
+><DIV
+CLASS="CAUTION"
+><P
+></P
+><TABLE
+CLASS="CAUTION"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Caution</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>There are some issues still to be resolved before it is possible to
+combine the <TT
+CLASS="FILENAME"
+>current</TT
+> sources available via
+anonymous <SPAN
+CLASS="APPLICATION"
+>CVS</SPAN
+> and full releases of <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> and additional packages in
+a single component repository. The first problem relates to the
+<SPAN
+CLASS="DATABASE"
+>ecos.db</SPAN
+> database: if a new package is added via
+the CVS repository then this requires a database update, but the
+administration tool is bypassed. The second problem arises if an
+organization chooses to place its component repository under source
+code control using <SPAN
+CLASS="APPLICATION"
+>CVS</SPAN
+>, in which case different directories will
+belong to different <SPAN
+CLASS="APPLICATION"
+>CVS</SPAN
+> servers. These issues will be addressed in a
+future release.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="package.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="package.contents.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Package Organization</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="package.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Package Contents and Layout</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

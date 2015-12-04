@@ -1,0 +1,494 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>if_define</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="hardware"
+HREF="ref.hardware.html"><LINK
+REL="NEXT"
+TITLE="implements"
+HREF="ref.implements.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.hardware.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.implements.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.IF-DEFINE"><SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4442"
+></A
+><H2
+>Name</H2
+>Property <SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+>&nbsp;--&nbsp;Output a common preprocessor construct to a configuration
+header file.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4446"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_option &lt;name&gt; {
+    if_define [-file=&lt;filename&gt;] &lt;symbol1&gt; &lt;symbol2&gt;
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4448"
+></A
+><H2
+>Description</H2
+><P
+>The purpose of the <SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+> property is best explained by an
+example. Suppose you want finer-grained control over assertions, say
+on a per-package or even a per-file basis rather than globally. The
+assertion macros can be defined by an exported header file in an
+infrastructure package, using code like the following:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#ifdef CYGDBG_USE_ASSERTS
+# define CYG_ASSERT( _bool_, _msg_ )    \
+        CYG_MACRO_START                 \
+        if ( ! ( _bool_ ) )             \
+            CYG_ASSERT_DOCALL( _msg_ ); \
+        CYG_MACRO_END
+#else
+# define CYG_ASSERT( _bool_, _msg_ ) CYG_EMPTY_STATEMENT
+#endif</PRE
+></TD
+></TR
+></TABLE
+><P
+>Assuming this header file is <TT
+CLASS="LITERAL"
+>#include'd</TT
+> directly or
+indirectly by any code which may need to be built with assertions
+enabled, the challenge is now to control whether or not
+<TT
+CLASS="VARNAME"
+>CYGDBG_USE_ASSERTS</TT
+> is defined for any given source
+file. This is the purpose of the <SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+> property:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYGDBG_KERNEL_USE_ASSERTS {
+    &#8230;
+    if_define CYGSRC_KERNEL CYGDBG_USE_ASSERTS
+    requires  CYGDBG_INFRA_ASSERTION_SUPPORT
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>If this option is active and enabled then the kernel's configuration
+header file would end up containing the following:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#ifdef CYGSRC_KERNEL
+# define CYGDBG_USE_ASSERTS 1
+#endif</PRE
+></TD
+></TR
+></TABLE
+><P
+>Kernel source code can now begin with the following construct:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYGSRC_KERNEL 1
+#include &lt;pkgconf/kernel.h&gt;
+#include &lt;cyg/infra/cyg_ass.h&gt;</PRE
+></TD
+></TR
+></TABLE
+><P
+>The configuration option only affects kernel source code, assuming
+nothing else <TT
+CLASS="LITERAL"
+>#define's</TT
+> the symbol
+<TT
+CLASS="VARNAME"
+>CYGSRC_KERNEL</TT
+>. If the per-package assertion option
+is disabled then <TT
+CLASS="VARNAME"
+>CYGDBG_USE_ASSERTS</TT
+> will not get
+defined. If the option is enabled then
+<TT
+CLASS="VARNAME"
+>CYGDBG_USE_ASSERTS</TT
+> will get defined and assertions
+will be enabled for the kernel sources. It is possible to use the same
+mechanism for other facilities such as tracing, and to apply it at a
+finer grain such as individual source files by having multiple options
+with <SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+> properties and multiple symbols such as
+<TT
+CLASS="VARNAME"
+>CYGSRC_KERNEL_SCHED_BITMAP_CXX</TT
+>.</P
+><P
+>The <SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+> property takes two arguments, both of which must be
+valid C preprocessor symbols. If the current option is active and
+enabled then three lines will be output to the configuration header
+file:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#ifdef &lt;symbol1&gt;
+# define &lt;symbol2&gt;
+#endif</PRE
+></TD
+></TR
+></TABLE
+><P
+>If the option is inactive or disabled then these lines will not be
+output. By default the current package's configuration header file
+will be used, but it is possible to specify an alternative destination
+using a <TT
+CLASS="LITERAL"
+>-file</TT
+> option. At present the only
+legitimate alternative destination is <TT
+CLASS="LITERAL"
+>system.h</TT
+>, the
+global configuration header. <SPAN
+CLASS="PROPERTY"
+>if_define</SPAN
+> processing happens in
+addition to, not instead of, the normal <TT
+CLASS="LITERAL"
+>#define</TT
+>
+processing or the handling of other header-file related properties.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>The infrastructure in the current <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> release does not yet work
+this way. In future it may do so, and the intention is that suitable
+configuration options get generated semi-automatically by the
+configuration system rather than having to be defined explicitly.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="TIP"
+><BLOCKQUOTE
+CLASS="TIP"
+><P
+><B
+>Tip: </B
+>As an alternative to changing the configuration, updating the build
+tree, and so on, it is possible to enable assertions by editing a
+source file directly, for example:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYGSRC_KERNEL 1
+#define CYGDBG_USE_ASSERTS 1
+#include &lt;pkgconf/kernel.h&gt;
+#include &lt;cyg/infra/cyg_ass.h&gt;</PRE
+></TD
+></TR
+></TABLE
+><P
+>The assertion header file does not care whether
+<TT
+CLASS="VARNAME"
+>CYGDBG_USE_ASSERTS</TT
+> is <TT
+CLASS="LITERAL"
+>#define'd</TT
+>
+via a configuration option or by explicit code. This technique can be
+useful to component writers when debugging their source code, although
+care has to be taken to remove any such <TT
+CLASS="LITERAL"
+>#define's</TT
+>
+later on.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4487"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_option CYGDBG_KERNEL_USE_ASSERTS {
+    display "Assertions in the kernel package"
+    &#8230;
+    if_define CYGSRC_KERNEL CYGDBG_USE_ASSERTS
+    requires  CYGDBG_INFRA_ASSERTION_SUPPORT
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4490"
+></A
+><H2
+>See Also</H2
+><P
+>Properties <A
+HREF="ref.define.html"
+><SPAN
+CLASS="PROPERTY"
+>define</SPAN
+></A
+>,
+<A
+HREF="ref.define-format.html"
+><SPAN
+CLASS="PROPERTY"
+>define_format</SPAN
+></A
+>,
+<A
+HREF="ref.define-header.html"
+><SPAN
+CLASS="PROPERTY"
+>define_header</SPAN
+></A
+>,
+<A
+HREF="ref.define-proc.html"
+><SPAN
+CLASS="PROPERTY"
+>define_proc</SPAN
+></A
+> and
+<A
+HREF="ref.no-define.html"
+><SPAN
+CLASS="PROPERTY"
+>no_define</SPAN
+></A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.hardware.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.implements.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>hardware</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>implements</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

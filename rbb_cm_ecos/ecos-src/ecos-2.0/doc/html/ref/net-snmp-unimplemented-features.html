@@ -1,0 +1,213 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Unimplemented features</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="SNMP for eCos"
+HREF="net-snmp-ecos-port.html"><LINK
+REL="PREVIOUS"
+TITLE="SNMP clients and package use"
+HREF="net-snmp-clients-and-package-use.html"><LINK
+REL="NEXT"
+TITLE="MIB Compiler "
+HREF="net-snmp-mib-compiler.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-snmp-clients-and-package-use.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 47. SNMP for <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>eCos</I
+></SPAN
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-snmp-mib-compiler.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-SNMP-UNIMPLEMENTED-FEATURES">Unimplemented features</H1
+><P
+>Currently, the filesystem and persistent storage areas are
+left undone, to be implemented by the application.</P
+><P
+>The SNMP library package is intended to support client and
+agent code alike.  It therefore contains lots of assumptions about
+the presence of persistent storage ie. a filesystem.  Currently,
+by default, eCos has no such thing, so those areas have been simply
+commented out and made to return empty lists or say &#8220;no
+data here.&#8221;</P
+><P
+>Specifically the following files have omitted/unimplemented code :</P
+><P
+><TT
+CLASS="FILENAME"
+>PACKAGES/net/snmp/lib/VERSION/src/parse.c</TT
+></P
+><P
+>contains code to enumerate MIB files discovered in the system
+MIB directories (&#8220;<TT
+CLASS="FILENAME"
+>/usr/share/snmp/mibs</TT
+>&#8221;),
+and read them all in, building data structures that are used by
+client programs to interrogate an agent.  This is not required in
+an agent, so the routine which enumerates the directories returns
+an empty list.</P
+><P
+><TT
+CLASS="FILENAME"
+>PACKAGES/net/snmp/lib/VERSION/src/read_config.c</TT
+>
+contains two systems:</P
+><P
+>The first tries to read the configuration file as described in the
+<A
+HREF="net-snmp-configuring-ecos.html"
+>snmpd.conf file</A
+> section and 
+the second system contains code to record persistent data as files in a
+directory (typically <TT
+CLASS="FILENAME"
+>/var/ucd-snmp</TT
+>) thus preserving the 
+state permanently.</P
+><P
+>The first part is partially implemented to support multiple profiles and enables
+dispatcher functionality as discussed in <A
+HREF="net-snmp-configuring-ecos.html#NET-SNMP-VERSION-USAGE"
+>the Section called <I
+>Version usage (v1, v2 or v3)</I
+></A
+>.
+The second part is not supported at all in the default implementation. As required, 
+a cleaner interface to permit application code to manage persistent data will be 
+developed in consultation with customers.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-snmp-clients-and-package-use.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-snmp-mib-compiler.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SNMP clients and package use</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="net-snmp-ecos-port.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>MIB Compiler</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

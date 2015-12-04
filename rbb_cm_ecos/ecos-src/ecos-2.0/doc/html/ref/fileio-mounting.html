@@ -1,0 +1,346 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Initialization and Mounting</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="File System Support Infrastructure"
+HREF="fileio.html"><LINK
+REL="PREVIOUS"
+TITLE="Synchronization"
+HREF="fileio-synchronization.html"><LINK
+REL="NEXT"
+TITLE="Sockets"
+HREF="fileio-sockets.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="fileio-synchronization.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="fileio-sockets.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="FILEIO-MOUNTING">Chapter 25. Initialization and Mounting</H1
+><P
+>As mentioned previously, mount table entries can be sourced from two
+places. Static entries may be defined by using the
+<TT
+CLASS="LITERAL"
+>MTAB_ENTRY()</TT
+> macro. Such entries will be
+automatically mounted on system startup.  For each entry in the mount
+table that has a non-null <TT
+CLASS="STRUCTFIELD"
+><I
+>name</I
+></TT
+> field the
+filesystem table is searched for a match with the
+<TT
+CLASS="STRUCTFIELD"
+><I
+>fsname</I
+></TT
+> field. If a match is found the
+filesystem's <TT
+CLASS="STRUCTFIELD"
+><I
+>mount</I
+></TT
+> entry is called and if
+successful the mount table entry marked valid and the
+<TT
+CLASS="STRUCTFIELD"
+><I
+>fs</I
+></TT
+> field initialized. The
+<TT
+CLASS="FUNCTION"
+>mount()</TT
+> function is responsible for initializing
+the <TT
+CLASS="STRUCTFIELD"
+><I
+>root</I
+></TT
+> field.</P
+><P
+>The size of the mount table is defined by the configuration value
+<TT
+CLASS="LITERAL"
+>CYGNUM_FILEIO_MTAB_MAX</TT
+>. Any entries that have not
+been statically defined are available for use by dynamic mounts.</P
+><P
+>A filesystem may be mounted dynamically by calling <TT
+CLASS="FUNCTION"
+>mount()</TT
+>. This
+function has the following prototype:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int mount( const char *devname,
+           const char *dir,
+	   const char *fsname);</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <TT
+CLASS="PARAMETER"
+><I
+>devname</I
+></TT
+> argument identifies a device that
+will be used by this filesystem and will be assigned to the
+<TT
+CLASS="STRUCTFIELD"
+><I
+>devname</I
+></TT
+> field of the mount table entry.</P
+><P
+>The <TT
+CLASS="PARAMETER"
+><I
+>dir</I
+></TT
+> argument is the mount point name, it
+will be assigned to the <TT
+CLASS="STRUCTFIELD"
+><I
+>name</I
+></TT
+> field of the
+mount table entry.</P
+><P
+>The <TT
+CLASS="PARAMETER"
+><I
+>fsname</I
+></TT
+> argument is the name of the
+implementing filesystem, it will be assigned to the
+<TT
+CLASS="STRUCTFIELD"
+><I
+>fsname</I
+></TT
+> entry of the mount table entry.</P
+><P
+>The process of mounting a filesystem dynamically is as follows. First
+a search is made of the mount table for an entry with a NULL
+<TT
+CLASS="STRUCTFIELD"
+><I
+>name</I
+></TT
+> field to be used for the new mount
+point. The filesystem table is then searched for an entry whose name
+matches <TT
+CLASS="STRUCTFIELD"
+><I
+>fsname</I
+></TT
+>. If this is successful then
+the mount table entry is initialized and the filesystem's
+<TT
+CLASS="FUNCTION"
+>mount()</TT
+> operation called. If this is successful,
+the mount table entry is marked valid and the
+<TT
+CLASS="STRUCTFIELD"
+><I
+>fs</I
+></TT
+> field initialized.</P
+><P
+>Unmounting a filesystem is done by the <TT
+CLASS="FUNCTION"
+>umount()</TT
+>
+function. This can unmount filesystems whether they were mounted
+statically or dynamically.</P
+><P
+>The <TT
+CLASS="FUNCTION"
+>umount()</TT
+> function has the following prototype:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int umount( const char *name );</PRE
+></TD
+></TR
+></TABLE
+><P
+>The mount table is searched for a match between the
+<TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+> argument and the entry
+<TT
+CLASS="STRUCTFIELD"
+><I
+>name</I
+></TT
+> field. When a match is found the
+filesystem's <TT
+CLASS="FUNCTION"
+>umount()</TT
+> operation is called and if
+successful, the mount table entry is invalidated by setting its
+<TT
+CLASS="STRUCTFIELD"
+><I
+>valid</I
+></TT
+> field false and the
+<TT
+CLASS="STRUCTFIELD"
+><I
+>name</I
+></TT
+> field to NULL.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="fileio-synchronization.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="fileio-sockets.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Synchronization</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="fileio.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Sockets</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

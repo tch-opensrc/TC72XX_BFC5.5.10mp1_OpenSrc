@@ -1,0 +1,272 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>byteorder</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="gethostname"
+HREF="net-common-tcpip-manpages-gethostname.html"><LINK
+REL="NEXT"
+TITLE="ethers"
+HREF="net-common-tcpip-manpages-ethers.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-gethostname.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-ethers.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-BYTEORDER">byteorder</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>BYTEORDER(3)            System Library Functions Manual           BYTEORDER(3)
+
+NAME
+     htonl, htons, ntohl, ntohs, htobe32, htobe16, betoh32, betoh16, htole32,
+     htole16, letoh32, letoh16, swap32, swap16 - convert values between dif-
+     ferent byte orderings
+
+SYNOPSIS
+     #include &lt;sys/types.h&#62;
+     #include &lt;machine/endian.h&#62;
+
+     u_int32_t
+     htonl(u_int32_t host32);
+
+     u_int16_t
+     htons(u_int16_t host16);
+
+     u_int32_t
+     ntohl(u_int32_t net32);
+
+     u_int16_t
+     ntohs(u_int16_t net16);
+
+     u_int32_t
+     htobe32(u_int32_t host32);
+
+     u_int16_t
+     htobe16(u_int16_t host16);
+
+     u_int32_t
+     betoh32(u_int32_t big32);
+
+     u_int16_t
+     betoh16(u_int16_t big16);
+
+     u_int32_t
+     htole32(u_int32_t host32);
+
+     u_int16_t
+     htole16(u_int16_t host16);
+
+     u_int32_t
+     letoh32(u_int32_t little32);
+
+     u_int16_t
+     letoh16(u_int16_t little16);
+
+     u_int32_t
+     swap32(u_int32_t val32);
+
+     u_int16_t
+     swap16(u_int16_t val16);
+
+DESCRIPTION
+     These routines convert 16- and 32-bit quantities between different byte
+     orderings.  The ``swap'' functions reverse the byte ordering of the given
+     quantity, the others converts either from/to the native byte order used
+     by the host to/from either little- or big-endian (a.k.a network) order.
+
+     Apart from the swap functions, the names can be described by this form:
+     {src-order}to{dst-order}{size}.  Both {src-order} and {dst-order} can
+     take the following forms:
+
+           h    Host order.
+           n    Network order (big-endian).
+           be   Big-endian (most significant byte first).
+           le   Little-endian (least significant byte first).
+
+     One of the specified orderings must be `h'.  {size} will take these
+     forms:
+
+           l  Long (32-bit, used in conjunction with forms involving `n').
+           s  Short (16-bit, used in conjunction with forms involving `n').
+           16
+              16-bit.
+           32
+              32-bit.
+
+     The swap functions are of the form: swap{size}.
+
+     Names involving `n' convert quantities between network byte order and
+     host byte order.  The last letter (`s' or `l') is a mnemonic for the tra-
+     ditional names for such quantities, short and long, respectively.  Today,
+     the C concept of short and long integers need not coincide with this tra-
+     ditional misunderstanding.  On machines which have a byte order which is
+     the same as the network order, routines are defined as null macros.
+
+     The functions involving either ``be'', ``le'', or ``swap'' use the num-
+     bers 16 and 32 for specifying the bitwidth of the quantities they operate
+     on.  Currently all supported architectures are either big- or little-
+     endian so either the ``be'' or ``le'' variants are implemented as null
+     macros.
+
+     The routines mentioned above which have either {src-order} or {dst-order}
+     set to `n' are most often used in conjunction with Internet addresses and
+     ports as returned by gethostbyname(3) and getservent(3).
+
+SEE ALSO
+     gethostbyname(3), getservent(3)
+
+HISTORY
+     The byteorder functions appeared in 4.2BSD.
+
+BUGS
+     On the vax, alpha, i386, and so far mips, bytes are handled backwards
+     from most everyone else in the world.  This is not expected to be fixed
+     in the near future.
+
+BSD                              June 4, 1993                              BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-gethostname.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-ethers.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>gethostname</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>ethers</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

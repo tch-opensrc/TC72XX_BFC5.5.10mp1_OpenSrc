@@ -1,0 +1,1031 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Serial driver details</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="I/O Package (Device Drivers)"
+HREF="io.html"><LINK
+REL="PREVIOUS"
+TITLE="User API"
+HREF="io-user-api.html"><LINK
+REL="NEXT"
+TITLE=" TTY driver"
+HREF="io-tty-driver.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="io-user-api.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="io-tty-driver.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="IO-SERIAL-DRIVER-DETAILS">Chapter 16. Serial driver details</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="io-serial-driver-details.html#IO-SIMPLE-SERIAL-DRIVER"
+>Raw Serial Driver</A
+></DT
+><DT
+><A
+HREF="io-tty-driver.html"
+>TTY driver</A
+></DT
+></DL
+></DIV
+><P
+>Two different classes of serial drivers are provided as a standard
+part of the eCos system. These are described as &#8220;raw
+serial&#8221; (serial) and &#8220;tty-like&#8221; (tty).</P
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="IO-SIMPLE-SERIAL-DRIVER">Raw Serial Driver</H1
+><P
+>Use the include file <TT
+CLASS="FILENAME"
+>&lt;cyg/io/serialio.h&gt;</TT
+> for
+this driver.</P
+><P
+>The raw serial driver is capable of sending
+and receiving blocks of raw data to a serial device. Controls are
+provided to configure the actual hardware, but there is no manipulation
+of the data by this driver.</P
+><P
+>There may be many instances of this driver in a given system,
+one for each serial channel. Each channel corresponds to a physical
+device and there will typically be a device module created for this
+purpose. The device modules themselves are configurable, allowing
+specification of the actual hardware details, as well as such details
+as whether the channel should be buffered by the serial driver,
+etc.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN10475">Runtime Configuration</H2
+><P
+>Runtime configuration is achieved by exchanging data structures with
+the driver via the <TT
+CLASS="FUNCTION"
+>cyg_io_set_config()</TT
+> and
+<TT
+CLASS="FUNCTION"
+>cyg_io_get_config()</TT
+> functions.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+ cyg_serial_baud_rate_t baud;
+ cyg_serial_stop_bits_t stop;
+ cyg_serial_parity_t parity;
+ cyg_serial_word_length_t word_length;
+ cyg_uint32 flags;
+} cyg_serial_info_t;</PRE
+></TD
+></TR
+></TABLE
+><P
+>The field <TT
+CLASS="STRUCTFIELD"
+><I
+>word_length</I
+></TT
+> contains the number of data bits per word
+(character). This must be one of the values:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+> CYGNUM_SERIAL_WORD_LENGTH_5
+ CYGNUM_SERIAL_WORD_LENGTH_6
+ CYGNUM_SERIAL_WORD_LENGTH_7
+ CYGNUM_SERIAL_WORD_LENGTH_8</PRE
+></TD
+></TR
+></TABLE
+><P
+>The field <TT
+CLASS="STRUCTFIELD"
+><I
+>baud</I
+></TT
+> contains a baud rate selection.  This must be
+one of the values:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+> CYGNUM_SERIAL_BAUD_50
+ CYGNUM_SERIAL_BAUD_75
+ CYGNUM_SERIAL_BAUD_110
+ CYGNUM_SERIAL_BAUD_134_5
+ CYGNUM_SERIAL_BAUD_150
+ CYGNUM_SERIAL_BAUD_200
+ CYGNUM_SERIAL_BAUD_300
+ CYGNUM_SERIAL_BAUD_600
+ CYGNUM_SERIAL_BAUD_1200
+ CYGNUM_SERIAL_BAUD_1800
+ CYGNUM_SERIAL_BAUD_2400
+ CYGNUM_SERIAL_BAUD_3600
+ CYGNUM_SERIAL_BAUD_4800
+ CYGNUM_SERIAL_BAUD_7200
+ CYGNUM_SERIAL_BAUD_9600
+ CYGNUM_SERIAL_BAUD_14400
+ CYGNUM_SERIAL_BAUD_19200
+ CYGNUM_SERIAL_BAUD_38400
+ CYGNUM_SERIAL_BAUD_57600
+ CYGNUM_SERIAL_BAUD_115200
+ CYGNUM_SERIAL_BAUD_234000</PRE
+></TD
+></TR
+></TABLE
+><P
+>The field <TT
+CLASS="STRUCTFIELD"
+><I
+>stop</I
+></TT
+> contains the number of stop bits. This must be
+one of the values:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+> CYGNUM_SERIAL_STOP_1
+ CYGNUM_SERIAL_STOP_1_5
+ CYGNUM_SERIAL_STOP_2</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>On most hardware, a selection of 1.5 stop bits is only valid
+if the word (character) length is 5.</P
+></BLOCKQUOTE
+></DIV
+><P
+>The field <TT
+CLASS="STRUCTFIELD"
+><I
+>parity</I
+></TT
+> contains the parity mode.  This must be one of
+the values: </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+> CYGNUM_SERIAL_PARITY_NONE
+ CYGNUM_SERIAL_PARITY_EVEN
+ CYGNUM_SERIAL_PARITY_ODD
+ CYGNUM_SERIAL_PARITY_MARK
+ CYGNUM_SERIAL_PARITY_SPACE</PRE
+></TD
+></TR
+></TABLE
+><P
+>The field <TT
+CLASS="STRUCTFIELD"
+><I
+>flags</I
+></TT
+> is a bitmask which controls the behavior of the
+serial device driver. It should be built from the values
+<TT
+CLASS="LITERAL"
+>CYG_SERIAL_FLAGS_xxx</TT
+> defined below:</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CYG_SERIAL_FLAGS_RTSCTS 0x0001</PRE
+></TD
+></TR
+></TABLE
+><P
+>If this bit is set then the port is placed in &#8220;hardware
+handshake&#8221; mode. In this mode, the CTS and RTS pins control
+when data is allowed to be sent/received at the port. This
+bit is ignored if the hardware does not support this level of
+handshake.</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+  cyg_int32 rx_bufsize;
+  cyg_int32 rx_count;
+  cyg_int32 tx_bufsize;
+  cyg_int32 tx_count;
+} cyg_serial_buf_info_t;     </PRE
+></TD
+></TR
+></TABLE
+><P
+>The field <TT
+CLASS="STRUCTFIELD"
+><I
+>rx_bufsize</I
+></TT
+> contains
+the total size of the incoming data buffer. This is set to zero on
+devices that do not support buffering (i.e. polled devices).</P
+><P
+>The field <TT
+CLASS="STRUCTFIELD"
+><I
+>rx_count</I
+></TT
+> contains the
+number of bytes currently occupied in the incoming data buffer.
+This is set to zero on devices that do not support buffering (i.e. polled
+devices).</P
+><P
+>The field <TT
+CLASS="STRUCTFIELD"
+><I
+>tx_bufsize</I
+></TT
+> contains the
+total size of the transmit data buffer. This is set to zero on devices
+that do not support buffering (i.e. polled devices).</P
+><P
+>The field <TT
+CLASS="STRUCTFIELD"
+><I
+>tx_count</I
+></TT
+> contains the
+number of bytes currently occupied in the transmit data buffer.  This
+is set to zero on devices that do not support buffering (i.e. polled
+devices).</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN10510">API Details</H2
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="IO-SERIAL-CYG-IO-WRITE">cyg_io_write</H3
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_io_write(handle, buf, len)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Send the data from <TT
+CLASS="PARAMETER"
+><I
+>buf</I
+></TT
+> to the device. The
+driver maintains a buffer to hold the data. The size of the
+intermediate buffer is configurable within the interface module. The
+data is not modified at all while it is being buffered. On return,
+<TT
+CLASS="PARAMETER"
+><I
+>*len</I
+></TT
+> contains the amount of characters actually
+consumed .</P
+><P
+>It is possible to configure the write call to be blocking
+(default) or non-blocking. Non-blocking mode requires both the configuration
+option <TT
+CLASS="LITERAL"
+>CYGOPT_IO_SERIAL_SUPPORT_NONBLOCKING</TT
+>
+to be enabled, and the specific device to be set to non-blocking
+mode for writes (see <TT
+CLASS="FUNCTION"
+>cyg_io_set_config()</TT
+>).</P
+><P
+>In blocking mode, the call will not return until there is space in the
+buffer and the entire contents of <TT
+CLASS="PARAMETER"
+><I
+>buf</I
+></TT
+> have been
+consumed.</P
+><P
+>In non-blocking mode, as much as possible gets consumed from
+<TT
+CLASS="PARAMETER"
+><I
+>buf</I
+></TT
+>. If everything was consumed, the call
+returns <TT
+CLASS="LITERAL"
+>ENOERR</TT
+>. If only part of the
+<TT
+CLASS="PARAMETER"
+><I
+>buf</I
+></TT
+> contents was consumed,
+<TT
+CLASS="LITERAL"
+>-EAGAIN</TT
+> is returned and the caller must try
+again. On return, <TT
+CLASS="PARAMETER"
+><I
+>*len</I
+></TT
+> contains the number of characters actually
+consumed .</P
+><P
+>The call can also return <TT
+CLASS="LITERAL"
+>-EINTR</TT
+> if interrupted
+via the <TT
+CLASS="FUNCTION"
+>cyg_io_get_config()</TT
+>/<TT
+CLASS="LITERAL"
+>ABORT</TT
+> key.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="IO-SERIAL-CYG-IO-READ">cyg_io_read</H3
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_io_read(handle, buf, len)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Receive data into the buffer, <TT
+CLASS="PARAMETER"
+><I
+>buf</I
+></TT
+>, from the
+device. No manipulation of the data is performed before being
+transferred.  An interrupt driven interface module will support data
+arriving when no read is pending by buffering the data in the serial
+driver.  Again, this buffering is completely configurable. On return,
+<TT
+CLASS="PARAMETER"
+><I
+>*len</I
+></TT
+> contains the number of characters actually
+received.</P
+><P
+>It is possible to configure the read call to be blocking (default)
+or  non-blocking. Non-blocking mode requires both the configuration
+option  <TT
+CLASS="LITERAL"
+>CYGOPT_IO_SERIAL_SUPPORT_NONBLOCKING</TT
+>
+to be enabled, and the specific device to be set to non-blocking
+mode for reads (see <TT
+CLASS="FUNCTION"
+>cyg_io_set_config()</TT
+>).</P
+><P
+>In blocking mode, the call will not return until the requested
+amount of data has been read.</P
+><P
+>In non-blocking mode, data waiting in the device buffer is copied to
+<TT
+CLASS="PARAMETER"
+><I
+>buf</I
+></TT
+>, and the call returns immediately. If there
+was enough data in the buffer to fulfill the request,
+<TT
+CLASS="LITERAL"
+>ENOERR</TT
+> is returned.  If only part of the request
+could be fulfilled, <TT
+CLASS="LITERAL"
+>-EAGAIN</TT
+> is returned and the
+caller must try again. On return, <TT
+CLASS="PARAMETER"
+><I
+>*len</I
+></TT
+> contains
+the number of characters actually received.</P
+><P
+>The call can also return <TT
+CLASS="LITERAL"
+>-EINTR</TT
+> if interrupted via
+the <TT
+CLASS="FUNCTION"
+>cyg_io_get_config()</TT
+>/<TT
+CLASS="LITERAL"
+>ABORT</TT
+>
+key.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="IO-SERIAL-CYG-GET-CONFIG">cyg_io_get_config</H3
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_io_get_config(handle, key, buf, len)</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function returns current [runtime] information
+about the device and/or driver. </P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_IO_GET_CONFIG_SERIAL_INFO</TT
+></DT
+><DD
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Buf type:</DT
+><DD
+><P
+>cyg_serial_info_t</P
+></DD
+><DT
+>Function:</DT
+><DD
+><P
+>              This function retrieves the current state of the driver
+              and hardware. This information contains fields for
+              hardware baud rate, number of stop bits, and parity
+              mode. It also includes a set of flags that control the
+              port, such as hardware flow control.
+            </P
+></DD
+></DL
+></DIV
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_IO_GET_CONFIG_SERIAL_BUFFER_INFO</TT
+></DT
+><DD
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Buf type:</DT
+><DD
+><P
+>cyg_serial_buf_info_t</P
+></DD
+><DT
+>Function:</DT
+><DD
+><P
+>               This function retrieves the current state of the
+               software buffers in the serial drivers. For both
+               receive and transmit buffers it returns the total
+               buffer size and the current number of bytes occupied in
+               the buffer. It does not take into account any buffering
+               such as FIFOs or holding registers that the serial
+               device itself may have.
+             </P
+></DD
+></DL
+></DIV
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_IO_GET_CONFIG_SERIAL_OUTPUT_DRAIN</TT
+></DT
+><DD
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Buf type:</DT
+><DD
+><P
+>void *</P
+></DD
+><DT
+>Function:</DT
+><DD
+><P
+>              This function waits for any buffered output to
+              complete. This function only completes when there is no
+              more data remaining to be sent to the device.
+            </P
+></DD
+></DL
+></DIV
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_IO_GET_CONFIG_SERIAL_OUTPUT_FLUSH</TT
+></DT
+><DD
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Buf type:</DT
+><DD
+><P
+>void *</P
+></DD
+><DT
+>Function:</DT
+><DD
+><P
+>              This function discards any buffered output for the
+	      device.
+            </P
+></DD
+></DL
+></DIV
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_IO_GET_CONFIG_SERIAL_INPUT_DRAIN</TT
+></DT
+><DD
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Buf type:</DT
+><DD
+><P
+>void *</P
+></DD
+><DT
+>Function:</DT
+><DD
+><P
+>This function discards any buffered input for the
+            device.</P
+></DD
+></DL
+></DIV
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_IO_GET_CONFIG_SERIAL_ABORT</TT
+></DT
+><DD
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Buf type:</DT
+><DD
+><P
+> void*</P
+></DD
+><DT
+>Function:</DT
+><DD
+><P
+>This function will cause any pending read or write calls on
+            this device to return with <TT
+CLASS="LITERAL"
+>-EABORT</TT
+>.</P
+></DD
+></DL
+></DIV
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_IO_GET_CONFIG_SERIAL_READ_BLOCKING</TT
+></DT
+><DD
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Buf type:</DT
+><DD
+><P
+> cyg_uint32 (values 0 or 1)</P
+></DD
+><DT
+>Function:</DT
+><DD
+><P
+>This function will read back the blocking-mode
+            setting for read calls on this device. This call is only
+            available if the configuration option
+            <TT
+CLASS="LITERAL"
+>CYGOPT_IO_SERIAL_SUPPORT_NONBLOCKING</TT
+> is
+            enabled.</P
+></DD
+></DL
+></DIV
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_IO_GET_CONFIG_SERIAL_WRITE_BLOCKING</TT
+></DT
+><DD
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Buf type:</DT
+><DD
+><P
+> cyg_uint32 (values 0 or 1)</P
+></DD
+><DT
+>Function:</DT
+><DD
+><P
+>            This function will read back the blocking-mode
+            setting for write calls on this device. This call is only
+            available if the configuration option
+            <TT
+CLASS="LITERAL"
+>CYGOPT_IO_SERIAL_SUPPORT_NONBLOCKING</TT
+> is enabled.</P
+></DD
+></DL
+></DIV
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="IO-SERIAL-CYG-SET-CONFIG">cyg_io_set_config</H3
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cyg_io_set_config(handle, key, buf,len)</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function is used to update or change runtime configuration
+of a port. </P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_IO_SET_CONFIG_SERIAL_INFO</TT
+></DT
+><DD
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Buf type:</DT
+><DD
+><P
+>cyg_serial_info_t</P
+></DD
+><DT
+>Function:</DT
+><DD
+><P
+>This function updates the information for the driver
+            and hardware.  The information contains fields for
+            hardware baud rate, number of stop bits, and parity
+            mode. It also includes a set of flags that control the
+            port, such as hardware flow control.
+            </P
+></DD
+></DL
+></DIV
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_IO_SET_CONFIG_SERIAL_READ_BLOCKING</TT
+></DT
+><DD
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Buf type:</DT
+><DD
+><P
+> cyg_uint32 (values 0 or 1)</P
+></DD
+><DT
+>Function:</DT
+><DD
+><P
+>This function will set the blocking-mode for read
+            calls on this device. This call is only available if the
+            configuration option <TT
+CLASS="LITERAL"
+>CYGOPT_IO_SERIAL_SUPPORT_NONBLOCKING</TT
+>
+            is enabled.
+            </P
+></DD
+></DL
+></DIV
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>CYG_IO_SET_CONFIG_SERIAL_WRITE_BLOCKING</TT
+></DT
+><DD
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Buf type:</DT
+><DD
+><P
+>cyg_uint32 (values 0 or 1)</P
+></DD
+><DT
+>Function:</DT
+><DD
+><P
+>This function will set the blocking-mode for write
+            calls on this device. This call is only available if the
+            configuration option <TT
+CLASS="LITERAL"
+>CYGOPT_IO_SERIAL_SUPPORT_NONBLOCKING</TT
+>
+            is enabled.
+            </P
+></DD
+></DL
+></DIV
+></DD
+></DL
+></DIV
+></DIV
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="io-user-api.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="io-tty-driver.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>User API</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="io.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>TTY driver</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

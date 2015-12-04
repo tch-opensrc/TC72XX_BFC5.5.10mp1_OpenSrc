@@ -1,0 +1,575 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Generic Ethernet Device Driver</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Ethernet Device Drivers"
+HREF="io-eth-drv-generic.html"><LINK
+REL="PREVIOUS"
+TITLE="Ethernet Device Drivers"
+HREF="io-eth-drv-generic.html"><LINK
+REL="NEXT"
+TITLE="Review of the functions"
+HREF="io-eth-drv-api-funcs.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="io-eth-drv-generic.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="io-eth-drv-api-funcs.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="IO-ETH-DRV-GENERIC1">Chapter 46. Generic Ethernet Device Driver</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="io-eth-drv-generic1.html#IO-ETH-DRV-API"
+>Generic Ethernet API</A
+></DT
+><DT
+><A
+HREF="io-eth-drv-api-funcs.html"
+>Review of the functions</A
+></DT
+><DT
+><A
+HREF="io-eth-drv-upper-api.html"
+>Upper Layer Functions</A
+></DT
+><DT
+><A
+HREF="io-eth-call-graph.html"
+>Calling graph for Transmission and Reception</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="IO-ETH-DRV-API">Generic Ethernet API</H1
+><P
+>This file provides a simple description of how to write a low-level,
+hardware dependent ethernet driver.</P
+><P
+>There is a high-level driver (which is only code &#8212; with no state of
+its own) that is part of the stack.  There will be one or more low-level
+drivers tied to the actual network hardware.  Each of these drivers
+contains one or more driver instances.  The intent is that the
+low-level drivers know nothing of the details of the stack that will be
+using them.  Thus, the same driver can be used by the
+<SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+>
+supported
+<SPAN
+CLASS="ACRONYM"
+>TCP/IP</SPAN
+>
+stack,
+<SPAN
+CLASS="PRODUCTNAME"
+>RedBoot</SPAN
+>,
+or any other, with no changes.</P
+><P
+>A driver instance is contained within a
+<SPAN
+CLASS="TYPE"
+>struct eth_drv_sc</SPAN
+>:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct eth_hwr_funs {
+    // Initialize hardware (including startup)
+    void (*start)(struct eth_drv_sc *sc,
+                  unsigned char *enaddr,
+                  int flags);
+    // Shut down hardware
+    void (*stop)(struct eth_drv_sc *sc);
+    // Device control (ioctl pass-thru)
+    int  (*control)(struct eth_drv_sc *sc,
+                    unsigned long key,
+                    void *data,
+                    int   data_length);
+    // Query - can a packet be sent?
+    int  (*can_send)(struct eth_drv_sc *sc);
+    // Send a packet of data
+    void (*send)(struct eth_drv_sc *sc,
+                 struct eth_drv_sg *sg_list,
+                 int sg_len,
+                 int total_len,
+                 unsigned long key);
+    // Receive [unload] a packet of data
+    void (*recv)(struct eth_drv_sc *sc,
+                 struct eth_drv_sg *sg_list,
+                 int sg_len);
+    // Deliver data to/from device from/to stack memory space
+    // (moves lots of memcpy()s out of DSRs into thread)
+    void (*deliver)(struct eth_drv_sc *sc);
+    // Poll for interrupts/device service
+    void (*poll)(struct eth_drv_sc *sc);
+    // Get interrupt information from hardware driver
+    int (*int_vector)(struct eth_drv_sc *sc);
+    // Logical driver interface
+    struct eth_drv_funs *eth_drv, *eth_drv_old;
+};
+
+struct eth_drv_sc {
+    struct eth_hwr_funs *funs;
+    void                *driver_private;
+    const char          *dev_name;
+    int                  state;
+    struct arpcom        sc_arpcom; /* ethernet common */
+};</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>If you have two instances of the same hardware, you only need one
+<SPAN
+CLASS="TYPE"
+>struct eth_hwr_funs</SPAN
+> shared between them.</P
+></BLOCKQUOTE
+></DIV
+><P
+>There is another structure which is used to communicate with the rest of
+the stack:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct eth_drv_funs {
+    // Logical driver - initialization
+    void (*init)(struct eth_drv_sc *sc, 
+                 unsigned char *enaddr);
+    // Logical driver - incoming packet notifier
+    void (*recv)(struct eth_drv_sc *sc, 
+                 int total_len);
+    // Logical driver - outgoing packet notifier
+    void (*tx_done)(struct eth_drv_sc *sc, 
+                    CYG_ADDRESS key, 
+                    int status);
+};</PRE
+></TD
+></TR
+></TABLE
+>
+Your driver does <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> create an instance of this
+structure.  It is provided for driver code to use in the
+<SPAN
+CLASS="TYPE"
+>eth_drv</SPAN
+> member of the function record.
+Its usage is described below in <A
+HREF="io-eth-drv-upper-api.html"
+>the Section called <I
+>Upper Layer Functions</I
+></A
+></P
+><P
+>One more function completes the API with which your driver communicates
+with the rest of the stack:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>extern void eth_drv_dsr(cyg_vector_t vector,
+                        cyg_ucount32 count,
+                        cyg_addrword_t data);</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>This function is designed so that it can be registered as the DSR for your
+interrupt handler.  It will awaken the
+&#8220;Network Delivery Thread&#8221;
+to call your deliver routine.  See <A
+HREF="io-eth-drv-api-funcs.html#IO-ETH-DRV-API-DELIVER"
+>the Section called <I
+>Deliver function</I
+></A
+>.</P
+><P
+>You create an instance of <SPAN
+CLASS="TYPE"
+>struct eth_drv_sc</SPAN
+>
+using the
+<TT
+CLASS="FUNCTION"
+>ETH_DRV_SC()</TT
+>
+macro which
+sets up the structure, including the prototypes for the functions, etc.
+By doing things this way, if the internal design of the ethernet drivers
+changes (e.g. we need to add a new low-level implementation function),
+existing drivers will no longer compile until updated.  This is much
+better than to have all of the definitions in the low-level drivers
+themselves and have them be (quietly) broken if the interfaces change.</P
+><P
+>The &#8220;magic&#8221;
+which gets the drivers started (and indeed, linked) is
+similar to what is used for the I/O subsystem.
+This is done using the
+<TT
+CLASS="FUNCTION"
+>NETDEVTAB_ENTRY()</TT
+>
+macro, which defines an initialization function
+and the basic data structures for the low-level driver.</P
+><P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  typedef struct cyg_netdevtab_entry {
+      const char        *name;
+      bool             (*init)(struct cyg_netdevtab_entry *tab);
+      void              *device_instance;
+      unsigned long     status;
+  } cyg_netdevtab_entry_t;</PRE
+></TD
+></TR
+></TABLE
+>
+The <TT
+CLASS="VARNAME"
+>device_instance</TT
+>
+entry here would point to the <SPAN
+CLASS="TYPE"
+>struct eth_drv_sc</SPAN
+>
+entry previously defined.  This allows the network driver
+setup to work with any class of driver, not just ethernet drivers.  In
+the future, there will surely be serial <SPAN
+CLASS="ACRONYM"
+>PPP</SPAN
+>
+drivers, etc.  These will
+use the <TT
+CLASS="FUNCTION"
+>NETDEVTAB_ENTRY()</TT
+>
+setup to create the basic driver, but they will
+most likely be built on top of other high-level device driver layers.</P
+><P
+>To instantiate itself, and connect it to the system,
+a hardware driver will have a template
+(boilerplate) which looks something like this:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#include &lt;cyg/infra/cyg_type.h&gt;
+#include &lt;cyg/hal/hal_arch.h&gt;
+#include &lt;cyg/infra/diag.h&gt;
+#include &lt;cyg/hal/drv_api.h&gt;
+#include &lt;cyg/io/eth/netdev.h&gt;
+#include &lt;cyg/io/eth/eth_drv.h&gt;
+
+ETH_DRV_SC(<TT
+CLASS="REPLACEABLE"
+><I
+>DRV</I
+></TT
+>_sc,
+           0,             // No driver specific data needed
+           "eth0",        // Name for this interface
+           <TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_start,
+           <TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_stop,
+           <TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_control,
+           <TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_can_send
+           <TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_send,
+           <TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_recv,
+           <TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_deliver,
+           <TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_poll,
+           <TT
+CLASS="REPLACEABLE"
+><I
+>HRDWR</I
+></TT
+>_int_vector
+);
+
+NETDEVTAB_ENTRY(<TT
+CLASS="REPLACEABLE"
+><I
+>DRV</I
+></TT
+>_netdev, 
+                "<TT
+CLASS="REPLACEABLE"
+><I
+>DRV</I
+></TT
+>", 
+                <TT
+CLASS="REPLACEABLE"
+><I
+>DRV_HRDWR</I
+></TT
+>_init, 
+                &amp;<TT
+CLASS="REPLACEABLE"
+><I
+>DRV</I
+></TT
+>_sc);</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>This, along with the referenced functions, completely define the driver.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>If one needed the same low-level driver to handle
+multiple similar hardware interfaces, you would need multiple invocations
+of the
+<TT
+CLASS="FUNCTION"
+>ETH_DRV_SC()</TT
+>/<TT
+CLASS="FUNCTION"
+>NETDEVTAB_ENTRY()</TT
+>
+macros.  You would add a pointer
+to some instance specific data, e.g. containing base addresses, interrupt
+numbers, etc, where the
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>	0, // No driver specific data</PRE
+></TD
+></TR
+></TABLE
+>
+is currently.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="io-eth-drv-generic.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="io-eth-drv-api-funcs.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Ethernet Device Drivers</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="io-eth-drv-generic.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Review of the functions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

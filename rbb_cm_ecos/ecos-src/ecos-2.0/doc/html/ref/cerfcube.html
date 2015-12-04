@@ -1,0 +1,474 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>ARM/StrongARM(SA11X0) Intrinsyc CerfCube</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="Installation and Testing"
+HREF="installation-and-testing.html"><LINK
+REL="PREVIOUS"
+TITLE="ARM/StrongARM(SA11X0) Compaq iPAQ PocketPC"
+HREF="ipaq.html"><LINK
+REL="NEXT"
+TITLE="ARM/Xscale Cyclone IQ80310"
+HREF="iq80310.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ipaq.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Installation and Testing</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="iq80310.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CERFCUBE">ARM/StrongARM(SA11X0) Intrinsyc CerfCube</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6082">Overview</H2
+><P
+>RedBoot supports the serial port and the builtin
+ethernet connection for communication and downloads. </P
+><P
+>The default serial port settings are 38400,8,N,1. RedBoot runs from
+and supports flash management for the system flash region. </P
+><P
+>The following RedBoot configurations are supported:
+
+      <DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6087"><P
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Configuration</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Mode</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Description</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>File</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>ROM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[ROM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from the board's flash boot
+	      sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_ROM.ecm</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RAM</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>[RAM]</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>RedBoot running from RAM with RedBoot in the
+	      flash boot sector.</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>redboot_RAM.ecm</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6106">Initial Installation</H2
+><P
+>The original boot loader supplied with the CerfCube can be used to install
+RedBoot.  Connect to the device using a serial port at 38400/8N1.
+Copy the binary RedBoot ROM mode image to an available TFTP server.
+Issue these commands to the Instrinsyc loader:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+><TT
+CLASS="USERINPUT"
+><B
+>download tftp:<TT
+CLASS="REPLACEABLE"
+><I
+>x.x.x.x</I
+></TT
+> redboot_ROM.bin 0xc0000000</B
+></TT
+>
+<TT
+CLASS="USERINPUT"
+><B
+>flashloader 0x00000000 0xc0000000 0x20000</B
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+>
+where <TT
+CLASS="REPLACEABLE"
+><I
+>x.x.x.x</I
+></TT
+> is the IP address of the TFTP
+server.
+<DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>NOTE: </B
+>Other installation methods may be available via the Intrinsyc loader.
+Contact Intrinsyc for details.</P
+></BLOCKQUOTE
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6117">Additional commands</H2
+><P
+>The <B
+CLASS="COMMAND"
+>exec</B
+> command which allows the loading
+and execution of Linux kernels,
+is supported for this board (see <A
+HREF="executing-programs.html"
+>the Section called <I
+>Executing Programs from RedBoot</I
+> in Chapter 2</A
+>). The <B
+CLASS="COMMAND"
+>exec</B
+> parameters used for the CerfCube are:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>-b <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;addr&#62;</I
+></TT
+></DT
+><DD
+><P
+>Location Linux kernel was loaded to</P
+></DD
+><DT
+>-l <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;len&#62;</I
+></TT
+></DT
+><DD
+><P
+>Length of kernel</P
+></DD
+><DT
+>-c <TT
+CLASS="REPLACEABLE"
+><I
+>"params"</I
+></TT
+></DT
+><DD
+><P
+>Parameters passed to kernel</P
+></DD
+><DT
+>-r <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;addr&#62;</I
+></TT
+></DT
+><DD
+><P
+>'initrd' ramdisk location</P
+></DD
+><DT
+>-s <TT
+CLASS="REPLACEABLE"
+><I
+>&lt;len&#62;</I
+></TT
+></DT
+><DD
+><P
+>Length of initrd ramdisk</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6149">Memory Maps</H2
+><P
+>RedBoot sets up the following memory map on the CerfCube:   The first level
+page table is located at physical address 0xC0004000.  No second level tables
+are used.   <DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>NOTE: </B
+>The virtual memory maps in this section use a C and B column to indicate
+whether or not the region is cached (C) or buffered (B).</P
+></BLOCKQUOTE
+></DIV
+> <TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Physical Address Range     Description
+-----------------------    ----------------------------------
+0x00000000 - 0x01ffffff    16Mb to 32Mb FLASH (nCS0) [organized as below]
+  0x000000 - 0x0001ffff      RedBoot
+  0x020000 - 0x0003ffff      RedBoot [RAM version]
+  0xfc0000 - 0x00fdffff      Fconfig data
+  0xfe0000 - 0x00ffffff      FIS directory
+0x0f000000 - 0x0fffffff    Onboard ethernet
+0x10000000 - 0x17ffffff    CerfCube internal registers
+0x20000000 - 0x3fffffff    PCMCIA / Compact Flash
+0x80000000 - 0xbfffffff    SA-1110 Internal Registers
+0xc0000000 - 0xc1ffffff    DRAM Bank 0 - 32Mb SDRAM
+0xe0000000 - 0xe7ffffff    Cache Clean
+
+
+Virtual Address Range    C B  Description
+-----------------------  - -  ----------------------------------
+0x00000000 - 0x01ffffff  Y Y  DRAM - 32Mb
+0x08000000 - 0x0fffffff  N N  Onboard ethernet controller
+0x10000000 - 0x17ffffff  N N  CerfCube internal registers
+0x20000000 - 0x3fffffff  N N  PCMCIA / Compact Flash
+0x50000000 - 0x51ffffff  Y Y  Up to 32Mb FLASH (nCS0)
+0x80000000 - 0xbfffffff  N N  SA-1110 Internal Registers
+0xc0000000 - 0xc1ffffff  N Y  DRAM Bank 0: 32Mb
+0xe0000000 - 0xe7ffffff  Y Y  Cache Clean   </PRE
+></TD
+></TR
+></TABLE
+> </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6156">Rebuilding RedBoot</H2
+><P
+>These shell variables provide the platform-specific information
+needed for building RedBoot according to the procedure described in
+<A
+HREF="rebuilding-redboot.html"
+>Chapter 3</A
+>:
+<TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>export TARGET=cerf
+export ARCH_DIR=arm
+export PLATFORM_DIR=sa11x0/cerf</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The names of configuration files are listed above with the
+description of the associated modes.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ipaq.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="iq80310.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>ARM/StrongARM(SA11X0) Compaq iPAQ PocketPC</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="installation-and-testing.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>ARM/Xscale Cyclone IQ80310</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

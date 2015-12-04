@@ -1,0 +1,304 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>requires</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="The eCos Component Writer's Guide"
+HREF="cdl-guide.html"><LINK
+REL="UP"
+TITLE="CDL Language Specification"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="parent"
+HREF="ref.parent.html"><LINK
+REL="NEXT"
+TITLE="script"
+HREF="ref.script.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>The <SPAN
+CLASS="APPLICATION"
+>eCos</SPAN
+> Component Writer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ref.parent.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ref.script.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="REF.REQUIRES"><SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4921"
+></A
+><H2
+>Name</H2
+>Property <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+>&nbsp;--&nbsp;List constraints that the configuration should satisfy if
+a given option is active and enabled..</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4925"><H2
+>Synopsis</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>cdl_option &lt;name&gt; {
+    requires &lt;goal expression&gt;
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4927"
+></A
+><H2
+>Description</H2
+><P
+>Configuration options are not independent. For example the C library
+can provide thread-safe implementations of certain functions, but only
+if the kernel is present, if the kernel provides multi-threading, and
+if the kernel options related to per-thread data are enabled. It is
+possible to express such constraints using <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> properties.</P
+><P
+>The arguments to a <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> property should constitute a goal
+expression, as described in <A
+HREF="language.values.html#LANGUAGE.LIST-EXPRESSION"
+>the Section called <I
+>List Expressions</I
+> in Chapter 3</A
+>.
+Most goal expressions are relatively simple because the constraints
+being described are simple, but complicated expressions can be used
+when necessary. The body of an option or other CDL entity can contain
+any number of <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> constraints. If the option is active and
+enabled then all these constraints should be satisfied, and any goal
+expressions which evaluate to <TT
+CLASS="LITERAL"
+>0</TT
+> will result in
+conflicts being raised. It is possible for users to ignore such
+conflicts and attempt to build the current configuration anyway, but
+there is no guarantee that anything will work. If an option is
+inactive or disabled then its <SPAN
+CLASS="PROPERTY"
+>requires</SPAN
+> constraints will be ignored. </P
+><P
+>The configuration system contains an inference engine which can
+resolve many types of conflicts automatically. For example, if option
+<TT
+CLASS="LITERAL"
+>A</TT
+> is enabled and requires an option
+<TT
+CLASS="LITERAL"
+>B</TT
+> that is currently disabled then the inference
+engine may attempt to resolve the conflict by enabling
+<TT
+CLASS="LITERAL"
+>B</TT
+>. However this will not always be possible, for
+example there may be other constraints in the configuration which
+force <TT
+CLASS="LITERAL"
+>B</TT
+> to be disabled at present, in which case
+user intervention is required.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4942"
+></A
+><H2
+>Example</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cdl_component CYGPKG_IO_SERIAL_POWERPC_COGENT_SERIAL_A {
+    display       "Cogent PowerPC serial port A driver"
+    flavor        bool
+    default_value 0
+    requires      (CYGIMP_KERNEL_INTERRUPTS_CHAIN || \
+                   !CYGPKG_IO_SERIAL_POWERPC_COGENT_SERIAL_B)
+    &#8230;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4945"
+></A
+><H2
+>See Also</H2
+><P
+>Property <A
+HREF="ref.active-if.html"
+><SPAN
+CLASS="PROPERTY"
+>active_if</SPAN
+></A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ref.parent.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cdl-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ref.script.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>parent</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PROPERTY"
+>script</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

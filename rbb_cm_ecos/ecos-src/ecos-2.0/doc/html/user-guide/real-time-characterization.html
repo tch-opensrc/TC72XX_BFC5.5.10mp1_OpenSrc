@@ -1,0 +1,446 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Real-time characterization</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos User Guide"
+HREF="ecos-user-guide.html"><LINK
+REL="UP"
+TITLE="Appendixes"
+HREF="appendices.html"><LINK
+REL="PREVIOUS"
+TITLE="i386/Linux Synthetic Target Setup"
+HREF="setup-synth-i386linux.html"><LINK
+REL="NEXT"
+TITLE="Board: Atmel AT91/EB40"
+HREF="rt-at91-eb40.html"></HEAD
+><BODY
+CLASS="APPENDIX"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos User Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="setup-synth-i386linux.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="rt-at91-eb40.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="APPENDIX"
+><H1
+><A
+NAME="REAL-TIME-CHARACTERIZATION">Appendix B. Real-time characterization</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="real-time-characterization.html#RT-ARM-AEB1"
+>Board: ARM AEB-1 Revision B Evaluation Board</A
+></DT
+><DT
+><A
+HREF="rt-at91-eb40.html"
+>Board: Atmel AT91/EB40</A
+></DT
+><DT
+><A
+HREF="rt-arm-ebsa285.html"
+>Board: Intel StrongARM EBSA-285 Evaluation Board</A
+></DT
+><DT
+><A
+HREF="rt-arm-ep7211.html"
+>Board: Cirrus Logic EDB7111-2 Development Board</A
+></DT
+><DT
+><A
+HREF="rt-arm-pid.html"
+>Board: ARM PID Evaluation Board</A
+></DT
+><DT
+><A
+HREF="rt-arm-iq80310.html"
+>Board: Intel IQ80310 XScale Development Kit</A
+></DT
+><DT
+><A
+HREF="rt-tx39-jmr3904.html"
+>Board: Toshiba JMR3904 Evaluation Board</A
+></DT
+><DT
+><A
+HREF="rt-tx49-ref4955.html"
+>Board: Toshiba REF 4955</A
+></DT
+><DT
+><A
+HREF="rt-mn10300-stdeval1.html"
+>Board: Matsushita STDEVAL1 Board</A
+></DT
+><DT
+><A
+HREF="rt-sparclite-sleb.html"
+>Board: Fujitsu SPARClite Evaluation Board</A
+></DT
+><DT
+><A
+HREF="rt-ppc-cogent.html"
+>Board: Cogent CMA MPC860 (PowerPC) Evaluation</A
+></DT
+><DT
+><A
+HREF="rt-vr4300-vrc4373.html"
+>Board: NEC VR4373</A
+></DT
+><DT
+><A
+HREF="rt-arm-assabet.html"
+>Board: Intel SA1110 (Assabet)</A
+></DT
+><DT
+><A
+HREF="rt-arm-brutus.html"
+>Board: Intel SA1100 (Brutus)</A
+></DT
+><DT
+><A
+HREF="rt-ppc-mbx860.html"
+>Board: Motorola MBX</A
+></DT
+><DT
+><A
+HREF="rt-sh-edk7708.html"
+>Board: Hitachi EDK7708</A
+></DT
+><DT
+><A
+HREF="rt-sh-cq7708.html"
+>Board: CQ CqREEK SH3 Evaluation Board (cq7708)</A
+></DT
+><DT
+><A
+HREF="rt-sh-hs7729pci.html"
+>Board: Hitachi HS7729PCI HS7729 SH3</A
+></DT
+><DT
+><A
+HREF="rt-sh-se7751.html"
+>Board: Hitachi Solution Engine 7751 SH4 (se7751)</A
+></DT
+><DT
+><A
+HREF="rt-i386-pc.html"
+>Board: PC</A
+></DT
+><DT
+><A
+HREF="rt-v850-cebsa1.html"
+>Board: NEC V850 Cosmo Evaluation Board</A
+></DT
+><DT
+><A
+HREF="rt-v850-cebsb1.html"
+>Board: NEC V850 Cosmo Evaluation Board</A
+></DT
+></DL
+></DIV
+><P
+>For a discussion of real-time performance measurement for eCos, see the eCos 
+Users' Guide.</P
+><DIV
+CLASS="CAUTION"
+><P
+></P
+><TABLE
+CLASS="CAUTION"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Caution</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>As with the target setup descriptions in the previous appendix, this
+information will eventually be merged into per-target documents.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>	Sample numbers:
+      </P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RT-ARM-AEB1">Board: ARM AEB-1 Revision B Evaluation Board</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="LITERALLAYOUT"
+>&#13;Board: ARM AEB-1 Revision B Evaluation Board
+
+CPU : Sharp LH77790A 24MHz
+
+
+
+Startup, main stack             : stack used   404 size  2400
+Startup              :  Interrupt stack used   128 size  2048
+Startup              : Idlethread stack used    80 size  2048
+
+eCos Kernel Timings
+Notes: all times are in microseconds (.000001) unless otherwise stated
+
+Reading the hardware clock takes 13 'ticks' overhead
+... this value will be factored out of all other measurements
+Clock interrupt took  193.49 microseconds (290 raw clock ticks)
+
+Testing parameters:
+   Clock samples:            32
+   Threads:                   7
+   Thread switches:         128
+   Mutexes:                  32
+   Mailboxes:                32
+   Semaphores:               32
+   Scheduler operations:    128
+   Counters:                 32
+   Alarms:                   32
+
+
+                                 Confidence
+     Ave     Min     Max     Var  Ave  Min  Function
+  ======  ======  ======  ====== ========== ========
+  110.19  104.67  116.00    3.26   42%  28% Create thread
+   34.00   34.00   34.00    0.00  100% 100% Yield thread [all suspended]
+   24.67   24.67   24.67    0.00  100% 100% Suspend [suspended] thread
+   25.05   24.67   25.33    0.33   57%  42% Resume thread
+   37.14   36.67   37.33    0.27   71%  28% Set priority
+    3.81    3.33    4.00    0.27   71%  28% Get priority
+   80.00   80.00   80.00    0.00  100% 100% Kill [suspended] thread
+   33.90   33.33   34.00    0.16   85%  14% Yield [no other] thread
+   45.90   44.00   46.67    0.54   57%  14% Resume [suspended low prio] thread
+   24.57   24.00   24.67    0.16   85%  14% Resume [runnable low prio] thread
+   42.29   36.67   43.33    1.61   85%  14% Suspend [runnable] thread
+   33.90   33.33   34.00    0.16   85%  14% Yield [only low prio] thread
+   24.67   24.67   24.67    0.00  100% 100% Suspend [runnable-&#62;not runnable]
+   80.00   80.00   80.00    0.00  100% 100% Kill [runnable] thread
+   43.33   43.33   43.33    0.00  100% 100% Destroy [dead] thread
+  106.29  101.33  107.33    1.41   85%  14% Destroy [runnable] thread
+  144.95  141.33  166.00    6.01   85%  85% Resume [high priority] thread
+   78.31   76.67  254.67    2.75   99%  99% Thread switch
+
+    4.00    4.00    4.00    0.00  100% 100% Scheduler lock
+   16.37   16.00   16.67    0.33   56%  43% Scheduler unlock [0 threads]
+   16.37   16.00   16.67    0.33   56%  43% Scheduler unlock [1 suspended]
+   16.37   16.00   16.67    0.33   56%  43% Scheduler unlock [many suspended]
+   16.37   16.00   16.67    0.33   56%  43% Scheduler unlock [many low prio]
+
+   10.67   10.67   10.67    0.00  100% 100% Init mutex
+   28.67   28.67   28.67    0.00  100% 100% Lock [unlocked] mutex
+   30.44   30.00   31.33    0.33   59%  37% Unlock [locked] mutex
+   25.42   25.33   26.00    0.15   87%  87% Trylock [unlocked] mutex
+   22.50   22.00   22.67    0.25   75%  25% Trylock [locked] mutex
+    5.75    5.33    6.00    0.31   62%  37% Destroy mutex
+  185.33  185.33  185.33    0.00  100% 100% Unlock/Lock mutex
+
+   20.17   20.00   20.67    0.25   75%  75% Create mbox
+    2.92    2.67    3.33    0.31   62%  62% Peek [empty] mbox
+   32.42   32.00   32.67    0.31   62%  37% Put [first] mbox
+    3.00    2.67    3.33    0.33  100%  50% Peek [1 msg] mbox
+   32.50   32.00   32.67    0.25   75%  25% Put [second] mbox
+    2.92    2.67    3.33    0.31   62%  62% Peek [2 msgs] mbox
+   32.83   32.67   33.33    0.25   75%  75% Get [first] mbox
+   32.67   32.67   32.67    0.00  100% 100% Get [second] mbox
+   31.33   31.33   31.33    0.00  100% 100% Tryput [first] mbox
+   27.58   27.33   28.00    0.31   62%  62% Peek item [non-empty] mbox
+   32.83   32.67   33.33    0.25   75%  75% Tryget [non-empty] mbox
+   26.50   26.00   26.67    0.25   75%  25% Peek item [empty] mbox
+   28.00   28.00   28.00    0.00  100% 100% Tryget [empty] mbox
+    3.25    2.67    3.33    0.15   87%  12% Waiting to get mbox
+    3.25    2.67    3.33    0.15   87%  12% Waiting to put mbox
+   30.83   30.67   31.33    0.25   75%  75% Delete mbox
+  101.08  100.67  101.33    0.31   62%  37% Put/Get mbox
+
+   11.17   10.67   11.33    0.25   75%  25% Init semaphore
+   24.17   24.00   24.67    0.25   75%  75% Post [0] semaphore
+   27.08   26.67   27.33    0.31   62%  37% Wait [1] semaphore
+   22.75   22.67   23.33    0.15   87%  87% Trywait [0] semaphore
+   22.21   22.00   22.67    0.29   68%  68% Trywait [1] semaphore
+    7.33    7.33    7.33    0.00  100% 100% Peek semaphore
+    5.92    5.33    6.00    0.15   87%  12% Destroy semaphore
+  110.04  110.00  110.67    0.08   93%  93% Post/Wait semaphore
+
+    9.54    9.33   10.00    0.29   68%  68% Create counter
+    3.92    3.33    4.00    0.15   87%  12% Get counter value
+    4.00    4.00    4.00    0.00  100% 100% Set counter value
+   30.92   30.67   31.33    0.31   62%  62% Tick counter
+    5.75    5.33    6.00    0.31   62%  37% Delete counter
+
+   13.83   13.33   14.00    0.25   75%  25% Create alarm
+   46.67   46.67   46.67    0.00  100% 100% Initialize alarm
+    3.67    3.33    4.00    0.33  100%  50% Disable alarm
+   45.67   45.33   46.00    0.33  100%  50% Enable alarm
+    8.33    8.00    8.67    0.33  100%  50% Delete alarm
+   36.33   36.00   36.67    0.33  100%  50% Tick counter [1 alarm]
+  214.67  214.67  214.67    0.00  100% 100% Tick counter [many alarms]
+   62.67   62.67   62.67    0.00  100% 100% Tick &#38; fire counter [1 alarm]
+ 1087.04 1075.33 1278.67   21.91   93%  93% Tick &#38; fire counters [&#62;1 together]
+  246.35  240.67  412.00   10.35   96%  96% Tick &#38; fire counters [&#62;1 separately]
+  168.01  167.33  237.33    1.08   99%  99% Alarm latency [0 threads]
+  187.36  168.00  234.67    3.60   86%   1% Alarm latency [2 threads]
+  187.37  167.33  235.33    3.59   85%   1% Alarm latency [many threads]
+  303.12  280.00  508.67    3.21   98%   0% Alarm -&#62; thread resume latency
+
+   36.65   36.00   38.67    0.00            Clock/interrupt latency
+
+   65.79   52.00  152.67    0.00            Clock DSR latency
+
+  316     316     316  (main stack:   752)  Thread stack used (1120 total)
+All done, main stack            : stack used   752 size  2400
+All done             :  Interrupt stack used   280 size  2048
+All done             : Idlethread stack used   268 size  2048
+
+Timing complete - 30390 ms total
+
+PASS:&lt;Basic timing OK&#62;
+EXIT:&lt;done&#62;
+
+	</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="setup-synth-i386linux.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-user-guide.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="rt-at91-eb40.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>i386/Linux Synthetic Target Setup</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="appendices.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Board: Atmel AT91/EB40</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,1400 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>eCos User Guide</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="NEXT"
+TITLE="Introduction"
+HREF="user-guide-introduction.html"></HEAD
+><BODY
+CLASS="BOOK"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="BOOK"
+><A
+NAME="ECOS-USER-GUIDE"><DIV
+CLASS="TITLEPAGE"
+><H1
+CLASS="TITLE"
+><A
+NAME="AEN2">eCos User Guide</H1
+><P
+CLASS="COPYRIGHT"
+>Copyright &copy; 2001, 2002 by Red Hat, Inc.</P
+><P
+CLASS="COPYRIGHT"
+>Copyright &copy; 2003 by eCosCentric Ltd.</P
+><DIV
+CLASS="LEGALNOTICE"
+><A
+NAME="AEN10"><P
+><B
+>Documentation licensing terms</B
+></P
+><P
+>This material may be distributed only subject to the terms
+and conditions set forth in the Open Publication License, v1.0
+or later (the latest version is presently available at
+<A
+HREF="http://www.opencontent.org/openpub/"
+TARGET="_top"
+>http://www.opencontent.org/openpub/</A
+>).</P
+><P
+>Distribution of the work or derivative of the work in any
+standard (paper) book form is prohibited unless prior
+permission is obtained from the copyright holder.</P
+></DIV
+><DIV
+CLASS="LEGALNOTICE"
+><A
+NAME="AEN15"><P
+><B
+>Trademarks</B
+></P
+><P
+>Red Hat, the Red Hat Shadow Man logo&reg;, eCos&#8482;, RedBoot&#8482;,
+GNUPro&reg;, and Insight&#8482; are trademarks of Red Hat, Inc. </P
+><P
+>Sun Microsystems&reg; and Solaris&reg; are registered trademarks of
+Sun Microsystems, Inc. </P
+><P
+>SPARC&reg; is a registered trademark of SPARC International, Inc., and
+is used under license by Sun Microsystems, Inc. </P
+><P
+>Intel&reg; is a registered trademark of Intel Corporation.</P
+><P
+>Motorola&#8482; is a trademark of Motorola, Inc.</P
+><P
+>ARM&reg; is a registered trademark of Advanced RISC Machines, Ltd.</P
+><P
+>MIPS&#8482; is a trademark of MIPS Technologies, Inc.</P
+><P
+>Toshiba&reg; is a registered trademark of the Toshiba Corporation.</P
+><P
+>NEC&reg; is a registered trademark if the NEC Corporation.</P
+><P
+>Cirrus Logic&reg; is a registered trademark of Cirrus Logic, Inc.</P
+><P
+>Compaq&reg; is a registered trademark of the Compaq Computer Corporation.</P
+><P
+>Matsushita&#8482; is a trademark of the Matsushita Electric Corporation.</P
+><P
+>Samsung&reg; and CalmRISC&#8482; are trademarks or registered trademarks
+of Samsung, Inc. </P
+><P
+>Linux&reg; is a registered trademark of Linus Torvalds. </P
+><P
+>UNIX&reg; is a registered trademark of The Open Group. </P
+><P
+>Microsoft&reg;, Windows&reg;, and Windows NT&reg; are registered trademarks
+of Microsoft Corporation, Inc. </P
+><P
+>All other brand and product names, trademarks, and copyrights are the
+property of their respective owners. </P
+></DIV
+><HR></DIV
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+>I. <A
+HREF="user-guide-introduction.html"
+>Introduction</A
+></DT
+><DD
+><DL
+><DT
+>1. <A
+HREF="ecos-key-features.html"
+>Key Features</A
+></DT
+><DT
+>2. <A
+HREF="ecos-overview.html"
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Overview</A
+></DT
+><DT
+>3. <A
+HREF="ecos-licensing.html"
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Licence Overview</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="ecos-licensing.html#ECOS-LICENSING-QNA"
+>Questions and answers</A
+></DT
+><DT
+><A
+HREF="ecos-licensing-previous.html"
+>Previous License</A
+></DT
+></DL
+></DD
+><DT
+>4. <A
+HREF="notation-and-conventions.html"
+>Notation and Conventions</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="notation-and-conventions.html#GDB-AND-GCC-COMMAND-NOTATION"
+>GDB and GCC Command Notation</A
+></DT
+><DT
+><A
+HREF="directory-and-file-system-conventions.html"
+>Directory and File System Conventions</A
+></DT
+><DT
+><A
+HREF="version-conventions.html"
+>Version Conventions</A
+></DT
+></DL
+></DD
+><DT
+>5. <A
+HREF="documentation-roadmap.html"
+>Documentation Roadmap</A
+></DT
+></DL
+></DD
+><DT
+>II. <A
+HREF="user-guide-installation.html"
+>Installing <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+></A
+></DT
+><DD
+><DL
+><DT
+>6. <A
+HREF="user-guide-installation-requirements.html"
+>System Requirements</A
+></DT
+><DT
+>7. <A
+HREF="user-guide-installation-linux.html"
+>Installation on Linux</A
+></DT
+><DT
+>8. <A
+HREF="user-guide-installation-windows.html"
+>Installation on Windows</A
+></DT
+><DT
+>9. <A
+HREF="user-guide-installation-target.html"
+>Target Setup</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="user-guide-installation-target.html#CONNECTING-TARGET-SERIAL"
+>Connecting Via Serial Line</A
+></DT
+><DT
+><A
+HREF="connecting-target-ethernet.html"
+>Connecting Via Ethernet</A
+></DT
+><DT
+><A
+HREF="connecting-target-sim.html"
+>Using A Simulator Target</A
+></DT
+><DT
+><A
+HREF="connecting-target-synth.html"
+>Using A Synthetic Target</A
+></DT
+></DL
+></DD
+></DL
+></DD
+><DT
+>III. <A
+HREF="user-guide-programming.html"
+>Programming With <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+></A
+></DT
+><DD
+><DL
+><DT
+>10. <A
+HREF="programming-with-ecos.html"
+>Programming With <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+></A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="programming-with-ecos.html#DEVELOPMENT-PROCESS"
+>The Development Process</A
+></DT
+></DL
+></DD
+><DT
+>11. <A
+HREF="configuring-and-building-ecos-from-source.html"
+>Configuring and Building <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> from Source</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="configuring-and-building-ecos-from-source.html#ECOS-STARTUP-CONFIGS"
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Start-up Configurations</A
+></DT
+><DT
+><A
+HREF="using-configtool-windows-linux.html"
+>Configuration Tool on Windows and Linux Quick Start</A
+></DT
+><DT
+><A
+HREF="using-ecosconfig-on-linux.html"
+>Ecosconfig on Windows and Linux Quick Start</A
+></DT
+></DL
+></DD
+><DT
+>12. <A
+HREF="running-an-ecos-test-case.html"
+>Running an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Test Case</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="running-an-ecos-test-case.html#USING-CONFIGTOOL-TESTCASE"
+>Using the <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+></A
+></DT
+><DT
+><A
+HREF="using-commandline-testcase.html"
+>Using the command line</A
+></DT
+><DT
+><A
+HREF="testing-filters.html"
+>Testing Filters</A
+></DT
+></DL
+></DD
+><DT
+>13. <A
+HREF="building-and-running-sample-appliations.html"
+>Building and Running Sample Applications</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="building-and-running-sample-appliations.html#ECOS-HELLO-WORLD"
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Hello World</A
+></DT
+><DT
+><A
+HREF="sample-twothreads.html"
+>A Sample Program with Two Threads</A
+></DT
+></DL
+></DD
+><DT
+>14. <A
+HREF="clocks-and-alarm-handlers.html"
+>More Features &#8212; Clocks and Alarm
+Handlers</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="clocks-and-alarm-handlers.html#SAMPLE-ALARMS"
+>A Sample Program with Alarms</A
+></DT
+></DL
+></DD
+></DL
+></DD
+><DT
+>IV. <A
+HREF="the-ecos-configuration-tool.html"
+>The eCos Configuration Tool</A
+></DT
+><DD
+><DL
+><DT
+>15. <A
+HREF="config-tool-getting-started.html"
+>Getting Started</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="config-tool-getting-started.html#CONFIG-TOOL-GETTING-STARTED-INTRO"
+>Introduction</A
+></DT
+><DT
+><A
+HREF="config-tool-invoking.html"
+>Invoking the <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+></A
+></DT
+><DT
+><A
+HREF="config-tool-component-repository.html"
+>The Component Repository</A
+></DT
+><DT
+><A
+HREF="config-tool-documents.html"
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+> Documents</A
+></DT
+></DL
+></DD
+><DT
+>16. <A
+HREF="config-tool-getting-help.html"
+>Getting Help</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="config-tool-getting-help.html#CONFIG-TOOL-CONTEXT-HELP-DIALOGS"
+>Context-sensitive Help for Dialogs</A
+></DT
+><DT
+><A
+HREF="config-tool-context-help-otherwin.html"
+>Context-sensitive Help for Other Windows</A
+></DT
+><DT
+><A
+HREF="config-tool-context-help-config-items.html"
+>Context-sensitive Help for Configuration Items</A
+></DT
+><DT
+><A
+HREF="methods-of-displaying-html-help.html"
+>Methods of Displaying HTML Help</A
+></DT
+></DL
+></DD
+><DT
+>17. <A
+HREF="config-tool-customization.html"
+>Customization</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="config-tool-customization.html#CONFIG-TOOL-WINDOW-PLACEMENT"
+>Window Placement</A
+></DT
+><DT
+><A
+HREF="config-tool-settings.html"
+>Settings</A
+></DT
+></DL
+></DD
+><DT
+>18. <A
+HREF="config-tool-screen-layout.html"
+>Screen Layout</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="config-tool-screen-layout.html#CONFIG-TOOL-CONFIGURATION-WINDOW"
+>Configuration Window</A
+></DT
+></DL
+></DD
+><DT
+>19. <A
+HREF="config-tool-updating-configuration.html"
+>Updating the Configuration</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="config-tool-updating-configuration.html#CONFIG-TOOL-ADDING-REMOVING-PACKAGES"
+>Adding and Removing Packages</A
+></DT
+><DT
+><A
+HREF="config-tool-platform-selection.html"
+>Platform Selection</A
+></DT
+><DT
+><A
+HREF="config-tool-using-templates.html"
+>Using Templates</A
+></DT
+></DL
+></DD
+><DT
+>20. <A
+HREF="config-tool-searching.html"
+>Searching</A
+></DT
+><DT
+>21. <A
+HREF="config-tool-building.html"
+>Building</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="config-tool-building.html#CONFIG-TOOL-SELECTING-BUILD-TOOLS"
+>Selecting Build Tools</A
+></DT
+><DT
+><A
+HREF="config-tool-selecting-user-tools.html"
+>Selecting User Tools</A
+></DT
+></DL
+></DD
+><DT
+>22. <A
+HREF="config-tool-test-execution.html"
+>Execution</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="config-tool-test-execution.html#CONFIG-TOOL-TEST-PROPERTIES"
+>Properties</A
+></DT
+></DL
+></DD
+><DT
+>23. <A
+HREF="config-tool-creating-a-shell.html"
+>Creating a Shell</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="config-tool-creating-a-shell.html#CONFIG-TOOL-KEYBOARD-ACCELERATORS"
+>Keyboard Accelerators</A
+></DT
+></DL
+></DD
+></DL
+></DD
+><DT
+>V. <A
+HREF="ecos-programming-concepts-and-techniques.html"
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Programming Concepts and Techniques</A
+></DT
+><DD
+><DL
+><DT
+>24. <A
+HREF="cdl-concepts.html"
+>CDL Concepts</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="cdl-concepts.html#CDL-CONCEPTS-ABOUT"
+>About this chapter</A
+></DT
+><DT
+><A
+HREF="cdl-component-repository.html"
+>Component Repository</A
+></DT
+><DT
+><A
+HREF="cdl-component-definition-language.html"
+>Component Definition Language</A
+></DT
+><DT
+><A
+HREF="cdl-packages.html"
+>Packages</A
+></DT
+><DT
+><A
+HREF="cdl-configuration-items.html"
+>Configuration Items</A
+></DT
+><DT
+><A
+HREF="cdl-conflicts.html"
+>Conflicts</A
+></DT
+><DT
+><A
+HREF="cdl-templates.html"
+>Templates</A
+></DT
+></DL
+></DD
+><DT
+>25. <A
+HREF="component-repo-and-working-dirs.html"
+>The Component Repository and Working Directories</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="component-repo-and-working-dirs.html#COMPONENT-REPO"
+>Component Repository</A
+></DT
+><DT
+><A
+HREF="build-tree.html"
+>Build Tree</A
+></DT
+><DT
+><A
+HREF="install-tree.html"
+>Install Tree</A
+></DT
+><DT
+><A
+HREF="repository-app-build-tree.html"
+>Application Build Tree</A
+></DT
+></DL
+></DD
+><DT
+>26. <A
+HREF="compiler-and-linker-options.html"
+>Compiler and Linker Options</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="compiler-and-linker-options.html#COMPILING-C-APP"
+>Compiling a C Application</A
+></DT
+><DT
+><A
+HREF="compiling-cpp-app.html"
+>Compiling a C++ Application</A
+></DT
+></DL
+></DD
+><DT
+>27. <A
+HREF="debugging-techniques.html"
+>Debugging Techniques</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="debugging-techniques.html#TRACING"
+>Tracing</A
+></DT
+><DT
+><A
+HREF="kernel-instrumentation.html"
+>Kernel Instrumentation</A
+></DT
+></DL
+></DD
+></DL
+></DD
+><DT
+>VI. <A
+HREF="configuration-and-the-package-repository.html"
+>Configuration and the Package Repository</A
+></DT
+><DD
+><DL
+><DT
+>28. <A
+HREF="manual-configuration.html"
+>Manual Configuration</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="manual-configuration.html#DIRECTORY-TREE-STRUCTURE"
+>Directory Tree Structure</A
+></DT
+><DT
+><A
+HREF="creating-build-tree.html"
+>Creating the Build Tree</A
+></DT
+><DT
+><A
+HREF="conflicts-and-constraints.html"
+>Conflicts and constraints</A
+></DT
+><DT
+><A
+HREF="building-the-system.html"
+>Building the System</A
+></DT
+><DT
+><A
+HREF="ecos-packages.html"
+>Packages</A
+></DT
+><DT
+><A
+HREF="coarse-grained-configuration.html"
+>Coarse-grained Configuration</A
+></DT
+><DT
+><A
+HREF="fine-grained-configuration.html"
+>Fine-grained Configuration</A
+></DT
+><DT
+><A
+HREF="editing-an-ecos-savefile.html"
+>Editing an <SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> Savefile</A
+></DT
+><DT
+><A
+HREF="editing-the-sources.html"
+>Editing the Sources</A
+></DT
+><DT
+><A
+HREF="modifying-the-memory-layout.html"
+>Modifying the Memory Layout</A
+></DT
+></DL
+></DD
+><DT
+>29. <A
+HREF="managing-package-repository.html"
+>Managing the Package Repository</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="managing-package-repository.html#PACKAGE-INSTALLATION"
+>Package Installation</A
+></DT
+><DT
+><A
+HREF="package-structure.html"
+>Package Structure</A
+></DT
+></DL
+></DD
+></DL
+></DD
+><DT
+>VII. <A
+HREF="appendices.html"
+>Appendixes</A
+></DT
+><DD
+><DL
+><DT
+>A. <A
+HREF="appendix-target-setup.html"
+>Target Setup</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="appendix-target-setup.html#SETUP-MN10300-STDEVAL1"
+>MN10300 stdeval1 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-mn10300-sim.html"
+>MN10300 Architectural Simulator Setup</A
+></DT
+><DT
+><A
+HREF="setup-am33-stb.html"
+>AM33 STB Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-tx39-jmr3904.html"
+>TX39 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-tx39-sim.html"
+>TX39 Architectural Simulator Setup</A
+></DT
+><DT
+><A
+HREF="setup-tx49-ref4955.html"
+>TX49 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-vr4300-vrc4373.html"
+>VR4300 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-vr4300-vrc4375.html"
+>VRC4375 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-mips-atlasmalta.html"
+>Atlas/Malta Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-ppc-cogent.html"
+>PowerPC Cogent Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-ppc-mbx860.html"
+>PowerPC MBX860 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-ppc-sim.html"
+>PowerPC Architectural Simulator Setup</A
+></DT
+><DT
+><A
+HREF="setup-sparclite-sleb.html"
+>SPARClite Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-sparclite-sim.html"
+>SPARClite Architectural Simulator Setup</A
+></DT
+><DT
+><A
+HREF="setup-arm-pid.html"
+>ARM PID Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-arm-aeb1.html"
+>ARM AEB-1 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-arm-cma230.html"
+>ARM Cogent CMA230 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-arm-ep7211.html"
+>Cirrus Logic ARM EP7211 Development
+Board Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-arm-ep7212.html"
+>Cirrus Logic ARM EP7212 Development Board
+Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-arm-ep7312.html"
+>Cirrus Logic ARM EP7312 Development Board
+Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-arm-ep7209.html"
+>Cirrus Logic ARM EP7209 Development Board Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-arm-clps7111.html"
+>Cirrus Logic ARM CL-PS7111 Evaluation Board Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-arm-ebsa285.html"
+>StrongARM EBSA-285 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-arm-ipaq.html"
+>Compaq iPAQ PocketPC Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-sh-edk7708.html"
+>SH3/EDK7708 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-sh-cq7708.html"
+>SH3/CQ7708 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-sh-hs7729pci.html"
+>SH3/HS7729PCI Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-sh-se77x9.html"
+>SH3/SE77x9 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-sh-cq7750.html"
+>SH4/CQ7750 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-sh-se7751.html"
+>SH4/SE7751 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-v850-cebsa1.html"
+>NEC CEB-V850/SA1 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-v850-cebsb1.html"
+>NEC CEB-V850/SB1 Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-i386-pc.html"
+>i386 PC Hardware Setup</A
+></DT
+><DT
+><A
+HREF="setup-synth-i386linux.html"
+>i386/Linux Synthetic Target Setup</A
+></DT
+></DL
+></DD
+><DT
+>B. <A
+HREF="real-time-characterization.html"
+>Real-time characterization</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="real-time-characterization.html#RT-ARM-AEB1"
+>Board: ARM AEB-1 Revision B Evaluation Board</A
+></DT
+><DT
+><A
+HREF="rt-at91-eb40.html"
+>Board: Atmel AT91/EB40</A
+></DT
+><DT
+><A
+HREF="rt-arm-ebsa285.html"
+>Board: Intel StrongARM EBSA-285 Evaluation Board</A
+></DT
+><DT
+><A
+HREF="rt-arm-ep7211.html"
+>Board: Cirrus Logic EDB7111-2 Development Board</A
+></DT
+><DT
+><A
+HREF="rt-arm-pid.html"
+>Board: ARM PID Evaluation Board</A
+></DT
+><DT
+><A
+HREF="rt-arm-iq80310.html"
+>Board: Intel IQ80310 XScale Development Kit</A
+></DT
+><DT
+><A
+HREF="rt-tx39-jmr3904.html"
+>Board: Toshiba JMR3904 Evaluation Board</A
+></DT
+><DT
+><A
+HREF="rt-tx49-ref4955.html"
+>Board: Toshiba REF 4955</A
+></DT
+><DT
+><A
+HREF="rt-mn10300-stdeval1.html"
+>Board: Matsushita STDEVAL1 Board</A
+></DT
+><DT
+><A
+HREF="rt-sparclite-sleb.html"
+>Board: Fujitsu SPARClite Evaluation Board</A
+></DT
+><DT
+><A
+HREF="rt-ppc-cogent.html"
+>Board: Cogent CMA MPC860 (PowerPC) Evaluation</A
+></DT
+><DT
+><A
+HREF="rt-vr4300-vrc4373.html"
+>Board: NEC VR4373</A
+></DT
+><DT
+><A
+HREF="rt-arm-assabet.html"
+>Board: Intel SA1110 (Assabet)</A
+></DT
+><DT
+><A
+HREF="rt-arm-brutus.html"
+>Board: Intel SA1100 (Brutus)</A
+></DT
+><DT
+><A
+HREF="rt-ppc-mbx860.html"
+>Board: Motorola MBX</A
+></DT
+><DT
+><A
+HREF="rt-sh-edk7708.html"
+>Board: Hitachi EDK7708</A
+></DT
+><DT
+><A
+HREF="rt-sh-cq7708.html"
+>Board: CQ CqREEK SH3 Evaluation Board (cq7708)</A
+></DT
+><DT
+><A
+HREF="rt-sh-hs7729pci.html"
+>Board: Hitachi HS7729PCI HS7729 SH3</A
+></DT
+><DT
+><A
+HREF="rt-sh-se7751.html"
+>Board: Hitachi Solution Engine 7751 SH4 (se7751)</A
+></DT
+><DT
+><A
+HREF="rt-i386-pc.html"
+>Board: PC</A
+></DT
+><DT
+><A
+HREF="rt-v850-cebsa1.html"
+>Board: NEC V850 Cosmo Evaluation Board</A
+></DT
+><DT
+><A
+HREF="rt-v850-cebsb1.html"
+>Board: NEC V850 Cosmo Evaluation Board</A
+></DT
+></DL
+></DD
+><DT
+>C. <A
+HREF="gnu-general-public-license.html"
+>GNU General Public License</A
+></DT
+></DL
+></DD
+></DL
+></DIV
+><DIV
+CLASS="LOT"
+><DL
+CLASS="LOT"
+><DT
+><B
+>List of Tables</B
+></DT
+><DT
+>11-1. <A
+HREF="configuring-and-building-ecos-from-source.html#USER-GUIDE-DOWNLOAD-METHODS"
+>Configuration for various download methods</A
+></DT
+><DT
+>18-1. <A
+HREF="config-tool-screen-layout.html#AEN1273"
+>Cell types</A
+></DT
+><DT
+>23-1. <A
+HREF="config-tool-creating-a-shell.html#KEYBOARD-ACCELERATORS"
+>Keyboard accelerators</A
+></DT
+><DT
+>24-1. <A
+HREF="cdl-configuration-items.html#CDL-EXPRESSIONS"
+>CDL Expressions</A
+></DT
+><DT
+>24-2. <A
+HREF="cdl-configuration-items.html#TABLE-CONFIGURATION-PROPERTIES"
+>Configuration properties</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="LOT"
+><DL
+CLASS="LOT"
+><DT
+><B
+>List of Figures</B
+></DT
+><DT
+>11-1. <A
+HREF="using-configtool-windows-linux.html#PROGRAMMING-FIGURE-CONFIGURATION-TOOL"
+>Configuration Tool</A
+></DT
+><DT
+>11-2. <A
+HREF="using-configtool-windows-linux.html#FIGURE-TEMPLATE-SELECTION"
+>Template selection</A
+></DT
+><DT
+>11-3. <A
+HREF="using-configtool-windows-linux.html#CONFIGURING-FOR-THE-TARGET"
+>Configuring
+for the target</A
+></DT
+><DT
+>11-4. <A
+HREF="using-configtool-windows-linux.html#FIGURE-SELECTING-THE-BUILD-LIBRARY-MENU-ITEM"
+>Selecting the Build Library menu item</A
+></DT
+><DT
+>11-5. <A
+HREF="using-configtool-windows-linux.html#AEN607"
+>Save file dialog</A
+></DT
+><DT
+>11-6. <A
+HREF="using-configtool-windows-linux.html#FIGURE-BUILD-TOOLS-DIALOG"
+>Build tools dialog</A
+></DT
+><DT
+>11-7. <A
+HREF="using-configtool-windows-linux.html#FIGURE-USER-TOOLS-DIALOG"
+>User tools dialog</A
+></DT
+><DT
+>11-8. <A
+HREF="using-configtool-windows-linux.html#AEN648"
+>Selecting the Build Tests menu item</A
+></DT
+><DT
+>12-1. <A
+HREF="running-an-ecos-test-case.html#PROGRAMMING-RUN-TESTS"
+>Run tests</A
+></DT
+><DT
+>12-2. <A
+HREF="running-an-ecos-test-case.html#PROGRAMMING-RUN-PROPERTIES"
+>Properties dialog box</A
+></DT
+><DT
+>13-1. <A
+HREF="sample-twothreads.html#FIGURE-TWOTHREADS-WITH-SIMPLE-PRINTS"
+>Two
+threads with simple print statements after random delays</A
+></DT
+><DT
+>15-1. <A
+HREF="config-tool-invoking.html#FIGURE-CONFIGURATION-TOOL"
+><SPAN
+CLASS="APPLICATION"
+>Configuration Tool</SPAN
+></A
+></DT
+><DT
+>15-2. <A
+HREF="config-tool-component-repository.html#AEN1047"
+>Repository relocation dialog box</A
+></DT
+><DT
+>15-3. <A
+HREF="config-tool-documents.html#AEN1076"
+>Save As dialog box</A
+></DT
+><DT
+>15-4. <A
+HREF="config-tool-documents.html#AEN1085"
+>Open dialog box</A
+></DT
+><DT
+>16-1. <A
+HREF="methods-of-displaying-html-help.html#FIGURE-HELP-VIEWER"
+>HTML Help viewer</A
+></DT
+><DT
+>17-1. <A
+HREF="config-tool-settings.html#AEN1207"
+>Settings dialog, Display tab</A
+></DT
+><DT
+>17-2. <A
+HREF="config-tool-settings.html#AEN1233"
+>Settings dialog, Viewers tab</A
+></DT
+><DT
+>19-1. <A
+HREF="config-tool-updating-configuration.html#AEN1376"
+>Packages dialog box</A
+></DT
+><DT
+>19-2. <A
+HREF="config-tool-platform-selection.html#AEN1393"
+>Platforms dialog box</A
+></DT
+><DT
+>19-3. <A
+HREF="config-tool-platform-selection.html#AEN1400"
+>Platform Modify dialog box</A
+></DT
+><DT
+>19-4. <A
+HREF="config-tool-using-templates.html#AEN1417"
+>Templates dialog box</A
+></DT
+><DT
+>19-5. <A
+HREF="config-tool-using-templates.html#AEN1430"
+>Options</A
+></DT
+><DT
+>19-6. <A
+HREF="config-tool-using-templates.html#AEN1450"
+>Resolve conflicts window</A
+></DT
+><DT
+>20-1. <A
+HREF="config-tool-searching.html#AEN1471"
+>Find dialog box</A
+></DT
+><DT
+>21-1. <A
+HREF="config-tool-building.html#AEN1521"
+>Build tools</A
+></DT
+><DT
+>21-2. <A
+HREF="config-tool-selecting-user-tools.html#AEN1533"
+>User tools</A
+></DT
+><DT
+>22-1. <A
+HREF="config-tool-test-execution.html#AEN1564"
+>Properties dialog box</A
+></DT
+><DT
+>22-2. <A
+HREF="config-tool-test-execution.html#AEN1603"
+>Run tests</A
+></DT
+><DT
+>22-3. <A
+HREF="config-tool-test-execution.html#AEN1616"
+>Add files from folder</A
+></DT
+><DT
+>25-1. <A
+HREF="component-repo-and-working-dirs.html#AEN2022"
+>Component repository</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="LOT"
+><DL
+CLASS="LOT"
+><DT
+><B
+>List of Examples</B
+></DT
+><DT
+>11-1. <A
+HREF="using-ecosconfig-on-linux.html#AEN683"
+>Getting  help from ecosconfig</A
+></DT
+><DT
+>11-2. <A
+HREF="using-ecosconfig-on-linux.html#AEN686"
+>ecosconfig output &#8212; 
+list of available packages, targets and templates</A
+></DT
+><DT
+>14-1. <A
+HREF="clocks-and-alarm-handlers.html#AEN910"
+>A sample program that creates an alarm</A
+></DT
+><DT
+>27-1. <A
+HREF="debugging-techniques.html#AEN2289"
+>Hello world with tracing</A
+></DT
+><DT
+>27-2. <A
+HREF="kernel-instrumentation.html#AEN2358"
+>Using instrument buffers</A
+></DT
+><DT
+>27-3. <A
+HREF="kernel-instrumentation.html#AEN2367"
+>Instrument buffer output</A
+></DT
+><DT
+>28-1. <A
+HREF="modifying-the-memory-layout.html#AEN2992"
+><SPAN
+CLASS="PRODUCTNAME"
+>eCos</SPAN
+> linker script fragment</A
+></DT
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="user-guide-introduction.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Introduction</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

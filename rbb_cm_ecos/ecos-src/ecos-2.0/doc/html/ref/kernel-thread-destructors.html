@@ -1,0 +1,327 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Thread destructors</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="The eCos Kernel"
+HREF="kernel.html"><LINK
+REL="PREVIOUS"
+TITLE="Per-thread data"
+HREF="kernel-thread-data.html"><LINK
+REL="NEXT"
+TITLE="Exception handling"
+HREF="kernel-exceptions.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="kernel-thread-data.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="kernel-exceptions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="KERNEL-THREAD-DESTRUCTORS">Thread destructors</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN730"
+></A
+><H2
+>Name</H2
+>cyg_thread_add_destructor, cyg_thread_rem_destructor&nbsp;--&nbsp;Call functions on thread termination</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN734"><H2
+>Synopsis</H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><A
+NAME="AEN735"><P
+></P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &lt;cyg/kernel/kapi.h&gt;
+typedef void (*<SPAN
+CLASS="TYPE"
+>cyg_thread_destructor_fn</SPAN
+>)(<SPAN
+CLASS="TYPE"
+>cyg_addrword_t</SPAN
+>);
+        </PRE
+></TD
+></TR
+></TABLE
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_bool_t cyg_thread_add_destructor</CODE
+>(cyg_thread_destructor_fn fn, cyg_addrword_t data);</CODE
+></P
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>cyg_bool_t cyg_thread_rem_destructor</CODE
+>(cyg_thread_destructor_fn fn, cyg_addrword_t data);</CODE
+></P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN753"
+></A
+><H2
+>Description</H2
+><P
+>These functions are provided for cases when an application requires a
+function to be automatically called when a thread exits. This is often
+useful when, for example, freeing up resources allocated by the thread.
+      </P
+><P
+>This support must be enabled with the configuration option
+<TT
+CLASS="VARNAME"
+>CYGPKG_KERNEL_THREADS_DESTRUCTORS</TT
+>. When enabled,
+you may register a function of type
+<SPAN
+CLASS="TYPE"
+>cyg_thread_destructor_fn</SPAN
+> to be called on thread
+termination using <TT
+CLASS="FUNCTION"
+>cyg_thread_add_destructor</TT
+>. You
+may also provide it with a piece of arbitrary information in the
+<TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+> argument which will be passed to the
+destructor function <TT
+CLASS="PARAMETER"
+><I
+>fn</I
+></TT
+> when the thread
+terminates. If you no longer wish to call a function previous
+registered with <TT
+CLASS="FUNCTION"
+>cyg_thread_add_destructor</TT
+>, you
+may call <TT
+CLASS="FUNCTION"
+>cyg_thread_rem_destructor</TT
+> with the same
+parameters used to register the destructor function. Both these
+functions return <TT
+CLASS="LITERAL"
+>true</TT
+> on success and
+<TT
+CLASS="LITERAL"
+>false</TT
+> on failure.
+      </P
+><P
+>By default, thread destructors are per-thread, which means that registering
+a destructor function only registers that function for the current thread.
+In other words, each thread has its own list of destructors.
+Alternatively you may disable the configuration option
+<TT
+CLASS="VARNAME"
+>CYGSEM_KERNEL_THREADS_DESTRUCTORS_PER_THREAD</TT
+> in which
+case any registered destructors will be run when <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>any</I
+></SPAN
+>
+threads exit. In other words, the thread destructor list is global and all
+threads have the same destructors.
+      </P
+><P
+>There is a limit to the number of destructors which may be registered,
+which can be controlled with the
+<TT
+CLASS="VARNAME"
+>CYGNUM_KERNEL_THREADS_DESTRUCTORS</TT
+> configuration
+option. Increasing this value will very slightly increase the amount
+of memory in use, and when
+<TT
+CLASS="VARNAME"
+>CYGSEM_KERNEL_THREADS_DESTRUCTORS_PER_THREAD</TT
+> is
+enabled, the amount of memory used per thread will increase. When the
+limit has been reached, <TT
+CLASS="FUNCTION"
+>cyg_thread_add_destructor</TT
+>
+will return <TT
+CLASS="LITERAL"
+>false</TT
+>.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="KERNEL-THREAD-DESTRUCTORS-CONTEXT"
+></A
+><H2
+>Valid contexts</H2
+><P
+>When <TT
+CLASS="VARNAME"
+>CYGSEM_KERNEL_THREADS_DESTRUCTORS_PER_THREAD</TT
+>
+is enabled, these functions must only be called from a thread context
+as they implicitly operate on the current thread. When
+<TT
+CLASS="VARNAME"
+>CYGSEM_KERNEL_THREADS_DESTRUCTORS_PER_THREAD</TT
+> is
+disabled, these functions may be called from thread or DSR context,
+or at initialization time.
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="kernel-thread-data.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="kernel-exceptions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Per-thread data</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="kernel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Exception handling</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

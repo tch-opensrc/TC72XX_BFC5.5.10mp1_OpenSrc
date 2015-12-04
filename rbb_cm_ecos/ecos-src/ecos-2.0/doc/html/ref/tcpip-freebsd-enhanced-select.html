@@ -1,0 +1,222 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>Enhanced Select()</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="APIs"
+HREF="tcpip-freebsd-tcpip-apis.html"><LINK
+REL="PREVIOUS"
+TITLE="APIs"
+HREF="tcpip-freebsd-tcpip-apis.html"><LINK
+REL="NEXT"
+TITLE="OpenBSD TCP/IP Stack port for eCos"
+HREF="tcpip-openbsd.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="tcpip-freebsd-tcpip-apis.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 41. APIs</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="tcpip-openbsd.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="TCPIP-FREEBSD-ENHANCED-SELECT">Enhanced Select()</H1
+><P
+>The network stack supports an extension to the standard select
+semantics which allows all threads that are waiting to be restarted
+even if the select conditions are not satisfied.</P
+><P
+>The standard select() API:  </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int  
+<TT
+CLASS="FUNCTION"
+>select</TT
+>(int nfd,
+       fd_set &#0042;in, fd_set &#0042;out, fd_set &#0042;ex,
+       struct timeval &#0042;tv); </PRE
+></TD
+></TR
+></TABLE
+><P
+>does not support the restart.</P
+><P
+>The additional API:  </P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int  
+<TT
+CLASS="FUNCTION"
+>cyg_select_with_abort</TT
+>(int nfd,
+       fd_set &#0042;in, fd_set &#0042;out, fd_set &#0042;ex,
+       struct timeval &#0042;tv)</PRE
+></TD
+></TR
+></TABLE
+><P
+>behaves exactly as select() with the additional feature that
+a call to</P
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void <TT
+CLASS="FUNCTION"
+>cyg_select_abort</TT
+>(void)</PRE
+></TD
+></TR
+></TABLE
+><P
+>will cause all threads waiting in any
+<TT
+CLASS="FUNCTION"
+>cyg_select_with_abort()</TT
+> call
+to cease waiting and continue execution.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="tcpip-freebsd-tcpip-apis.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="tcpip-openbsd.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>APIs</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-freebsd-tcpip-apis.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>OpenBSD TCP/IP Stack port for eCos</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

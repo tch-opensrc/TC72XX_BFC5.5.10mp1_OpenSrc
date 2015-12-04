@@ -1,0 +1,330 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>C Language Services [POSIX Section 8]</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="POSIX Standard Support"
+HREF="posix-standard-support.html"><LINK
+REL="PREVIOUS"
+TITLE="Device and Class Specific Functions [POSIX Section 7]"
+HREF="posix-device-and-class-specific-functions.html"><LINK
+REL="NEXT"
+TITLE="System Databases [POSIX Section 9]"
+HREF="posix-system-databases.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="posix-device-and-class-specific-functions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 31. POSIX Standard Support</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="posix-system-databases.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="POSIX-C-LANGUAGE-SERVICES">C Language Services &#0091;POSIX Section 8&#0093;</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13100">Functions Implemented</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>char &#0042;setlocale( int category, const char &#0042;locale ); 
+int fileno( FILE &#0042;stream ); 
+FILE &#0042;fdopen( int fd, const char &#0042;type ); 
+int getc&#0095;unlocked( FILE &#0042;stream); 
+int getchar&#0095;unlocked( void ); 
+int putc&#0095;unlocked( FILE &#0042;stream ); 
+int putchar&#0095;unlocked( void ); 
+char &#0042;strtok&#0095;r( char &#0042;s, const char &#0042;sep, 
+                char &#0042;&#0042;lasts ); 
+char &#0042;asctime&#0095;r( const struct tm &#0042;tm, char &#0042;buf ); 
+char &#0042;ctime&#0095;r( const time&#0095;t &#0042;clock, char &#0042;buf ); 
+struct tm &#0042;gmtime&#0095;r( const time&#0095;t &#0042;clock,
+                     struct tm &#0042;result ); 
+struct tm &#0042;localtime&#0095;r( const time&#0095;t &#0042;clock,
+                        struct tm &#0042;result ); 
+int rand&#0095;r( unsigned int &#0042;seed );</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13103">Functions Omitted</H2
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>void flockfile( FILE &#0042;file ); 
+int ftrylockfile( FILE &#0042;file ); 
+void funlockfile( FILE &#0042;file ); 
+int sigsetjmp( sigjmp&#0095;buf env, int savemask );			&#0047;&#0047; TBA 
+void siglongjmp( sigjmp&#0095;buf env, int val );			&#0047;&#0047; TBA 
+void tzset(void);                                                       &#0047;&#0047; TBA</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13106">Notes</H2
+><P
+></P
+><UL
+><LI
+><P
+>	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>setlocale()</I
+></SPAN
+> is implemented in the C
+	    library Internationalization package.
+	    </P
+></LI
+><LI
+><P
+>	    Functions <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>fileno()</I
+></SPAN
+> and
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>fdopen()</I
+></SPAN
+> are implemented in the C
+	    library STDIO package.
+	    </P
+></LI
+><LI
+><P
+>	    Functions <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>getc&#0095;unlocked()</I
+></SPAN
+>, 
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>getchar&#0095;unlocked()</I
+></SPAN
+>,
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>putc&#0095;unlocked()</I
+></SPAN
+> and
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>putchar&#0095;unlocked()</I
+></SPAN
+> are defined
+	    but are currently identical to their non-unlocked
+	    equivalents.
+	    </P
+></LI
+><LI
+><P
+>	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>strtok&#0095;r()</I
+></SPAN
+>, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>asctime&#0095;r()</I
+></SPAN
+>, 
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ctime&#0095;r()</I
+></SPAN
+>, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>gmtime&#0095;r()</I
+></SPAN
+>, 
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>localtime&#0095;r()</I
+></SPAN
+> and
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>rand&#0095;r()</I
+></SPAN
+> are all currently in
+	    the C library, alongside their non-reentrant versions.
+	    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="posix-device-and-class-specific-functions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="posix-system-databases.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Device and Class Specific Functions &#0091;POSIX Section 7&#0093;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="posix-standard-support.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>System Databases &#0091;POSIX Section 9&#0093;</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

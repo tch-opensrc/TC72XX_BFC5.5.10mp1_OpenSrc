@@ -1,0 +1,198 @@
+<!-- Copyright (C) 2003 Red Hat, Inc.                                -->
+<!-- This material may be distributed only subject to the terms      -->
+<!-- and conditions set forth in the Open Publication License, v1.0  -->
+<!-- or later (the latest version is presently available at          -->
+<!-- http://www.opencontent.org/openpub/).                           -->
+<!-- Distribution of the work or derivative of the work in any       -->
+<!-- standard (paper) book form is prohibited unless prior           -->
+<!-- permission is obtained from the copyright holder.               -->
+<HTML
+><HEAD
+><TITLE
+>net_addrcmp</TITLE
+><meta name="MSSmartTagsPreventParsing" content="TRUE">
+<META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="eCos Reference Manual"
+HREF="ecos-ref.html"><LINK
+REL="UP"
+TITLE="TCP/IP Library Reference"
+HREF="tcpip-library-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="link_addr"
+HREF="net-common-tcpip-manpages-link-addr.html"><LINK
+REL="NEXT"
+TITLE="ns"
+HREF="net-common-tcpip-manpages-ns.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>eCos Reference Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-link-addr.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 38. TCP/IP Library Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="net-common-tcpip-manpages-ns.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NET-COMMON-TCPIP-MANPAGES-NET-ADDRCMP">net_addrcmp</H1
+><TABLE
+BORDER="5"
+BGCOLOR="#E0E0F0"
+WIDTH="70%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>NET_ADDRCMP(3)          System Library Functions Manual         NET_ADDRCMP(3)
+
+NAME
+     net_addrcmp - compare socket address structures
+
+SYNOPSIS
+     #include &lt;netdb.h&#62;
+
+     int
+     net_addrcmp(struct sockaddr *sa1, struct sockaddr *sa2);
+
+DESCRIPTION
+     The net_addrcmp() function compares two socket address structures, sa1
+     and sa2.
+
+RETURN VALUES
+     If sa1 and sa2 are for the same address, net_addrcmp() returns 0.
+
+     The sa_len fields are compared first.  If they do not match,
+     net_addrcmp() returns -1 or 1 if sa1-&#62;sa_len is less than or greater than
+     sa2-&#62;sa_len, respectively.
+
+     Next, the sa_family members are compared.  If they do not match,
+     net_addrcmp() returns -1 or 1 if sa1-&#62;sa_family is less than or greater
+     than sa2-&#62;sa_family, respectively.
+
+     Lastly, if each socket address structure's sa_len and sa_family fields
+     match, the protocol-specific data (the sa_data field) is compared.  If
+     there's a match, both sa1 and sa2 must refer to the same address, and 0
+     is returned; otherwise, a value &#62;0 or &lt;0 is returned.
+
+HISTORY
+     A net_addrcmp() function was added in OpenBSD 2.5.
+
+BSD                              July 3, 1999                              BSD
+    </PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-link-addr.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="ecos-ref.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="net-common-tcpip-manpages-ns.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>link_addr</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tcpip-library-reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>ns</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
