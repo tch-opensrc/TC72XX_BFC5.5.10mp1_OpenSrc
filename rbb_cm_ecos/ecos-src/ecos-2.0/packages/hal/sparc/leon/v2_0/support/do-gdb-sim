@@ -1,3 +1,0 @@
-#! /bin/csh
-tsim-leon -nfp -gdb >& /dev/stdout &
-sparc-rtems-gdb -nw -nx $*:q
