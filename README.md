@@ -7,6 +7,9 @@ How to bulid the eCos library on Ubuntu linux OS
 	* $git clone https://github.com/tch-opensrc/TC72XX_BFC5.5.10mp1_OpenSrc.git
 	* $cd TC72XX_BFC5.5.10mp1_OpenSrc
 
+* Decompress the eCos open source code :
+	* $tar xvf ProdD30_BFC5.5.10_eCos.opensrc.tar.bz2
+
 * Install toolchains under /usr/local :
 	* $sudo tar zxvf usr_local__ecos20.tgz -C /usr/local
 
