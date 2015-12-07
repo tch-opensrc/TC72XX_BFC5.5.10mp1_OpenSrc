@@ -8,6 +8,6 @@ if [ -z "$TOOLCHAIN_BIN_PATH" ]; then
 	export PATH=$TOOLCHAIN_BIN:$PATH
 fi
 
-[ -d rbb_cm_ecos ] || tar xvf ProdD30_BFC5.5.10_eCos.opensrc.tar.bz2
+[ -d rbb_cm_ecos ] || tar xvf ProdD30_BFC5.5.10_eCos_opensrc.tar.bz2
 cd rbb_cm_ecos/ecos-src/bcm33xx_ipv6
 sh build.bash
